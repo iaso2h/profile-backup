@@ -20,13 +20,15 @@ def findAllDrives() -> List[str]:
     return list(map(lambda i: i[:1], [dp.device for dp in drps if dp.fstype == 'NTFS']))
 
 
+print = backup.console.print
+
 def keyboardInterruptExit() -> None:
-    backup.console.print("[red]Interrupt by user[/red]")
+    print("[red]Interrupt by user[/red]")
     raise SystemExit(1)
 
 
 def abortExit() -> None:
-    backup.console.print("[red]Abort by user[/red]")
+    print("[red]Abort by user[/red]")
     raise SystemExit(1)
 
 
@@ -43,18 +45,44 @@ beaupy.Config.raise_on_escape    = True
 
 
 def start() -> None:
-    drivePaths = findRemovableDrive()
-    alldrives  = findAllDrives()
-    backup.console.print("Choose the path to store the files.")
-    drivePaths.extend(preservedDsts)
+    # Select software
+    softwareList = [s.name for s in parser.softwareList]
+    print("Select the software to back up:")
     try:
-        ans = beaupy.select(drivePaths, return_index=True)
+        parser.softwareChoice = beaupy.select_multiple(
+                softwareList,
+                tick_character = '✔',
+                ticked_indices = list(range(len(softwareList))),
+                minimal_count  = 1,
+                return_indices = True
+                )
     except KeyboardInterrupt:
         keyboardInterruptExit()
     except beaupy.Abort:
         abortExit()
+    except Exception as e:
+        print(e)
+        SystemExit(1)
+    print(parser.softwareChoice) # [0, 1]
+    SystemExit(0)
 
-    # Get destionation path
+
+    # Select destination path
+    drivePaths = findRemovableDrive()
+    alldrives  = findAllDrives()
+    print("Choose the path to store the files:")
+    drivePaths.extend(preservedDsts)
+    try:
+        ans = beaupy.select(drivePaths, return_index=True) # type: list
+    except KeyboardInterrupt:
+        keyboardInterruptExit()
+    except beaupy.Abort:
+        abortExit()
+    except Exception as e:
+        print(e)
+        SystemExit(1)
+
+    # Get destination path
     if ans == len(drivePaths) - 2:
         # Current working directory
         backup.DESTPATH = Path(cwd, "Profiles")
@@ -70,12 +98,12 @@ def start() -> None:
                             )
                     if not dst.exists():
                         anchorPath = Path(dst.anchor)
-                        backup.console.print(anchorPath)
+                        print(anchorPath)
 
                         if not anchorPath.exists() or \
                                 str(anchorPath)[-1:] != "\\" or \
                                 str(anchorPath).upper() not in alldrives:
-                            backup.console.print("[red]Invalid path. Please try again.[/red]")
+                            print("[red]Invalid path. Please try again.[/red]")
                         else:
                             ans = beaupy.confirm(
                                     f"Folder [yellow]{str(dst)}[/yellow] doesn't exist, do you want to create one?",
@@ -94,6 +122,9 @@ def start() -> None:
                 keyboardInterruptExit()
             except beaupy.Abort:
                 abortExit()
+            except Exception as e:
+                print(e)
+                SystemExit(1)
     else:
         # Removable drives
         backup.DESTPATH = Path(str(drivePaths[ans])[6:10], "Profiles")
@@ -110,6 +141,9 @@ def start() -> None:
         keyboardInterruptExit()
     except beaupy.Abort:
         abortExit()
+    except Exception as e:
+        print(e)
+        SystemExit(1)
 
 
     spinner = sp.Spinner(sp.DOTS, "Parsing...\n")

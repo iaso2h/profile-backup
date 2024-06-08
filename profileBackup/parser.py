@@ -1,8 +1,11 @@
 from backup import Backup, DRYRUN, DESTPATH, appDataPath, homePath
 import os
 
-def start():
-    threedsMax = Backup(
+
+# Written from other file
+softwareChoice = None # type: list
+softwareList = [
+    Backup(
         "3ds Max",
         [
             [
@@ -21,8 +24,8 @@ def start():
                 lambda _: True
             ],
         ]
-    )
-    autoCAD = Backup(
+    ),
+    Backup(
         "AutoCAD",
         [
             [
@@ -69,8 +72,11 @@ def start():
             ],
         ]
     )
+]
+
+def start():
 
     if not DRYRUN:
         os.makedirs(str(DESTPATH), exist_ok=True)
-    threedsMax.backup()
-    autoCAD.backup()
+    for i in softwareChoice:
+        softwareList[i].backup()
