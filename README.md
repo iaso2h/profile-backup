@@ -8,11 +8,12 @@ Back up profiles from all kind of softwares. The location of these software prof
 * Store the software info into JSON file
 * Automatically adapt user name on different computer
 # How to use
-## Dependencies
+## 1. Install dependencies
 * psutil(for drive detection)
 * icecream(for debug print)
 * beaupy(for interactive CLI)
-You install all dependencies via pip or conda(recommanded)
+
+You can install all dependencies via pip or conda(recommanded)
 ```shell
 pip install -r requirements.txt
 ```
@@ -20,7 +21,7 @@ or
 ```shell
 conda create --name <nameOfEnv> --file requriements.txt
 ```
-## Run the app in terminal
+## 2. Run the app in terminal
 ```shell
 python profileBackup
 ```

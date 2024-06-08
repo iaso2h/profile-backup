@@ -71,6 +71,21 @@ softwareList = [
                 lambda _: True
             ],
         ]
+    ),
+    Backup(
+        "Photoshop",
+        [
+            [
+                appDataPath.glob("Roaming/Adobe/Adobe Photoshop */Adobe Photoshop * Settings"),
+                lambda parentSrcPath: parentSrcPath.parts[6][-4:],
+                "include",
+                [
+                    "WorkSpaces*",
+                    "Menu Customization.psp",
+                    "Keyboard Shortcuts.psp",
+                ]
+            ],
+        ]
     )
 ]
 
