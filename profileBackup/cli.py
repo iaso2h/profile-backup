@@ -44,7 +44,7 @@ beaupy.Config.raise_on_interrupt = True
 beaupy.Config.raise_on_escape    = True
 
 
-def start() -> None:
+def standardRun() -> None:
     # Select software
     softwareList = [s.name for s in parser.softwareList]
     print("Select the software to back up:")
@@ -132,8 +132,8 @@ def start() -> None:
     # Ask if to run in dry mode
     try:
         backup.DRYRUN = beaupy.confirm(
-                f"Back up file in [yellow]{backup.DESTPATH}[/yellow]. Run in dry mode?",
-                yes_text="[blue]Yes. I wan to preview the result.[/blue]",
+                f"Backing up file in [yellow]{backup.DESTPATH}[/yellow]. Do you want to run in [purple bold]dry run mode[/purple bold] first?",
+                yes_text="[blue]Yes. I just want to preview the result.[/blue]",
                 no_text="[blue]No. Back up my files right away.[/blue]",
                 default_is_yes=True,
             )
@@ -145,6 +145,33 @@ def start() -> None:
         print(e)
         SystemExit(1)
 
+
+    spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
+    spinner.start()
+    parser.start()
+    spinner.stop()
+
+    if backup.Backup.totalBackupCount > 0 and backup.DRYRUN:
+        confirmRun()
+    else:
+        print("Everything is update-to-date")
+
+
+def confirmRun():
+    try:
+        backup.DRYRUN = not beaupy.confirm(
+                f"End the [purple bold]dry run mode[/purple bold] and confirm the whole backup process?",
+                yes_text="[blue]Yes[/blue]",
+                no_text="[blue]No[/blue]",
+                default_is_yes=True,
+            )
+    except KeyboardInterrupt:
+        keyboardInterruptExit()
+    except beaupy.Abort:
+        abortExit()
+    except Exception as e:
+        print(e)
+        SystemExit(1)
 
     spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
     spinner.start()

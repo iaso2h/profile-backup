@@ -1,7 +1,7 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Backup software profiles on Windows
-# Version: 0.0.4
+# Version: 0.0.5
 # Last Modified: 2024-06-08
 
 # import logging
@@ -14,4 +14,4 @@ from icecream import ic
 
 if __name__ == "__main__":
     ic.configureOutput(includeContext=True)
-    cli.start()
+    cli.standardRun()
