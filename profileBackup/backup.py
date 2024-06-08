@@ -1,8 +1,6 @@
 import cli
 import util
 
-ALWAYSOVERWRITE = False
-
 
 import shutil
 import logging
@@ -15,12 +13,14 @@ logger = logging.getLogger(__name__)
 
 # VIMRUN: g$[^#] \zslogger.debug$exe "norm gcc"$e
 
-if not cli.drive:
+if cli.drive == "":
     destPath = PurePath(os.getcwd(), "bk")
 else:
     destPath = PurePath("{}:/Profiles".format(cli.drive))
 os.makedirs(destPath, exist_ok=True)
 
+
+ALWAYSOVERWRITE = False
 userName    = os.getlogin()
 appDataPath = Path("C:/Users/{}/AppData".format(userName))
 homePath    = Path("C:/Users/{}".format(userName))
@@ -94,13 +94,13 @@ class Backup():
 
     @staticmethod
     def copyFile(fileSrcPath: Path, fileDstPath: Path) -> int:
-        backupCount = 0
+        count = 0
         if fileDstPath.exists():
             if ALWAYSOVERWRITE or (fileSrcPath.stat().st_mtime - fileDstPath.stat().st_mtime) > 0:
                 logger.info("    Backing up file: " + fileSrcPath.name)
                 # logger.debug("    Destination: " + str(fileDstPath))
                 shutil.copy2(fileSrcPath, fileDstPath)
-                backupCount = backupCount + 1
+                count = count + 1
             else:
                 logger.info("    Skip non-modified file: " + fileSrcPath.name)
         else:
@@ -108,9 +108,9 @@ class Backup():
             # logger.debug("    Destination: " + str(fileDstPath))
             os.makedirs(fileDstPath.parent, exist_ok=True)
             shutil.copy2(fileSrcPath, fileDstPath)
-            backupCount = backupCount + 1
+            count = count + 1
 
-        return backupCount
+        return count
 
 
     def iterRecursive(self, parentSrcPath: Path, parentDstPath: Path, typeStr: str, filter: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list) -> int:
@@ -207,6 +207,7 @@ class Backup():
 
         # Record
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
+        # Report the total count as the last object
         if self.softwareSequence == len(type(self).softwareList):
             logger.info(f"Backed up {type(self).totalBackupCount} files from {type(self).softwareList}.\n")
 

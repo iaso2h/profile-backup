@@ -14,7 +14,7 @@ from icecream import ic
 
 
 
-def main():
+def main() -> None:
     threedsMax = Backup(
         "3ds Max",
         [
