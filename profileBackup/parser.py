@@ -5,6 +5,9 @@ import os
 # Written from other file
 softwareChoice = None # type: list
 softwareList = [
+
+
+
     Backup(
         "3ds Max",
         [
@@ -80,13 +83,27 @@ softwareList = [
                 lambda parentSrcPath: parentSrcPath.parts[6][-4:],
                 "include",
                 [
-                    "WorkSpaces*",
+                    "WorkSpaces*/*",
                     "Menu Customization.psp",
                     "Keyboard Shortcuts.psp",
                 ]
             ],
         ]
+    ),
+    Backup(
+        "Everything",
+        [
+            [
+                appDataPath.glob("Roaming/Everything"),
+                "",
+                "include",
+                lambda _: True
+            ],
+        ]
     )
+
+
+
 ]
 
 def start():
