@@ -154,26 +154,31 @@ class Backup():
         console.print("Checking up " + self.name + "...")
 
         for globPattern in self.globPatterns:
-            pathPattern = globPattern[0] # type: Generator | str
-            versionFind = globPattern[1] # type: Callable | str
-            typeStr     = globPattern[2] # type: str
-            filter      = globPattern[3] # type: Callable | list
+            parentPathPattern = globPattern[0] # type: Generator | str
+            versionFind       = globPattern[1] # type: Callable | str
+            typeStr           = globPattern[2] # type: str
+            filter            = globPattern[3] # type: Callable | list
 
-            if isinstance(pathPattern, str):
-                srcPath = Path(pathPattern)
+            if isinstance(parentPathPattern, str):
+                srcPath = Path(parentPathPattern)
                 if not srcPath.exists():
                     console.print("  Skipped unfound file at: " + str(srcPath))
                     continue
+                elif srcPath.is_file():
+                    raise ValueError(f"{self.name}: parent path pattern {str(srcPath)} cannot be a file path.")
                 else:
                     parentSrcPaths = [srcPath]     # type: list[Path]
             else:
-                parentSrcPaths = list(pathPattern) # type: list[Path]
+                parentSrcPaths = list(parentPathPattern) # type: list[Path]
 
             parentSrcPath  = None
             parentDstPath  = None
 
 
             for parentSrcPath in parentSrcPaths:
+                if parentSrcPath.is_file():
+                    raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
+
                 if isinstance(versionFind, str):
                     versionStr = versionFind
                 else:
