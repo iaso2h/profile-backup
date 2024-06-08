@@ -1,29 +1,37 @@
-import cli
-import util
-
-
 import shutil
-import logging
 import os
 from types import GeneratorType
 from typing import Callable, Generator, List, Union
-from pathlib import Path, PurePath
-from icecream import ic
-logger = logging.getLogger(__name__)
+from pathlib import Path
+from rich.console import Console
 
-# VIMRUN: g$[^#] \zslogger.debug$exe "norm gcc"$e
 
-if cli.drive == "":
-    destPath = PurePath(os.getcwd(), "bk")
-else:
-    destPath = PurePath("{}:/Profiles".format(cli.drive))
-os.makedirs(destPath, exist_ok=True)
+# Writable from other files
+DESTPATH = None # type: Path
+DRYRUN   = True
 
 
 ALWAYSOVERWRITE = False
+console     = Console()
 userName    = os.getlogin()
 appDataPath = Path("C:/Users/{}/AppData".format(userName))
 homePath    = Path("C:/Users/{}".format(userName))
+
+
+def idx2sequence(index: int):
+    num = index + 1
+    remainder = num % 10
+    suffix = None
+    if remainder == 1:
+        suffix = "st"
+    elif remainder == 2:
+        suffix = "nd"
+    elif remainder == 3:
+        suffix = "rd"
+    else:
+        suffix = "th"
+
+    return str(num) + suffix
 
 
 class Backup():
@@ -58,19 +66,19 @@ class Backup():
     def globPatterns(self, arg):
         for i, globPattern in enumerate(arg):
             if len(globPattern) != 4:
-                raise ValueError(f"The {util.idx2sequence(i)} glob pattern doesn't contain 4 elements")
+                raise ValueError(f"The {idx2sequence(i)} glob pattern doesn't contain 4 elements")
             for j, val in enumerate(globPattern):
                 # Validate path pattern
                 if j == 0:
                     if not isinstance(val, GeneratorType) and not isinstance(val, str):
                         raise ValueError(
-    f"Wrong given path pattern. Generator or string is expected in the {util.idx2sequence(j)} element from the {util.idx2sequence(i)} glob pattern."
+    f"Wrong given path pattern. Generator or string is expected in the {idx2sequence(j)} element from the {idx2sequence(i)} glob pattern."
                                 )
                 # Validate version string
                 elif j == 1:
                     if not isinstance(val, Callable) and not isinstance(val, str):
                         raise ValueError(
-    f"Wrong given version. String or function is expected in the {util.idx2sequence(j)} element from the {util.idx2sequence(i)} glob pattern."
+    f"Wrong given version. String or function is expected in the {idx2sequence(j)} element from the {idx2sequence(i)} glob pattern."
                                 )
                 # Validate filter type.
                 elif j == 2:
@@ -82,7 +90,7 @@ class Backup():
                 else:
                     if not isinstance(val, Callable) and not isinstance(val, list):
                         raise ValueError(
-    f"Wrong given filter pattern. List or function is expected in the {util.idx2sequence(j)} element from the {util.idx2sequence(i)} glob pattern."
+    f"Wrong given filter pattern. List or function is expected in the {idx2sequence(j)} element from the {idx2sequence(i)} glob pattern."
                                 )
                     if isinstance(val, list):
                         for k in val:
@@ -97,17 +105,17 @@ class Backup():
         count = 0
         if fileDstPath.exists():
             if ALWAYSOVERWRITE or (fileSrcPath.stat().st_mtime - fileDstPath.stat().st_mtime) > 0:
-                logger.info("    Backing up file: " + fileSrcPath.name)
-                # logger.debug("    Destination: " + str(fileDstPath))
-                shutil.copy2(fileSrcPath, fileDstPath)
+                console.print("    Backing up file: " + fileSrcPath.name)
+                if not DRYRUN:
+                    shutil.copy2(fileSrcPath, fileDstPath)
                 count = count + 1
             else:
-                logger.info("    Skip non-modified file: " + fileSrcPath.name)
+                console.print("    Skip non-modified file: " + fileSrcPath.name)
         else:
-            logger.info("    Backing up file: " + fileSrcPath.name)
-            # logger.debug("    Destination: " + str(fileDstPath))
+            console.print("    Backing up file: " + fileSrcPath.name)
             os.makedirs(fileDstPath.parent, exist_ok=True)
-            shutil.copy2(fileSrcPath, fileDstPath)
+            if not DRYRUN:
+                shutil.copy2(fileSrcPath, fileDstPath)
             count = count + 1
 
         return count
@@ -143,7 +151,7 @@ class Backup():
 
 
     def backup(self):
-        logger.info("Checking up " + self.name + "...")
+        console.print("Checking up " + self.name + "...")
 
         for globPattern in self.globPatterns:
             pathPattern = globPattern[0] # type: Generator | str
@@ -154,7 +162,7 @@ class Backup():
             if isinstance(pathPattern, str):
                 srcPath = Path(pathPattern)
                 if not srcPath.exists():
-                    logger.info("  Skipped unfound file at: " + str(srcPath))
+                    console.print("  Skipped unfound file at: " + str(srcPath))
                     continue
                 else:
                     parentSrcPaths = [srcPath]     # type: list[Path]
@@ -163,22 +171,19 @@ class Backup():
 
             parentSrcPath  = None
             parentDstPath  = None
-            fileSrcPath    = None
-            fileDstPath    = None
 
 
             for parentSrcPath in parentSrcPaths:
-                # logger.debug("  parentSrcPath: " + str(parentSrcPath))
                 if isinstance(versionFind, str):
                     versionStr = versionFind
                 else:
                     versionStr = versionFind(parentSrcPath)
-                logger.info("  Checking up {} {} files inside: {}".format(self.name, versionStr, parentSrcPath))
+                console.print("  Checking up {} {} files inside: {}".format(self.name, versionStr, parentSrcPath))
 
                 parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
                 # NOTE: versionStr can be an empty string
                 parentDstPath = Path(
-                        destPath,
+                        DESTPATH,
                         self.name,
                         versionStr,
                         parentSrcPath.anchor[:1],
@@ -203,11 +208,11 @@ class Backup():
                 parentSrcCount = self.iterRecursive(parentSrcPath, parentDstPath, typeStr, filter, filterAllPathStrs)
                 self.softwareBackupCount = self.softwareBackupCount + parentSrcCount
 
-        logger.info("Backed up {} {} files\n".format(self.softwareBackupCount, self.name))
+        console.print("Backed up {} {} files\n".format(self.softwareBackupCount, self.name))
 
         # Record
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
         if self.softwareSequence == len(type(self).softwareList):
-            logger.info(f"Backed up {type(self).totalBackupCount} files from {type(self).softwareList}.\n")
+            console.print(f"Backed up {type(self).totalBackupCount} files from {type(self).softwareList}.\n")
 

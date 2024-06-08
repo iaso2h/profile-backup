@@ -1,0 +1,76 @@
+from backup import Backup, DRYRUN, DESTPATH, appDataPath, homePath
+import os
+
+def start():
+    threedsMax = Backup(
+        "3ds Max",
+        [
+            [
+                appDataPath.glob("Local/Autodesk/3dsMax/*/*/*/UI/Workspaces"),
+                lambda parentSrcPath: parentSrcPath.parts[7][:4],
+                "exclude",
+                lambda srcPath: srcPath.is_dir() or str.startswith(
+                        srcPath.name,
+                        "Workspace"
+                )
+            ],
+            [
+                homePath.glob("Autodesk/3ds Max*/User Settings"),
+                lambda parentSrcPath: parentSrcPath.parts[4][-4:],
+                "include",
+                lambda _: True
+            ],
+        ]
+    )
+    autoCAD = Backup(
+        "AutoCAD",
+        [
+            [
+                appDataPath.glob("Roaming/Autodesk/AutoCAD*/*/*"),
+                lambda parentSrcPath: parentSrcPath.parts[6][-4:],
+                "include",
+                [
+                    "Plotters/Plot Styles/*.ctb",
+                    "Plotters/Plot Styles/*.stb",
+                    "Plotters/0___HQ.pc3",
+                    "Support/acad.CUIX",
+                    "Support/Profiles/TArch20*/Profile.aws",
+                    "Support/Profiles/FixedProfile.aws"
+                ]
+            ],
+            [
+                "C:/ProgramData/IvySoft/YSTool/Freedom",
+                "YSTool",
+                "include",
+                lambda _: True
+            ],
+            [
+                "D:/Tangent/TArchT*",
+                lambda parentSrcPath: parentSrcPath.parts[2][5:],
+                "include",
+                [
+                    "SYS/*.lay",
+                    "SYS/tangent.cuix",
+                    "sys20x64/*.dwt",
+                    "sys24x64/*.dwt"
+                ]
+            ],
+            [
+                "C:/贱人工具箱*",
+                "贱人工具箱",
+                "include",
+                lambda _: True
+            ],
+            [
+                "G:/AutoCAD",
+                "Asset",
+                "include",
+                lambda _: True
+            ],
+        ]
+    )
+
+    if not DRYRUN:
+        os.makedirs(str(DESTPATH), exist_ok=True)
+    threedsMax.backup()
+    autoCAD.backup()

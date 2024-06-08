@@ -7,6 +7,11 @@ Back up profiles from all kind of softwares. The location of these software prof
 * Make it into an interactive CLI app
 * Automatically adapt user name on different computer
 # How to use
+install via pip or conda(recommanded)
 ```shell
 pip install -r requirements.txt
+```
+or
+```shell
+conda create --name <nameOfEnv> --file requriements.txt
 ```

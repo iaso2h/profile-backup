@@ -1,12 +1,118 @@
+import parser
+import backup
+
+
 import psutil
+import os
+import beaupy
+import beaupy.spinners as sp
+from typing import List
+from enum import Enum
+from pathlib import Path
 
-def findRemovableDrive() -> str:
+def findRemovableDrive() -> List[str]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
-    externals = [i.mountpoint for i in psutil.disk_partitions() if "removable" in i.opts]
-    if len(externals) != 0:
-        return externals[0][:1]
-    else:
-        return ""
+    return ["[blue]" + i.mountpoint for i in psutil.disk_partitions() if "removable" in i.opts]
 
-drive = findRemovableDrive()
-# TODO: prompt the user to store the profile in the removable drive
+def findAllDrives() -> List[str]:
+    import psutil
+    drps = psutil.disk_partitions()
+    return list(map(lambda i: i[:1], [dp.device for dp in drps if dp.fstype == 'NTFS']))
+
+
+def keyboardInterruptExit() -> None:
+    backup.console.print("[red]Interrupt by user[/red]")
+    raise SystemExit(1)
+
+
+def abortExit() -> None:
+    backup.console.print("[red]Abort by user[/red]")
+    raise SystemExit(1)
+
+
+cwd = os.getcwd()
+class PreservedDstAns(Enum):
+    CWD    = f"[blue]Current Working Directory([yellow]{cwd}\\[/yellow][blue])[/blue]"
+    CUSTOM = "[blue]Custom Path[/blue]"
+preservedDsts = [
+        PreservedDstAns.CWD.value,
+        PreservedDstAns.CUSTOM.value,
+        ]
+beaupy.Config.raise_on_interrupt = True
+beaupy.Config.raise_on_escape    = True
+
+
+def start() -> None:
+    drivePaths = findRemovableDrive()
+    alldrives  = findAllDrives()
+    backup.console.print("Choose the path to store the files.")
+    drivePaths.extend(preservedDsts)
+    try:
+        ans = beaupy.select(drivePaths, return_index=True)
+    except KeyboardInterrupt:
+        keyboardInterruptExit()
+    except beaupy.Abort:
+        abortExit()
+
+    # Get destionation path
+    if ans == len(drivePaths) - 2:
+        # Current working directory
+        backup.DESTPATH = Path(cwd, "Profiles")
+    elif ans == len(drivePaths) - 1:
+        # Custom path
+            try:
+                while True:
+                    dst = Path(
+                                beaupy.prompt(
+                                    "Input the parent folder path you want store your profiles in:",
+                                    # initial_value=cwd
+                                )
+                            )
+                    if not dst.exists():
+                        anchorPath = Path(dst.anchor)
+                        backup.console.print(anchorPath)
+
+                        if not anchorPath.exists() or \
+                                str(anchorPath)[-1:] != "\\" or \
+                                str(anchorPath).upper() not in alldrives:
+                            backup.console.print("[red]Invalid path. Please try again.[/red]")
+                        else:
+                            ans = beaupy.confirm(
+                                    f"Folder [yellow]{str(dst)}[/yellow] doesn't exist, do you want to create one?",
+                                    default_is_yes=True,
+                                    yes_text="[blue]Yes[/blue]",
+                                    no_text="[blue]No[/blue]",
+                                )
+                            if ans:
+                                backup.DESTPATH = Path(dst, "Profiles")
+                                break
+                            else:
+                                abortExit()
+                    else:
+                        break
+            except KeyboardInterrupt:
+                keyboardInterruptExit()
+            except beaupy.Abort:
+                abortExit()
+    else:
+        # Removable drives
+        backup.DESTPATH = Path(str(drivePaths[ans])[6:10], "Profiles")
+
+    # Ask if to run in dry mode
+    try:
+        backup.DRYRUN = beaupy.confirm(
+                f"Back up file in [yellow]{backup.DESTPATH}[/yellow]. Run in dry mode?",
+                yes_text="[blue]Yes. I wan to preview the result.[/blue]",
+                no_text="[blue]No. Back up my files right away.[/blue]",
+                default_is_yes=True,
+            )
+    except KeyboardInterrupt:
+        keyboardInterruptExit()
+    except beaupy.Abort:
+        abortExit()
+
+
+    spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
+    spinner.start()
+    parser.start()
+    spinner.stop()
