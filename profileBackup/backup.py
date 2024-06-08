@@ -190,7 +190,7 @@ class Backup():
                         parentSrcRelAnchorPath
                     )
 
-                # Get all exclude pattern paths
+                # Get all filter pattern paths
                 filterAllPaths = []
                 if isinstance(filter, list):
                     for filterPattern in filter:

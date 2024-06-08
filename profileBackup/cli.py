@@ -12,7 +12,7 @@ from pathlib import Path
 
 def findRemovableDrive() -> List[str]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
-    return ["[blue]" + i.mountpoint for i in psutil.disk_partitions() if "removable" in i.opts]
+    return ["[blue]" + i.mountpoint + "\\[/blue]" for i in psutil.disk_partitions() if "removable" in i.opts]
 
 def findAllDrives() -> List[str]:
     import psutil
@@ -34,7 +34,7 @@ def abortExit() -> None:
 
 cwd = os.getcwd()
 class PreservedDstAns(Enum):
-    CWD    = f"[blue]Current Working Directory([yellow]{cwd}\\[/yellow][blue])[/blue]"
+    CWD    = f"[blue]Current Working Directory([yellow]{cwd}\\\\[/yellow][blue])[/blue]"
     CUSTOM = "[blue]Custom Path[/blue]"
 preservedDsts = [
         PreservedDstAns.CWD.value,
@@ -51,7 +51,7 @@ def start() -> None:
     try:
         parser.softwareChoice = beaupy.select_multiple(
                 softwareList,
-                tick_character = '✔',
+                tick_character = '■',
                 ticked_indices = list(range(len(softwareList))),
                 minimal_count  = 1,
                 return_indices = True
