@@ -29,6 +29,19 @@ softwareList = [
         ]
     ),
     Backup(
+        "Blender",
+        [
+            [
+                appDataPath.glob("Roaming/Blender Foundation/Blender/*/scripts/presets/keyconfig"),
+                lambda parentSrcPath: parentSrcPath.parts[7],
+                "include",
+                [
+                    "*.py",
+                ]
+            ],
+        ]
+    ),
+    Backup(
         "AutoCAD",
         [
             [
@@ -100,7 +113,7 @@ softwareList = [
                 lambda _: True
             ],
         ]
-    )
+    ),
 
 
 

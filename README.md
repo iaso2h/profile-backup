@@ -2,7 +2,10 @@
 Back up profiles from all kind of softwares. The location of these software profiles somewhat resemble dotfiles on Linux but they are tend to be scattered at different locations, hence I wrote this app to tackle the chaos. Right now it's built on Windows only and targetting softwares on Windows.
 # Supported software
 * 3ds Max
+* Blender
 * AutoCAD
+* Photoshop
+* Everything
 # Roadmap
 * ~~Make it into an interactive CLI app~~
 * Store the software info into JSON file
