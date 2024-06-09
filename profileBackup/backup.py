@@ -105,14 +105,14 @@ class Backup():
         count = 0
         if fileDstPath.exists():
             if ALWAYSOVERWRITE or (fileSrcPath.stat().st_mtime - fileDstPath.stat().st_mtime) > 0:
-                console.print("    Backing up file: " + fileSrcPath.name)
+                console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
                 if not DRYRUN:
                     shutil.copy2(fileSrcPath, fileDstPath)
                 count = count + 1
             else:
-                console.print("    Skip non-modified file: " + fileSrcPath.name)
+                console.print(f"[gray]    Skip non-modified file: {fileSrcPath.name}[/gray]")
         else:
-            console.print("    Backing up file: " + fileSrcPath.name)
+            console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
             os.makedirs(fileDstPath.parent, exist_ok=True)
             if not DRYRUN:
                 shutil.copy2(fileSrcPath, fileDstPath)
@@ -151,7 +151,7 @@ class Backup():
 
 
     def backup(self):
-        console.print("Checking up " + self.name + "...")
+        console.print(f"[white]Checking up [green bold]{self.name}[/green bold][/white]...")
 
         for globPattern in self.globPatterns:
             parentPathPattern = globPattern[0] # type: Generator | str
@@ -162,10 +162,10 @@ class Backup():
             if isinstance(parentPathPattern, str):
                 srcPath = Path(parentPathPattern)
                 if not srcPath.exists():
-                    console.print("  Skipped unfound file at: " + str(srcPath))
+                    console.print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
                     continue
                 elif srcPath.is_file():
-                    raise ValueError(f"{self.name}: parent path pattern {str(srcPath)} cannot be a file path.")
+                    raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
                 else:
                     parentSrcPaths = [srcPath]     # type: list[Path]
             else:
@@ -183,7 +183,7 @@ class Backup():
                     versionStr = versionFind
                 else:
                     versionStr = versionFind(parentSrcPath)
-                console.print("  Checking up {} {} files inside: {}".format(self.name, versionStr, parentSrcPath))
+                console.print(f"[white]  Checking up [green bold]{self.name} {versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
                 parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
                 # NOTE: versionStr can be an empty string
@@ -213,11 +213,11 @@ class Backup():
                 parentSrcCount = self.iterRecursive(parentSrcPath, parentDstPath, typeStr, filter, filterAllPathStrs)
                 self.softwareBackupCount = self.softwareBackupCount + parentSrcCount
 
-        console.print("Backed up {} {} files\n".format(self.softwareBackupCount, self.name))
+        console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
 
         # Record
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
         if self.softwareSequence == len(type(self).softwareList):
-            console.print(f"Backed up {type(self).totalBackupCount} files from {type(self).softwareList}.\n")
+            console.print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareList}[/green].\n[/white]")
 

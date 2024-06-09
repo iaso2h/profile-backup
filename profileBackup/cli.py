@@ -173,7 +173,8 @@ def confirmRun():
         print(e)
         SystemExit(1)
 
-    spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
-    spinner.start()
-    parser.start()
-    spinner.stop()
+    if not backup.DRYRUN:
+        spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
+        spinner.start()
+        parser.start()
+        spinner.stop()
