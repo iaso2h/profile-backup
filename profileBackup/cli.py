@@ -174,6 +174,7 @@ def confirmRun():
         SystemExit(1)
 
     if not backup.DRYRUN:
+        backup.Backup.totalBackupCount = 0 # Rest the total count
         spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
         spinner.start()
         parser.start()
