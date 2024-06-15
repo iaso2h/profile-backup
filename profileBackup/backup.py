@@ -121,12 +121,15 @@ class Backup():
         return count
 
 
-    def iterRecursive(self, parentSrcPath: Path, parentDstPath: Path, typeStr: str, filter: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list) -> int:
+    def iterRecursive(self, parentSrcPath: Path, parentDstPath: Path, typeStr: str, filter: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list, topParentSrcPath: Path = None) -> int:
         count = 0
+        
+        if not topParentSrcPath:
+            topParentSrcPath = parentSrcPath
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
-                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filter, filterAllPathStrs)
+                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filter, filterAllPathStrs, filterAllPathStrs)
             else:
                 if isinstance(filter, list):
                     if typeStr == "exclude" and str(srcPath) in filterAllPathStrs:
@@ -134,7 +137,7 @@ class Backup():
                     elif typeStr == "include" and str(srcPath) not in filterAllPathStrs:
                         continue
                     else:
-                        srcRelParentPath = srcPath.relative_to(parentSrcPath)
+                        srcRelParentPath = srcPath.relative_to(topParentSrcPath)
                         dstPath = Path(parentDstPath, srcRelParentPath)
                         count = count + self.copyFile(srcPath, dstPath)
                 else:
@@ -143,7 +146,7 @@ class Backup():
                     elif typeStr == "include" and not filter(srcPath):
                         continue
                     else:
-                        srcRelParentPath = srcPath.relative_to(parentSrcPath)
+                        srcRelParentPath = srcPath.relative_to(topParentSrcPath)
                         dstPath = Path(parentDstPath, srcRelParentPath)
                         count = count + self.copyFile(srcPath, dstPath)
 
