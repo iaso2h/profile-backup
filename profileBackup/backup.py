@@ -129,7 +129,7 @@ class Backup():
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
-                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filter, filterAllPathStrs, filterAllPathStrs)
+                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filter, filterAllPathStrs, topParentSrcPath)
             else:
                 if isinstance(filter, list):
                     if typeStr == "exclude" and str(srcPath) in filterAllPathStrs:
