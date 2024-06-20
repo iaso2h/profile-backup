@@ -113,8 +113,8 @@ class Backup():
                 console.print(f"[gray]    Skip non-modified file: {fileSrcPath.name}[/gray]")
         else:
             console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
-            os.makedirs(fileDstPath.parent, exist_ok=True)
             if not DRYRUN:
+                os.makedirs(fileDstPath.parent, exist_ok=True)
                 shutil.copy2(fileSrcPath, fileDstPath)
             count = count + 1
 
@@ -129,7 +129,7 @@ class Backup():
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
-                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filter, filterAllPathStrs, filterAllPathStrs)
+                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filter, filterAllPathStrs, topParentSrcPath)
             else:
                 if isinstance(filter, list):
                     if typeStr == "exclude" and str(srcPath) in filterAllPathStrs:

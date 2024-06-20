@@ -75,13 +75,7 @@ softwareList = [
                 ]
             ],
             [
-                "C:/贱人工具箱*",
-                "贱人工具箱",
-                "include",
-                lambda _: True
-            ],
-            [
-                "G:/AutoCAD",
+                "D:/test/AutoCAD LISP",
                 "Asset",
                 "include",
                 lambda _: True
@@ -123,5 +117,6 @@ def start():
 
     if not DRYRUN:
         os.makedirs(str(DESTPATH), exist_ok=True)
+        
     for i in softwareChoice:
         softwareList[i].backup()
