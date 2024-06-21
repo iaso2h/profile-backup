@@ -65,7 +65,7 @@ softwareList = [
                 lambda _: True
             ],
             [
-                "D:/Tangent/TArchT*",
+                "D:/Tangent/TArchT*", # TODO
                 lambda parentSrcPath: parentSrcPath.parts[2][5:],
                 "include",
                 [
@@ -76,7 +76,7 @@ softwareList = [
                 ]
             ],
             [
-                "D:/test/AutoCAD LISP",
+                "D:/Asset/AutoCAD/AutoCAD LISP",
                 "Asset",
                 "include",
                 lambda _: True
@@ -114,7 +114,7 @@ softwareList = [
         [
             [
                 appDataPath.glob("Roaming/Friendess/Tubest/*"),
-                lambda parentSrcPath: parentSrcPath.parts[6],
+                lambda parentSrcPath: parentSrcPath.parts[7],
                 "include",
                 lambda srcPath: srcPath.suffix.lower() == ".config",
             ],

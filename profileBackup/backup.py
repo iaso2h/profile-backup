@@ -67,10 +67,23 @@ class Backup():
         for i, globPattern in enumerate(arg):
             if len(globPattern) != 4:
                 raise ValueError(f"The {idx2sequence(i)} glob pattern doesn't contain 4 elements")
+            
             for j, val in enumerate(globPattern):
                 # Validate path pattern
                 if j == 0:
-                    if not isinstance(val, GeneratorType) and not isinstance(val, str):
+                    if isinstance(val, GeneratorType):
+                        arg[i][j] = list(val)
+                    elif isinstance(val, str):
+                        srcPath = Path(val)
+                        if not srcPath.exists():
+                            console.print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
+                            arg[i][j] = False
+                            continue
+                        elif srcPath.is_file():
+                            raise ValueError(f"{self.name}: parent path pattern({str(val)}) cannot be a file path.")
+                        else:
+                            arg[i][j] = [srcPath]
+                    else:
                         raise ValueError(
     f"Wrong given path pattern. Generator or string is expected in the {idx2sequence(j)} element from the {idx2sequence(i)} glob pattern."
                                 )
@@ -116,7 +129,8 @@ class Backup():
             if not DRYRUN:
                 os.makedirs(fileDstPath.parent, exist_ok=True)
                 shutil.copy2(fileSrcPath, fileDstPath)
-            count = count + 1
+            else:
+                count = count + 1
 
         return count
 
@@ -157,27 +171,18 @@ class Backup():
         console.print(f"[white]Checking up [green bold]{self.name}[/green bold][/white]...")
 
         for globPattern in self.globPatterns:
-            parentPathPattern = globPattern[0] # type: Generator | str
-            versionFind       = globPattern[1] # type: Callable | str
-            typeStr           = globPattern[2] # type: str
-            filter            = globPattern[3] # type: Callable | list
+            parentSrcPaths = globPattern[0] # type: list | str
+            if not parentSrcPaths:
+                continue
 
-            if isinstance(parentPathPattern, str):
-                srcPath = Path(parentPathPattern)
-                if not srcPath.exists():
-                    console.print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
-                    continue
-                elif srcPath.is_file():
-                    raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
-                else:
-                    parentSrcPaths = [srcPath]     # type: list[Path]
-            else:
-                parentSrcPaths = list(parentPathPattern) # type: list[Path]
+            versionFind    = globPattern[1] # type: Callable | str
+            typeStr        = globPattern[2] # type: str
+            filter         = globPattern[3] # type: Callable | list
 
             parentSrcPath  = None
             parentDstPath  = None
 
-
+            console.print(parentSrcPaths)
             for parentSrcPath in parentSrcPaths:
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
