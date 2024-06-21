@@ -6,6 +6,7 @@ Back up profiles from all kind of softwares. The location of these software prof
 * AutoCAD
 * Photoshop
 * Everything
+* TubesT
 # Roadmap
 * ~~Make it into an interactive CLI app~~
 * Store the software info into JSON file

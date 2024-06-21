@@ -44,6 +44,7 @@ softwareList = [
     Backup(
         "AutoCAD",
         [
+
             [
                 appDataPath.glob("Roaming/Autodesk/AutoCAD*/*/*"),
                 lambda parentSrcPath: parentSrcPath.parts[6][-4:],
@@ -108,7 +109,17 @@ softwareList = [
             ],
         ]
     ),
-
+    Backup(
+        "TubesT",
+        [
+            [
+                appDataPath.glob("Roaming/Friendess/Tubest/*"),
+                lambda parentSrcPath: parentSrcPath.parts[6],
+                "include",
+                lambda srcPath: srcPath.suffix.lower() == ".config",
+            ],
+        ]
+    ),
 
 
 ]
