@@ -98,7 +98,6 @@ def standardRun() -> None:
                             )
                     if not dst.exists():
                         anchorPath = Path(dst.anchor)
-                        print(anchorPath)
 
                         if not anchorPath.exists() or \
                                 str(anchorPath)[-1:] != "\\" or \

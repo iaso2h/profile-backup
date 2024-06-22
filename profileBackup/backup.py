@@ -118,19 +118,26 @@ class Backup():
         count = 0
         if fileDstPath.exists():
             if ALWAYSOVERWRITE or (fileSrcPath.stat().st_mtime - fileDstPath.stat().st_mtime) > 0:
-                console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
                 if not DRYRUN:
                     shutil.copy2(fileSrcPath, fileDstPath)
+                    console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+                else:
+                    console.print(f"[white]    Found file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+
                 count = count + 1
             else:
                 console.print(f"[gray]    Skip non-modified file: {fileSrcPath.name}[/gray]")
         else:
-            console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+
             if not DRYRUN:
                 os.makedirs(fileDstPath.parent, exist_ok=True)
                 shutil.copy2(fileSrcPath, fileDstPath)
+                console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
             else:
-                count = count + 1
+                console.print(f"[white]    Found file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+
+
+            count = count + 1
 
         return count
 
@@ -182,7 +189,6 @@ class Backup():
             parentSrcPath  = None
             parentDstPath  = None
 
-            console.print(parentSrcPaths)
             for parentSrcPath in parentSrcPaths:
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
@@ -220,12 +226,19 @@ class Backup():
                 # Filter out path that match the excluded paths
                 parentSrcCount = self.iterRecursive(parentSrcPath, parentDstPath, typeStr, filter, filterAllPathStrs)
                 self.softwareBackupCount = self.softwareBackupCount + parentSrcCount
+        if not DRYRUN:  
+            console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
+        else:
+            console.print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
 
-        console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
 
         # Record
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
         if self.softwareSequence == len(type(self).softwareList):
-            console.print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareList}[/green].\n[/white]")
+            if not DRYRUN:
+                console.print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareList}[/green].\n[/white]")
+            else:
+                console.print(f"[white]Found [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareList}[/green].\n[/white]")
+
 
