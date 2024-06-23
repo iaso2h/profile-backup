@@ -35,19 +35,30 @@ def idx2sequence(index: int):
 
 
 class Backup():
+    # Track the total backup time whenever a file is backup up
     totalBackupCount = 0
-    softwareList     = []
+    # The total software list has been properly configured
+    softwareNameList = []
+    # The ticked software list. Written after user confirm the software list to backup
+    softwareNameTickedList = []
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
     def __init__(self, name: str, globPatterns: list):
-        self.name         = name
-        type(self).softwareList.append(self.name)
-        self.softwareSequence = len(type(self).softwareList)
+        self.name = name
+        type(self).softwareNameList.append(self.name)
 
+        # The current software sequence during a configured software backup list
+        self.softwareSequence = len(type(self).softwareNameList)
+
+        # The value of glob pattern will get validated when assigned value
         self.globPatterns = globPatterns
 
+        # Track the total count of files being backed up related to current software
         self.softwareBackupCount = 0
 
+        # Track the ticked state of a software. It will be written when current
+        # software name is ticked during a cli
+        self.ticked = False
 
     @property
     def name(self):
@@ -67,7 +78,7 @@ class Backup():
         for i, globPattern in enumerate(arg):
             if len(globPattern) != 4:
                 raise ValueError(f"The {idx2sequence(i)} glob pattern doesn't contain 4 elements")
-            
+
             for j, val in enumerate(globPattern):
                 # Validate path pattern
                 if j == 0:
@@ -144,7 +155,7 @@ class Backup():
 
     def iterRecursive(self, parentSrcPath: Path, parentDstPath: Path, typeStr: str, filter: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list, topParentSrcPath: Path = None) -> int:
         count = 0
-        
+
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
 
@@ -226,7 +237,7 @@ class Backup():
                 # Filter out path that match the excluded paths
                 parentSrcCount = self.iterRecursive(parentSrcPath, parentDstPath, typeStr, filter, filterAllPathStrs)
                 self.softwareBackupCount = self.softwareBackupCount + parentSrcCount
-        if not DRYRUN:  
+        if not DRYRUN:
             console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
         else:
             console.print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
@@ -235,10 +246,11 @@ class Backup():
         # Record
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
-        if self.softwareSequence == len(type(self).softwareList):
+
+        if self.softwareSequence == len(type(self).softwareNameList):
             if not DRYRUN:
-                console.print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareList}[/green].\n[/white]")
+                console.print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareNameTickedList}[/green].\n[/white]")
             else:
-                console.print(f"[white]Found [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareList}[/green].\n[/white]")
+                console.print(f"[white]Found [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareNameTickedList}[/green].\n[/white]")
 
 
