@@ -3,8 +3,7 @@ import os
 
 
 # Written from other file
-softwareChoice = None # type: list
-softwareList = [
+softwareConfigs = [
 
 
 
@@ -128,6 +127,7 @@ def start():
 
     if not DRYRUN:
         os.makedirs(str(DESTPATH), exist_ok=True)
-        
-    for i in softwareChoice:
-        softwareList[i].backup()
+
+    for i in softwareConfigs:
+        if i.ticked:
+            i.backup()

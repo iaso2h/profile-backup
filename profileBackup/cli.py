@@ -46,16 +46,18 @@ beaupy.Config.raise_on_escape    = True
 
 def standardRun() -> None:
     # Select software
-    softwareList = [s.name for s in parser.softwareList]
     print("Select the software to back up:")
     try:
-        parser.softwareChoice = beaupy.select_multiple(
-                softwareList,
+        softwareChoice = beaupy.select_multiple(
+                backup.Backup.softwareNameList,
                 tick_character = '■',
-                ticked_indices = list(range(len(softwareList))),
+                ticked_indices = list(range(len(backup.Backup.softwareNameList))),
                 minimal_count  = 1,
                 return_indices = True
-                )
+        )
+        backup.Backup.softwareNameTickedList = [parser.softwareConfigs[i].name for i in softwareChoice if parser.softwareConfigs[i].ticked]
+
+
     except KeyboardInterrupt:
         keyboardInterruptExit()
     except beaupy.Abort:
@@ -63,8 +65,6 @@ def standardRun() -> None:
     except Exception as e:
         print(e)
         SystemExit(1)
-    print(parser.softwareChoice) # [0, 1]
-    SystemExit(0)
 
 
     # Select destination path
@@ -154,7 +154,7 @@ def standardRun() -> None:
         backup.Backup.totalBackupCount = 0 # Rest the total count
         confirmRun()
     else:
-        print("Everything is update-to-date")
+        print("Everything is up-to-date")
 
 
 def confirmRun():
