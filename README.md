@@ -8,13 +8,14 @@ Back up profiles from all kind of softwares. The location of these software prof
 * Everything
 * TubesT
 # Roadmap
+* ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~
 * ~~Store the software info into JSON file~~(Non-goal. You cannot pass in customized python function)
-* Automatically adapt user name on different computer
+* Automatically adapt user name on different computer or operating system
 # How to use
 ## 1. Install dependencies
 * psutil(for drive detection)
-* icecream(for debug print)
+* icecream(for debug print. Optional)
 * beaupy(for interactive CLI)
 
 You can install all dependencies via pip or conda(recommanded)
