@@ -47,6 +47,10 @@ beaupy.Config.raise_on_escape    = True
 def standardRun() -> None:
     # Select software
     print("Select the software to back up:")
+    # Initial ticked value: make all software ticked beforehand
+    for i in parser.softwareConfigs:
+        i.ticked = True
+
     try:
         softwareChoice = beaupy.select_multiple(
                 backup.Backup.softwareNameList,
