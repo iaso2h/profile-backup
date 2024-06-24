@@ -76,50 +76,55 @@ class Backup():
     @globPatterns.setter
     def globPatterns(self, arg):
         for i, globPattern in enumerate(arg):
-            if len(globPattern) != 4:
-                raise ValueError(f"The {idx2sequence(i)} glob pattern doesn't contain 4 elements")
-
-            for j, val in enumerate(globPattern):
+            for key, val in globPattern.items():
                 # Validate path pattern
-                if j == 0:
+                if key == "parentSrcPaths":
                     if isinstance(val, GeneratorType):
-                        arg[i][j] = list(val)
+                        arg[i]["parentSrcPaths"] = list(val)
                     elif isinstance(val, str):
                         srcPath = Path(val)
                         if not srcPath.exists():
                             console.print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
-                            arg[i][j] = False
+                            arg[i]["parentSrcPaths"] = False
                             continue
                         elif srcPath.is_file():
                             raise ValueError(f"{self.name}: parent path pattern({str(val)}) cannot be a file path.")
                         else:
-                            arg[i][j] = [srcPath]
+                            arg[i]["parentSrcPaths"] = [srcPath]
                     else:
                         raise ValueError(
-    f"Wrong given path pattern. Generator or string is expected in the {idx2sequence(j)} element from the {idx2sequence(i)} glob pattern."
+    f"Wrong given path pattern. Generator or string is expected from the {idx2sequence(i)} glob pattern."
                                 )
                 # Validate version string
-                elif j == 1:
+                elif key == "versionFind":
                     if not isinstance(val, Callable) and not isinstance(val, str):
                         raise ValueError(
-    f"Wrong given version. String or function is expected in the {idx2sequence(j)} element from the {idx2sequence(i)} glob pattern."
+    f"Wrong given version. String or function is expected from the {idx2sequence(i)} glob pattern."
                                 )
                 # Validate filter type.
-                elif j == 2:
+                elif key == "includeType":
                     if not isinstance(val, str):
                         raise ValueError("string expected")
                     if val != "include" and val != "exclude":
                         raise ValueError('Wrong given string value, it can only be either "include" or "exclude"')
                 # Validate filter pattern. It could be a include pattern of a exclude pattern
-                else:
+                elif key == "filterPattern":
                     if not isinstance(val, Callable) and not isinstance(val, list):
                         raise ValueError(
-    f"Wrong given filter pattern. List or function is expected in the {idx2sequence(j)} element from the {idx2sequence(i)} glob pattern."
+    f"Wrong given filter pattern. List or function is expected from the {idx2sequence(i)} glob pattern."
                                 )
                     if isinstance(val, list):
                         for k in val:
                             if not isinstance(k, str):
                                 raise ValueError(f"A filter string list must consist of string only.")
+
+                elif key == "recursiveCopy":
+                    if not isinstance(val, bool):
+                        raise ValueError(
+    f"Wrong given filter pattern from the {idx2sequence(i)} glob pattern."
+                                )
+                else:
+                    pass # TODO: Unrecognized key value
 
         self._globPatterns = arg
 
@@ -153,7 +158,7 @@ class Backup():
         return count
 
 
-    def iterRecursive(self, parentSrcPath: Path, parentDstPath: Path, typeStr: str, filter: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list, topParentSrcPath: Path = None) -> int:
+    def iterRecursive(self, parentSrcPath: Path, parentDstPath: Path, typeStr: str, filterPattern: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list, topParentSrcPath: Path = None) -> int:
         count = 0
 
         if not topParentSrcPath:
@@ -161,9 +166,9 @@ class Backup():
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
-                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filter, filterAllPathStrs, topParentSrcPath)
+                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filterPattern, filterAllPathStrs, topParentSrcPath)
             else:
-                if isinstance(filter, list):
+                if isinstance(filterPattern, list):
                     if typeStr == "exclude" and str(srcPath) in filterAllPathStrs:
                         continue
                     elif typeStr == "include" and str(srcPath) not in filterAllPathStrs:
@@ -173,9 +178,9 @@ class Backup():
                         dstPath = Path(parentDstPath, srcRelParentPath)
                         count = count + self.copyFile(srcPath, dstPath)
                 else:
-                    if typeStr == "exclude" and filter(srcPath):
+                    if typeStr == "exclude" and filterPattern(srcPath):
                         continue
-                    elif typeStr == "include" and not filter(srcPath):
+                    elif typeStr == "include" and not filterPattern(srcPath):
                         continue
                     else:
                         srcRelParentPath = srcPath.relative_to(topParentSrcPath)
@@ -189,16 +194,16 @@ class Backup():
         console.print(f"[white]Checking up [green bold]{self.name}[/green bold][/white]...")
 
         for globPattern in self.globPatterns:
-            parentSrcPaths = globPattern[0] # type: list | str
+            parentSrcPaths = globPattern["parentSrcPaths"] # type: list | str
             if not parentSrcPaths:
                 continue
 
-            versionFind    = globPattern[1] # type: Callable | str
-            typeStr        = globPattern[2] # type: str
-            filter         = globPattern[3] # type: Callable | list
+            versionFind   = globPattern["versionFind"]   # type: Callable | str
+            typeStr       = globPattern["includeType"]   # type: str
+            filterPattern = globPattern["filterPattern"] # type: Callable | list
 
-            parentSrcPath  = None
-            parentDstPath  = None
+            parentSrcPath = None #type: Path
+            parentDstPath = None #type: Path
 
             for parentSrcPath in parentSrcPaths:
                 if parentSrcPath.is_file():
@@ -222,12 +227,12 @@ class Backup():
 
                 # Get all filter pattern paths
                 filterAllPaths = []
-                if isinstance(filter, list):
-                    for filterPattern in filter:
-                        if not filterPattern.startswith("\\") and filterPattern.startswith("/"):
-                            filterPattern = "/" + filterPattern
+                if isinstance(filterPattern, list):
+                    for pattern in filterPattern:
+                        if not pattern.startswith("\\") and pattern.startswith("/"):
+                            pattern = "/" + pattern
 
-                        filterPaths = list(parentSrcPath.glob(filterPattern))
+                        filterPaths = list(parentSrcPath.glob(pattern))
                         if len(filterPaths) == 0:
                             continue
                         filterAllPaths.extend(filterPaths)
@@ -235,7 +240,7 @@ class Backup():
                 filterAllPathStrs = list(map(lambda p: str(p), filterAllPaths))
 
                 # Filter out path that match the excluded paths
-                parentSrcCount = self.iterRecursive(parentSrcPath, parentDstPath, typeStr, filter, filterAllPathStrs)
+                parentSrcCount = self.iterRecursive(parentSrcPath, parentDstPath, typeStr, filterPattern, filterAllPathStrs)
                 self.softwareBackupCount = self.softwareBackupCount + parentSrcCount
         if not DRYRUN:
             console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")

@@ -9,7 +9,7 @@ Back up profiles from all kind of softwares. The location of these software prof
 * TubesT
 # Roadmap
 * ~~Make it into an interactive CLI app~~
-* Store the software info into JSON file
+* ~~Store the software info into JSON file~~(Non-goal. You cannot pass in customized python function)
 * Automatically adapt user name on different computer
 # How to use
 ## 1. Install dependencies
