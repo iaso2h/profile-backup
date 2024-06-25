@@ -1,4 +1,4 @@
-import parser
+import config
 import backup
 
 
@@ -43,12 +43,21 @@ preservedDsts = [
 beaupy.Config.raise_on_interrupt = True
 beaupy.Config.raise_on_escape    = True
 
+def parse():
+
+    if not backup.DRYRUN:
+        os.makedirs(str(backup.DESTPATH), exist_ok=True)
+
+    for i in config.softwareConfigs:
+        if i.ticked:
+            i.backup()
+
 
 def standardRun() -> None:
     # Select software
     print("Select the software to back up:")
     # Initial ticked value: make all software ticked beforehand
-    for i in parser.softwareConfigs:
+    for i in config.softwareConfigs:
         i.ticked = True
 
     try:
@@ -59,7 +68,7 @@ def standardRun() -> None:
                 minimal_count  = 1,
                 return_indices = True
         )
-        backup.Backup.softwareNameTickedList = [parser.softwareConfigs[i].name for i in softwareChoice if parser.softwareConfigs[i].ticked]
+        backup.Backup.softwareNameTickedList = [config.softwareConfigs[i].name for i in softwareChoice if config.softwareConfigs[i].ticked]
 
 
     except KeyboardInterrupt:
@@ -151,7 +160,7 @@ def standardRun() -> None:
 
     spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
     spinner.start()
-    parser.start()
+    parse()
     spinner.stop()
 
     if backup.Backup.totalBackupCount > 0 and backup.DRYRUN:
@@ -180,5 +189,5 @@ def confirmRun():
     if not backup.DRYRUN:
         spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
         spinner.start()
-        parser.start()
+        parse()
         spinner.stop()

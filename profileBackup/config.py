@@ -1,5 +1,4 @@
-from backup import Backup, DRYRUN, DESTPATH, appDataPath, homePath, console
-import os
+from backup import Backup, appDataPath, homePath
 
 
 # Written from other file
@@ -78,7 +77,7 @@ softwareConfigs = [
                 "recursiveCopy": True
             },
             {
-                "parentSrcPath": "D:/Tangent/TArchT*",  # TODO create glob for string contains wild chracter
+                "parentSrcPath": "D:/Tangent/TArchT*",
                 "versionFind": lambda parentSrcPath: parentSrcPath.parts[2][5:],
                 "includeType": "include",
                 "filterPattern": ["SYS/*.lay", "SYS/tangent.cuix", "sys20x64/*.dwt", "sys24x64/*.dwt"],
@@ -136,13 +135,3 @@ softwareConfigs = [
         ],
     ),
 ]
-
-
-def start():
-
-    if not DRYRUN:
-        os.makedirs(str(DESTPATH), exist_ok=True)
-
-    for i in softwareConfigs:
-        if i.ticked:
-            i.backup()

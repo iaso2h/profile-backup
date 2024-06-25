@@ -77,22 +77,57 @@ class Backup():
         return self._globPatterns
     @globPatterns.setter
     def globPatterns(self, arg):
+        def skip():
+            console.print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
+            arg[i]["parentSrcPath"] = False
+
+        def validParentPathGlob(parentSrcPath: list[Path]):
+            for i in parentSrcPath:
+                if i.is_file:
+                    return False
+
+            arg[i]["parentSrcPath"] = False
+            return True
+
         for i, globPattern in enumerate(arg):
             for key, val in globPattern.items():
                 # Validate path pattern
                 if key == "parentSrcPath":
                     if isinstance(val, GeneratorType):
                         arg[i]["parentSrcPath"] = list(val)
+                        # A parent directroy glob paths cannot contain any file path
+                        if not validParentPathGlob(arg[i]["parentSrcPath"]):
+                            raise ValueError(f"The {idx2sequence(i)} glob pattern of software {self.name} is targetting a file path as parent directory path.")
                     elif isinstance(val, str):
-                        srcPath = Path(val)
-                        if not srcPath.exists():
-                            console.print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
-                            arg[i]["parentSrcPath"] = False
-                            continue
-                        elif srcPath.is_file():
-                            raise ValueError(f"{self.name}: parent path pattern({str(val)}) cannot be a file path.")
+                        if "*" in val:
+                            # Turn string literal into a path glob generator
+                            if val[1:2] == ":":
+                                rootPath = Path(val[0:2])
+                                if rootPath.exists:
+                                    parentSrcPath = rootPath.glob(val[3:])
+                                    if parentSrcPath:
+                                        arg[i]["parentSrcPath"] = list(parentSrcPath) # type list[Path]
+                                        # A parent directroy glob paths cannot contain any file path
+                                        if not validParentPathGlob(arg[i]["parentSrcPath"]):
+                                            raise ValueError(f"The {idx2sequence(i)} glob pattern of software {self.name} is targetting a file path as parent directory path.")
+                                    else:
+                                        skip()
+                                        continue
+                                else:
+                                    skip()
+                                    continue
+                            else:
+                                skip()
+                                continue
                         else:
-                            arg[i]["parentSrcPath"] = [srcPath]
+                            srcPath = Path(val)
+                            if not srcPath.exists():
+                                skip()
+                                continue
+                            elif srcPath.is_file():
+                                raise ValueError(f"{self.name}: parent path pattern({str(val)}) cannot be a file path.")
+                            else:
+                                arg[i]["parentSrcPath"] = [srcPath]
                     else:
                         raise ValueError(
     f"Wrong given parent path pattern. Path glob generator or string is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
