@@ -167,7 +167,7 @@ def standardRun() -> None:
         backup.Backup.totalBackupCount = 0 # Rest the total count
         confirmRun()
     else:
-        print("Everything is up-to-date")
+        print("\n[purple bold]Everything is up-to-date! You're good to go.[/purple bold]")
 
 
 def confirmRun():

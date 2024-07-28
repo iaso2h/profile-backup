@@ -26,6 +26,38 @@ softwareConfigs = [
         ],
     ),
     Backup(
+        "SOLIDWORKS",
+        [
+            {
+                "parentSrcPath": "D:/Asset/SOLIDWORKS",
+                "versionFind": "Asset",
+                "includeType": "include",
+                "filterPattern":  lambda _: True,
+                "recursiveCopy": True
+            },
+            {
+                "parentSrcPath": "D:/Program Files/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
+                "versionFind": "",
+                "includeType": "include",
+                "filterPattern": [
+                    "calloutformat.txt",
+                    "calloutformat_2.txt",
+                ],
+                "recursiveCopy": True
+            },
+            {
+                "parentSrcPath": "D:/Program Files/SOLIDWORKS Corp/SOLIDWORKS/data",
+                "versionFind": "",
+                "includeType": "include",
+                "filterPattern": [
+                    "ttfontratiomap.txt",
+                    "drawfontmap.txt",
+                ],
+                "recursiveCopy": True
+            },
+        ]
+    ),
+    Backup(
         "Blender",
         [
             {

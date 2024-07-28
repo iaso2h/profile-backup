@@ -33,6 +33,18 @@ def idx2sequence(index: int):
 
     return str(num) + suffix
 
+class Ignore():
+    def __init__(self, ignoreList):
+        self.ignoreList = ignoreList
+
+    @property
+    def ignoreList(self):
+        return self._ignoreList
+
+    @ignoreList.setter
+    def ignoreList(self, val):
+        self._ignoreList = val
+
 
 class Backup():
     # Track the total backup time whenever a file is backup up
