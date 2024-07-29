@@ -234,7 +234,7 @@ class Backup():
             filterAllPathStrs: list,
             recursiveCopy: bool,
             silentReport: bool,
-            topParentSrcPath: Path = Union[None, Path],
+            topParentSrcPath: Union[None, Path] = None,
             count: int = 0
             ) -> int:
         """Iter through a parent source directory to validate and copy each file
@@ -310,7 +310,7 @@ class Backup():
                         versionStr = versionFind(parentSrcPath)
                     except Exception as e:
                         console.print(e)
-                        console.print('[red]  Version string now use "unnamed" instead\n[/red]')
+                        console.print('[red]  Version string use "unnamed" instead\n[/red]')
                         versionStr = "unnamed"
 
                 console.print(f"[white]  Checking up [green bold]{self.name} {versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")

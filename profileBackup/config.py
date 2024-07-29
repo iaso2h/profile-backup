@@ -163,8 +163,8 @@ softwareConfigs = [
                     "Menu Customization.psp",
                     "Keyboard Shortcuts.psp",
                 ],
-                "recursiveCopy": True
-                "silentReport": False,
+                "recursiveCopy": True,
+                "silentReport": False
             },
         ],
     ),
