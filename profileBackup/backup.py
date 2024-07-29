@@ -163,7 +163,7 @@ class Backup():
     f"Wrong given version. String or function is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
                                 )
                 # Validate filter type.
-                elif key == "includeType":
+                elif key == "filterType":
                     if not isinstance(val, str):
                         raise ValueError("string expected")
                     if val != "include" and val != "exclude":
@@ -218,29 +218,42 @@ class Backup():
         return count
 
 
-    def iterRecursive(self, parentSrcPath: Path, parentDstPath: Path, typeStr: str, filterPattern: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list, recursiveCopy: bool, topParentSrcPath: Path = None) -> int:
-        count = 0
+    def iterCopy(self, parentSrcPath: Path, parentDstPath: Path, filterType: str, filterPattern: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list, recursiveCopy: bool, topParentSrcPath: Path = Union[None, Path], count: int = 0) -> int:
+        """Iter through a parent source directory to validate and copy each file
 
+        Args:
+            parentSrcPath: what parent source path to iterlate
+            parentDstPath: what destination path for the parent directory to backup up
+            filter: include or exclude from the filter pattern
+            filterPattern: determine what kind of file fit in the filter pattern
+            filterAllPathStrs: all the Paths that fit in the filter pattern
+            recursiveCopy: whether to recursive copy in all nested sub-direcotries
+            topParentSrcPath: parameter for recursive function call
+
+        Returns: how many file has been backed up
+
+        """
+        # Initialization for the first funtion call
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir() and recursiveCopy:
-                count = count + self.iterRecursive(srcPath, parentDstPath, typeStr, filterPattern, filterAllPathStrs, recursiveCopy, topParentSrcPath)
+                count = count + self.iterCopy(srcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, topParentSrcPath, count)
             else:
                 if isinstance(filterPattern, list):
-                    if typeStr == "exclude" and str(srcPath) in filterAllPathStrs:
+                    if filterType == "exclude" and str(srcPath) in filterAllPathStrs:
                         continue
-                    elif typeStr == "include" and str(srcPath) not in filterAllPathStrs:
+                    elif filterType == "include" and str(srcPath) not in filterAllPathStrs:
                         continue
                     else:
                         srcRelParentPath = srcPath.relative_to(topParentSrcPath)
                         dstPath = Path(parentDstPath, srcRelParentPath)
                         count = count + self.copyFile(srcPath, dstPath)
                 else:
-                    if typeStr == "exclude" and filterPattern(srcPath):
+                    if filterType == "exclude" and filterPattern(srcPath):
                         continue
-                    elif typeStr == "include" and not filterPattern(srcPath):
+                    elif filterType == "include" and not filterPattern(srcPath):
                         continue
                     else:
                         srcRelParentPath = srcPath.relative_to(topParentSrcPath)
@@ -259,7 +272,7 @@ class Backup():
                 continue
 
             versionFind   = globPattern["versionFind"]   # type: Callable | str
-            typeStr       = globPattern["includeType"]   # type: str
+            filterType    = globPattern["filterType"]    # type: str
             filterPattern = globPattern["filterPattern"] # type: Callable | list
             recursiveCopy = globPattern["recursiveCopy"] # type: Callable | list
 
@@ -301,8 +314,9 @@ class Backup():
                 filterAllPathStrs = list(map(lambda p: str(p), filterAllPaths))
 
                 # Filter out path that match the excluded paths
-                parentSrcCount = self.iterRecursive(parentSrcPath, parentDstPath, typeStr, filterPattern, filterAllPathStrs, recursiveCopy)
+                parentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy)
                 self.softwareBackupCount = self.softwareBackupCount + parentSrcCount
+
         if not DRYRUN:
             console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
         else:
@@ -312,7 +326,6 @@ class Backup():
         # Record
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
-
         if self.softwareSequence == len(type(self).softwareNameList):
             if not DRYRUN:
                 console.print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareNameTickedList}[/green].\n[/white]")
