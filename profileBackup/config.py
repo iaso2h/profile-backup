@@ -28,15 +28,15 @@ softwareConfigs = [
     Backup(
         "SOLIDWORKS",
         [
+            # {
+            #     "parentSrcPath": "D:/Asset/SOLIDWORKS",
+            #     "versionFind": "Asset",
+            #     "includeType": "include",
+            #     "filterPattern":  lambda _: True,
+            #     "recursiveCopy": True
+            # },
             {
-                "parentSrcPath": "D:/Asset/SOLIDWORKS",
-                "versionFind": "Asset",
-                "includeType": "include",
-                "filterPattern":  lambda _: True,
-                "recursiveCopy": True
-            },
-            {
-                "parentSrcPath": "D:/Program Files/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
+                "parentSrcPath": "D:/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
                 "versionFind": "",
                 "includeType": "include",
                 "filterPattern": [
@@ -46,7 +46,7 @@ softwareConfigs = [
                 "recursiveCopy": True
             },
             {
-                "parentSrcPath": "D:/Program Files/SOLIDWORKS Corp/SOLIDWORKS/data",
+                "parentSrcPath": "D:/SOLIDWORKS Corp/SOLIDWORKS/data",
                 "versionFind": "",
                 "includeType": "include",
                 "filterPattern": [

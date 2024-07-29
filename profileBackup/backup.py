@@ -116,18 +116,22 @@ class Backup():
                             raise ValueError(f"The {idx2sequence(i)} glob pattern of software {self.name} didn't find valid directory path.")
                     elif isinstance(val, str):
                         if "*" in val:
+                            # Add "/" suffix in the end if "*" is already the last character to make sure the the glob result return directory path
+                            if val[-1:] == "*":
+                                val = val + "/"
+
                             # Turn string literal into a path glob generator
                             if val[1:2] == ":":
-                                rootPath = Path(val[0:2])
+                                rootPath = Path(val[0:3])
                                 if rootPath.exists:
                                     parentSrcPath = rootPath.glob(val[3:])
                                     if parentSrcPath:
                                         arg[i]["parentSrcPath"] = list(parentSrcPath) # type list[Path]
-                                        # A parent directroy glob paths cannot contain any file path
                                         if not arg[i]["parentSrcPath"]:
                                             arg[i]["parentSrcPath"] = False
                                             continue
 
+                                        # A parent directroy glob paths cannot contain any file path
                                         if not validParentPathGlob(i, arg[i]["parentSrcPath"]):
                                             raise ValueError(f"The {idx2sequence(i)} glob pattern of software {self.name} didn't find valid directory path.")
                                     else:
