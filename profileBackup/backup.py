@@ -306,7 +306,13 @@ class Backup():
                 if isinstance(versionFind, str):
                     versionStr = versionFind
                 else:
-                    versionStr = versionFind(parentSrcPath)
+                    try:
+                        versionStr = versionFind(parentSrcPath)
+                    except Exception as e:
+                        console.print(e)
+                        console.print('[red]  Version string now use "unnamed" instead\n[/red]')
+                        versionStr = "unnamed"
+
                 console.print(f"[white]  Checking up [green bold]{self.name} {versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
                 parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)

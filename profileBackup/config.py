@@ -1,4 +1,5 @@
 from backup import Backup, appDataPath, homePath
+import winreg as wrg
 
 
 # Written from other file
@@ -42,13 +43,19 @@ softwareConfigs = [
                 "parentSrcPath": "D:/Asset/SOLIDWORKS",
                 "versionFind": "Asset",
                 "filterType": "include",
-                "filterPattern":  lambda _: True,
+                "filterPattern": lambda _: True,
                 "recursiveCopy": True,
                 "silentReport": True
             },
             {
                 "parentSrcPath": "D:/*/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
-                "versionFind": "",
+                "versionFind": lambda _: wrg.QueryValueEx(
+                        wrg.OpenKey(
+                            wrg.HKEY_LOCAL_MACHINE,
+                            "SOFTWARE\\SolidWorks\\IM"
+                            ),
+                        "IMSchedulerVersion"
+                    )[0][:4],
                 "filterType": "include",
                 "filterPattern": [
                     "calloutformat.txt",
