@@ -55,7 +55,8 @@ def parse():
 
 def standardRun() -> None:
     # Select software
-    print("Select the software to back up:")
+    print("[white]Select the software to back up:[/white]")
+
     # Initial ticked value: make all software ticked beforehand
     for i in config.softwareConfigs:
         i.ticked = True
@@ -66,10 +67,15 @@ def standardRun() -> None:
                 tick_character = '■',
                 ticked_indices = list(range(len(backup.Backup.softwareNameList))),
                 minimal_count  = 1,
-                return_indices = True
         )
-        backup.Backup.softwareNameTickedList = [config.softwareConfigs[i].name for i in softwareChoice if config.softwareConfigs[i].ticked]
 
+        # Update ticked stae for Backup objects
+        for i in config.softwareConfigs:
+            if i.name in softwareChoice:
+                i.ticked = True
+                backup.Backup.softwareNameTickedList.append(i.name)
+            else:
+                i.ticked = False
 
     except KeyboardInterrupt:
         keyboardInterruptExit()
@@ -83,7 +89,7 @@ def standardRun() -> None:
     # Select destination path
     drivePaths = findRemovableDrive()
     alldrives  = findAllDrives()
-    print("Choose the path to store the files:")
+    print("[white]Choose the path to store the files:[/white]")
     drivePaths.extend(preservedDsts)
     try:
         ans = beaupy.select(drivePaths, return_index=True) # type: list
