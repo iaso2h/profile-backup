@@ -1,7 +1,7 @@
 import shutil
 import os
 from types import GeneratorType
-from typing import Callable, Generator, List, Union
+from typing import Callable, List, Union
 from pathlib import Path
 from rich.console import Console
 
@@ -183,6 +183,10 @@ class Backup():
                     if not isinstance(val, bool):
                         raise ValueError(
     f"Wrong given filter pattern from the {idx2sequence(i)} glob pattern of software {self.name}.")
+                elif key == "silentReport":
+                    if not isinstance(val, bool):
+                        raise ValueError(
+    f"Wrong given filter pattern from the {idx2sequence(i)} glob pattern of software {self.name}.")
                 else:
                     raise ValueError(f"Unrecognized key: {key}")
 
@@ -190,19 +194,22 @@ class Backup():
 
 
     @staticmethod
-    def copyFile(fileSrcPath: Path, fileDstPath: Path) -> int:
+    def copyFile(fileSrcPath: Path, fileDstPath: Path, silentReport: bool) -> int:
         count = 0
         if fileDstPath.exists():
             if ALWAYSOVERWRITE or (fileSrcPath.stat().st_mtime - fileDstPath.stat().st_mtime) > 0:
                 if not DRYRUN:
                     shutil.copy2(fileSrcPath, fileDstPath)
-                    console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+                    if not silentReport:
+                        console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
                 else:
-                    console.print(f"[white]    Found file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+                    if not silentReport:
+                        console.print(f"[white]    Found file: [yellow]{fileSrcPath.name}[/yellow][/white]")
 
                 count = count + 1
             else:
-                console.print(f"[gray]    Skip non-modified file: {fileSrcPath.name}[/gray]")
+                if not silentReport:
+                    console.print(f"[gray]    Skip non-modified file: {fileSrcPath.name}[/gray]")
         else:
 
             if not DRYRUN:
@@ -218,7 +225,18 @@ class Backup():
         return count
 
 
-    def iterCopy(self, parentSrcPath: Path, parentDstPath: Path, filterType: str, filterPattern: Union[List[str], Callable[[Path], bool]] , filterAllPathStrs: list, recursiveCopy: bool, topParentSrcPath: Path = Union[None, Path], count: int = 0) -> int:
+    def iterCopy(
+            self,
+            parentSrcPath: Path,
+            parentDstPath: Path,
+            filterType: str,
+            filterPattern: Union[List[str], Callable[[Path], bool]],
+            filterAllPathStrs: list,
+            recursiveCopy: bool,
+            silentReport: bool,
+            topParentSrcPath: Path = Union[None, Path],
+            count: int = 0
+            ) -> int:
         """Iter through a parent source directory to validate and copy each file
 
         Args:
@@ -228,6 +246,7 @@ class Backup():
             filterPattern: determine what kind of file fit in the filter pattern
             filterAllPathStrs: all the Paths that fit in the filter pattern
             recursiveCopy: whether to recursive copy in all nested sub-direcotries
+            silentReport: whether to silent the report message
             topParentSrcPath: parameter for recursive function call
 
         Returns: how many file has been backed up
@@ -239,7 +258,7 @@ class Backup():
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir() and recursiveCopy:
-                count = count + self.iterCopy(srcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, topParentSrcPath, count)
+                count = count + self.iterCopy(srcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport, topParentSrcPath, count)
             else:
                 if isinstance(filterPattern, list):
                     if filterType == "exclude" and str(srcPath) in filterAllPathStrs:
@@ -249,7 +268,7 @@ class Backup():
                     else:
                         srcRelParentPath = srcPath.relative_to(topParentSrcPath)
                         dstPath = Path(parentDstPath, srcRelParentPath)
-                        count = count + self.copyFile(srcPath, dstPath)
+                        count = count + self.copyFile(srcPath, dstPath, silentReport)
                 else:
                     if filterType == "exclude" and filterPattern(srcPath):
                         continue
@@ -258,7 +277,7 @@ class Backup():
                     else:
                         srcRelParentPath = srcPath.relative_to(topParentSrcPath)
                         dstPath = Path(parentDstPath, srcRelParentPath)
-                        count = count + self.copyFile(srcPath, dstPath)
+                        count = count + self.copyFile(srcPath, dstPath, silentReport)
 
         return count
 
@@ -267,14 +286,15 @@ class Backup():
         console.print(f"[white]Checking up [green bold]{self.name}[/green bold][/white]...")
 
         for globPattern in self.globPatterns:
-            parentSrcPaths = globPattern["parentSrcPath"] # type: list | str | bool
+            parentSrcPaths = globPattern["parentSrcPath"] # type: list
             if not parentSrcPaths:
                 continue
 
             versionFind   = globPattern["versionFind"]   # type: Callable | str
             filterType    = globPattern["filterType"]    # type: str
             filterPattern = globPattern["filterPattern"] # type: Callable | list
-            recursiveCopy = globPattern["recursiveCopy"] # type: Callable | list
+            recursiveCopy = globPattern["recursiveCopy"] # type: bool
+            silentReport  = globPattern["silentReport"]  # type: bool
 
             parentSrcPath = None #type: Path
             parentDstPath = None #type: Path
@@ -314,16 +334,21 @@ class Backup():
                 filterAllPathStrs = list(map(lambda p: str(p), filterAllPaths))
 
                 # Filter out path that match the excluded paths
-                parentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy)
-                self.softwareBackupCount = self.softwareBackupCount + parentSrcCount
+                currentParentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport)
+                self.softwareBackupCount = self.softwareBackupCount + currentParentSrcCount
 
+                # Report count for the current parent source directory
+                if not DRYRUN:
+                    console.print(f"[white]Backed up [purple bold]{currentParentSrcCount}[/purple bold] {self.name} files in: {str(parentSrcPath)}\n[/white]")
+                else:
+                    console.print(f"[white]Found [purple bold]{currentParentSrcCount}[/purple bold] {self.name} files in: {str(parentSrcPath)}\n[/white]")
+
+        # Report total count for the current Backup(software setting) config
         if not DRYRUN:
             console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
         else:
             console.print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
 
-
-        # Record
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
         if self.softwareSequence == len(type(self).softwareNameList):
