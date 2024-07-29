@@ -11,7 +11,12 @@ Back up profiles from all kind of softwares. The location of these software prof
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~
 * ~~Store the software info into JSON file~~(Non-goal. You cannot pass in customized python function)
+* Update/Overwrite/Sync mode
+* Restore
 * Automatically adapt user name on different computer or operating system
+* Linux support
+* Edit file by condition or by platform
+* dotfiles support
 # How to use
 ## 1. Install dependencies
 * psutil(for drive detection)
