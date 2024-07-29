@@ -235,7 +235,6 @@ class Backup():
             recursiveCopy: bool,
             silentReport: bool,
             topParentSrcPath: Union[None, Path] = None,
-            count: int = 0
             ) -> int:
         """Iter through a parent source directory to validate and copy each file
 
@@ -252,13 +251,15 @@ class Backup():
         Returns: how many file has been backed up
 
         """
+        count = 0
+
         # Initialization for the first funtion call
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir() and recursiveCopy:
-                count = count + self.iterCopy(srcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport, topParentSrcPath, count)
+                count = count + self.iterCopy(srcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport, topParentSrcPath)
             else:
                 if isinstance(filterPattern, list):
                     if filterType == "exclude" and str(srcPath) in filterAllPathStrs:
@@ -345,15 +346,15 @@ class Backup():
 
                 # Report count for the current parent source directory
                 if not DRYRUN:
-                    console.print(f"[white]Backed up [purple bold]{currentParentSrcCount}[/purple bold] {self.name} files in: {str(parentSrcPath)}\n[/white]")
+                    console.print(f"  [white]Backed up [purple bold]{currentParentSrcCount}[/purple bold] files")
                 else:
-                    console.print(f"[white]Found [purple bold]{currentParentSrcCount}[/purple bold] {self.name} files in: {str(parentSrcPath)}\n[/white]")
+                    console.print(f"  [white]Found [purple bold]{currentParentSrcCount}[/purple bold] files")
 
         # Report total count for the current Backup(software setting) config
         if not DRYRUN:
-            console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
+            console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
         else:
-            console.print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] {self.name} files\n[/white]")
+            console.print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
 
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
