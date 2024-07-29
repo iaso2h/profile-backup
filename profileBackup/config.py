@@ -11,7 +11,7 @@ softwareConfigs = [
         [
             {
                 # 1. Path object
-                # 2. string contains parent source directory(support * wildcard character)
+                # 2. string contains parent source directory(support */** wildcard character)
                 "parentSrcPath": appDataPath.glob("Local/Autodesk/3dsMax/*/*/*/UI/Workspaces"),
                 # 1. function with `parentSrcPath` as parameter
                 # 2. string
@@ -19,7 +19,7 @@ softwareConfigs = [
                 # 1. string(either `"exclude` or `"include`)
                 "filterType": "exclude",
                 # 1. function with `parentSrcPath` as parameter, return boolean
-                # 2. list contains string(support * wildcard character)
+                # 2. list contains string(support */** wildcard character)
                 "filterPattern": lambda srcPath: srcPath.is_dir()
                     or str.startswith(srcPath.name, "Workspace"),
                 # 1. boolean
@@ -48,7 +48,7 @@ softwareConfigs = [
                 "silentReport": True
             },
             {
-                "parentSrcPath": "D:/*/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
+                "parentSrcPath": "D:/**/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
                 "versionFind": lambda _: wrg.QueryValueEx(
                         wrg.OpenKey(
                             wrg.HKEY_LOCAL_MACHINE,
@@ -65,8 +65,14 @@ softwareConfigs = [
                 "silentReport": False
             },
             {
-                "parentSrcPath": "D:/*/SOLIDWORKS Corp/SOLIDWORKS/data",
-                "versionFind": "",
+                "parentSrcPath": "D:/**/SOLIDWORKS Corp/SOLIDWORKS/data",
+                "versionFind": lambda _: wrg.QueryValueEx(
+                        wrg.OpenKey(
+                            wrg.HKEY_LOCAL_MACHINE,
+                            "SOFTWARE\\SolidWorks\\IM"
+                            ),
+                        "IMSchedulerVersion"
+                    )[0][:4],
                 "filterType": "include",
                 "filterPattern": [
                     "ttfontratiomap.txt",
