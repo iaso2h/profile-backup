@@ -20,7 +20,6 @@ Back up profiles from all kind of softwares. The location of these software prof
 # How to use
 ## 1. Install dependencies
 * psutil(for drive detection)
-* icecream(for debug print. Optional)
 * beaupy(for interactive CLI)
 
 You can install all dependencies via pip or conda(recommanded)

@@ -11,7 +11,8 @@ DESTPATH = None # type: Path
 DRYRUN   = True
 
 
-ALWAYSOVERWRITE = False
+COPYOVERWRITE = False
+COPYUPDATE    = True
 console     = Console()
 userName    = os.getlogin()
 appDataPath = Path("C:/Users/{}/AppData".format(userName))
@@ -73,6 +74,9 @@ class Backup():
         self.ticked = False
         # whether to copy files in current parent folder or recursive copy all files nested in folders.
         self.recursiveCopy = True
+
+        # Valid backup files that fit in the pattern. Represent in path string relative to top parent source directory path
+        self.validBackupRelStr = {}
 
     @property
     def name(self):
@@ -193,31 +197,45 @@ class Backup():
         self._globPatterns = arg
 
 
-    @staticmethod
-    def copyFile(fileSrcPath: Path, fileDstPath: Path, silentReport: bool) -> int:
+    def copyFile(self, srcPath: Path, topParentSrcPath: Path, topParentDstPath: Path, silentReport: bool) -> int:
+        """Backup file and return backup file count
+
+        Args:
+            srcPath: the source to be backuped
+            topParentSrcPath: top parent source path
+            topParentDstPath: top parent destination path
+            silentReport: whether to silent the report message
+
+        Returns: number count of backuped files
+
+        """
+        srcRelTopParentPath = srcPath.relative_to(topParentSrcPath)
+        self.validBackupRelStr[str(topParentSrcPath)].append(srcRelTopParentPath)
+        dstPath = Path(topParentDstPath, srcRelTopParentPath)
         count = 0
-        if fileDstPath.exists():
-            if ALWAYSOVERWRITE or (fileSrcPath.stat().st_mtime - fileDstPath.stat().st_mtime) > 0:
+
+        if dstPath.exists():
+            if COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
                 if not DRYRUN:
-                    shutil.copy2(fileSrcPath, fileDstPath)
+                    shutil.copy2(srcPath, dstPath)
                     if not silentReport:
-                        console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+                        console.print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
                 else:
                     if not silentReport:
-                        console.print(f"[white]    Found file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+                        console.print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
 
                 count = count + 1
             else:
                 if not silentReport:
-                    console.print(f"[gray]    Skip non-modified file: {fileSrcPath.name}[/gray]")
+                    console.print(f"[gray]    Skip non-modified file: {srcPath.name}[/gray]")
         else:
 
             if not DRYRUN:
-                os.makedirs(fileDstPath.parent, exist_ok=True)
-                shutil.copy2(fileSrcPath, fileDstPath)
-                console.print(f"[white]    Backing up file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+                os.makedirs(dstPath.parent, exist_ok=True)
+                shutil.copy2(srcPath, dstPath)
+                console.print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
             else:
-                console.print(f"[white]    Found file: [yellow]{fileSrcPath.name}[/yellow][/white]")
+                console.print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
 
 
             count = count + 1
@@ -246,20 +264,21 @@ class Backup():
             filterAllPathStrs: all the Paths that fit in the filter pattern
             recursiveCopy: whether to recursive copy in all nested sub-direcotries
             silentReport: whether to silent the report message
-            topParentSrcPath: parameter for recursive function call
+            topParentSrcPath: preserved top parent source directory for recursive function call
 
         Returns: how many file has been backed up
 
         """
         count = 0
 
+        topParentDstPath = parentDstPath
         # Initialization for the first funtion call
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir() and recursiveCopy:
-                count = count + self.iterCopy(srcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport, topParentSrcPath)
+                count = count + self.iterCopy(srcPath, topParentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport, topParentSrcPath)
             else:
                 if isinstance(filterPattern, list):
                     if filterType == "exclude" and str(srcPath) in filterAllPathStrs:
@@ -267,20 +286,54 @@ class Backup():
                     elif filterType == "include" and str(srcPath) not in filterAllPathStrs:
                         continue
                     else:
-                        srcRelParentPath = srcPath.relative_to(topParentSrcPath)
-                        dstPath = Path(parentDstPath, srcRelParentPath)
-                        count = count + self.copyFile(srcPath, dstPath, silentReport)
+                        count = count + self.copyFile(srcPath, topParentSrcPath, topParentDstPath, silentReport)
                 else:
                     if filterType == "exclude" and filterPattern(srcPath):
                         continue
                     elif filterType == "include" and not filterPattern(srcPath):
                         continue
                     else:
-                        srcRelParentPath = srcPath.relative_to(topParentSrcPath)
-                        dstPath = Path(parentDstPath, srcRelParentPath)
-                        count = count + self.copyFile(srcPath, dstPath, silentReport)
+                        count = count + self.copyFile(srcPath, topParentSrcPath, topParentDstPath, silentReport)
 
         return count
+
+
+    def iterSync(
+            self,
+            srcRelTopParentPathList: List[str],
+            parentDstPath: Path,
+            topParentSrcPath: Path,
+            topParentDstPath: Union[None, Path] = None
+            ):
+        """Iterate throught destination directory to check whether a file exist in current source directory. If not, delete that file
+
+        Args:
+            srcRelTopParentPathList: List contains path string relactive to the source file
+            parentDstPath: What destination directory to iterate through
+            topParentDstPath: Top parent source directory where all source file is relative to
+            topParentDstPath: Preserved top parent destionation directory for recursive function call
+        """
+        # console.print("[red]" + str(parentDstPath) + "[/red]")
+        # return
+        # Abort when parent destination directory doesn't exist
+        if not parentDstPath.exists():
+            return
+
+        # Initialization for the first funtion call
+        if not topParentDstPath:
+            topParentDstPath = parentDstPath
+
+        for dstPath in parentDstPath.iterdir():
+            if dstPath.is_dir():
+                if not (dstPath.iterdir()):
+                    # Delete empty direcotry
+                    console.print("[red]delete empty directory: [/red]" + dstRelTopParentPathStr)
+                else:
+                    self.iterSync(srcRelTopParentPathList, dstPath, topParentSrcPath, topParentDstPath)
+            else:
+                dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
+                if not dstRelTopParentPathStr in srcRelTopParentPathList:
+                    console.print(f"[red]delete file: [/red] {str(topParentDstPath)}/{dstRelTopParentPathStr}")
 
 
     def backup(self):
@@ -301,9 +354,12 @@ class Backup():
             parentDstPath = None #type: Path
 
             for parentSrcPath in parentSrcPaths:
+                self.validBackupRelStr[str(parentSrcPath)] = []
+
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
 
+                # NOTE: versionStr can be an empty string
                 if isinstance(versionFind, str):
                     versionStr = versionFind
                 else:
@@ -317,7 +373,6 @@ class Backup():
                 console.print(f"[white]  Checking up [green bold]{self.name} {versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
                 parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
-                # NOTE: versionStr can be an empty string
                 parentDstPath = Path(
                         DESTPATH,
                         self.name,
@@ -343,6 +398,11 @@ class Backup():
                 # Filter out path that match the excluded paths
                 currentParentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport)
                 self.softwareBackupCount = self.softwareBackupCount + currentParentSrcCount
+
+                # Delete files doesn't exist in destination directory for the current parent source directory
+                if COPYUPDATE:
+                    srcRelTopParentPathList = list(map(lambda p: str(p), self.validBackupRelStr[str(parentSrcPath)]))
+                    self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
 
                 # Report count for the current parent source directory
                 if not DRYRUN:
