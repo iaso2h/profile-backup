@@ -166,6 +166,8 @@ class Backup():
                         raise ValueError(
     f"Wrong given version. String or function is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
                                 )
+                    if val == "":
+                        arg[i]["versionFind"] = "unnamed"
                 # Validate filter type.
                 elif key == "filterType":
                     if not isinstance(val, str):
@@ -359,7 +361,6 @@ class Backup():
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
 
-                # NOTE: versionStr can be an empty string
                 if isinstance(versionFind, str):
                     versionStr = versionFind
                 else:
