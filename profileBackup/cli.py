@@ -10,6 +10,8 @@ from typing import List
 from enum import Enum
 from pathlib import Path
 
+print = backup.console.print
+
 def findRemovableDrive() -> List[str]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
     return ["[blue]" + i.mountpoint + "\\[/blue]" for i in psutil.disk_partitions() if "removable" in i.opts]
@@ -18,9 +20,6 @@ def findAllDrives() -> List[str]:
     import psutil
     drps = psutil.disk_partitions()
     return list(map(lambda i: i[:1], [dp.device for dp in drps if dp.fstype == 'NTFS']))
-
-
-print = backup.console.print
 
 def keyboardInterruptExit() -> None:
     print("[red]Interrupt by user[/red]")
@@ -54,18 +53,33 @@ def parse():
 
 
 def standardRun() -> None:
+    # Select copy mmode
+    print("[white]Select copy mode[/white]")
+
+    copyMode = ["Sync", "Update"]
+    try:
+        ans = beaupy.select(copyMode, return_index=True) # type: list
+    except KeyboardInterrupt:
+        keyboardInterruptExit()
+    except beaupy.Abort:
+        abortExit()
+    except Exception as e:
+        print(e)
+        SystemExit(1)
+    if ans == 0:
+        backup.COPYSYNC = True
+    else:
+        backup.COPYSYNC = False
+
+
     # Select software
-    print("[white]Select the software to back up:[/white]")
-
-    # Initial ticked value: make all software ticked beforehand
-    for i in config.softwareConfigs:
-        i.ticked = True
-
+    print("[white]Select softwares to back up:[/white]")
+    print(backup.Backup.softwareEnabledList[0].name)
     try:
         softwareChoice = beaupy.select_multiple(
-                backup.Backup.softwareNameList,
+                backup.Backup.softwareEnabledList,
                 tick_character = '■',
-                ticked_indices = list(range(len(backup.Backup.softwareNameList))),
+                ticked_indices = list(range(len(backup.Backup.softwareEnabledList))),
                 minimal_count  = 1,
         )
 
@@ -73,7 +87,7 @@ def standardRun() -> None:
         for i in config.softwareConfigs:
             if i.name in softwareChoice:
                 i.ticked = True
-                backup.Backup.softwareNameTickedList.append(i.name)
+                backup.Backup.softwareTickedList.append(i.name)
             else:
                 i.ticked = False
 
@@ -92,7 +106,7 @@ def standardRun() -> None:
     print("[white]Choose the path to store the files:[/white]")
     drivePaths.extend(preservedDsts)
     try:
-        ans = beaupy.select(drivePaths, return_index=True) # type: list
+        ans = beaupy.select(drivePaths, return_index=True)
     except KeyboardInterrupt:
         keyboardInterruptExit()
     except beaupy.Abort:

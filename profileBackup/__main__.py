@@ -1,8 +1,8 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Backup software profiles on Windows
-# Version: 0.0.16
-# Last Modified: 2024-08-06
+# Version: 0.0.17
+# Last Modified: 2024-08-07
 
 # import logging
 import sys
@@ -18,6 +18,15 @@ if __name__ == "__main__":
         argParser.add_argument("-d", "--debug", action="store_true")
         args = argParser.parse_args()
         if args.debug:
-            print()
-    else:
-        cli.standardRun()
+            import config
+            import backup
+            for s in config.softwareConfigs:
+                if not s.name.lower().startswith("demo"):
+                    s.enabled = False
+                else:
+                    s.enabled = True
+
+            backup.Backup.updateEnabledList()
+
+
+    cli.standardRun()

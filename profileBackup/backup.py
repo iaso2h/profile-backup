@@ -1,7 +1,7 @@
 import shutil
 import os
 from types import GeneratorType
-from typing import Callable, List, Union
+from typing import Callable, List, Union, Dict, TypedDict
 from pathlib import Path
 from rich.console import Console
 
@@ -12,8 +12,9 @@ DRYRUN   = True
 
 
 COPYOVERWRITE = False
-COPYUPDATE    = True
+COPYSYNC      = True
 console     = Console()
+print       = console.print
 userName    = os.getlogin()
 appDataPath = Path("C:/Users/{}/AppData".format(userName))
 homePath    = Path("C:/Users/{}".format(userName))
@@ -46,38 +47,58 @@ class Ignore():
     def ignoreList(self, val):
         self._ignoreList = val
 
+class softwareConfig(TypedDict):
+    name: str
+    enabled: bool
+    globPatterns: list
 
 class Backup():
-    # Track the total backup time whenever a file is backup up
+    """
+    Backup class for backing up software configuration
+
+    Attributes:
+        class:
+            totalBackupCount: Track the total backup time whenever a file is backup up
+            softwareList: All software configuration
+            softwareEnabledList: The total software list has been properly configured
+            softwareTickedList: The ticked software list. Written after user confirm the software list to backup
+            validBackupRelStr: Valid found path string fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
+            syncConfirmRemove: Files to be removed from the destination directory if Sync mode is on
+        instance:
+            name: Software name
+            enabled: Enabled state
+            softwareIndex: Software index. The first software index is 0
+            globPatterns: A list of globpattern define how to find your software configuration and filter unless filetypes
+            softwareBackupCount: Track the total count of files being backed up related to current software
+            ticked: Whether this software is chosen and ticked to be backed up
+            recursiveCopy: Whether to recursive copy every files nested in a multi-level directory
+    """
     totalBackupCount = 0
-    # The total software list has been properly configured
-    softwareNameList = []
-    # The ticked software list. Written after user confirm the software list to backup
-    softwareNameTickedList = []
+    softwareList = []
+    softwareEnabledList = []
+    softwareTickedList = []
+    validBackupRelStr = {}
+    syncConfirmRemove = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
-    def __init__(self, name: str, globPatterns: list):
-        self.name = name
-        type(self).softwareNameList.append(self.name)
+    def __init__(self, softwareConfig: softwareConfig):
+    # def __init__(self, name: str, globPatterns: list):
+        self.name = softwareConfig["name"]
+        self.enabled = softwareConfig["enabled"]
+        type(self).softwareList.append(self)
 
-        # The current software sequence during a configured software backup list
-        self.softwareSequence = len(type(self).softwareNameList)
+        if self.enabled:
+            type(self).softwareEnabledList.append(self)
+            self.softwareIndex = len(type(self).softwareEnabledList) - 1
 
         # The value of glob pattern will get validated when assigned value
-        self.globPatterns = globPatterns
+        self.globPatterns = softwareConfig["globPatterns"]
 
-        # Track the total count of files being backed up related to current software
         self.softwareBackupCount = 0
-
-        # Track the ticked state of a software. It will be written when current
-        # software name is ticked during a cli
         self.ticked = False
-        # whether to copy files in current parent folder or recursive copy all files nested in folders.
         self.recursiveCopy = True
 
-        # Valid backup files that fit in the pattern. Represent in path string relative to top parent source directory path
-        self.validBackupRelStr = {}
-
+    # self.name {{{
     @property
     def name(self):
         return self._name
@@ -86,15 +107,27 @@ class Backup():
         if not isinstance(val, str):
             raise ValueError("string expected")
         self._name = val
+    # }}}
 
+    # self.enabled {{{
+    @property
+    def enabled(self):
+        return self._enabled
+    @enabled.setter
+    def enabled(self, val):
+        if not isinstance(val, bool):
+            raise ValueError("boolean expected")
+        self._enabled = val
+    # }}}
 
+    # self.globPattern {{{
     @property
     def globPatterns(self):
         return self._globPatterns
     @globPatterns.setter
     def globPatterns(self, arg):
         def skip():
-            console.print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
+            print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
             arg[i]["parentSrcPath"] = False
 
         def validParentPathGlob(globPatternIndex: int, parentSrcPath: list[Path]):
@@ -194,12 +227,13 @@ class Backup():
                         raise ValueError(
     f"Wrong given filter pattern from the {idx2sequence(i)} glob pattern of software {self.name}.")
                 else:
-                    raise ValueError(f"Unrecognized key: {key}")
+                    raise ValueError(f"Unrecognized key: {key} in globPatterns")
 
         self._globPatterns = arg
+    # }}}
 
 
-    def copyFile(self, srcPath: Path, topParentSrcPath: Path, topParentDstPath: Path, silentReport: bool) -> int:
+    def copyFile(self, srcPath: Path, topParentSrcPath: Path, topParentDstPath: Path, silentReport: bool) -> int: # {{{
         """Backup file and return backup file count
 
         Args:
@@ -212,7 +246,7 @@ class Backup():
 
         """
         srcRelTopParentPath = srcPath.relative_to(topParentSrcPath)
-        self.validBackupRelStr[str(topParentSrcPath)].append(srcRelTopParentPath)
+        type(self).validBackupRelStr[str(topParentSrcPath)].append(srcRelTopParentPath)
         dstPath = Path(topParentDstPath, srcRelTopParentPath)
         count = 0
 
@@ -221,31 +255,31 @@ class Backup():
                 if not DRYRUN:
                     shutil.copy2(srcPath, dstPath)
                     if not silentReport:
-                        console.print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
+                        print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
                 else:
                     if not silentReport:
-                        console.print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
+                        print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
 
                 count = count + 1
             else:
                 if not silentReport:
-                    console.print(f"[gray]    Skip non-modified file: {srcPath.name}[/gray]")
+                    print(f"[gray]    Skip non-modified file: {srcPath.name}[/gray]")
         else:
 
             if not DRYRUN:
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
-                console.print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
+                print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
             else:
-                console.print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
+                print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
 
 
             count = count + 1
 
-        return count
+        return count # }}}
 
 
-    def iterCopy(
+    def iterCopy( # {{{
             self,
             parentSrcPath: Path,
             parentDstPath: Path,
@@ -297,10 +331,10 @@ class Backup():
                     else:
                         count = count + self.copyFile(srcPath, topParentSrcPath, topParentDstPath, silentReport)
 
-        return count
+        return count # }}}
 
 
-    def iterSync(
+    def iterSync( # {{{
             self,
             srcRelTopParentPathList: List[str],
             parentDstPath: Path,
@@ -315,8 +349,6 @@ class Backup():
             topParentDstPath: Top parent source directory where all source file is relative to
             topParentDstPath: Preserved top parent destionation directory for recursive function call
         """
-        # console.print("[red]" + str(parentDstPath) + "[/red]")
-        # return
         # Abort when parent destination directory doesn't exist
         if not parentDstPath.exists():
             return
@@ -328,18 +360,25 @@ class Backup():
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
                 if not (dstPath.iterdir()):
-                    # Delete empty direcotry
-                    console.print("[red]delete empty directory: [/red]" + dstRelTopParentPathStr)
+                    if not self.name in type(self).syncConfirmRemove:
+                        type(self).syncConfirmRemove[self.name] = []
+                        type(self).syncConfirmRemove[self.name].append(str(dstPath) + "/")
+                    else:
+                        type(self).syncConfirmRemove[self.name].append(str(dstPath) + "/")
                 else:
                     self.iterSync(srcRelTopParentPathList, dstPath, topParentSrcPath, topParentDstPath)
             else:
                 dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
                 if not dstRelTopParentPathStr in srcRelTopParentPathList:
-                    console.print(f"[red]delete file: [/red] {str(topParentDstPath)}/{dstRelTopParentPathStr}")
+                    if not self.name in type(self).syncConfirmRemove:
+                        type(self).syncConfirmRemove[self.name] = []
+                        type(self).syncConfirmRemove[self.name].append(str(dstPath))
+                    else:
+                        type(self).syncConfirmRemove[self.name].append(str(dstPath)) # }}}
 
 
-    def backup(self):
-        console.print(f"[white]Checking up [green bold]{self.name}[/green bold][/white]...")
+    def backup(self): # {{{
+        print(f"[white]Checking up [green bold]{self.name}[/green bold][/white]...")
 
         for globPattern in self.globPatterns:
             parentSrcPaths = globPattern["parentSrcPath"] # type: list
@@ -356,7 +395,7 @@ class Backup():
             parentDstPath = None #type: Path
 
             for parentSrcPath in parentSrcPaths:
-                self.validBackupRelStr[str(parentSrcPath)] = []
+                type(self).validBackupRelStr[str(parentSrcPath)] = []
 
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
@@ -367,11 +406,11 @@ class Backup():
                     try:
                         versionStr = versionFind(parentSrcPath)
                     except Exception as e:
-                        console.print(e)
-                        console.print('[red]  Version string use "unnamed" instead\n[/red]')
+                        print(e)
+                        print('[red]  Version string use "unnamed" instead\n[/red]')
                         versionStr = "unnamed"
 
-                console.print(f"[white]  Checking up [green bold]{self.name} {versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+                print(f"[white]  Checking up [green bold]{self.name} {versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
                 parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
                 parentDstPath = Path(
@@ -400,29 +439,36 @@ class Backup():
                 currentParentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport)
                 self.softwareBackupCount = self.softwareBackupCount + currentParentSrcCount
 
-                # Delete files doesn't exist in destination directory for the current parent source directory
-                if COPYUPDATE:
-                    srcRelTopParentPathList = list(map(lambda p: str(p), self.validBackupRelStr[str(parentSrcPath)]))
-                    self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
-
                 # Report count for the current parent source directory
                 if not DRYRUN:
-                    console.print(f"  [white]Backed up [purple bold]{currentParentSrcCount}[/purple bold] files")
+                    print(f"  [white]Backed up [purple bold]{currentParentSrcCount}[/purple bold] files")
                 else:
-                    console.print(f"  [white]Found [purple bold]{currentParentSrcCount}[/purple bold] files")
+                    print(f"  [white]Found [purple bold]{currentParentSrcCount}[/purple bold] files")
 
-        # Report total count for the current Backup(software setting) config
         if not DRYRUN:
-            console.print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
+            print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
         else:
-            console.print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
+            print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
 
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
-        if self.softwareSequence == len(type(self).softwareNameList):
-            if not DRYRUN:
-                console.print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareNameTickedList}[/green].\n[/white]")
-            else:
-                console.print(f"[white]Found [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareNameTickedList}[/green].\n[/white]")
+        if self.softwareIndex == len(type(self).softwareEnabledList) - 1:
+            # Delete files doesn't exist in destination directory for the current parent source directory
+            if COPYSYNC:
+                srcRelTopParentPathList = list(map(lambda p: str(p), type(self).validBackupRelStr[str(parentSrcPath)]))
+                self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
 
+            if not DRYRUN:
+                print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareTickedList}[/green].\n[/white]")
+            else:
+                print(f"[white]Found [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareTickedList}[/green].\n[/white]") # }}}
+
+
+    @classmethod
+    def updateEnabledList(cls):
+        cls.softwareEnabledList = []
+        for s in cls.softwareList:
+            if s.enabled:
+                cls.softwareEnabledList.append(s)
+                s.softwareIndex = len(cls.softwareEnabledList) - 1
 
