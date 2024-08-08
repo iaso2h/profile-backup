@@ -74,10 +74,9 @@ def standardRun() -> None:
 
     # Select software
     print("[white]Select softwares to back up:[/white]")
-    print(backup.Backup.softwareEnabledList[0].name)
     try:
         softwareChoice = beaupy.select_multiple(
-                backup.Backup.softwareEnabledList,
+                list(map(lambda b: str(b.name), backup.Backup.softwareEnabledList)),
                 tick_character = '■',
                 ticked_indices = list(range(len(backup.Backup.softwareEnabledList))),
                 minimal_count  = 1,
