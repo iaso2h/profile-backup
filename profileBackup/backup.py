@@ -62,7 +62,6 @@ class Backup():
             softwareList: All software configuration
             softwareEnabledList: The total software list has been properly configured
             softwareTickedList: The ticked software list. Written after user confirm the software list to backup
-            validBackupRelStr: Valid found path string fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
             syncConfirmRemove: Files to be removed from the destination directory if Sync mode is on
         instance:
             name: Software name
@@ -72,12 +71,12 @@ class Backup():
             softwareBackupCount: Track the total count of files being backed up related to current software
             ticked: Whether this software is chosen and ticked to be backed up
             recursiveCopy: Whether to recursive copy every files nested in a multi-level directory
+            validBackupRelStr: Valid found path string fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
     """
     totalBackupCount = 0
     softwareList = []
     softwareEnabledList = []
     softwareTickedList = []
-    validBackupRelStr = {}
     syncConfirmRemove = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
@@ -97,6 +96,8 @@ class Backup():
         self.softwareBackupCount = 0
         self.ticked = False
         self.recursiveCopy = True
+
+        self.validBackupRelStr = {}
 
     # self.name {{{
     @property
@@ -246,7 +247,7 @@ class Backup():
 
         """
         srcRelTopParentPath = srcPath.relative_to(topParentSrcPath)
-        type(self).validBackupRelStr[str(topParentSrcPath)].append(srcRelTopParentPath)
+        self.validBackupRelStr[str(topParentSrcPath)].append(srcRelTopParentPath)
         dstPath = Path(topParentDstPath, srcRelTopParentPath)
         count = 0
 
@@ -395,7 +396,7 @@ class Backup():
             parentDstPath = None #type: Path
 
             for parentSrcPath in parentSrcPaths:
-                type(self).validBackupRelStr[str(parentSrcPath)] = []
+                self.validBackupRelStr[str(parentSrcPath)] = []
 
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
@@ -439,6 +440,11 @@ class Backup():
                 currentParentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport)
                 self.softwareBackupCount = self.softwareBackupCount + currentParentSrcCount
 
+                # Preserve files doesn't exist in destination directory for the current parent source directory
+                if COPYSYNC:
+                    srcRelTopParentPathList = list(map(lambda p: str(p), self.validBackupRelStr[str(parentSrcPath)]))
+                    self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
+
                 # Report count for the current parent source directory
                 if not DRYRUN:
                     print(f"  [white]Backed up [purple bold]{currentParentSrcCount}[/purple bold] files")
@@ -453,11 +459,6 @@ class Backup():
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
         if self.softwareIndex == len(type(self).softwareEnabledList) - 1:
-            # Delete files doesn't exist in destination directory for the current parent source directory
-            if COPYSYNC:
-                srcRelTopParentPathList = list(map(lambda p: str(p), type(self).validBackupRelStr[str(parentSrcPath)]))
-                self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
-
             if not DRYRUN:
                 print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareTickedList}[/green].\n[/white]")
             else:
