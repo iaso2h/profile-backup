@@ -11,6 +11,8 @@ from enum import Enum
 from pathlib import Path
 
 print = backup.console.print
+spinnerParsing = sp.Spinner(sp.DOTS, "Parsing...\n")
+spinnerDeleting = sp.Spinner(sp.DOTS, "Please note that file that is in use won't be deleted. Deleting...\n")
 
 def findRemovableDrive() -> List[str]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
@@ -50,6 +52,45 @@ def parse():
     for i in config.softwareConfigs:
         if i.ticked:
             i.backup()
+    if backup.COPYSYNC:
+        for softwareVersionStr in backup.Backup.syncObsoleteFiles.keys():
+            print(f"\n[green bold]{softwareVersionStr}[/green bold]:")
+            for f in backup.Backup.syncObsoleteFiles[softwareVersionStr]:
+                print(f"[red]{f}[/red]")
+
+        try:
+            ans = beaupy.confirm(
+                    "[white]The files listed above is going to be deleted, are you sure?[/white]",
+                    yes_text="[blue]Yes[/blue]",
+                    no_text="[blue]No[/blue]",
+                    default_is_yes=False,
+                )
+        except KeyboardInterrupt:
+            keyboardInterruptExit()
+        except beaupy.Abort:
+            abortExit()
+        except Exception as e:
+            print(e)
+            SystemExit(1)
+
+        if ans:
+            spinnerDeleting.start()
+            for softwareVersionStr in backup.Backup.syncObsoleteFiles.keys():
+                print(f"\n[green bold]{softwareVersionStr}[/green bold]:")
+                for f in backup.Backup.syncObsoleteFiles[softwareVersionStr]:
+                    ff = f # type: str
+                    if ff.endswith("/"):
+                        try:
+                            os.rmdir(ff)
+                        except Exception:
+                            pass
+                    else:
+                        try:
+                            os.remove(ff)
+                        except Exception:
+                            pass
+            spinnerDeleting.stop()
+            print("[bold purple]All obsolete files/directories have been removed[/bold purple]")
 
 
 def standardRun() -> None:
@@ -177,10 +218,9 @@ def standardRun() -> None:
         SystemExit(1)
 
 
-    spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
-    spinner.start()
+    spinnerParsing.start()
     parse()
-    spinner.stop()
+    spinnerParsing.stop()
 
     if backup.Backup.totalBackupCount > 0 and backup.DRYRUN:
         backup.Backup.totalBackupCount = 0 # Rest the total count
@@ -206,7 +246,6 @@ def confirmRun():
         SystemExit(1)
 
     if not backup.DRYRUN:
-        spinner = sp.Spinner(sp.DOTS, "Parsing...\n")
-        spinner.start()
+        spinnerParsing.start()
         parse()
-        spinner.stop()
+        spinnerParsing.stop()

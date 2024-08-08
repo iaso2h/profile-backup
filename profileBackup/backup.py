@@ -62,9 +62,10 @@ class Backup():
             softwareList: All software configuration
             softwareEnabledList: The total software list has been properly configured
             softwareTickedList: The ticked software list. Written after user confirm the software list to backup
-            syncConfirmRemove: Files to be removed from the destination directory if Sync mode is on
+            syncObsoleteFiles: Obsolte files and directories to be removed from the destination directory if Sync mode is on
         instance:
             name: Software name
+            versionStr: Version string
             enabled: Enabled state
             softwareIndex: Software index. The first software index is 0
             globPatterns: A list of globpattern define how to find your software configuration and filter unless filetypes
@@ -77,12 +78,13 @@ class Backup():
     softwareList = []
     softwareEnabledList = []
     softwareTickedList = []
-    syncConfirmRemove = {}
+    syncObsoleteFiles = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
     def __init__(self, softwareConfig: softwareConfig):
     # def __init__(self, name: str, globPatterns: list):
         self.name = softwareConfig["name"]
+        self.versionStr = ""
         self.enabled = softwareConfig["enabled"]
         type(self).softwareList.append(self)
 
@@ -358,24 +360,26 @@ class Backup():
         if not topParentDstPath:
             topParentDstPath = parentDstPath
 
+        softwareVersionStr = self.name + self.versionStr
+
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
                 if not (dstPath.iterdir()):
-                    if not self.name in type(self).syncConfirmRemove:
-                        type(self).syncConfirmRemove[self.name] = []
-                        type(self).syncConfirmRemove[self.name].append(str(dstPath) + "/")
+                    if not softwareVersionStr in type(self).syncObsoleteFiles:
+                        type(self).syncObsoleteFiles[softwareVersionStr] = []
+                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath) + "/")
                     else:
-                        type(self).syncConfirmRemove[self.name].append(str(dstPath) + "/")
+                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath) + "/")
                 else:
                     self.iterSync(srcRelTopParentPathList, dstPath, topParentSrcPath, topParentDstPath)
             else:
                 dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
                 if not dstRelTopParentPathStr in srcRelTopParentPathList:
-                    if not self.name in type(self).syncConfirmRemove:
-                        type(self).syncConfirmRemove[self.name] = []
-                        type(self).syncConfirmRemove[self.name].append(str(dstPath))
+                    if not softwareVersionStr in type(self).syncObsoleteFiles:
+                        type(self).syncObsoleteFiles[softwareVersionStr] = []
+                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath))
                     else:
-                        type(self).syncConfirmRemove[self.name].append(str(dstPath)) # }}}
+                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath)) # }}}
 
 
     def backup(self): # {{{
@@ -402,22 +406,22 @@ class Backup():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
 
                 if isinstance(versionFind, str):
-                    versionStr = versionFind
+                    self.versionStr = versionFind
                 else:
                     try:
-                        versionStr = versionFind(parentSrcPath)
+                        self.versionStr = versionFind(parentSrcPath)
                     except Exception as e:
                         print(e)
                         print('[red]  Version string use "unnamed" instead\n[/red]')
-                        versionStr = "unnamed"
+                        self.versionStr = "unnamed"
 
-                print(f"[white]  Checking up [green bold]{self.name} {versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+                print(f"[white]  Checking up [green bold]{self.name} {self.versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
                 parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
                 parentDstPath = Path(
                         DESTPATH,
                         self.name,
-                        versionStr,
+                        self.versionStr,
                         parentSrcPath.anchor[:1],
                         parentSrcRelAnchorPath
                     )
@@ -452,9 +456,9 @@ class Backup():
                     print(f"  [white]Found [purple bold]{currentParentSrcCount}[/purple bold] files")
 
         if not DRYRUN:
-            print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
+            print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {self.versionStr}[/green bold] files\n[/white]")
         else:
-            print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {versionStr}[/green bold] files\n[/white]")
+            print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {self.versionStr}[/green bold] files\n[/white]")
 
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
