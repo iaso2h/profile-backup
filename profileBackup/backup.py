@@ -63,6 +63,7 @@ class Backup():
             softwareEnabledList: The total software list has been properly configured
             softwareTickedList: The ticked software list. Written after user confirm the software list to backup
             syncObsoleteFiles: Obsolte files and directories to be removed from the destination directory if Sync mode is on
+            validBackupRelStr: Valid found path string fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
         instance:
             name: Software name
             versionStr: Version string
@@ -72,13 +73,14 @@ class Backup():
             softwareBackupCount: Track the total count of files being backed up related to current software
             ticked: Whether this software is chosen and ticked to be backed up
             recursiveCopy: Whether to recursive copy every files nested in a multi-level directory
-            validBackupRelStr: Valid found path string fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
     """
     totalBackupCount = 0
     softwareList = []
     softwareEnabledList = []
     softwareTickedList = []
+
     syncObsoleteFiles = {}
+    validBackupRelStr = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
     def __init__(self, softwareConfig: softwareConfig):
@@ -99,7 +101,6 @@ class Backup():
         self.ticked = False
         self.recursiveCopy = True
 
-        self.validBackupRelStr = {}
 
     # self.name {{{
     @property
@@ -248,8 +249,14 @@ class Backup():
         Returns: number count of backuped files
 
         """
+        if not self.name in type(self).validBackupRelStr:
+            type(self).validBackupRelStr[self.name] = {}
+
+        if not str(topParentSrcPath) in type(self).validBackupRelStr[self.name]:
+            type(self).validBackupRelStr[self.name][str(topParentSrcPath)] = []
+
         srcRelTopParentPath = srcPath.relative_to(topParentSrcPath)
-        self.validBackupRelStr[str(topParentSrcPath)].append(srcRelTopParentPath)
+        type(self).validBackupRelStr[self.name][str(topParentSrcPath)].append(srcRelTopParentPath)
         dstPath = Path(topParentDstPath, srcRelTopParentPath)
         count = 0
 
@@ -326,6 +333,7 @@ class Backup():
                         continue
                     else:
                         count = count + self.copyFile(srcPath, topParentSrcPath, topParentDstPath, silentReport)
+                        topParentDstPath
                 else:
                     if filterType == "exclude" and filterPattern(srcPath):
                         continue
@@ -400,8 +408,6 @@ class Backup():
             parentDstPath = None #type: Path
 
             for parentSrcPath in parentSrcPaths:
-                self.validBackupRelStr[str(parentSrcPath)] = []
-
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
 
@@ -446,7 +452,12 @@ class Backup():
 
                 # Preserve files doesn't exist in destination directory for the current parent source directory
                 if COPYSYNC:
-                    srcRelTopParentPathList = list(map(lambda p: str(p), self.validBackupRelStr[str(parentSrcPath)]))
+                    srcRelTopParentPathList = list(
+                            map(
+                                lambda p: str(p),
+                                type(self).validBackupRelStr[self.name][str(parentSrcPath)]
+                                )
+                            )
                     self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
 
                 # Report count for the current parent source directory
