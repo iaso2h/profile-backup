@@ -7,17 +7,23 @@ from rich.console import Console
 
 
 # Writable from other files
-DESTPATH = None # type: Path
-DRYRUN   = True
+DESTPATH       = None # type: Path
+DRYRUN         = True
+SILENTMODE     = False
+SHADOWTREEMODE = True
 
 
 COPYOVERWRITE = False
 COPYSYNC      = True
 console     = Console()
-print       = console.print
 userName    = os.getlogin()
 appDataPath = Path("C:/Users/{}/AppData".format(userName))
 homePath    = Path("C:/Users/{}".format(userName))
+
+
+def print(*args, **kwargs):
+    if not SILENTMODE:
+        console.print(*args, **kwargs)
 
 
 def idx2sequence(index: int):
@@ -258,6 +264,7 @@ class Backup():
         Returns: number count of backuped files
 
         """
+        # Preserve relative path string of valid backup
         if not self.name in type(self).validBackupRelStr:
             type(self).validBackupRelStr[self.name] = {}
 
@@ -265,7 +272,8 @@ class Backup():
             type(self).validBackupRelStr[self.name][str(topParentSrcPath)] = []
 
         srcRelTopParentPath = srcPath.relative_to(topParentSrcPath)
-        type(self).validBackupRelStr[self.name][str(topParentSrcPath)].append(srcRelTopParentPath)
+        type(self).validBackupRelStr[self.name][str(topParentSrcPath)].append(str(srcRelTopParentPath))
+
         dstPath = Path(topParentDstPath, srcRelTopParentPath)
         count = 0
 
@@ -366,7 +374,7 @@ class Backup():
         Args:
             srcRelTopParentPathList: List contains path string relactive to the source file
             parentDstPath: What destination directory to iterate through
-            topParentDstPath: Top parent source directory where all source file is relative to
+            topParentSrcPath: Top parent source directory where all source file is relative to
             topParentDstPath: Preserved top parent destionation directory for recursive function call
         """
         # Abort when parent destination directory doesn't exist
@@ -377,26 +385,22 @@ class Backup():
         if not topParentDstPath:
             topParentDstPath = parentDstPath
 
-        softwareVersionStr = self.name + self.versionStr
+        if not self.name in type(self).syncObsoleteFiles:
+            type(self).syncObsoleteFiles[self.name] = {}
+        if not self.versionStr in type(self).syncObsoleteFiles[self.name]:
+            type(self).syncObsoleteFiles[self.name][self.versionStr] = []
 
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
-                if not (dstPath.iterdir()):
-                    if not softwareVersionStr in type(self).syncObsoleteFiles:
-                        type(self).syncObsoleteFiles[softwareVersionStr] = []
-                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath) + "/")
-                    else:
-                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath) + "/")
+                if not any(dstPath.iterdir()):
+                    type(self).syncObsoleteFiles[self.name][self.versionStr].append(str(dstPath) + os.path.sep)
                 else:
                     self.iterSync(srcRelTopParentPathList, dstPath, topParentSrcPath, topParentDstPath)
             else:
                 dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
+
                 if not dstRelTopParentPathStr in srcRelTopParentPathList:
-                    if not softwareVersionStr in type(self).syncObsoleteFiles:
-                        type(self).syncObsoleteFiles[softwareVersionStr] = []
-                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath))
-                    else:
-                        type(self).syncObsoleteFiles[softwareVersionStr].append(str(dstPath)) # }}}
+                    type(self).syncObsoleteFiles[self.name][self.versionStr].append(str(dstPath)) # }}}
 
 
     def backup(self): # {{{
@@ -433,13 +437,16 @@ class Backup():
                 print(f"[white]  Checking up [green bold]{self.name} {self.versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
                 parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
-                parentDstPath = Path(
-                        DESTPATH,
-                        self.name,
-                        self.versionStr,
-                        parentSrcPath.anchor[:1],
-                        parentSrcRelAnchorPath
-                    )
+                if SHADOWTREEMODE:
+                    parentDstPath = Path(
+                            DESTPATH,
+                            self.name,
+                            self.versionStr,
+                            parentSrcPath.anchor[:1],
+                            parentSrcRelAnchorPath
+                        )
+                else:
+                    parentDstPath = DESTPATH
 
                 # Get all filter pattern paths
                 filterAllPaths = []
@@ -461,12 +468,7 @@ class Backup():
 
                 # Preserve files doesn't exist in destination directory for the current parent source directory
                 if COPYSYNC:
-                    srcRelTopParentPathList = list(
-                            map(
-                                lambda p: str(p),
-                                type(self).validBackupRelStr[self.name][str(parentSrcPath)]
-                                )
-                            )
+                    srcRelTopParentPathList = type(self).validBackupRelStr[self.name][str(parentSrcPath)]
                     self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
 
                 # Report count for the current parent source directory

@@ -1,8 +1,8 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Backup software profiles on Windows
-# Version: 0.0.20
-# Last Modified: 2024-08-17
+# Version: 0.1.0
+# Last Modified: 2024-08-18
 
 # import logging
 import sys
@@ -18,15 +18,9 @@ if __name__ == "__main__":
         argParser.add_argument("-d", "--debug", action="store_true")
         args = argParser.parse_args()
         if args.debug:
-            import config
-            import backup
-            for s in config.softwareConfigs:
-                if not s.name.lower().startswith("demo"):
-                    s.enabled = False
-                else:
-                    s.enabled = True
-
-            backup.Backup.updateEnabledList()
-
-
-    cli.standardRun()
+            # from pathlib import Path
+            # print(Path(Path(Path("__file__").resolve().parent), "profileBackup", "tests", "test_backup_dst_files"))
+            import pytest
+            pytest.main(["-vv"])
+    else:
+        cli.standardRun()

@@ -10,9 +10,10 @@ Back up profiles from all kind of softwares. The location of these software prof
 # Roadmap
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~
-* ~~Store the software info into JSON file~~(Non-goal. You cannot pass in customized python function)
-* Update/Overwrite/Sync mode
+* ~~Store the software info into JSON file~~(It's non-goal, because you won't be able to set up a python function to maximize the versibility in that way)
+* ~~Update/Sync mode~~
 * Restore
+* Move overrided file to trash before restoring
 * Automatically adapt user name on different computer or operating system
 * Linux support
 * Edit file by condition or by platform
