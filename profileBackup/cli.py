@@ -53,10 +53,11 @@ def parse():
         if i.ticked:
             i.backup()
     if backup.COPYSYNC:
-        for softwareVersionStr in backup.Backup.syncObsoleteFiles.keys():
-            print(f"\n[green bold]{softwareVersionStr}[/green bold]:")
-            for f in backup.Backup.syncObsoleteFiles[softwareVersionStr]:
-                print(f"[red]{f}[/red]")
+        for software in backup.Backup.syncObsoleteFiles.keys():
+            for versionStr in backup.Backup.syncObsoleteFiles[software].keys():
+                print(f"\n[green bold]{software}{versionStr}[/green bold]:")
+                for f in backup.Backup.syncObsoleteFiles[software][versionStr]:
+                    print(f"  [red]{f}[/red]")
 
         try:
             ans = beaupy.confirm(
@@ -75,20 +76,12 @@ def parse():
 
         if ans:
             spinnerDeleting.start()
-            for softwareVersionStr in backup.Backup.syncObsoleteFiles.keys():
-                print(f"\n[green bold]{softwareVersionStr}[/green bold]:")
-                for f in backup.Backup.syncObsoleteFiles[softwareVersionStr]:
-                    ff = f # type: str
-                    if ff.endswith("/"):
-                        try:
-                            os.rmdir(ff)
-                        except Exception:
-                            pass
-                    else:
-                        try:
-                            os.remove(ff)
-                        except Exception:
-                            pass
+
+            import send2trash
+            for software in backup.Backup.syncObsoleteFiles.keys():
+                for versionStr in backup.Backup.syncObsoleteFiles[software].keys():
+                    send2trash.send2trash(backup.Backup.syncObsoleteFiles[software][versionStr])
+
             spinnerDeleting.stop()
             print("[bold purple]All obsolete files/directories have been removed[/bold purple]")
 

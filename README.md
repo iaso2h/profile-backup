@@ -22,12 +22,10 @@ Back up profiles from all kind of softwares. The location of these software prof
 ## 1. Install dependencies
 * psutil(for drive detection)
 * beaupy(for interactive CLI)
+* pytest(for test)
+* send2trash(safely delete files in synmode)
 
-You can install all dependencies via pip or conda(recommanded)
-```shell
-pip install -r requirements.txt
-```
-or
+Recommend installing all dependencies via conda
 ```shell
 conda create --name <nameOfEnv> --file requriements.txt
 ```
