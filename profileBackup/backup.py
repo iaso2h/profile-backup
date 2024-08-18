@@ -155,6 +155,15 @@ class Backup():
 
                         if not validParentPathGlob(i, arg[i]["parentSrcPath"]):
                             raise ValueError(f"The {idx2sequence(i)} glob pattern of software {self.name} didn't find valid directory path.")
+                    elif isinstance(val, Path):
+                        srcPath = val
+                        if not srcPath.exists():
+                            skip()
+                            continue
+                        elif srcPath.is_file():
+                            raise ValueError(f"{self.name}: parent path pattern({str(val)}) cannot be a file path.")
+                        else:
+                            arg[i]["parentSrcPath"] = [srcPath]
                     elif isinstance(val, str):
                         if "*" in val:
                             # Add "/" suffix in the end if "*" is already the last character to make sure the the glob result return directory path
@@ -195,7 +204,7 @@ class Backup():
                                 arg[i]["parentSrcPath"] = [srcPath]
                     else:
                         raise ValueError(
-    f"Wrong given parent path pattern. Path glob generator or string is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
+    f"Wrong given parent path pattern. Path object, Path glob generator or string is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
                                 )
                 # Validate version string
                 elif key == "versionFind":
