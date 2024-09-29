@@ -92,7 +92,7 @@ def standardRun() -> None:
 
     copyMode = ["Sync", "Update"]
     try:
-        ans = beaupy.select(copyMode, return_index=True) # type: list
+        ans = beaupy.select(copyMode, return_index=True)
     except KeyboardInterrupt:
         keyboardInterruptExit()
     except beaupy.Abort:
