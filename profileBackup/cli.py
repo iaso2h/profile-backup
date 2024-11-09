@@ -52,38 +52,42 @@ def parse():
     for i in config.softwareConfigs:
         if i.ticked:
             i.backup()
-    if backup.COPYSYNC:
+    if not backup.DRYRUN and backup.COPYSYNC and backup.Backup.syncObsoleteFiles != {}:
+        obsoleteNonEmptyChk = False
         for software in backup.Backup.syncObsoleteFiles.keys():
             for versionStr in backup.Backup.syncObsoleteFiles[software].keys():
-                print(f"\n[green bold]{software}{versionStr}[/green bold]:")
-                for f in backup.Backup.syncObsoleteFiles[software][versionStr]:
-                    print(f"  [red]{f}[/red]")
+                versionBranchNonEmtpryChk = False
+                if backup.Backup.syncObsoleteFiles[software][versionStr]:
+                    if not versionBranchNonEmtpryChk:
+                        print(f"\n[green bold]{software} {versionStr}[/green bold]:")
+                        if not obsoleteNonEmptyChk:
+                            obsoleteNonEmptyChk = True
+                    for f in backup.Backup.syncObsoleteFiles[software][versionStr]:
+                        print(f"  [red]{f}[/red]")
 
-        try:
-            ans = beaupy.confirm(
-                    "[white]The files listed above is going to be deleted, are you sure?[/white]",
-                    yes_text="[blue]Yes[/blue]",
-                    no_text="[blue]No[/blue]",
-                    default_is_yes=False,
-                )
-        except KeyboardInterrupt:
-            keyboardInterruptExit()
-        except beaupy.Abort:
-            abortExit()
-        except Exception as e:
-            print(e)
-            SystemExit(1)
+        if obsoleteNonEmptyChk:
+            try:
+                ans = beaupy.confirm(
+                        "[white]The files listed above is going to be deleted, are you sure?[/white]",
+                        yes_text="[blue]Yes[/blue]",
+                        no_text="[blue]No[/blue]",
+                        default_is_yes=False,
+                    )
+            except KeyboardInterrupt:
+                keyboardInterruptExit()
+            except beaupy.Abort:
+                abortExit()
+            except Exception as e:
+                print(e)
+                SystemExit(1)
 
-        if ans:
-            spinnerDeleting.start()
+            if ans:
+                import send2trash
+                for software in backup.Backup.syncObsoleteFiles.keys():
+                    for versionStr in backup.Backup.syncObsoleteFiles[software].keys():
+                        send2trash.send2trash(backup.Backup.syncObsoleteFiles[software][versionStr])
 
-            import send2trash
-            for software in backup.Backup.syncObsoleteFiles.keys():
-                for versionStr in backup.Backup.syncObsoleteFiles[software].keys():
-                    send2trash.send2trash(backup.Backup.syncObsoleteFiles[software][versionStr])
-
-            spinnerDeleting.stop()
-            print("[bold purple]All obsolete files/directories have been removed[/bold purple]")
+                print("[bold purple]All obsolete files/directories have been removed[/bold purple]")
 
 
 def standardRun() -> None:
