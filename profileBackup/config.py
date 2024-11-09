@@ -26,15 +26,11 @@ softwareConfigs = [
                         or str.startswith(srcPath.name, "Workspace"),
                     # 1. boolean
                     "recursiveCopy": True,
+                    # 1. boolean
                     "silentReport": False
                 },
                 {
-                    "parentSrcPath": homePath.glob("Autodesk/3ds Max*/User Settings"),
-                    "versionFind": lambda parentSrcPath: parentSrcPath.parts[4][-4:],
-                    "filterType": "include",
-                    "filterPattern": lambda _: True,
-                    "recursiveCopy": True,
-                    "silentReport": False
+                    # Other version branch...
                 }
             ],
         }
@@ -174,15 +170,15 @@ softwareConfigs = [
                     "silentReport": False
                 },
                 {
-                    "parentSrcPath": "D:/Tangent/TArchT*",
+                    "parentSrcPath": "D:/Program Files/Tangent/TArchT20*",
                     "versionFind": lambda parentSrcPath: parentSrcPath.parts[2][5:],
                     "filterType": "include",
-                    "filterPattern": ["SYS/*.lay", "SYS/tangent.cuix", "sys20x64/*.dwt", "sys24x64/*.dwt"],
+                    "filterPattern": ["SYS/*.lay", "SYS/tangent.cuix", "sys20x64/*.dwt", "sys24x64/*.dwt", "sys24x64/Tch.tmn"],
                     "recursiveCopy": True,
                     "silentReport": False
                 },
                 {
-                    "parentSrcPath": "D:/Asset/AutoCAD",
+                    "parentSrcPath": "F:/Asset/AutoCAD",
                     "versionFind": "Asset",
                     "filterType": "include",
                     "filterPattern": lambda _: True,

@@ -69,7 +69,7 @@ class Backup():
             softwareEnabledList: The total software list has been properly configured
             softwareTickedList: The ticked software list. Written after user confirm the software list to backup
             syncObsoleteFiles: Obsolte files and directories to be removed from the destination directory if Sync mode is on
-            validBackupRelStr: Valid found path string fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
+            fitPatBackupRelStr: Found path string that fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
         instance:
             name: Software name
             versionStr: Version string
@@ -86,7 +86,7 @@ class Backup():
     softwareTickedList = []
 
     syncObsoleteFiles = {}
-    validBackupRelStr = {}
+    fitPatBackupRelStr = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
     def __init__(self, softwareConfig: softwareConfig):
@@ -265,14 +265,15 @@ class Backup():
 
         """
         # Preserve relative path string of valid backup
-        if not self.name in type(self).validBackupRelStr:
-            type(self).validBackupRelStr[self.name] = {}
+        if not self.name in type(self).fitPatBackupRelStr:
+            type(self).fitPatBackupRelStr[self.name] = {}
 
-        if not str(topParentSrcPath) in type(self).validBackupRelStr[self.name]:
-            type(self).validBackupRelStr[self.name][str(topParentSrcPath)] = []
+        if not str(topParentSrcPath) in type(self).fitPatBackupRelStr[self.name]:
+            type(self).fitPatBackupRelStr[self.name][str(topParentSrcPath)] = []
 
-        srcRelTopParentPath = srcPath.relative_to(topParentSrcPath)
-        type(self).validBackupRelStr[self.name][str(topParentSrcPath)].append(str(srcRelTopParentPath))
+        srcRelTopParentPath    = srcPath.relative_to(topParentSrcPath)
+        srcRelTopParentPathStr = str(srcRelTopParentPath)
+        type(self).fitPatBackupRelStr[self.name][str(topParentSrcPath)].append(srcRelTopParentPathStr)
 
         dstPath = Path(topParentDstPath, srcRelTopParentPath)
         count = 0
@@ -282,23 +283,23 @@ class Backup():
                 if not DRYRUN:
                     shutil.copy2(srcPath, dstPath)
                     if not silentReport:
-                        print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
+                        print(f"[white]    Backing up file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
                 else:
                     if not silentReport:
-                        print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
+                        print(f"[white]    Found file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
 
                 count = count + 1
             else:
                 if not silentReport:
-                    print(f"[gray]    Skip non-modified file: {srcPath.name}[/gray]")
+                    print(f"[gray]    Skip non-modified file: {srcRelTopParentPathStr}[/gray]")
         else:
 
             if not DRYRUN:
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
-                print(f"[white]    Backing up file: [yellow]{srcPath.name}[/yellow][/white]")
+                print(f"[white]    Backing up file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
             else:
-                print(f"[white]    Found file: [yellow]{srcPath.name}[/yellow][/white]")
+                print(f"[white]    Found file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
 
 
             count = count + 1
@@ -339,6 +340,7 @@ class Backup():
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
 
+        processFileNames = []
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir() and recursiveCopy:
                 count = count + self.iterCopy(srcPath, topParentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport, topParentSrcPath)
@@ -468,7 +470,7 @@ class Backup():
 
                 # Preserve files doesn't exist in destination directory for the current parent source directory
                 if COPYSYNC:
-                    srcRelTopParentPathList = type(self).validBackupRelStr[self.name][str(parentSrcPath)]
+                    srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.name][str(parentSrcPath)]
                     self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
 
                 # Report count for the current parent source directory
