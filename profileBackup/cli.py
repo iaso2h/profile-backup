@@ -5,14 +5,11 @@ import backup
 import psutil
 import os
 import beaupy
-import beaupy.spinners as sp
 from typing import List
 from enum import Enum
 from pathlib import Path
 
 print = backup.console.print
-spinnerParsing = sp.Spinner(sp.DOTS, "Parsing...\n")
-spinnerDeleting = sp.Spinner(sp.DOTS, "Please note that file that is in use won't be deleted. Deleting...\n")
 
 def findRemovableDrive() -> List[str]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
@@ -215,9 +212,7 @@ def standardRun() -> None:
         SystemExit(1)
 
 
-    spinnerParsing.start()
     parse()
-    spinnerParsing.stop()
 
     if backup.Backup.totalBackupCount > 0 and backup.DRYRUN:
         backup.Backup.totalBackupCount = 0 # Rest the total count
@@ -243,6 +238,4 @@ def confirmRun():
         SystemExit(1)
 
     if not backup.DRYRUN:
-        spinnerParsing.start()
         parse()
-        spinnerParsing.stop()
