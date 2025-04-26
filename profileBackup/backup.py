@@ -135,32 +135,32 @@ class Backup():
     def globPatterns(self):
         return self._globPatterns
     @globPatterns.setter
-    def globPatterns(self, arg):
+    def globPatterns(self, globPats):
         def skip():
             print(f"[gray]  Skipped unfound file at: {str(srcPath)}[/[gray]]")
-            arg[i]["parentSrcPath"] = False
+            globPats[globIdx]["parentSrcPath"] = False
 
         def validParentPathGlob(globPatternIndex: int, parentSrcPath: list[Path]):
             for p in parentSrcPath:
                 if p.is_dir():
                     return True
 
-            arg[globPatternIndex]["parentSrcPath"] = False
+            globPats[globPatternIndex]["parentSrcPath"] = False
             return False
 
-        for i, globPattern in enumerate(arg):
+        for globIdx, globPattern in enumerate(globPats):
             for key, val in globPattern.items():
                 # Validate path pattern
                 if key == "parentSrcPath":
-                    if isinstance(val, GeneratorType):
-                        arg[i]["parentSrcPath"] = list(val)
+                    if isinstance(val, GeneratorType) or isinstance(val, map):
+                        globPats[globIdx]["parentSrcPath"] = list(val)
                         # A parent directroy glob paths cannot contain any file path
-                        if not arg[i]["parentSrcPath"]:
-                            arg[i]["parentSrcPath"] = False
+                        if not globPats[globIdx]["parentSrcPath"]:
+                            globPats[globIdx]["parentSrcPath"] = False
                             continue
 
-                        if not validParentPathGlob(i, arg[i]["parentSrcPath"]):
-                            raise ValueError(f"The {idx2sequence(i)} glob pattern of software {self.name} didn't find valid directory path.")
+                        if not validParentPathGlob(globIdx, globPats[globIdx]["parentSrcPath"]):
+                            raise ValueError(f"The {idx2sequence(globIdx)} glob pattern of software {self.name} didn't find valid directory path.")
                     elif isinstance(val, Path):
                         srcPath = val
                         if not srcPath.exists():
@@ -169,7 +169,7 @@ class Backup():
                         elif srcPath.is_file():
                             raise ValueError(f"{self.name}: parent path pattern({str(val)}) cannot be a file path.")
                         else:
-                            arg[i]["parentSrcPath"] = [srcPath]
+                            globPats[globIdx]["parentSrcPath"] = [srcPath]
                     elif isinstance(val, str):
                         if "*" in val:
                             # Add "/" suffix in the end if "*" is already the last character to make sure the the glob result return directory path
@@ -182,14 +182,14 @@ class Backup():
                                 if rootPath.exists:
                                     parentSrcPath = rootPath.glob(val[3:])
                                     if parentSrcPath:
-                                        arg[i]["parentSrcPath"] = list(parentSrcPath) # type list[Path]
-                                        if not arg[i]["parentSrcPath"]:
-                                            arg[i]["parentSrcPath"] = False
+                                        globPats[globIdx]["parentSrcPath"] = list(parentSrcPath) # type list[Path]
+                                        if not globPats[globIdx]["parentSrcPath"]:
+                                            globPats[globIdx]["parentSrcPath"] = False
                                             continue
 
                                         # A parent directroy glob paths cannot contain any file path
-                                        if not validParentPathGlob(i, arg[i]["parentSrcPath"]):
-                                            raise ValueError(f"The {idx2sequence(i)} glob pattern of software {self.name} didn't find valid directory path.")
+                                        if not validParentPathGlob(globIdx, globPats[globIdx]["parentSrcPath"]):
+                                            raise ValueError(f"The {idx2sequence(globIdx)} glob pattern of software {self.name} didn't find valid directory path.")
                                     else:
                                         skip()
                                         continue
@@ -207,30 +207,30 @@ class Backup():
                             elif srcPath.is_file():
                                 raise ValueError(f"{self.name}: parent path pattern({str(val)}) cannot be a file path.")
                             else:
-                                arg[i]["parentSrcPath"] = [srcPath]
+                                globPats[globIdx]["parentSrcPath"] = [srcPath]
                     else:
                         raise ValueError(
-    f"Wrong given parent path pattern. Path object, Path glob generator or string is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
+    f"Wrong given parent path pattern. Path object, Path glob generator or string is expected from the {idx2sequence(globIdx)} glob pattern of software {self.name}."
                                 )
                 # Validate version string
                 elif key == "versionFind":
                     if not isinstance(val, Callable) and not isinstance(val, str):
                         raise ValueError(
-    f"Wrong given version. String or function is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
+    f"Wrong given version. String or function is expected from the {idx2sequence(globIdx)} glob pattern of software {self.name}."
                                 )
                     if val == "":
-                        arg[i]["versionFind"] = "unnamed"
+                        globPats[globIdx]["versionFind"] = "unnamed"
                 # Validate filter type.
                 elif key == "filterType":
                     if not isinstance(val, str):
                         raise ValueError("string expected")
                     if val != "include" and val != "exclude":
-                        raise ValueError(f'Wrong given string value from the {idx2sequence(i)} glob pattern of software {self.name}. The value can only be either "include" or "exclude"')
+                        raise ValueError(f'Wrong given string value from the {idx2sequence(globIdx)} glob pattern of software {self.name}. The value can only be either "include" or "exclude"')
                 # Validate filter pattern. It could be a include pattern of a exclude pattern
                 elif key == "filterPattern":
                     if not isinstance(val, Callable) and not isinstance(val, list):
                         raise ValueError(
-    f"Wrong given filter pattern. List or function is expected from the {idx2sequence(i)} glob pattern of software {self.name}."
+    f"Wrong given filter pattern. List or function is expected from the {idx2sequence(globIdx)} glob pattern of software {self.name}."
                                 )
                     if isinstance(val, list):
                         for k in val:
@@ -240,15 +240,15 @@ class Backup():
                 elif key == "recursiveCopy":
                     if not isinstance(val, bool):
                         raise ValueError(
-    f"Wrong given filter pattern from the {idx2sequence(i)} glob pattern of software {self.name}.")
+    f"Wrong given filter pattern from the {idx2sequence(globIdx)} glob pattern of software {self.name}.")
                 elif key == "silentReport":
                     if not isinstance(val, bool):
                         raise ValueError(
-    f"Wrong given filter pattern from the {idx2sequence(i)} glob pattern of software {self.name}.")
+    f"Wrong given filter pattern from the {idx2sequence(globIdx)} glob pattern of software {self.name}.")
                 else:
                     raise ValueError(f"Unrecognized key: {key} in globPatterns")
 
-        self._globPatterns = arg
+        self._globPatterns = globPats
     # }}}
 
 
