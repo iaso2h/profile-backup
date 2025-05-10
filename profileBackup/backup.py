@@ -1,13 +1,13 @@
 import shutil
 import os
 from types import GeneratorType
-from typing import Callable, List, Union, Dict, TypedDict
+from typing import Callable, TypedDict, Optional
 from pathlib import Path
 from rich.console import Console
 
 
 # Writable from other files
-DESTPATH       = None # type: Path
+DESTPATH: Optional[Path] = None
 DRYRUN         = True
 SILENTMODE     = False
 SHADOWTREEMODE = True
@@ -58,47 +58,46 @@ class softwareConfig(TypedDict):
     enabled: bool
     globPatterns: list
 
-class Backup():
+class Profile():
     """
-    Backup class for backing up software configuration
+    Profile class for backing up software configuration
 
     Attributes:
         class:
             totalBackupCount: Track the total backup time whenever a file is backup up
-            softwareList: All software configuration
-            softwareEnabledList: The total software list has been properly configured
-            softwareTickedList: The ticked software list. Written after user confirm the software list to backup
+            profileList: All profile configuration
+            profileEnabledList: The total profile list has been properly configured
+            profileTickedList: The ticked profile list. Written after user confirm the profile list to backup
             syncObsoleteFiles: Obsolte files and directories to be removed from the destination directory if Sync mode is on
             fitPatBackupRelStr: Found path string that fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
         instance:
-            name: Software name
+            name: profile name
             versionStr: Version string
             enabled: Enabled state
-            softwareIndex: Software index. The first software index is 0
-            globPatterns: A list of globpattern define how to find your software configuration and filter unless filetypes
-            softwareBackupCount: Track the total count of files being backed up related to current software
-            ticked: Whether this software is chosen and ticked to be backed up
+            profileIndex: profile index. The first profile index is 0
+            globPatterns: A list of globpattern define how to find your profile configuration and filter unless filetypes
+            profileBackupCount: Track the total count of files being backed up related to current profile
+            ticked: Whether this profile is chosen and ticked to be backed up
             recursiveCopy: Whether to recursive copy every files nested in a multi-level directory
     """
     totalBackupCount = 0
-    softwareList = []
-    softwareEnabledList = []
-    softwareTickedList = []
+    profileList = []
+    profileEnabledList = []
+    profileTickedList = []
 
-    syncObsoleteFiles = {}
+    syncFilesToDelete = {}
     fitPatBackupRelStr = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
     def __init__(self, softwareConfig: softwareConfig):
-    # def __init__(self, name: str, globPatterns: list):
         self.name = softwareConfig["name"]
         self.versionStr = ""
         self.enabled = softwareConfig["enabled"]
-        type(self).softwareList.append(self)
+        type(self).profileList.append(self)
 
         if self.enabled:
-            type(self).softwareEnabledList.append(self)
-            self.softwareIndex = len(type(self).softwareEnabledList) - 1
+            type(self).profileEnabledList.append(self)
+            self.profileIndex = len(type(self).profileEnabledList) - 1
 
         # The value of glob pattern will get validated when assigned value
         self.globPatterns = softwareConfig["globPatterns"]
@@ -129,6 +128,16 @@ class Backup():
             raise ValueError("boolean expected")
         self._enabled = val
     # }}}
+
+
+    @classmethod
+    def updateTickedList(cls):
+        if not cls.profileEnabledList:
+            raise ValueError
+        for profile in cls.profileEnabledList:
+            if profile.ticked:
+                cls.profileTickedList.append(profile)
+
 
     # self.globPattern {{{
     @property
@@ -312,11 +321,11 @@ class Backup():
             parentSrcPath: Path,
             parentDstPath: Path,
             filterType: str,
-            filterPattern: Union[List[str], Callable[[Path], bool]],
+            filterPattern: list[str] | Callable[[Path], bool],
             filterAllPathStrs: list,
             recursiveCopy: bool,
             silentReport: bool,
-            topParentSrcPath: Union[None, Path] = None,
+            topParentSrcPath: Optional[Path] = None,
             ) -> int:
         """Iter through a parent source directory to validate and copy each file
 
@@ -366,10 +375,10 @@ class Backup():
 
     def iterSync( # {{{
             self,
-            srcRelTopParentPathList: List[str],
+            srcRelTopParentPathList: list[str],
             parentDstPath: Path,
             topParentSrcPath: Path,
-            topParentDstPath: Union[None, Path] = None
+            topParentDstPath: Optional[Path] = None
             ):
         """Iterate throught destination directory to check whether a file exist in current source directory. If not, delete that file
 
@@ -387,29 +396,29 @@ class Backup():
         if not topParentDstPath:
             topParentDstPath = parentDstPath
 
-        if not self.name in type(self).syncObsoleteFiles:
-            type(self).syncObsoleteFiles[self.name] = {}
-        if not self.versionStr in type(self).syncObsoleteFiles[self.name]:
-            type(self).syncObsoleteFiles[self.name][self.versionStr] = []
+        if not self.name in type(self).syncFilesToDelete:
+            type(self).syncFilesToDelete[self.name] = {}
+        if not self.versionStr in type(self).syncFilesToDelete[self.name]:
+            type(self).syncFilesToDelete[self.name][self.versionStr] = []
 
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
                 if not any(dstPath.iterdir()):
-                    type(self).syncObsoleteFiles[self.name][self.versionStr].append(str(dstPath) + os.path.sep)
+                    type(self).syncFilesToDelete[self.name][self.versionStr].append(str(dstPath) + os.path.sep)
                 else:
                     self.iterSync(srcRelTopParentPathList, dstPath, topParentSrcPath, topParentDstPath)
             else:
                 dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
 
                 if not dstRelTopParentPathStr in srcRelTopParentPathList:
-                    type(self).syncObsoleteFiles[self.name][self.versionStr].append(str(dstPath)) # }}}
+                    type(self).syncFilesToDelete[self.name][self.versionStr].append(str(dstPath)) # }}}
 
 
     def backup(self): # {{{
         print(f"[white]Checking up [green bold]{self.name}[/green bold][/white]...")
 
         for globPattern in self.globPatterns:
-            parentSrcPaths = globPattern["parentSrcPath"] # type: list
+            parentSrcPaths = globPattern["parentSrcPath"] # type: list[Path]
             if not parentSrcPaths:
                 continue
 
@@ -418,9 +427,6 @@ class Backup():
             filterPattern = globPattern["filterPattern"] # type: Callable | list
             recursiveCopy = globPattern["recursiveCopy"] # type: bool
             silentReport  = globPattern["silentReport"]  # type: bool
-
-            parentSrcPath = None #type: Path
-            parentDstPath = None #type: Path
 
             for parentSrcPath in parentSrcPaths:
                 if parentSrcPath.is_file():
@@ -486,18 +492,19 @@ class Backup():
 
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # Report the total count as the last object
-        if self.softwareIndex == len(type(self).softwareEnabledList) - 1:
+        if self.profileIndex == len(type(self).profileEnabledList) - 1:
+            profileTickedNames = list(map(lambda i: str(i.name), type(self).profileTickedList))
             if not DRYRUN:
-                print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareTickedList}[/green].\n[/white]")
+                print(f"[white]Backed up [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]")
             else:
-                print(f"[white]Found [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{type(self).softwareTickedList}[/green].\n[/white]") # }}}
+                print(f"[white]Found [purple bold]{type(self).totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]") # }}}
 
 
     @classmethod
     def updateEnabledList(cls):
-        cls.softwareEnabledList = []
-        for s in cls.softwareList:
+        cls.profileEnabledList = []
+        for s in cls.profileList:
             if s.enabled:
-                cls.softwareEnabledList.append(s)
-                s.softwareIndex = len(cls.softwareEnabledList) - 1
+                cls.profileEnabledList.append(s)
+                s.softwareIndex = len(cls.profileEnabledList) - 1
 

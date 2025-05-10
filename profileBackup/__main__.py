@@ -1,8 +1,8 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Backup software profiles on Windows
-# Version: 0.1.3
-# Last Modified: 2025-04-26
+# Version: 0.1.4
+# Last Modified: 2025-05-10
 
 # import logging
 import sys
@@ -23,4 +23,4 @@ if __name__ == "__main__":
             import pytest
             pytest.main(["-vv"])
     else:
-        cli.standardRun()
+        cli.program()

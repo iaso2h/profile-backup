@@ -1,11 +1,11 @@
-from backup import Backup, appDataPath, homePath
+from backup import Profile, appDataPath, homePath
 from pathlib import Path
 import winreg as wrg
 
 
 # Written from other file
-softwareConfigs = [
-    Backup(
+profileConfigs = [
+    Profile(
         {
             "name": "demoBackup",
             "enabled": False,
@@ -35,7 +35,7 @@ softwareConfigs = [
             ],
         }
     ),
-    Backup(
+    Profile(
         {
             "name": "3ds Max",
             "enabled": True,
@@ -60,7 +60,7 @@ softwareConfigs = [
             ],
         }
     ),
-    Backup(
+    Profile(
         {
             "name": "SOLIDWORKS",
             "enabled": True,
@@ -110,7 +110,7 @@ softwareConfigs = [
             ]
         }
     ),
-    Backup(
+    Profile(
         {
             "name": "Blender",
             "enabled": True,
@@ -128,7 +128,7 @@ softwareConfigs = [
             ],
         }
     ),
-    Backup(
+    Profile(
         {
             "name": "AutoCAD",
             "enabled": True,
@@ -188,7 +188,7 @@ softwareConfigs = [
             ],
         }
     ),
-    Backup(
+    Profile(
         {
             "name": "Photoshop",
             "enabled": True,
@@ -210,7 +210,7 @@ softwareConfigs = [
             ],
         }
     ),
-    Backup(
+    Profile(
         {
             "name": "Everything",
             "enabled": True,
@@ -226,7 +226,7 @@ softwareConfigs = [
             ],
         }
     ),
-    Backup(
+    Profile(
         {
             "name": "TubesT",
             "enabled": True,
