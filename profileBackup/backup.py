@@ -53,33 +53,12 @@ class Ignore():
     def ignoreList(self, val):
         self._ignoreList = val
 
-class softwareConfig(TypedDict):
+class profileConfig(TypedDict):
     name: str
     enabled: bool
     globPatterns: list
 
 class Profile():
-    """
-    Profile class for backing up software configuration
-
-    Attributes:
-        class:
-            totalBackupCount: Track the total backup time whenever a file is backup up
-            profileList: All profile configuration
-            profileEnabledList: The total profile list has been properly configured
-            profileTickedList: The ticked profile list. Written after user confirm the profile list to backup
-            syncObsoleteFiles: Obsolte files and directories to be removed from the destination directory if Sync mode is on
-            fitPatBackupRelStr: Found path string that fit in the pattern described by globPatterns. Represent in path string relative to top parent source directory path
-        instance:
-            name: profile name
-            versionStr: Version string
-            enabled: Enabled state
-            profileIndex: profile index. The first profile index is 0
-            globPatterns: A list of globpattern define how to find your profile configuration and filter unless filetypes
-            profileBackupCount: Track the total count of files being backed up related to current profile
-            ticked: Whether this profile is chosen and ticked to be backed up
-            recursiveCopy: Whether to recursive copy every files nested in a multi-level directory
-    """
     totalBackupCount = 0
     profileList = []
     profileEnabledList = []
@@ -89,10 +68,28 @@ class Profile():
     fitPatBackupRelStr = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
-    def __init__(self, softwareConfig: softwareConfig):
-        self.name = softwareConfig["name"]
-        self.versionStr = ""
-        self.enabled = softwareConfig["enabled"]
+    def __init__(
+            self,
+            name: str,
+            categoryName: str,
+            enabled: bool,
+            recursiveCopy: bool,
+            silentReport: bool,
+            filterType: str,
+            parentSrcPath,
+            versionFind,
+            filterPattern,
+            ):
+        self.name = name
+        self.categoryName = categoryName
+        self.enabled = enabled
+        self.recursiveCopy = recursiveCopy
+        self.silentReport = silentReport
+        self.parentSrcPath = parentSrcPath
+        self.versionFind = versionFind
+        self.filterType = filterType
+        self.filterPattern = filterPattern
+
         type(self).profileList.append(self)
 
         if self.enabled:
@@ -100,11 +97,12 @@ class Profile():
             self.profileIndex = len(type(self).profileEnabledList) - 1
 
         # The value of glob pattern will get validated when assigned value
-        self.globPatterns = softwareConfig["globPatterns"]
+        self.globPatterns = profileConfig["globPatterns"]
 
+        # Deafult value
+        self.versionStr = ""
         self.softwareBackupCount = 0
         self.ticked = False
-        self.recursiveCopy = True
 
 
     # self.name {{{
@@ -422,21 +420,15 @@ class Profile():
             if not parentSrcPaths:
                 continue
 
-            versionFind   = globPattern["versionFind"]   # type: Callable | str
-            filterType    = globPattern["filterType"]    # type: str
-            filterPattern = globPattern["filterPattern"] # type: Callable | list
-            recursiveCopy = globPattern["recursiveCopy"] # type: bool
-            silentReport  = globPattern["silentReport"]  # type: bool
-
             for parentSrcPath in parentSrcPaths:
                 if parentSrcPath.is_file():
                     raise ValueError(f"{self.name}: parent path pattern({str(parentSrcPath)}) cannot be a file path.")
 
-                if isinstance(versionFind, str):
-                    self.versionStr = versionFind
+                if isinstance(self.versionFind, str):
+                    self.versionStr = self.versionFind
                 else:
                     try:
-                        self.versionStr = versionFind(parentSrcPath)
+                        self.versionStr = self.versionFind(parentSrcPath)
                     except Exception as e:
                         print(e)
                         print('[red]  Version string use "unnamed" instead\n[/red]')
@@ -458,8 +450,8 @@ class Profile():
 
                 # Get all filter pattern paths
                 filterAllPaths = []
-                if isinstance(filterPattern, list):
-                    for pattern in filterPattern:
+                if isinstance(self.filterPattern, list):
+                    for pattern in self.filterPattern:
                         if not pattern.startswith("\\") and pattern.startswith("/"):
                             pattern = "/" + pattern
 
@@ -471,7 +463,7 @@ class Profile():
                 filterAllPathStrs = list(map(lambda p: str(p), filterAllPaths))
 
                 # Filter out path that match the excluded paths
-                currentParentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, filterType, filterPattern, filterAllPathStrs, recursiveCopy, silentReport)
+                currentParentSrcCount = self.iterCopy(parentSrcPath, parentDstPath, self.filterType, self.filterPattern, filterAllPathStrs, self.recursiveCopy, self.silentReport)
                 self.softwareBackupCount = self.softwareBackupCount + currentParentSrcCount
 
                 # Preserve files doesn't exist in destination directory for the current parent source directory
