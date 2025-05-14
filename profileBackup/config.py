@@ -7,7 +7,7 @@ import winreg as wrg
 profileConfigs = [
     Profile(
         name="demoBackup",
-        categoryName="Main",
+        category="Main",
         enabled=False,
         recursiveCopy=True,
         silentReport=False,
@@ -28,7 +28,7 @@ profileConfigs = [
     ),
     Profile(
         name="3ds Max",
-        categoryName="Workspace",
+        category="Workspace",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -40,7 +40,7 @@ profileConfigs = [
     ),
     Profile(
         name="3ds Max",
-        categoryName="User Settings",
+        category="User Settings",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -51,7 +51,7 @@ profileConfigs = [
     ),
     Profile(
         name="SOLIDWORKS",
-        categoryName="Asset",
+        category="Asset",
         enabled=True,
         recursiveCopy=True,
         silentReport=True,
@@ -62,7 +62,7 @@ profileConfigs = [
     )
     Profile(
         name="SOLIDWORKS",
-        categoryName="Language Configs",
+        category="Language Configs",
         enabled=True,
         recursiveCopy=True,
         silentReport=True,
@@ -82,7 +82,7 @@ profileConfigs = [
     ),
     Profile(
         name="SOLIDWORKS",
-        categoryName="Data",
+        category="Data",
         enabled=True,
         recursiveCopy=True,
         silentReport=True,
@@ -102,7 +102,7 @@ profileConfigs = [
     ),
     Profile(
         name="Blender",
-        categoryName="Main",
+        category="Main",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -115,7 +115,7 @@ profileConfigs = [
     ),
     Profile(
         name="AutoCAD",
-        categoryName="Plot",
+        category="Plot",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -146,7 +146,7 @@ profileConfigs = [
     )
     Profile(
         name="AutoCAD",
-        categoryName="YSTool",
+        category="YSTool",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -157,7 +157,7 @@ profileConfigs = [
     )
     Profile(
         name="AutoCAD",
-        categoryName="Tangent",
+        category="Tangent",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -168,7 +168,7 @@ profileConfigs = [
     )
     Profile(
         name="AutoCAD",
-        categoryName="Asset",
+        category="Asset",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -179,7 +179,7 @@ profileConfigs = [
     )
     Profile(
         name="Photoshop",
-        categoryName="Main",
+        category="Main",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -196,7 +196,7 @@ profileConfigs = [
     ),
     Profile(
         name="Everything",
-        categoryName="Main",
+        category="Main",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
@@ -207,7 +207,7 @@ profileConfigs = [
     ),
     Profile(
         name="TubesT",
-        categoryName="Main",
+        category="Main",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,

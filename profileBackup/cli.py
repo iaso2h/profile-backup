@@ -1,7 +1,6 @@
 import config
 import backup
 
-
 import psutil
 import os
 import beaupy
@@ -43,9 +42,10 @@ def parseBackupFiles():
     if not backup.DRYRUN:
         os.makedirs(str(backup.DESTPATH), exist_ok=True)
 
-    for i in config.profileConfigs:
-        if i.ticked:
-            i.backup()
+    for p in config.profileConfigs:
+        if p.ticked:
+            p.backup()
+    backup.Profile.reportBackupCount()
 
     # Print out the files to delete in synchronizing mode
     if not backup.DRYRUN and backup.COPYSYNC and backup.Profile.syncFilesToDelete != {}:
@@ -88,8 +88,9 @@ def program() -> None:
     print("[white]Select copy mode[/white]")
 
     copyMode = ["Sync", "Update"]
+    ans = 0
     try:
-        ans = beaupy.select(copyMode, return_index=True)
+        ans = beaupy.select(copyMode, return_index=True) # type: ignore
     except KeyboardInterrupt:
         keyboardInterruptExit()
     except beaupy.Abort:
@@ -139,7 +140,7 @@ def program() -> None:
     ans = len(dstPathsRich) - 2 # Default value destination
     print("[white]Choose the path to store the files:[/white]")
     try:
-        ans = beaupy.select(dstPathsRich, return_index=True)
+        ans = beaupy.select(dstPathsRich, return_index=True) # type: ignore
     except KeyboardInterrupt:
         keyboardInterruptExit()
     except beaupy.Abort:
