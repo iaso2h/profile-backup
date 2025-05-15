@@ -49,7 +49,6 @@ class TestBackup:
         backup.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
         backup.DRYRUN         = True
         backup.SILENTMODE     = True
-        backup.SHADOWTREEMODE = False
         backup.COPYSYNC       = True
 
         for s in config.profileConfigs:
@@ -239,7 +238,6 @@ class TestBackup:
         backup.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
         backup.DRYRUN         = True
         backup.SILENTMODE     = True
-        backup.SHADOWTREEMODE = False
         backup.COPYSYNC       = True
 
         for s in config.profileConfigs:

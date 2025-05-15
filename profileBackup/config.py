@@ -14,7 +14,7 @@ profileConfigs = [
         # 1. Path object
         # 2. Path glob generator
         # 3. string contains parent source directory(support */** wildcard character)
-        parentSrcPath=Path(Path("__file__").resolve().parent, "profileBackup", "tests", "test_backup_src_files"),
+        parentSrcPaths=Path(Path("__file__").resolve().parent, "profileBackup", "tests", "test_backup_src_files"),
         # 1. function with `parentSrcPath` as parameter
         # 2. string
         versionFind=lambda parentSrcPath: parentSrcPath.parts[7][:4],
@@ -32,7 +32,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath=appDataPath.glob("Local/Autodesk/3dsMax/*/*/*/UI/Workspaces"),
+        parentSrcPaths=appDataPath.glob("Local/Autodesk/3dsMax/*/*/*/UI/Workspaces"),
         versionFind=lambda parentSrcPath: parentSrcPath.parts[7][:4],
         filterType="exclude",
         filterPattern=lambda srcPath: srcPath.is_dir()
@@ -44,7 +44,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath=homePath.glob("Autodesk/3ds Max*/User Settings"),
+        parentSrcPaths=homePath.glob("Autodesk/3ds Max*/User Settings"),
         versionFind=lambda parentSrcPath: parentSrcPath.parts[4][-4:],
         filterType="include",
         filterPattern=lambda _: True,
@@ -55,7 +55,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=True,
-        parentSrcPath="D:/Asset/SOLIDWORKS",
+        parentSrcPaths="D:/Asset/SOLIDWORKS",
         versionFind="Asset",
         filterType="include",
         filterPattern=lambda _: True,

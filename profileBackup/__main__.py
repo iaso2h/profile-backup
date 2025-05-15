@@ -1,8 +1,8 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Backup software profiles on Windows
-# Version: 0.1.4
-# Last Modified: 2025-05-10
+# Version: 0.1.5
+# Last Modified: 2025-05-16
 
 # import logging
 import sys
