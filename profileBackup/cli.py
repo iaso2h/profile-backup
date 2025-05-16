@@ -51,9 +51,9 @@ def parseBackupFiles():
     if not backup.DRYRUN and backup.COPYSYNC and backup.Profile.syncFilesToDelete != {}:
         obsoleteNonEmptyChk = False
         for software in backup.Profile.syncFilesToDelete.keys():
-            for versionStr in backup.Profile.syncFilesToDelete[software].keys():
-                print(f"\n[green bold]{software} {versionStr}[/green bold]:")
-                for f in backup.Profile.syncFilesToDelete[software][versionStr]:
+            for parentSrcPath in backup.Profile.syncFilesToDelete[software].keys():
+                print(f"\n[green bold]{software} {parentSrcPath}[/green bold]:")
+                for f in backup.Profile.syncFilesToDelete[software][parentSrcPath]:
                     print(f"  [red]{f}[/red]")
 
         # Prompt to delete the files
@@ -76,8 +76,8 @@ def parseBackupFiles():
 
             if ans:
                 for software in backup.Profile.syncFilesToDelete.keys():
-                    for versionStr in backup.Profile.syncFilesToDelete[software].keys():
-                        send2trash.send2trash(backup.Profile.syncFilesToDelete[software][versionStr])
+                    for parentSrcPath in backup.Profile.syncFilesToDelete[software].keys():
+                        send2trash.send2trash(backup.Profile.syncFilesToDelete[software][parentSrcPath])
 
                 print("[bold purple]All obsolete files/directories have been removed[/bold purple]")
 
@@ -98,11 +98,8 @@ def program() -> None:
     except Exception as e:
         print(e)
         SystemExit(1)
-    if ans == 0:
-        backup.COPYSYNC = True
-    else:
-        backup.COPYSYNC = False
-
+    
+    backup.COPYSYNC = True if ans == 0 else False
 
     # Select profile
     print("[white]Select profile to back up:[/white]")
@@ -117,10 +114,8 @@ def program() -> None:
 
         # Update ticked state for enabled Backup objects
         for i in config.profileConfigs:
-            if i.name in softwareChoice:
-                i.ticked = True
-            else:
-                i.ticked = False
+            i.ticked = True if i.name in softwareChoice else False
+            
         backup.Profile.updateTickedList()
 
     except KeyboardInterrupt:
