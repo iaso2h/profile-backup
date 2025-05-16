@@ -51,9 +51,9 @@ def parseBackupFiles():
     if not backup.DRYRUN and backup.COPYSYNC and backup.Profile.syncFilesToDelete != {}:
         obsoleteNonEmptyChk = False
         for software in backup.Profile.syncFilesToDelete.keys():
-            for versionStr in backup.Profile.syncFilesToDelete[software].keys():
-                print(f"\n[green bold]{software} {versionStr}[/green bold]:")
-                for f in backup.Profile.syncFilesToDelete[software][versionStr]:
+            for parentSrcPath in backup.Profile.syncFilesToDelete[software].keys():
+                print(f"\n[green bold]{software} {parentSrcPath}[/green bold]:")
+                for f in backup.Profile.syncFilesToDelete[software][parentSrcPath]:
                     print(f"  [red]{f}[/red]")
 
         # Prompt to delete the files
@@ -76,8 +76,8 @@ def parseBackupFiles():
 
             if ans:
                 for software in backup.Profile.syncFilesToDelete.keys():
-                    for versionStr in backup.Profile.syncFilesToDelete[software].keys():
-                        send2trash.send2trash(backup.Profile.syncFilesToDelete[software][versionStr])
+                    for parentSrcPath in backup.Profile.syncFilesToDelete[software].keys():
+                        send2trash.send2trash(backup.Profile.syncFilesToDelete[software][parentSrcPath])
 
                 print("[bold purple]All obsolete files/directories have been removed[/bold purple]")
 

@@ -92,12 +92,18 @@ class Profile():
 
         type(self).profileList.append(self)
 
-        # Deafult value
+        # Default value
         self.versionStr = ""
         self.softwareBackupCount = 0
         self.ticked = False
         self.enabledIndex = -1
 
+
+
+    @property
+    def foundFilePrompt(self) -> str:
+        promptText = "Backing up" if not DRYRUN else "Found"
+        return promptText
 
     # Validation of name {{{
     @property
@@ -187,7 +193,7 @@ class Profile():
                 self._parentSrcPath = [val]
         elif isinstance(val, str):
             if "*" in val:
-                # Adding "/" suffix to the end if "*" is already the last character to make sure the the glob result always return a directory path
+                # Adding "/" suffix to the end if "*" is already the last character to make sure the glob result always return a directory path
                 if val[-1:] == "*":
                     val = val + "/"
 
@@ -295,30 +301,31 @@ class Profile():
         Returns: number count of backuped files
 
         """
-        # Recoding
+        # Recording
         if not self.name in type(self).fitPatBackupRelStr:
             type(self).fitPatBackupRelStr[self.name] = {}
 
         if not str(topParentSrcPath) in type(self).fitPatBackupRelStr[self.name]:
             type(self).fitPatBackupRelStr[self.name][str(topParentSrcPath)] = []
+        srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.name][str(topParentSrcPath)]
 
-        # Compose desionation path
+
+        # Compose destination path
         srcRelTopParentPath    = srcPath.relative_to(topParentSrcPath)
         srcRelTopParentPathStr = str(srcRelTopParentPath)
-        type(self).fitPatBackupRelStr[self.name][str(topParentSrcPath)].append(srcRelTopParentPathStr)
+        srcRelTopParentPathList.append(srcRelTopParentPathStr)
 
         dstPath = Path(topParentDstPath, srcRelTopParentPath)
 
 
-        # Deicde whether to dry run
+        # Decide whether to dry run
         count = 0
-        foundFilePrefix = "Backing up" if not DRYRUN else "Found"
         if dstPath.exists():
             if COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
                 if not DRYRUN:
                     shutil.copy2(srcPath, dstPath)
 
-                print(f"[white]    {foundFilePrefix} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
+                print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
                 count = count + 1
             else:
                 print(f"[gray]    Skip unchanged file: {srcRelTopParentPathStr}[/gray]")
@@ -327,7 +334,7 @@ class Profile():
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
 
-            print(f"[white]    {foundFilePrefix} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
+            print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
             count = count + 1
 
         return count # }}}
@@ -353,7 +360,7 @@ class Profile():
         """
         count = 0
 
-        # Initialization for the first funtion call
+        # Initialization for the first function call
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
 
@@ -402,7 +409,7 @@ class Profile():
             topParentSrcPath: Path,
             topParentDstPath: Optional[Path] = None
             ):
-        """Iterate throught destination directory to check whether a file exist in current source directory. If not, delete that file
+        """Iterate throught destination directory to check whether a file exist in local source directory. If not, delete that file
 
         Args:
             srcRelTopParentPathList: List contains path string relactive to the source file
@@ -414,26 +421,32 @@ class Profile():
         if not parentDstPath.exists():
             return
 
-        # Initialization for the first funtion call
+        # Initialization for the first function call
         if not topParentDstPath:
             topParentDstPath = parentDstPath
 
         if not self.name in type(self).syncFilesToDelete:
             type(self).syncFilesToDelete[self.name] = {}
         if not self.versionStr in type(self).syncFilesToDelete[self.name]:
-            type(self).syncFilesToDelete[self.name][self.versionStr] = []
+            type(self).syncFilesToDelete[self.name][topParentSrcPath] = []
+        syncFilesToDelete = type(self).syncFilesToDelete[self.name][topParentSrcPath]
 
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
-                if not any(dstPath.iterdir()):
-                    type(self).syncFilesToDelete[self.name][self.versionStr].append(str(dstPath) + os.path.sep)
+                if not any(dstPath.iterdir()): # Remove empty directories
+                    syncFilesToDelete.append(str(dstPath) + os.path.sep)
                 else:
-                    self.iterSync(srcRelTopParentPathList, dstPath, topParentSrcPath, topParentDstPath)
+                    self.iterSync(
+                        srcRelTopParentPathList=srcRelTopParentPathList,
+                        parentDstPath=dstPath,
+                        topParentSrcPath=topParentSrcPath,
+                        topParentDstPath=topParentDstPath
+                    )
             else:
                 dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
 
                 if not dstRelTopParentPathStr in srcRelTopParentPathList:
-                    type(self).syncFilesToDelete[self.name][self.versionStr].append(str(dstPath)) # }}}
+                    syncFilesToDelete.append(str(dstPath)) # }}}
 
 
     def backup(self): # {{{
@@ -481,7 +494,7 @@ class Profile():
             filterAllPathStrs = list(map(lambda p: str(p), filterAllPaths))
 
 
-            # Copy files from source to destionation
+            # Copy files from source to destination
             currentParentSrcCount = self.iterCopy(
                 parentSrcPath=parentSrcPath,
                 parentDstPath=parentDstPath,
@@ -491,23 +504,23 @@ class Profile():
 
 
             # Preserve files doesn't exist in destination directory for the current parent source directory
+            srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.name][str(parentSrcPath)]
             if COPYSYNC:
-                srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.name][str(parentSrcPath)]
-                self.iterSync(srcRelTopParentPathList, parentDstPath, parentSrcPath)
+                self.iterSync(
+                    srcRelTopParentPathList=srcRelTopParentPathList,
+                    parentDstPath=parentDstPath,
+                    topParentSrcPath=parentSrcPath
+            )
 
             # Report count for the current parent source directory
-            if not DRYRUN:
-                print(f"  [white]Backed up [purple bold]{currentParentSrcCount}[/purple bold] files")
-            else:
-                print(f"  [white]Found [purple bold]{currentParentSrcCount}[/purple bold] files")
+            print(f"  [white]{self.foundFilePrompt} [purple bold]{currentParentSrcCount}[/purple bold] files")
 
         if not DRYRUN:
-            print(f"[white]Backed up [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {self.versionStr}[/green bold] files\n[/white]")
-        else:
-            print(f"[white]Found [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {self.versionStr}[/green bold] files\n[/white]")
+            print(f"[white]{self.foundFilePrompt} [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {self.versionStr}[/green bold] files\n[/white]")
 
         type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
         # }}}
+
 
     @classmethod
     def reportBackupCount(cls):
