@@ -6,7 +6,6 @@ import os
 import beaupy
 import send2trash
 from typing import Tuple
-from enum import Enum
 from pathlib import Path
 
 print = backup.console.print
@@ -84,7 +83,7 @@ def parseBackupFiles():
 
 def program() -> None:
     print(findRemovableDrive())
-    # Select copy mmode
+    # Select copy mode
     print("[white]Select copy mode[/white]")
 
     copyMode = ["Sync", "Update"]

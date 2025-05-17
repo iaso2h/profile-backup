@@ -245,6 +245,7 @@ class TestBackup:
                 s.backup()
 
 
+        # TODO:
         assert sorted(backup.Profile.syncFilesToDelete[dstName][versionStr]) == sorted([
             str(Path(backup.DESTPATH, "api", "bar", "test1.txt")),
             str(Path(backup.DESTPATH, "api", "bar", "empty_dir")) + os.path.sep,
