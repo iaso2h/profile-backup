@@ -81,29 +81,6 @@ class Profile():
             filterType: str,
             filterPattern,
             ):
-        self.name = name
-        self.category = category
-        self.enabled = enabled
-        
-        if not self.enabled:
-            self.ticked = False
-            self.updateEnabledList()
-            return
-        
-        self.recursiveCopy = recursiveCopy
-        self.silentReport = silentReport
-        self.parentSrcPaths = parentSrcPaths
-        self.versionFind = versionFind
-        self.filterType = filterType
-        self.filterPattern = filterPattern
-        
-        self.updateEnabledList()
-        if not self.enabled:
-            self.ticked = False
-            return
-
-        type(self).profileList.append(self)
-
         # Default value
         self.versionStr = ""
         self.profileBackupCount = 0
@@ -111,6 +88,30 @@ class Profile():
         self.ticked = True
         self.enabledIndex = -1
 
+
+        self.name     = name
+        self.category = category
+        self.enabled  = enabled
+
+        if not self.enabled:
+            self.ticked = False
+            self.updateEnabledList()
+            return
+
+        self.recursiveCopy  = recursiveCopy
+        self.silentReport   = silentReport
+        self.parentSrcPaths = parentSrcPaths
+        self.versionFind    = versionFind
+        self.filterType     = filterType
+        self.filterPattern  = filterPattern
+
+
+        self.updateEnabledList()
+        if not self.enabled:
+            self.ticked = False
+            return
+
+        type(self).profileList.append(self)
 
 
     @property
@@ -527,10 +528,10 @@ class Profile():
 
             # Report count for the current parent source directory
             print(f"  [white]Total Count: [purple bold]{currentParentSrcCount}[/purple bold] files")
-        
+
         # Report count for the current profile
         if not DRYRUN:
-            print(f"[white]{self.foundFilePrompt} [purple bold]{self.profileBackupCount}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files\n[/white]")
+            print(f"In total, [white]{self.foundFilePrompt} [purple bold]{self.profileBackupCount}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files\n[/white]")
 
         type(self).totalBackupCount = type(self).totalBackupCount + self.profileBackupCount
         # }}}
