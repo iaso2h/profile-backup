@@ -12,3 +12,4 @@ def humanReadableSize(sizeBytes: int) -> str:
         unitIdx += 1
 
     return f"{size:.2f} {units[unitIdx]}"  # 2 decimal places (e.g., "3.14 MB")
+

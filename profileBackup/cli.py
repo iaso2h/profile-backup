@@ -1,15 +1,15 @@
 import config
 import backup
+import util
 
 import psutil
 import os
 import beaupy
 import send2trash
 from typing import Tuple
-from enum import Enum
 from pathlib import Path
 
-print = backup.console.print
+print = backup.print
 
 def findRemovableDrive() -> Tuple[list[str], list[str]]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
@@ -37,23 +37,30 @@ beaupy.Config.raise_on_interrupt = True
 beaupy.Config.raise_on_escape    = True
 
 
-def parseBackupFiles():
+def parseBackupFiles(profilesChosen: list[backup.Profile]): #  {{{
 
     if not backup.DRYRUN:
         os.makedirs(str(backup.DESTPATH), exist_ok=True)
 
-    for p in config.profileConfigs:
-        if p.ticked:
-            p.backup()
-    backup.Profile.reportBackupCount()
+
+    for profile in profilesChosen:
+        if not profile.enabled:
+            continue
+
+        print(f"\n[white]Checking up [green bold]{profile.profileName}[/green bold][/white]...")
+        for category in profile.categories:
+            if category.enabled:
+                category.backup()
+        print(f"[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
+    print(f"\n[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profilesChosen}[/green bold].[/white]")
 
     # Print out the files to delete in synchronizing mode
-    if not backup.DRYRUN and backup.COPYSYNC and backup.Profile.syncFilesToDelete != {}:
+    if not backup.DRYRUN and backup.COPYSYNC and backup.Category.syncFilesToDelete != {}:
         obsoleteNonEmptyChk = False
-        for software in backup.Profile.syncFilesToDelete.keys():
-            for parentSrcPath in backup.Profile.syncFilesToDelete[software].keys():
+        for software in backup.Category.syncFilesToDelete.keys():
+            for parentSrcPath in backup.Category.syncFilesToDelete[software].keys():
                 print(f"\n[green bold]{software} {parentSrcPath}[/green bold]:")
-                for f in backup.Profile.syncFilesToDelete[software][parentSrcPath]:
+                for f in backup.Category.syncFilesToDelete[software][parentSrcPath]:
                     print(f"  [red]{f}[/red]")
 
         # Prompt to delete the files
@@ -75,11 +82,12 @@ def parseBackupFiles():
                 SystemExit(1)
 
             if ans:
-                for software in backup.Profile.syncFilesToDelete.keys():
-                    for parentSrcPath in backup.Profile.syncFilesToDelete[software].keys():
-                        send2trash.send2trash(backup.Profile.syncFilesToDelete[software][parentSrcPath])
+                for software in backup.Category.syncFilesToDelete.keys():
+                    for parentSrcPath in backup.Category.syncFilesToDelete[software].keys():
+                        send2trash.send2trash(backup.Category.syncFilesToDelete[software][parentSrcPath])
 
                 print("[bold purple]All obsolete files/directories have been removed[/bold purple]")
+# }}}
 
 
 def program() -> None:
@@ -97,25 +105,19 @@ def program() -> None:
     except Exception as e:
         print(e)
         SystemExit(1)
-    
+
     backup.COPYSYNC = True if ans == 0 else False
 
     # Select profile
     print("[white]Select profile to back up:[/white]")
+    profileChoices = [p.name for p in backup.Profile.profileDict if p.enabled]
     try:
-        # Show profiles that has been enabled and make all profiles ticked by default
-        softwareChoice = beaupy.select_multiple(
-                list(map(lambda b: str(b.name), backup.Profile.profileEnabledList)),
+        profilesChosen = beaupy.select_multiple(
+                profileChoices,
                 tick_character = '■',
-                ticked_indices = list(range(len(backup.Profile.profileEnabledList))),
+                ticked_indices = list(range(len(profileChoices))),
                 minimal_count  = 1,
         )
-
-        # Update ticked state for enabled Backup objects
-        for i in config.profileConfigs:
-            i.ticked = True if i.name in softwareChoice else False
-            
-        backup.Profile.updateTickedList()
 
     except KeyboardInterrupt:
         keyboardInterruptExit()
@@ -208,16 +210,16 @@ def program() -> None:
         SystemExit(1)
 
 
-    parseBackupFiles()
+    parseBackupFiles(profilesChosen) # type: ignore
 
-    if backup.Profile.totalBackupCount > 0 and backup.DRYRUN:
-        backup.Profile.totalBackupCount = 0 # Rest the total count
-        confirmRun()
+    if backup.Category.totalBackupCount > 0 and backup.DRYRUN:
+        backup.Category.totalBackupCount = 0 # Rest the total count
+        confirmRun(profilesChosen) # type: ignore
     else:
         print("\n[purple bold]Everything is up-to-date! You're good to go.[/purple bold]")
 
 
-def confirmRun():
+def confirmRun(profilesChosen: list[backup.Profile]):
     try:
         backup.DRYRUN = not beaupy.confirm(
                 f"End the [purple bold]dry run mode[/purple bold] and confirm the whole backup process?",
@@ -234,4 +236,4 @@ def confirmRun():
         SystemExit(1)
 
     if not backup.DRYRUN:
-        parseBackupFiles()
+        parseBackupFiles(profilesChosen) # type: ignore
