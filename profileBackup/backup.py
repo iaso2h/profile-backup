@@ -1,8 +1,9 @@
 import shutil
+import util
 
 import os
 from types import GeneratorType
-from typing import Callable, TypedDict, Optional
+from typing import Callable, TypedDict, Optional, Tuple
 from pathlib import Path
 from rich.console import Console
 
@@ -304,7 +305,7 @@ class Profile():
             srcPath: Path,
             topParentSrcPath: Path,
             topParentDstPath: Path,
-            ) -> int:
+            ) -> Tuple[int, int]:
         """Backup file and return backup file count
 
         Args:
@@ -312,7 +313,7 @@ class Profile():
             topParentSrcPath: top parent source path
             topParentDstPath: top parent destination path
 
-        Returns: number count of backuped files
+        Returns: number count and size count of backuped files
 
         """
         # Recording
@@ -334,10 +335,10 @@ class Profile():
 
         # Decide whether to dry run
         count = 0
+        size = 0
         if dstPath.exists():
             if COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
                 if not DRYRUN:
-                    shutil.copy2(srcPath, dstPath)
 
                 print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
                 count = count + 1
@@ -349,18 +350,19 @@ class Profile():
                 shutil.copy2(srcPath, dstPath)
 
             print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
-            count = count + 1
+            count += count
+            size += srcPath.stat().st_size
 
-        return count # }}}
+        return count, size # }}}
 
 
     def iterCopy( # {{{
-            self,
-            parentSrcPath: Path,
-            parentDstPath: Path,
-            filterAllPathStrs: list,
-            topParentSrcPath: Optional[Path] = None,
-            ) -> int:
+        self,
+        parentSrcPath: Path,
+        parentDstPath: Path,
+        filterAllPathStrs: list,
+        topParentSrcPath: Optional[Path] = None,
+    ) -> Tuple[int, int]:
         """Iter through a parent source directory to validate and copy each file
 
         Args:
@@ -369,10 +371,11 @@ class Profile():
             filterAllPathStrs: all the Paths that fit in the filter pattern
             topParentSrcPath: preserved top parent source directory for recursive function call
 
-        Returns: how many file has been backed up
+        Returns: how many file has been backed up and the accumulated file size
 
         """
-        count = 0
+        countAccumulated = 0
+        sizeAccumulated = 0
 
         # Initialization for the first function call
         if not topParentSrcPath:
@@ -381,12 +384,15 @@ class Profile():
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
                 if self.recursiveCopy:
-                    count += self.iterCopy(
+                    count, size = self.iterCopy(
                         parentSrcPath=srcPath,
                         parentDstPath=parentDstPath,
                         filterAllPathStrs=filterAllPathStrs,
                         topParentSrcPath=topParentSrcPath
                     )
+                    countAccumulated += count
+                    sizeAccumulated += size
+
                 else:
                     pass
             else:
@@ -396,33 +402,37 @@ class Profile():
                     elif self.filterType == "include" and str(srcPath) not in filterAllPathStrs:
                         continue
                     else:
-                        count += self.copyFile(
+                        count, size = self.copyFile(
                             srcPath,
                             topParentSrcPath,
                             parentDstPath,
                         )
+                        countAccumulated += count
+                        sizeAccumulated += size
                 else:
                     if self.filterType == "exclude" and self.filterPattern(srcPath):
                         continue
                     elif self.filterType == "include" and not self.filterPattern(srcPath):
                         continue
                     else:
-                        count += self.copyFile(
+                        count, size = self.copyFile(
                             srcPath=srcPath,
                             topParentSrcPath=topParentSrcPath,
                             topParentDstPath=parentDstPath,
                         )
+                        countAccumulated += count
+                        sizeAccumulated += size
 
-        return count # }}}
+        return countAccumulated, sizeAccumulated # }}}
 
 
     def iterSync( # {{{
-            self,
-            srcRelTopParentPathList: list[str],
-            parentDstPath: Path,
-            topParentSrcPath: Path,
-            topParentDstPath: Optional[Path] = None
-            ):
+        self,
+        srcRelTopParentPathList: list[str],
+        parentDstPath: Path,
+        topParentSrcPath: Path,
+        topParentDstPath: Optional[Path] = None
+    ):
         """Iterate throught destination directory to check whether a file exist in local source directory. If not, delete that file
 
         Args:
@@ -468,7 +478,7 @@ class Profile():
         # Alter global silent report for current backup session
         SILENTMODE = self.silentReport
 
-        print(f"[white]Checking up [green bold]{self.name} {self.category}[/green bold][/white]...")
+        print(f"\n[white]Checking up [green bold]{self.name} {self.category}[/green bold][/white]...")
         for parentSrcPath in self.parentSrcPaths:
             # Get version string
             if isinstance(self.versionFind, Callable):
@@ -509,12 +519,13 @@ class Profile():
 
 
             # Copy files from source to destination
-            currentParentSrcCount = self.iterCopy(
+            currentParentSrcCount, currentParentSrcSize = self.iterCopy(
                 parentSrcPath=parentSrcPath,
                 parentDstPath=parentDstPath,
                 filterAllPathStrs=filterAllPathStrs,
                 )
-            self.profileBackupCount = self.profileBackupCount + currentParentSrcCount
+            self.profileBackupCount += currentParentSrcCount
+            self.profileBackupSize  += currentParentSrcSize
 
 
             # Preserve files doesn't exist in destination directory for the current parent source directory
@@ -528,12 +539,15 @@ class Profile():
 
             # Report count for the current parent source directory
             print(f"  [white]Total Count: [purple bold]{currentParentSrcCount}[/purple bold] files")
+            print(f"  [white]Total Size: [purple bold]{util.humanReadableSize(currentParentSrcSize)}[/purple bold] files")
 
         # Report count for the current profile
         if not DRYRUN:
-            print(f"In total, [white]{self.foundFilePrompt} [purple bold]{self.profileBackupCount}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files\n[/white]")
+            print(f"In total, [white]{self.foundFilePrompt} [purple bold]{self.profileBackupCount}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files[/white]")
+            print(f"In total, [white]{self.foundFilePrompt} [purple bold]{util.humanReadableSize(self.profileBackupSize)}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files[/white]")
 
-        type(self).totalBackupCount = type(self).totalBackupCount + self.profileBackupCount
+        type(self).totalBackupCount += self.profileBackupCount
+        type(self).totalBackupSize += self.profileBackupSize
         # }}}
 
 
@@ -541,6 +555,7 @@ class Profile():
     def reportBackupCount(cls):
         """Report the total count of backuped files for all profiles"""
         profileTickedNames = list(map(lambda i: str(i.name), cls.profileTickedList))
+        # TODO:
         if not DRYRUN:
             print(f"[white]Backed up [purple bold]{cls.totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]")
         else:
