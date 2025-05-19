@@ -59,14 +59,14 @@ profileConfigs = [
         versionFind="Asset",
         filterType="include",
         filterPattern=lambda _: True,
-    )
+    ),
     Profile(
         name="SOLIDWORKS",
         category="Language Configs",
         enabled=True,
         recursiveCopy=True,
         silentReport=True,
-        parentSrcPath="D:/**/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
+        parentSrcPaths="D:/**/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
         versionFind=lambda _: wrg.QueryValueEx(
             wrg.OpenKey(
                 wrg.HKEY_LOCAL_MACHINE,
@@ -78,7 +78,7 @@ profileConfigs = [
         filterPattern=[
             "calloutformat.txt",
             "calloutformat_2.txt",
-            ],
+        ],
     ),
     Profile(
         name="SOLIDWORKS",
@@ -86,7 +86,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=True,
-        parentSrcPath="D:/**/SOLIDWORKS Corp/SOLIDWORKS/data",
+        parentSrcPaths="D:/**/SOLIDWORKS Corp/SOLIDWORKS/data",
         versionFind=lambda _: wrg.QueryValueEx(
                 wrg.OpenKey(
                     wrg.HKEY_LOCAL_MACHINE,
@@ -106,7 +106,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath=appDataPath.glob(
+        parentSrcPaths=appDataPath.glob(
             "Roaming/Blender Foundation/Blender/*/scripts/presets/keyconfig"
             ),
         versionFind=lambda parentSrcPath: parentSrcPath.parts[7],
@@ -119,7 +119,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath=appDataPath.glob("Roaming/Autodesk/AutoCAD*/*/*"),
+        parentSrcPaths=appDataPath.glob("Roaming/Autodesk/AutoCAD*/*/*"),
         versionFind=lambda parentSrcPath: parentSrcPath.parts[6][-4:],
         filterType="include",
         filterPattern=lambda srcPath: srcPath.name.lower() not in [
@@ -143,47 +143,47 @@ profileConfigs = [
                 "profile.aws",
                 "fixedprofile.aws",
                 ] or srcPath.suffix == ".ctb" or srcPath.suffix == ".stb")
-    )
+    ),
     Profile(
         name="AutoCAD",
         category="YSTool",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath= "C:/ProgramData/IvySoft/YSTool/Freedom",
+        parentSrcPaths= "C:/ProgramData/IvySoft/YSTool/Freedom",
         versionFind="YSTool",
         filterType="include",
         filterPattern=lambda _: True,
-    )
+    ),
     Profile(
         name="AutoCAD",
         category="Tangent",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath="D:/Program Files/Tangent/TArchT20*",
+        parentSrcPaths="D:/Program Files/Tangent/TArchT20*",
         versionFind=lambda parentSrcPath: parentSrcPath.parts[2][5:],
         filterType="include",
         filterPattern=["SYS/*.lay", "SYS/tangent.cuix", "sys20x64/*.dwt", "sys24x64/*.dwt", "sys24x64/Tch.tmn"],
-    )
+    ),
     Profile(
         name="AutoCAD",
         category="Asset",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath="F:/Asset/AutoCAD",
+        parentSrcPaths="F:/Asset/AutoCAD",
         versionFind="Asset",
         filterType="include",
         filterPattern=lambda _: True,
-    )
+    ),
     Profile(
         name="Photoshop",
         category="Main",
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath=appDataPath.glob(
+        parentSrcPaths=appDataPath.glob(
             "Roaming/Adobe/Adobe Photoshop */Adobe Photoshop * Settings"
             ),
         versionFind=lambda parentSrcPath: parentSrcPath.parts[6][-4:],
@@ -200,7 +200,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath=appDataPath.glob("Roaming/Everything"),
+        parentSrcPaths=appDataPath.glob("Roaming/Everything"),
         versionFind="",
         filterType="include",
         filterPattern=lambda _: True,
@@ -211,7 +211,7 @@ profileConfigs = [
         enabled=True,
         recursiveCopy=True,
         silentReport=False,
-        parentSrcPath=appDataPath.glob("Roaming/Friendess/Tubest/*"),
+        parentSrcPaths=appDataPath.glob("Roaming/Friendess/Tubest/*"),
         versionFind=lambda parentSrcPath: parentSrcPath.parts[7],
         filterType="include",
         filterPattern=lambda srcPath: srcPath.suffix.lower() == ".config",

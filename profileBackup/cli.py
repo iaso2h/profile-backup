@@ -83,7 +83,6 @@ def parseBackupFiles():
 
 
 def program() -> None:
-    print(findRemovableDrive())
     # Select copy mmode
     print("[white]Select copy mode[/white]")
 

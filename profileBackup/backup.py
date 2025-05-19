@@ -243,7 +243,7 @@ class Profile():
         if not isinstance(val, Callable) and not isinstance(val, str):
             raise ValueError(f"string or function is expected from the versionFind parameter from {self.category} from {self.name} configuration.")
 
-        self._versionStr = val
+        self._versionFind = val
         if self._versionFind == "":
             self._versionFind = "unnamedVersion"
     # }}}

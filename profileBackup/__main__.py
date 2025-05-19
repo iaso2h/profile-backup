@@ -8,6 +8,7 @@
 import sys
 import cli
 import argparse
+import pytest
 
 # TODO: adapt user name in new desitionation
 
@@ -20,7 +21,6 @@ if __name__ == "__main__":
         if args.debug:
             # from pathlib import Path
             # print(Path(Path(Path("__file__").resolve().parent), "profileBackup", "tests", "test_backup_dst_files"))
-            import pytest
             pytest.main(["-vv"])
     else:
         cli.program()
