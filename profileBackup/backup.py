@@ -60,6 +60,7 @@ class profileConfig(TypedDict):
     globPatterns: list
 
 class Profile():
+    foundFileMessage = "Backing up" if not DRYRUN else "Found"
     totalBackupCount = 0
     totalBackupSize = 0
     profileList = []
@@ -115,10 +116,6 @@ class Profile():
         type(self).profileList.append(self)
 
 
-    @property
-    def foundFilePrompt(self) -> str:
-        promptText = "Backing up" if not DRYRUN else "Found"
-        return promptText
 
     # Validation of name {{{
     @property
@@ -341,7 +338,7 @@ class Profile():
                 if not DRYRUN:
                     try:
                         shutil.copy2(srcPath, dstPath)
-                        print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
+                        print(f"[white]    {type(self).foundFileMessage} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
                         count += 1
                         size += srcPath.stat().st_size
                     except PermissionError:
@@ -353,7 +350,7 @@ class Profile():
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
 
-            print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
+            print(f"[white]    {type(self).foundFileMessage} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
             count += count
             size += srcPath.stat().st_size
 
@@ -547,8 +544,8 @@ class Profile():
 
         # Report count for the current profile
         if not DRYRUN:
-            print(f"In total, [white]{self.foundFilePrompt} [purple bold]{self.profileBackupCount}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files[/white]")
-            print(f"In total, [white]{self.foundFilePrompt} [purple bold]{util.humanReadableSize(self.profileBackupSize)}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files[/white]")
+            print(f"In total, [white]{type(self).foundFileMessage} [purple bold]{self.profileBackupCount}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files[/white]")
+            print(f"In total, [white]{type(self).foundFileMessage} [purple bold]{util.humanReadableSize(self.profileBackupSize)}[/purple bold] for [green bold]{self.name} {self.category} {self.versionStr}[/green bold] files[/white]")
 
         type(self).totalBackupCount += self.profileBackupCount
         type(self).totalBackupSize += self.profileBackupSize
@@ -559,8 +556,5 @@ class Profile():
     def reportBackupCount(cls):
         """Report the total count of backuped files for all profiles"""
         profileTickedNames = list(map(lambda i: str(i.name), cls.profileTickedList))
-        # TODO:
         if not DRYRUN:
-            print(f"[white]Backed up [purple bold]{cls.totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]")
-        else:
-            print(f"[white]Found [purple bold]{cls.totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]")
+            print(f"[white]{cls.foundFileMessage} [purple bold]{cls.totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]")
