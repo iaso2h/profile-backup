@@ -339,9 +339,13 @@ class Profile():
         if dstPath.exists():
             if COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
                 if not DRYRUN:
-
-                print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
-                count = count + 1
+                    try:
+                        shutil.copy2(srcPath, dstPath)
+                        print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
+                        count += 1
+                        size += srcPath.stat().st_size
+                    except PermissionError:
+                        print(f"[red]    Skip file due to permission error: {srcRelTopParentPathStr}[/red]")
             else:
                 print(f"[gray]    Skip unchanged file: {srcRelTopParentPathStr}[/gray]")
         else:
