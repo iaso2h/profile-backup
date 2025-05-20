@@ -300,9 +300,9 @@ class Category(Profile): # {{{
                 if not config.DRYRUN:
                     try:
                         shutil.copy2(srcPath, dstPath)
-                        print(f"[white]    {type(self).foundFileMessage} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
                         count += 1
                         size += srcPath.stat().st_size
+                        print(f"[white]    {type(self).foundFileMessage} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
                     except PermissionError:
                         print(f"[red]    Skip file due to permission error: [yellow]{srcRelTopParentPathStr}[/yellow][/red]")
             else:
@@ -440,7 +440,7 @@ class Category(Profile): # {{{
         # Alter global silent report for current backup session
         config.SILENTMODE = self.silentReport
 
-        print(f"  [white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
+        print(f"  {util.getTimeStamp()}[white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
         for parentSrcPath in self.parentSrcPaths:
             # Get version string
             if isinstance(self.versionFind, Callable):
@@ -451,7 +451,7 @@ class Category(Profile): # {{{
                     print('[red]  Version string use "Generic" instead\n[/red]')
                     self.versionStr = "Generic"
 
-            print(f"[white]    Checking up files for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            print(f"    {util.getTimeStamp()}[white]Checking up files for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
             # Get parent destination path
             parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
@@ -500,10 +500,10 @@ class Category(Profile): # {{{
             )
 
             # Report count for the current parent source directory
-            print(f"[white]    {type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            print(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
         # Report count for the current category
-        print(f"  [white]{type(self).foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
+        print(f"  {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
 
         Profile.profileDict[self.profileName].backupCount += self.backupCount
         Profile.profileDict[self.profileName].backupSize  += self.backupSize

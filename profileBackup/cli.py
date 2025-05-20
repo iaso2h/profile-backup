@@ -32,7 +32,6 @@ def abortExit() -> None:
     raise SystemExit(1)
 
 
-cwd = os.getcwd()
 beaupy.Config.raise_on_interrupt = True
 beaupy.Config.raise_on_escape    = True
 
@@ -43,16 +42,20 @@ def parseBackupFiles(profilesChosen: list[backup.Profile]): #  {{{
         os.makedirs(str(config.DESTPATH), exist_ok=True)
 
 
+    config.EXPORTLOG = True
     for profile in profilesChosen:
         if not profile.enabled:
             continue
 
-        print(f"\n[white]Checking up [green bold]{profile.profileName}[/green bold][/white]...")
+
+        print(f"\n{util.getTimeStamp()}[white]Checking up [green bold]{profile.profileName}[/green bold][/white]...")
         for category in profile.categories:
             if category.enabled:
                 category.backup()
-        print(f"[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
-    print(f"\n[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profilesChosen}[/green bold].[/white]")
+        print(f"{util.getTimeStamp()}[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
+    print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profilesChosen}[/green bold].[/white]\n\n\n\n\n")
+    # TODO: including deletion message during synchronization
+    config.EXPORTLOG = False
 
     # Print out the files to delete in synchronizing mode
     if not config.DRYRUN and config.COPYSYNC and backup.Category.syncFilesToDelete != {}:
@@ -130,7 +133,7 @@ def program() -> None:
 
     # Select destination path
     dstPathsRich, dstPathsRaw = findRemovableDrive()
-    dstPathsRich.append(f"[blue]Current Working Directory([yellow]{cwd}\\\\[/yellow][blue])[/blue]") # len()-2 index
+    dstPathsRich.append(f"[blue]Current Working Directory([yellow]{config.CWD}\\\\[/yellow][blue])[/blue]") # len()-2 index
     dstPathsRich.append("[blue]Custom Path[/blue]") # len()-1 index
     alldrives  = findAllDrives()
     ans = len(dstPathsRich) - 2 # Default value destination
@@ -148,7 +151,7 @@ def program() -> None:
     # Get destination path
     if ans == len(dstPathsRich) - 2:
         # Current working directory
-        config.DESTPATH = Path(cwd, "Profiles")
+        config.DESTPATH = Path(config.CWD, "Profiles")
     elif ans == len(dstPathsRich) - 1:
         # Custom path
             try:
