@@ -80,8 +80,8 @@ class Profile(): # {{{
 
 
 class Category(Profile): # {{{
-    syncFilesToDelete = {}
-    fitPatBackupRelStr = {}
+    syncFilesToDelete:    dict[str, dict[Path, list[Path]]] = {}
+    relPathsTopParentSrc: dict[str, dict[Path, list[str]]] = {}
 
     # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
     def __init__(
@@ -276,20 +276,20 @@ class Category(Profile): # {{{
 
         """
         # Recording
-        if not self.profileName in type(self).fitPatBackupRelStr:
-            type(self).fitPatBackupRelStr[self.profileName] = {}
+        if not self.profileName in type(self).relPathsTopParentSrc:
+            type(self).relPathsTopParentSrc[self.profileName] = {}
 
-        if not str(topParentSrcPath) in type(self).fitPatBackupRelStr[self.profileName]:
-            type(self).fitPatBackupRelStr[self.profileName][str(topParentSrcPath)] = []
-        srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.profileName][str(topParentSrcPath)]
+        if not topParentSrcPath in type(self).relPathsTopParentSrc[self.profileName]:
+            type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath] = []
+        relPathTopParentSrcList = type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath]
 
 
         # Compose destination path
-        srcRelTopParentPath    = srcPath.relative_to(topParentSrcPath)
-        srcRelTopParentPathStr = str(srcRelTopParentPath)
-        srcRelTopParentPathList.append(srcRelTopParentPathStr)
+        relPathTopParentSrc    = srcPath.relative_to(topParentSrcPath)
+        relPathTopParentSrcStr = str(relPathTopParentSrc)
+        relPathTopParentSrcList.append(relPathTopParentSrcStr)
 
-        dstPath = Path(topParentDstPath, srcRelTopParentPath)
+        dstPath = Path(topParentDstPath, relPathTopParentSrc)
 
 
         # Decide whether to dry run
@@ -302,17 +302,17 @@ class Category(Profile): # {{{
                         shutil.copy2(srcPath, dstPath)
                         count += 1
                         size += srcPath.stat().st_size
-                        print(f"[white]    {type(self).foundFileMessage} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
+                        print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
                     except PermissionError:
-                        print(f"[red]    Skip file due to permission error: [yellow]{srcRelTopParentPathStr}[/yellow][/red]")
+                        print(f"[red]    Skip file due to permission error: [yellow]{relPathTopParentSrcStr}[/yellow][/red]")
             else:
-                print(f"[gray]    Skip unchanged file: {srcRelTopParentPathStr}[/gray]")
+                print(f"[gray]    Skip unchanged file: {relPathTopParentSrcStr}[/gray]")
         else:
             if not config.DRYRUN:
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
 
-            print(f"[white]    {type(self).foundFileMessage} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
+            print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white]")
             count += count
             size += srcPath.stat().st_size
 
@@ -391,7 +391,7 @@ class Category(Profile): # {{{
 
     def iterSync( # {{{
         self,
-        srcRelTopParentPathList: list[str],
+        relPathsTopParentSrc: list[str],
         parentDstPath: Path,
         topParentSrcPath: Path,
         topParentDstPath: Optional[Path] = None
@@ -399,7 +399,7 @@ class Category(Profile): # {{{
         """Iterate throught destination directory to check whether a file exist in local source directory. If not, delete that file
 
         Args:
-            srcRelTopParentPathList: List contains path string relactive to the source file
+            relPathsTopParentSrc: List contains path string relactive to the parent source path
             parentDstPath: What destination directory to iterate through
             topParentSrcPath: Top parent source directory where all source file is relative to
             topParentDstPath: Preserved top parent destionation directory for recursive function call
@@ -414,26 +414,26 @@ class Category(Profile): # {{{
 
         if not self.profileName in type(self).syncFilesToDelete:
             type(self).syncFilesToDelete[self.profileName] = {}
-        if not self.versionStr in type(self).syncFilesToDelete[self.profileName]:
+        if not topParentSrcPath in type(self).syncFilesToDelete[self.profileName]:
             type(self).syncFilesToDelete[self.profileName][topParentSrcPath] = []
-        syncFilesToDelete = type(self).syncFilesToDelete[self.profileName][topParentSrcPath]
+        syncFilesToDeleteRelCurrentParentDst = type(self).syncFilesToDelete[self.profileName][topParentSrcPath]
 
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
                 if not any(dstPath.iterdir()): # Remove empty directories
-                    syncFilesToDelete.append(str(dstPath) + os.path.sep)
+                    syncFilesToDeleteRelCurrentParentDst.append(dstPath)
                 else:
                     self.iterSync(
-                        srcRelTopParentPathList=srcRelTopParentPathList,
+                        relPathsTopParentSrc=relPathsTopParentSrc,
                         parentDstPath=dstPath,
                         topParentSrcPath=topParentSrcPath,
                         topParentDstPath=topParentDstPath
                     )
             else:
-                dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
+                relPathTopParentDst = str(dstPath.relative_to(topParentDstPath))
 
-                if not dstRelTopParentPathStr in srcRelTopParentPathList:
-                    syncFilesToDelete.append(str(dstPath)) # }}}
+                if not relPathTopParentDst in relPathsTopParentSrc:
+                    syncFilesToDeleteRelCurrentParentDst.append(dstPath) # }}}
 
 
     def backup(self): # {{{
@@ -490,11 +490,12 @@ class Category(Profile): # {{{
             self.backupSize  += currentParentSrcSize
 
 
-            # Preserve files doesn't exist in destination directory for the current parent source directory
-            srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.profileName][str(parentSrcPath)]
+            # Get path strings that relative to the current source parent path
+            relPathsTopParentSrc = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
+            # Mark down files that doesn't exist in destination directory for the current parent source directory
             if config.COPYSYNC:
                 self.iterSync(
-                    srcRelTopParentPathList=srcRelTopParentPathList,
+                    relPathsTopParentSrc=relPathsTopParentSrc,
                     parentDstPath=parentDstPath,
                     topParentSrcPath=parentSrcPath
             )

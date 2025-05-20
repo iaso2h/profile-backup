@@ -55,7 +55,7 @@ class TestBackup:
             if s.enabled:
                 s.backup()
 
-        assert backup.Category.fitPatBackupRelStr[dstName][str(parentSrcPath)] == [
+        assert backup.Category.relPathsTopParentSrc[dstName][str(parentSrcPath)] == [
             '0bf11eb5-8606-4520-ab6c-1610bd46b08c.dummy',
             '0c46af66-da27-4a73-8db4-e93696754bcf.dummy',
             '1709f887-18c1-4908-accd-ec948dcf65dd.dummy',
