@@ -36,24 +36,24 @@ beaupy.Config.raise_on_interrupt = True
 beaupy.Config.raise_on_escape    = True
 
 
-def parseBackupFiles(profilesChosen: list[backup.Profile]): #  {{{
+def parseBackupFiles(profileNamesChosen: list[backup.Profile]): #  {{{
 
     if not config.DRYRUN:
         os.makedirs(str(config.DESTPATH), exist_ok=True)
 
 
     config.EXPORTLOG = True
-    for profile in profilesChosen:
-        if not profile.enabled:
+    for profileName in (backup.Profile.profileDict[profileName] for profileName in profileNamesChosen):
+        if not profileName.enabled:
             continue
 
 
-        print(f"\n{util.getTimeStamp()}[white]Checking up [green bold]{profile.profileName}[/green bold][/white]...")
-        for category in profile.categories:
+        print(f"\n{util.getTimeStamp()}[white]Checking up [green bold]{profileName.profileName}[/green bold][/white]...")
+        for category in profileName.categories:
             if category.enabled:
                 category.backup()
-        print(f"{util.getTimeStamp()}[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
-    print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profilesChosen}[/green bold].[/white]\n\n\n\n\n")
+        print(f"{util.getTimeStamp()}[white]{profileName.foundFileMessage} [purple bold]{profileName.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profileName.backupSize)}[/blue bold] for [green bold]{profileName.profileName}[/green bold].[/white]")
+    print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profileNamesChosen}[/green bold].[/white]\n\n\n\n\n")
     # TODO: including deletion message during synchronization
     config.EXPORTLOG = False
 
@@ -94,7 +94,7 @@ def parseBackupFiles(profilesChosen: list[backup.Profile]): #  {{{
 
 
 def program() -> None:
-    # Select copy mmode
+    # Select copy mode
     print("[white]Select copy mode[/white]")
 
     copyMode = ["Sync", "Update"]
@@ -113,13 +113,13 @@ def program() -> None:
 
     # Select profile
     print("[white]Select profile to back up:[/white]")
-    profileChoices = [p.name for p in backup.Profile.profileDict if p.enabled]
+    profileNamePoll = [k for k, v in backup.Profile.profileDict.items() if v.enabled]
     try:
-        profilesChosen = beaupy.select_multiple(
-                profileChoices,
-                tick_character = '■',
-                ticked_indices = list(range(len(profileChoices))),
-                minimal_count  = 1,
+        profileNamesChosen = beaupy.select_multiple(
+            profileNamePoll,
+            tick_character = '■',
+            ticked_indices = list(range(len(profileNamePoll))),
+            minimal_count  = 1,
         )
 
     except KeyboardInterrupt:
@@ -213,11 +213,11 @@ def program() -> None:
         SystemExit(1)
 
 
-    parseBackupFiles(profilesChosen) # type: ignore
+    parseBackupFiles(profileNamesChosen) # type: ignore
 
     if backup.Category.totalBackupCount > 0 and config.DRYRUN:
         backup.Category.totalBackupCount = 0 # Rest the total count
-        confirmRun(profilesChosen) # type: ignore
+        confirmRun(profileNamesChosen) # type: ignore
     else:
         print("\n[purple bold]Everything is up-to-date! You're good to go.[/purple bold]")
 
