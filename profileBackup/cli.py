@@ -9,7 +9,7 @@ import send2trash
 from typing import Tuple
 from pathlib import Path
 
-print = backup.print
+print = util.print
 
 def findRemovableDrive() -> Tuple[list[str], list[str]]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
@@ -39,8 +39,8 @@ beaupy.Config.raise_on_escape    = True
 
 def parseBackupFiles(profilesChosen: list[backup.Profile]): #  {{{
 
-    if not backup.DRYRUN:
-        os.makedirs(str(backup.DESTPATH), exist_ok=True)
+    if not config.DRYRUN:
+        os.makedirs(str(config.DESTPATH), exist_ok=True)
 
 
     for profile in profilesChosen:
@@ -55,7 +55,7 @@ def parseBackupFiles(profilesChosen: list[backup.Profile]): #  {{{
     print(f"\n[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profilesChosen}[/green bold].[/white]")
 
     # Print out the files to delete in synchronizing mode
-    if not backup.DRYRUN and backup.COPYSYNC and backup.Category.syncFilesToDelete != {}:
+    if not config.DRYRUN and config.COPYSYNC and backup.Category.syncFilesToDelete != {}:
         obsoleteNonEmptyChk = False
         for software in backup.Category.syncFilesToDelete.keys():
             for parentSrcPath in backup.Category.syncFilesToDelete[software].keys():
@@ -106,7 +106,7 @@ def program() -> None:
         print(e)
         SystemExit(1)
 
-    backup.COPYSYNC = True if ans == 0 else False
+    config.COPYSYNC = True if ans == 0 else False
 
     # Select profile
     print("[white]Select profile to back up:[/white]")
@@ -148,7 +148,7 @@ def program() -> None:
     # Get destination path
     if ans == len(dstPathsRich) - 2:
         # Current working directory
-        backup.DESTPATH = Path(cwd, "Profiles")
+        config.DESTPATH = Path(cwd, "Profiles")
     elif ans == len(dstPathsRich) - 1:
         # Custom path
             try:
@@ -174,12 +174,12 @@ def program() -> None:
                                     no_text="[blue]No[/blue]",
                                 )
                             if ans:
-                                backup.DESTPATH = Path(dst, "Profiles")
+                                config.DESTPATH = Path(dst, "Profiles")
                                 break
                             else:
                                 abortExit()
                     else:
-                        backup.DESTPATH = Path(dst, "Profiles")
+                        config.DESTPATH = Path(dst, "Profiles")
                         break
             except KeyboardInterrupt:
                 keyboardInterruptExit()
@@ -190,13 +190,13 @@ def program() -> None:
                 SystemExit(1)
     else:
         # Removable drives
-        backup.DESTPATH = Path(str(dstPathsRaw[ans]), "Profiles") # type: ignore
+        config.DESTPATH = Path(str(dstPathsRaw[ans]), "Profiles") # type: ignore
 
 
     # Ask if to run in dry mode
     try:
-        backup.DRYRUN = beaupy.confirm(
-                f"Backing up file in [yellow]{backup.DESTPATH}[/yellow]. Do you want to run in [purple bold]dry run mode[/purple bold] first?",
+        config.DRYRUN = beaupy.confirm(
+                f"Backing up file in [yellow]{config.DESTPATH}[/yellow]. Do you want to run in [purple bold]dry run mode[/purple bold] first?",
                 yes_text="[blue]Yes. I just want to preview the result.[/blue]",
                 no_text="[blue]No. Back up my files right away.[/blue]",
                 default_is_yes=True,
@@ -212,7 +212,7 @@ def program() -> None:
 
     parseBackupFiles(profilesChosen) # type: ignore
 
-    if backup.Category.totalBackupCount > 0 and backup.DRYRUN:
+    if backup.Category.totalBackupCount > 0 and config.DRYRUN:
         backup.Category.totalBackupCount = 0 # Rest the total count
         confirmRun(profilesChosen) # type: ignore
     else:
@@ -221,7 +221,7 @@ def program() -> None:
 
 def confirmRun(profilesChosen: list[backup.Profile]):
     try:
-        backup.DRYRUN = not beaupy.confirm(
+        config.DRYRUN = not beaupy.confirm(
                 f"End the [purple bold]dry run mode[/purple bold] and confirm the whole backup process?",
                 yes_text="[blue]Yes[/blue]",
                 no_text="[blue]No[/blue]",
@@ -235,5 +235,5 @@ def confirmRun(profilesChosen: list[backup.Profile]):
         print(e)
         SystemExit(1)
 
-    if not backup.DRYRUN:
+    if not config.DRYRUN:
         parseBackupFiles(profilesChosen) # type: ignore

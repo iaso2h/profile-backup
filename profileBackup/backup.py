@@ -1,36 +1,24 @@
 import shutil
 import util
+import config
 
 import os
 from types import GeneratorType
 from typing import Callable, Optional, Tuple, Iterator
 from pathlib import Path
-from rich.console import Console
 
 
-# Writable from other files
-DESTPATH: Optional[Path] = None
-DRYRUN     = True
-SILENTMODE = False
-
-
-COPYOVERWRITE = False
-COPYSYNC      = True
-console     = Console()
 userName    = os.getlogin()
 appDataPath = Path("C:/Users/{}/AppData".format(userName))
 homePath    = Path("C:/Users/{}".format(userName))
+print = util.print
 
-
-def print(*args, **kwargs):
-    if not SILENTMODE:
-        console.print(*args, **kwargs)
 
 
 class Profile(): # {{{
     totalBackupCount = 0
     totalBackupSize = 0
-    foundFileMessage = "Backing up" if not DRYRUN else "Found"
+    foundFileMessage = "Backing up" if not config.DRYRUN else "Found"
     profileDict: dict = {  } # type: ignore
     def __init__(self, profileName, categories, enabled):
         # Default value
@@ -69,7 +57,7 @@ class Profile(): # {{{
     @enabled.setter
     def enabled(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool value is expected from the enabled parameter.")
+            raise ValueError("bool value is expected from the enabled parameter.")
         self._enabled = val
     # }}}
 
@@ -308,8 +296,8 @@ class Category(Profile): # {{{
         count = 0
         size = 0
         if dstPath.exists():
-            if COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
-                if not DRYRUN:
+            if config.COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
+                if not config.DRYRUN:
                     try:
                         shutil.copy2(srcPath, dstPath)
                         print(f"[white]    {type(self).foundFileMessage} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
@@ -320,7 +308,7 @@ class Category(Profile): # {{{
             else:
                 print(f"[gray]    Skip unchanged file: {srcRelTopParentPathStr}[/gray]")
         else:
-            if not DRYRUN:
+            if not config.DRYRUN:
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
 
@@ -449,9 +437,8 @@ class Category(Profile): # {{{
 
 
     def backup(self): # {{{
-        global SILENTMODE
         # Alter global silent report for current backup session
-        SILENTMODE = self.silentReport
+        config.SILENTMODE = self.silentReport
 
         print(f"  [white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
         for parentSrcPath in self.parentSrcPaths:
@@ -469,7 +456,7 @@ class Category(Profile): # {{{
             # Get parent destination path
             parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
             parentDstPath = Path(
-                    DESTPATH, # type: ignore
+                    config.DESTPATH, # type: ignore
                     self.profileName,
                     self.categoryName,
                     self.versionStr,
@@ -505,7 +492,7 @@ class Category(Profile): # {{{
 
             # Preserve files doesn't exist in destination directory for the current parent source directory
             srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.profileName][str(parentSrcPath)]
-            if COPYSYNC:
+            if config.COPYSYNC:
                 self.iterSync(
                     srcRelTopParentPathList=srcRelTopParentPathList,
                     parentDstPath=parentDstPath,

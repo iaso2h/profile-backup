@@ -1,3 +1,11 @@
+import config
+
+import re
+from rich.console import Console
+console = Console()
+richTextPat = re.compile(r"\[/?[a-zA-Z ]+]")
+
+
 def humanReadableSize(sizeBytes: int) -> str:
     """Convert a file size in bytes to a human-readable format (KB, MB, GB, etc.)."""
     if sizeBytes == 0:
@@ -13,3 +21,7 @@ def humanReadableSize(sizeBytes: int) -> str:
 
     return f"{size:.2f} {units[unitIdx]}"  # 2 decimal places (e.g., "3.14 MB")
 
+
+def print(*args, **kwargs):
+    if not config.SILENTMODE:
+        console.print(*args, **kwargs)

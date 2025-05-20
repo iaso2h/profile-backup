@@ -12,7 +12,7 @@ class TestBackup:
         parentSrcPath = Path(projectDir, "profileBackup", "tests", "test_backup_src_files")
         dstName = "test_backup_dst_full_include_files"
         config.profileConfigs.append(
-            backup.Profile(
+            backup.Category(
                 {
                     "name": dstName,
                     "enabled": True,
@@ -40,22 +40,22 @@ class TestBackup:
         )
 
         for s in config.profileConfigs:
-            if s.name != dstName:
+            if s.profileName != dstName:
                 s.enabled = False
             else:
                 s.enabled = True
 
-        backup.Profile.updateEnabledList()
-        backup.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
-        backup.DRYRUN         = True
-        backup.SILENTMODE     = True
-        backup.COPYSYNC       = True
+        backup.Category.updateEnabledList()
+        config.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
+        config.DRYRUN         = True
+        config.SILENTMODE     = True
+        config.COPYSYNC       = True
 
         for s in config.profileConfigs:
             if s.enabled:
                 s.backup()
 
-        assert backup.Profile.fitPatBackupRelStr[dstName][str(parentSrcPath)] == [
+        assert backup.Category.fitPatBackupRelStr[dstName][str(parentSrcPath)] == [
             '0bf11eb5-8606-4520-ab6c-1610bd46b08c.dummy',
             '0c46af66-da27-4a73-8db4-e93696754bcf.dummy',
             '1709f887-18c1-4908-accd-ec948dcf65dd.dummy',
@@ -201,7 +201,7 @@ class TestBackup:
         dstName = "test_backup_dst_full_sync_files"
         versionStr = "unnamed"
         config.profileConfigs.append(
-            backup.Profile(
+            backup.Category(
                 {
                     "name": dstName,
                     "enabled": True,
@@ -229,27 +229,27 @@ class TestBackup:
         )
 
         for s in config.profileConfigs:
-            if s.name != dstName:
+            if s.profileName != dstName:
                 s.enabled = False
             else:
                 s.enabled = True
 
-        backup.Profile.updateEnabledList()
-        backup.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
-        backup.DRYRUN         = True
-        backup.SILENTMODE     = True
-        backup.COPYSYNC       = True
+        backup.Category.updateEnabledList()
+        config.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
+        config.DRYRUN         = True
+        config.SILENTMODE     = True
+        config.COPYSYNC       = True
 
         for s in config.profileConfigs:
             if s.enabled:
                 s.backup()
 
 
-        assert sorted(backup.Profile.syncFilesToDelete[dstName][versionStr]) == sorted([
-            str(Path(backup.DESTPATH, "api", "bar", "test1.txt")),
-            str(Path(backup.DESTPATH, "api", "bar", "empty_dir")) + os.path.sep,
-            str(Path(backup.DESTPATH, "api", "redist", "foo")) + os.path.sep,
-            str(Path(backup.DESTPATH, "foo.dummy")),
-            str(Path(backup.DESTPATH, "api", "redist", "redist"))
+        assert sorted(backup.Category.syncFilesToDelete[dstName][versionStr]) == sorted([
+            str(Path(config.DESTPATH, "api", "bar", "test1.txt")),
+            str(Path(config.DESTPATH, "api", "bar", "empty_dir")) + os.path.sep,
+            str(Path(config.DESTPATH, "api", "redist", "foo")) + os.path.sep,
+            str(Path(config.DESTPATH, "foo.dummy")),
+            str(Path(config.DESTPATH, "api", "redist", "redist"))
         ])
     # }}}
