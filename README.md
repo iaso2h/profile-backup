@@ -9,10 +9,31 @@ Back up profiles from all kind of profiles. The location of these profiles somew
 * Everything
 * TubesT
 # Roadmap
+* Include recipe:
+    * Vivaldi broswer preferences and highlighted note data
+    * WPS
+    * Foxit
+    * Rime
+    * Windows themes
+    * Anytext Searcher
+    * Adobe series?
+    * Jetbrain editor?
+    * CAXA
+    * FreeCAD
+    * Kate
+    * MindManager
+    * OBS studio
+    * Obsidian
+    * PixPin
+    * AutoHotkey
+    * Wezterm
+    * MPV
+    
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~
 * ~~Store the software info into JSON file~~(It's non-goal, because you won't be able to set up a python function to maximize the versibility in that way)
 * ~~Update/Sync mode~~
+* Global balcklist
 * Restore
 * Move overrided file to trash before restoring
 * Automatically adapt user name on different computer or operating system
@@ -21,11 +42,6 @@ Back up profiles from all kind of profiles. The location of these profiles somew
 * dotfiles support
 # How to use
 ## 1. Install dependencies
-* psutil(for drive detection)
-* beaupy(for interactive CLI)
-* pytest(for test)
-* send2trash(safely delete files in synmode)
-
 Recommend installing all dependencies via conda
 ```shell
 conda env create -f environment.yml

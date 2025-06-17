@@ -64,17 +64,6 @@ Profile(
     categories=[
         Category(
             profileName="SOLIDWORKS",
-            categoryName="Asset",
-            versionFind="Generic",
-            enabled=True,
-            recursiveCopy=True,
-            silentReport=True,
-            parentSrcPaths="D:/Asset/SOLIDWORKS",
-            filterType="include",
-            filterPattern=lambda _: True,
-        ),
-        Category(
-            profileName="SOLIDWORKS",
             categoryName="Language Configs",
             versionFind=lambda _: wrg.QueryValueEx(
                 wrg.OpenKey(
@@ -85,12 +74,13 @@ Profile(
                 )[0][:4],
             enabled=True,
             recursiveCopy=True,
-            silentReport=True,
+            silentReport=False,
             parentSrcPaths="D:/**/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
             filterType="include",
             filterPattern=[
                 "calloutformat.txt",
                 "calloutformat_2.txt",
+                "calloutformat_3.txt",
             ],
         ),
         Category(
@@ -105,7 +95,7 @@ Profile(
                     )[0][:4],
             enabled=True,
             recursiveCopy=True,
-            silentReport=True,
+            silentReport=False,
             parentSrcPaths="D:/**/SOLIDWORKS Corp/SOLIDWORKS/data",
             filterType="include",
             filterPattern=[
