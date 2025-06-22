@@ -1,131 +1,54 @@
 import shutil
+import util
+import config
 
 import os
 from types import GeneratorType
-from typing import Callable, TypedDict, Optional
+from typing import Callable, Optional, Tuple, Iterator
 from pathlib import Path
-from rich.console import Console
 
 
-# Writable from other files
-DESTPATH: Optional[Path] = None
-DRYRUN     = True
-SILENTMODE = False
-
-
-COPYOVERWRITE = False
-COPYSYNC      = True
-console     = Console()
 userName    = os.getlogin()
 appDataPath = Path("C:/Users/{}/AppData".format(userName))
 homePath    = Path("C:/Users/{}".format(userName))
+print = util.print
 
 
-def print(*args, **kwargs):
-    if not SILENTMODE:
-        console.print(*args, **kwargs)
 
-
-def idx2sequence(index: int):
-    num = index + 1
-    remainder = num % 10
-    suffix = None
-    if remainder == 1:
-        suffix = "st"
-    elif remainder == 2:
-        suffix = "nd"
-    elif remainder == 3:
-        suffix = "rd"
-    else:
-        suffix = "th"
-
-    return str(num) + suffix
-
-class Ignore():
-    def __init__(self, ignoreList):
-        self.ignoreList = ignoreList
-
-    @property
-    def ignoreList(self):
-        return self._ignoreList
-
-    @ignoreList.setter
-    def ignoreList(self, val):
-        self._ignoreList = val
-
-class profileConfig(TypedDict):
-    name: str
-    enabled: bool
-    globPatterns: list
-
-class Profile():
+class Profile(): # {{{
     totalBackupCount = 0
-    profileList = []
-    profileEnabledList = []
-    profileTickedList = []
-
-    syncFilesToDelete = {}
-    fitPatBackupRelStr = {}
-
-    # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
-    def __init__(
-            self,
-            name: str,
-            category: str,
-            enabled: bool,
-            recursiveCopy: bool,
-            silentReport: bool,
-            parentSrcPaths,
-            versionFind,
-            filterType: str,
-            filterPattern,
-            ):
-        self.name = name
-        self.category = category
-        self.enabled = enabled
-        self.recursiveCopy = recursiveCopy
-        self.silentReport = silentReport
-        self.parentSrcPaths = parentSrcPaths
-        self.versionFind = versionFind
-        self.filterType = filterType
-        self.filterPattern = filterPattern
-
-        type(self).profileList.append(self)
-
+    totalBackupSize = 0
+    foundFileMessage = "Backing up" if not config.DRYRUN else "Found"
+    profileDict: dict = {  } # type: ignore
+    def __init__(self, profileName, categories, enabled):
         # Default value
-        self.versionStr = ""
-        self.softwareBackupCount = 0
-        self.ticked = False
-        self.enabledIndex = -1
+        self.ticked = True
+        self.backupCount = 0
+        self.backupSize  = 0
 
+        self.profileName = profileName
+        self.categories  = categories
+        self.enabled     = enabled
+        if self.profileName not in type(self).profileDict:
+            type(self).profileDict[self.profileName] = self
 
+    def __str__(self):
+        return f"{self.profileName}"
 
+    def __repr__(self):
+        return f"{type(self).__name__}(profileName={self.profileName})"
+
+    # Validation of profile name {{{
     @property
-    def foundFilePrompt(self) -> str:
-        promptText = "Backing up" if not DRYRUN else "Found"
-        return promptText
-
-    # Validation of name {{{
-    @property
-    def name(self):
-        return self._name
-    @name.setter
-    def name(self, val):
+    def profileName(self):
+        return self._profileName
+    @profileName.setter
+    def profileName(self, val):
         if not isinstance(val, str):
-            raise ValueError(f"string value is expected from the name parameter from {self.category} from {self.name} configuration.")
-        self._name = val
+            raise ValueError("string value is expected for Profile name.")
+        self._profileName = val
     # }}}
 
-    # Validation of category {{{
-    @property
-    def category(self):
-        return self._category
-    @category.setter
-    def category(self, val):
-        if not isinstance(val, str):
-            raise ValueError(f"string value is expected from the category parameter from {self.category} from {self.name} configuration.")
-        self._category = val
-    # }}}
 
     # Validation of enabled {{{
     @property
@@ -134,8 +57,78 @@ class Profile():
     @enabled.setter
     def enabled(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool value is expected from the enabled parameter from {self.category} from {self.name} configuration.")
+            raise ValueError("bool value is expected from the enabled parameter.")
         self._enabled = val
+    # }}}
+
+
+    # Validation of categories {{{
+    @property
+    def categories(self) -> list:
+        return self._categories
+    @categories.setter
+    def categories(self, val):
+        if not isinstance(val, list):
+            raise ValueError(f"list is expceted for categories under Profile {self.profileName}.")
+        for category in val:
+            if not isinstance(category, Category):
+                raise ValueError(f"{type(category)} value is inside the list of categories which must be consist of Catogory class only.")
+
+        self._categories = val
+    # }}}
+# }}}
+
+
+class Category(Profile): # {{{
+    syncFilesToDelete:    dict[str, dict[Path, list[Path]]] = {}
+    relPathsTopParentSrc: dict[str, dict[Path, list[str]]] = {}
+
+    # TODO: type check https://stackoverflow.com/questions/2489669/how-do-python-functions-handle-the-types-of-parameters-that-you-pass-in
+    def __init__(
+        self,
+        profileName: str,
+        categoryName: str,
+        versionFind: str | Callable,
+        enabled: bool,
+        recursiveCopy: bool,
+        silentReport: bool,
+        parentSrcPaths: str | Path | list[Path] | Iterator[Path] | map,
+        filterType: str,
+        filterPattern,
+    ):
+        # Default value
+        self.versionStr = ""
+        self.backupCount = 0
+        self.backupSize = 0
+
+        self.profileName  = profileName
+        self.categoryName = categoryName
+        self.enabled      = enabled
+        if not self.enabled:
+            return
+
+        self.recursiveCopy  = recursiveCopy
+        self.silentReport   = silentReport
+        self.parentSrcPaths = parentSrcPaths
+        self.versionFind    = versionFind
+        self.filterType     = filterType
+        self.filterPattern  = filterPattern
+
+    def __str__(self):
+        return f"{self.profileName} {self.categoryName}"
+
+    def __repr__(self):
+        return f"{type(self).__name__}(profileName={self.profileName}, categoryName={self.categoryName})"
+
+    # Validation of categoryName {{{
+    @property
+    def categoryName(self):
+        return self._categoryName
+    @categoryName.setter
+    def categoryName(self, val):
+        if not isinstance(val, str):
+            raise ValueError(f"string value is expected from the categoryName parameter from {self.categoryName} from {self.profileName} configuration.")
+        self._categoryName = val
     # }}}
 
     # Validation of recursiveCopy {{{
@@ -145,7 +138,7 @@ class Profile():
     @recursiveCopy.setter
     def recursiveCopy(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool value is expected from the recursiveCopy parameter from {self.category} from {self.name} configuration.")
+            raise ValueError(f"bool value is expected from the recursiveCopy parameter from {self.categoryName} from {self.profileName} configuration.")
         self._recursiveCopy = val
     # }}}
 
@@ -156,21 +149,20 @@ class Profile():
     @silentReport.setter
     def silentReport(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool is expected from the silentReport parameter from {self.category} from {self.name} configuration.")
+            raise ValueError(f"bool is expected from the silentReport parameter from {self.categoryName} from {self.profileName} configuration.")
         self._silentReport = val
     # }}}
 
-    # Validation of parentSrcPath {{{
+    # Validation of parentSrcPaths {{{
     @property
     def parentSrcPaths(self) -> list[Path]:
-        return self._parentSrcPath # type: ignore
+        return self._parentSrcPaths # type: ignore
     @parentSrcPaths.setter
     def parentSrcPaths(self, val):
         # Validate path pattern
-        def skip():
-            print(f"[gray]Skipped unfound profile for {self.category} from {self.name}[/[gray]]")
+        def skip(valParentSrcPaths):
+            print(f"[gray]Skipped unfound parent source paths for {valParentSrcPaths} from {self.categoryName} from {self.profileName} configuration.[/gray]")
             self.enabled = False
-            self.updateEnabledList()
 
         def checkDirPath(paths: list[ Path ]):
             for p in paths:
@@ -180,17 +172,17 @@ class Profile():
 
 
         if isinstance(val, GeneratorType) or isinstance(val, map):
-            self._parentSrcPath = list(val)
-            if not checkDirPath(self._parentSrcPath):
-                skip()
+            self._parentSrcPaths = list(val)
+            if not checkDirPath(self._parentSrcPaths):
+                skip(self._parentSrcPaths)
         elif isinstance(val, Path):
             srcPath = val
             if not srcPath.exists():
-                skip()
+                skip(srcPath)
             elif srcPath.is_file():
-                skip()
+                skip(srcPath)
             else:
-                self._parentSrcPath = [val]
+                self._parentSrcPaths = [val]
         elif isinstance(val, str):
             if "*" in val:
                 # Adding "/" suffix to the end if "*" is already the last character to make sure the glob result always return a directory path
@@ -201,24 +193,24 @@ class Profile():
                 if val[1:2] == ":":
                     rootPath = Path(val[0:3])
                     if rootPath.exists():
-                        parentSrcPath = rootPath.glob(val[3:])
-                        self._parentSrcPath = list(parentSrcPath)
-                        if not checkDirPath(self._parentSrcPath):
-                            skip()
+                        parentSrcPaths = rootPath.glob(val[3:])
+                        self._parentSrcPaths = list(parentSrcPaths)
+                        if not checkDirPath(self._parentSrcPaths):
+                            skip(self._parentSrcPaths)
                     else:
-                        skip()
+                        skip(val)
                 else:
-                    skip()
+                    skip(val)
             else:
                 srcPath = Path(val)
                 if not srcPath.exists():
-                    skip()
+                    skip(srcPath)
                 elif srcPath.is_file():
-                    skip()
+                    skip(srcPath)
                 else:
-                    self._parentSrcPath = [val]
+                    self._parentSrcPaths = [srcPath]
         else:
-            raise ValueError(f"Path object, Path glob generator or string is expected from the parentSrcPath parameter from {self.category} from {self.name} configuration.")
+            raise ValueError(f"Path object, Path glob generator or string is expected from the parentSrcPath parameter from {self.categoryName} from {self.profileName} configuration.")
     # }}}
 
     # Validation of versionFind {{{
@@ -228,11 +220,11 @@ class Profile():
     @versionFind.setter
     def versionFind(self, val):
         if not isinstance(val, Callable) and not isinstance(val, str):
-            raise ValueError(f"string or function is expected from the versionFind parameter from {self.category} from {self.name} configuration.")
+            raise ValueError(f"string or function is expected from the versionFind parameter from {self.categoryName} from {self.profileName} configuration.")
 
-        self._versionStr = val
+        self._versionFind = val
         if self._versionFind == "":
-            self._versionFind = "unnamedVersion"
+            self._versionFind = "Generic"
     # }}}
 
     # Validation of filterType {{{
@@ -242,9 +234,9 @@ class Profile():
     @filterType.setter
     def filterType(self, val):
         if not isinstance(val, str):
-            raise ValueError(f"string is expected from the filterType parameter from {self.category} from {self.name} configuration.")
+            raise ValueError(f"string is expected from the filterType parameter from {self.categoryName} from {self.profileName} configuration.")
         if val != "include" and val != "exclude":
-            raise ValueError(f"filterType parameter must be either 'include' or 'exclude' from {self.category} from {self.name} configuration.")
+            raise ValueError(f"filterType parameter must be either 'include' or 'exclude' from {self.categoryName} from {self.profileName} configuration.")
 
         self._filterType = val
     # }}}
@@ -256,33 +248,15 @@ class Profile():
     @filterPattern.setter
     def filterPattern(self, val):
         if not isinstance(val, list) and not isinstance(val, Callable):
-            raise ValueError(f"list or function is expected from the filterPattern parameter from {self.category} from {self.name} configuration.")
+            raise ValueError(f"list or function is expected from the filterPattern parameter from {self.categoryName} from {self.profileName} configuration.")
 
         if isinstance(val, list):
             for k in val:
                 if not isinstance(k, str):
-                    raise ValueError(f"a filterPattern list must contain string only from the parameter from {self.category} from {self.name} configuration.")
+                    raise ValueError(f"a filterPattern list must contain string only from the parameter from {self.categoryName} from {self.profileName} configuration.")
 
         self._filterPattern = val
     # }}}
-
-    @classmethod
-    def updateTickedList(cls):
-        if not cls.profileEnabledList:
-            print("No enabled profiles to process.")
-            raise ValueError
-        for profile in cls.profileEnabledList:
-            if profile.ticked:
-                cls.profileTickedList.append(profile)
-
-
-    def updateEnabledList(self):
-        for p in type(self).profileList:
-            if p.enabled and p not in type(self).profileEnabledList:
-                type(self).profileEnabledList.append(self)
-                self.enabledIndex = len(type(self).profileEnabledList) - 1
-            elif not p.enabled and p in type(self).profileEnabledList:
-                type(self).profileEnabledList.remove(self)
 
 
     def copyFile( # {{{
@@ -290,7 +264,7 @@ class Profile():
             srcPath: Path,
             topParentSrcPath: Path,
             topParentDstPath: Path,
-            ) -> int:
+            ) -> Tuple[int, int]:
         """Backup file and return backup file count
 
         Args:
@@ -298,55 +272,60 @@ class Profile():
             topParentSrcPath: top parent source path
             topParentDstPath: top parent destination path
 
-        Returns: number count of backuped files
+        Returns: number count and size count of backuped files
 
         """
         # Recording
-        if not self.name in type(self).fitPatBackupRelStr:
-            type(self).fitPatBackupRelStr[self.name] = {}
+        if not self.profileName in type(self).relPathsTopParentSrc:
+            type(self).relPathsTopParentSrc[self.profileName] = {}
 
-        if not str(topParentSrcPath) in type(self).fitPatBackupRelStr[self.name]:
-            type(self).fitPatBackupRelStr[self.name][str(topParentSrcPath)] = []
-        srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.name][str(topParentSrcPath)]
+        if not topParentSrcPath in type(self).relPathsTopParentSrc[self.profileName]:
+            type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath] = []
+        relPathTopParentSrcList = type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath]
 
 
         # Compose destination path
-        srcRelTopParentPath    = srcPath.relative_to(topParentSrcPath)
-        srcRelTopParentPathStr = str(srcRelTopParentPath)
-        srcRelTopParentPathList.append(srcRelTopParentPathStr)
+        relPathTopParentSrc    = srcPath.relative_to(topParentSrcPath)
+        relPathTopParentSrcStr = str(relPathTopParentSrc)
+        relPathTopParentSrcList.append(relPathTopParentSrcStr)
 
-        dstPath = Path(topParentDstPath, srcRelTopParentPath)
+        dstPath = Path(topParentDstPath, relPathTopParentSrc)
 
 
         # Decide whether to dry run
         count = 0
+        size = 0
         if dstPath.exists():
-            if COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
-                if not DRYRUN:
-                    shutil.copy2(srcPath, dstPath)
-
-                print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
-                count = count + 1
+            if config.COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
+                if not config.DRYRUN:
+                    try:
+                        shutil.copy2(srcPath, dstPath)
+                        count += 1
+                        size += srcPath.stat().st_size
+                        print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
+                    except PermissionError:
+                        print(f"[red]    Skip file due to permission error: [yellow]{relPathTopParentSrcStr}[/yellow][/red]")
             else:
-                print(f"[gray]    Skip unchanged file: {srcRelTopParentPathStr}[/gray]")
+                print(f"[gray]    Skip unchanged file: {relPathTopParentSrcStr}[/gray]")
         else:
-            if not DRYRUN:
+            if not config.DRYRUN:
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
 
-            print(f"[white]    {self.foundFilePrompt} file: [yellow]{srcRelTopParentPathStr}[/yellow][/white]")
-            count = count + 1
+            print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white]")
+            count += count
+            size += srcPath.stat().st_size
 
-        return count # }}}
+        return count, size # }}}
 
 
     def iterCopy( # {{{
-            self,
-            parentSrcPath: Path,
-            parentDstPath: Path,
-            filterAllPathStrs: list,
-            topParentSrcPath: Optional[Path] = None,
-            ) -> int:
+        self,
+        parentSrcPath: Path,
+        parentDstPath: Path,
+        filterAllPathStrs: list,
+        topParentSrcPath: Optional[Path] = None,
+    ) -> Tuple[int, int]:
         """Iter through a parent source directory to validate and copy each file
 
         Args:
@@ -355,10 +334,11 @@ class Profile():
             filterAllPathStrs: all the Paths that fit in the filter pattern
             topParentSrcPath: preserved top parent source directory for recursive function call
 
-        Returns: how many file has been backed up
+        Returns: how many file has been backed up and the accumulated file size
 
         """
-        count = 0
+        countAccumulated = 0
+        sizeAccumulated = 0
 
         # Initialization for the first function call
         if not topParentSrcPath:
@@ -367,12 +347,15 @@ class Profile():
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
                 if self.recursiveCopy:
-                    count += self.iterCopy(
+                    count, size = self.iterCopy(
                         parentSrcPath=srcPath,
                         parentDstPath=parentDstPath,
                         filterAllPathStrs=filterAllPathStrs,
                         topParentSrcPath=topParentSrcPath
                     )
+                    countAccumulated += count
+                    sizeAccumulated += size
+
                 else:
                     pass
             else:
@@ -382,37 +365,41 @@ class Profile():
                     elif self.filterType == "include" and str(srcPath) not in filterAllPathStrs:
                         continue
                     else:
-                        count += self.copyFile(
+                        count, size = self.copyFile(
                             srcPath,
                             topParentSrcPath,
                             parentDstPath,
                         )
+                        countAccumulated += count
+                        sizeAccumulated += size
                 else:
                     if self.filterType == "exclude" and self.filterPattern(srcPath):
                         continue
                     elif self.filterType == "include" and not self.filterPattern(srcPath):
                         continue
                     else:
-                        count += self.copyFile(
+                        count, size = self.copyFile(
                             srcPath=srcPath,
                             topParentSrcPath=topParentSrcPath,
                             topParentDstPath=parentDstPath,
                         )
+                        countAccumulated += count
+                        sizeAccumulated += size
 
-        return count # }}}
+        return countAccumulated, sizeAccumulated # }}}
 
 
     def iterSync( # {{{
-            self,
-            srcRelTopParentPathList: list[str],
-            parentDstPath: Path,
-            topParentSrcPath: Path,
-            topParentDstPath: Optional[Path] = None
-            ):
+        self,
+        relPathsTopParentSrc: list[str],
+        parentDstPath: Path,
+        topParentSrcPath: Path,
+        topParentDstPath: Optional[Path] = None
+    ):
         """Iterate throught destination directory to check whether a file exist in local source directory. If not, delete that file
 
         Args:
-            srcRelTopParentPathList: List contains path string relactive to the source file
+            relPathsTopParentSrc: List contains path string relactive to the parent source path
             parentDstPath: What destination directory to iterate through
             topParentSrcPath: Top parent source directory where all source file is relative to
             topParentDstPath: Preserved top parent destionation directory for recursive function call
@@ -425,36 +412,35 @@ class Profile():
         if not topParentDstPath:
             topParentDstPath = parentDstPath
 
-        if not self.name in type(self).syncFilesToDelete:
-            type(self).syncFilesToDelete[self.name] = {}
-        if not self.versionStr in type(self).syncFilesToDelete[self.name]:
-            type(self).syncFilesToDelete[self.name][topParentSrcPath] = []
-        syncFilesToDelete = type(self).syncFilesToDelete[self.name][topParentSrcPath]
+        if not self.profileName in type(self).syncFilesToDelete:
+            type(self).syncFilesToDelete[self.profileName] = {}
+        if not topParentSrcPath in type(self).syncFilesToDelete[self.profileName]:
+            type(self).syncFilesToDelete[self.profileName][topParentSrcPath] = []
+        syncFilesToDeleteRelCurrentParentDst = type(self).syncFilesToDelete[self.profileName][topParentSrcPath]
 
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
                 if not any(dstPath.iterdir()): # Remove empty directories
-                    syncFilesToDelete.append(str(dstPath) + os.path.sep)
+                    syncFilesToDeleteRelCurrentParentDst.append(dstPath)
                 else:
                     self.iterSync(
-                        srcRelTopParentPathList=srcRelTopParentPathList,
+                        relPathsTopParentSrc=relPathsTopParentSrc,
                         parentDstPath=dstPath,
                         topParentSrcPath=topParentSrcPath,
                         topParentDstPath=topParentDstPath
                     )
             else:
-                dstRelTopParentPathStr = str(dstPath.relative_to(topParentDstPath))
+                relPathTopParentDst = str(dstPath.relative_to(topParentDstPath))
 
-                if not dstRelTopParentPathStr in srcRelTopParentPathList:
-                    syncFilesToDelete.append(str(dstPath)) # }}}
+                if not relPathTopParentDst in relPathsTopParentSrc:
+                    syncFilesToDeleteRelCurrentParentDst.append(dstPath) # }}}
 
 
     def backup(self): # {{{
-        global SILENTMODE
         # Alter global silent report for current backup session
-        SILENTMODE = self.silentReport
+        config.SILENTMODE = self.silentReport
 
-        print(f"[white]Checking up [green bold]{self.name} {self.category}[/green bold][/white]...")
+        print(f"  {util.getTimeStamp()}[white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
         for parentSrcPath in self.parentSrcPaths:
             # Get version string
             if isinstance(self.versionFind, Callable):
@@ -462,17 +448,17 @@ class Profile():
                     self.versionStr = self.versionFind(parentSrcPath)
                 except Exception as e:
                     print(e)
-                    print('[red]  Version string use "unnamedVersion" instead\n[/red]')
-                    self.versionStr = "unnamedVersion"
+                    print('[red]  Version string use "Generic" instead\n[/red]')
+                    self.versionStr = "Generic"
 
-            print(f"[white]  Checking up [green bold]{self.name} {self.versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            print(f"    {util.getTimeStamp()}[white]Checking up files for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
             # Get parent destination path
             parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
             parentDstPath = Path(
-                    DESTPATH, # type: ignore
-                    self.name,
-                    self.category,
+                    config.DESTPATH, # type: ignore
+                    self.profileName,
+                    self.categoryName,
                     self.versionStr,
                     parentSrcPath.anchor[:1],
                     parentSrcRelAnchorPath
@@ -495,38 +481,34 @@ class Profile():
 
 
             # Copy files from source to destination
-            currentParentSrcCount = self.iterCopy(
+            currentParentSrcCount, currentParentSrcSize = self.iterCopy(
                 parentSrcPath=parentSrcPath,
                 parentDstPath=parentDstPath,
                 filterAllPathStrs=filterAllPathStrs,
                 )
-            self.softwareBackupCount = self.softwareBackupCount + currentParentSrcCount
+            self.backupCount += currentParentSrcCount
+            self.backupSize  += currentParentSrcSize
 
 
-            # Preserve files doesn't exist in destination directory for the current parent source directory
-            srcRelTopParentPathList = type(self).fitPatBackupRelStr[self.name][str(parentSrcPath)]
-            if COPYSYNC:
+            # Get path strings that relative to the current source parent path
+            relPathsTopParentSrc = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
+            # Mark down files that doesn't exist in destination directory for the current parent source directory
+            if config.COPYSYNC:
                 self.iterSync(
-                    srcRelTopParentPathList=srcRelTopParentPathList,
+                    relPathsTopParentSrc=relPathsTopParentSrc,
                     parentDstPath=parentDstPath,
                     topParentSrcPath=parentSrcPath
             )
 
             # Report count for the current parent source directory
-            print(f"  [white]{self.foundFilePrompt} [purple bold]{currentParentSrcCount}[/purple bold] files")
+            print(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
-        if not DRYRUN:
-            print(f"[white]{self.foundFilePrompt} [purple bold]{self.softwareBackupCount}[/purple bold] [green bold]{self.name} {self.versionStr}[/green bold] files\n[/white]")
+        # Report count for the current category
+        print(f"  {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
 
-        type(self).totalBackupCount = type(self).totalBackupCount + self.softwareBackupCount
+        Profile.profileDict[self.profileName].backupCount += self.backupCount
+        Profile.profileDict[self.profileName].backupSize  += self.backupSize
+        Profile.totalBackupCount += self.backupCount
+        Profile.totalBackupSize  += self.backupSize
         # }}}
-
-
-    @classmethod
-    def reportBackupCount(cls):
-        # Report the total count if the current enabled profile is the last one in the list
-        profileTickedNames = list(map(lambda i: str(i.name), cls.profileTickedList))
-        if not DRYRUN:
-            print(f"[white]Backed up [purple bold]{cls.totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]")
-        else:
-            print(f"[white]Found [purple bold]{cls.totalBackupCount}[/purple bold] files from [green]{profileTickedNames}[/green].\n[/white]")
+# }}}

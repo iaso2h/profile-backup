@@ -8,3 +8,5 @@ bk/
 *bk*
 *temp*
 *.log
+debug*
+log.yaml

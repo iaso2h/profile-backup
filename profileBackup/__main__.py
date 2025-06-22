@@ -1,13 +1,14 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Backup software profiles on Windows
-# Version: 0.1.5
-# Last Modified: 2025-05-16
+# Version: 0.1.11
+# Last Modified: 2025-05-20
+import recipe
 
-# import logging
 import sys
 import cli
 import argparse
+import pytest
 
 # TODO: adapt user name in new desitionation
 
@@ -20,7 +21,6 @@ if __name__ == "__main__":
         if args.debug:
             # from pathlib import Path
             # print(Path(Path(Path("__file__").resolve().parent), "profileBackup", "tests", "test_backup_dst_files"))
-            import pytest
             pytest.main(["-vv"])
     else:
         cli.program()

@@ -1,9 +1,0 @@
-# This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
-# platform: win-64
-_anaconda_depends=2024.02=py311_mkl_1
-beaupy=3.8.2=pypi_0
-psutil=5.9.0=py311h2bbff1b_0
-pytest=7.4.4=py311haa95532_0
-send2trash=1.8.2=py311haa95532_0
-python=3.11.7=he1021f5_0
