@@ -228,7 +228,7 @@ Profile(
             enabled=True,
             recursiveCopy=True,
             silentReport=False,
-            parentSrcPaths=appDataPath.glob("Roaming/Everything"),
+            parentSrcPaths=Path(appDataPath, "Roaming/Everything"),
             filterType="include",
             filterPattern=lambda _: True,
         ),
@@ -248,6 +248,47 @@ Profile(
             parentSrcPaths=appDataPath.glob("Roaming/Friendess/Tubest/*"),
             filterType="include",
             filterPattern=lambda srcPath: srcPath.suffix.lower() == ".config",
+        ),
+    ]
+)
+Profile(
+    profileName="XnViewMP",
+    enabled=True,
+    categories=[
+        Category(
+            profileName="XnViewMP",
+            categoryName="Main",
+            versionFind="Generic",
+            enabled=True,
+            recursiveCopy=True,
+            silentReport=False,
+            parentSrcPaths=Path(appDataPath, "Roaming/XnViewMP"),
+            filterType="exclude",
+            filterPattern=[ "*.db"],
+        ),
+    ]
+)
+Profile(
+    profileName="Rime",
+    enabled=True,
+    categories=[
+        Category(
+            profileName="Rime",
+            categoryName="Main",
+            versionFind="Generic",
+            enabled=True,
+            recursiveCopy=True,
+            silentReport=False,
+            parentSrcPaths=Path(appDataPath, "Roaming/Rime"),
+            filterType="exclude",
+            filterPattern=[
+                "build",
+                "sync",
+                "*.userdb",
+                "installation.yaml",
+                "user.yaml",
+                "weasel.yaml",
+            ],
         ),
     ]
 )

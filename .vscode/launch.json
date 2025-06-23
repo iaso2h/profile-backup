@@ -5,14 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Devmode",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${workspaceFolder}/profileBackup/debugMain.py",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Python Debugger: Release",
+            "name": "Release",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/profileBackup",

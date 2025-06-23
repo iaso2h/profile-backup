@@ -252,12 +252,12 @@ class Category(Profile): # {{{
     @filterPattern.setter
     def filterPattern(self, val):
         if not isinstance(val, list) and not isinstance(val, Callable):
-            raise ValueError(f"list or function is expected from the filterPattern parameter from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"list or function is expected as the filterPattern parameter for {self.categoryName} from {self.profileName} configuration.")
 
         if isinstance(val, list):
             for k in val:
                 if not isinstance(k, str):
-                    raise ValueError(f"a filterPattern list must contain string only from the parameter from {self.categoryName} from {self.profileName} configuration.")
+                    raise ValueError(f"a filterPattern list must only contain string as the parameter for {self.categoryName} from {self.profileName} configuration.")
 
         self._filterPattern = val
     # }}}
@@ -327,7 +327,7 @@ class Category(Profile): # {{{
         self,
         parentSrcPath: Path,
         parentDstPath: Path,
-        filterAllPathStrs: list,
+        filterAllPaths: list[Path],
         topParentSrcPath: Optional[Path] = None,
     ) -> Tuple[int, int]:
         """Iter through a parent source directory to validate and copy each file
@@ -335,7 +335,7 @@ class Category(Profile): # {{{
         Args:
             parentSrcPath: what parent source path to iterlate
             parentDstPath: what destination path for the parent directory to backup up
-            filterAllPathStrs: all the Paths that fit in the filter pattern
+            filterAllPaths: all the Paths that fit in the filter pattern
             topParentSrcPath: preserved top parent source directory for recursive function call
 
         Returns: how many file has been backed up and the accumulated file size
@@ -351,22 +351,46 @@ class Category(Profile): # {{{
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
                 if self.recursiveCopy:
+                    # Check whether the directory is in the filter pattern list
+                    srcPathInsideFilterChk = False
+                    if isinstance(self.filterPattern, list):
+                        if self.filterType == "exclude":
+                            for p in filterAllPaths:
+                                if p.is_dir() and srcPath == p:
+                                    srcPathInsideFilterChk = True
+                                    break
+                        elif self.filterType == "include":
+                            for p in filterAllPaths:
+                                if p.is_dir() and srcPath != p:
+                                    srcPathInsideFilterChk = True
+                                    break
+                    else:
+                        if self.filterType == "exclude" and self.filterPattern(srcPath):
+                            srcPathInsideFilterChk = True
+                            break
+                        elif self.filterType == "include" and not self.filterPattern(srcPath):
+                            srcPathInsideFilterChk = True
+                            break
+
+                    if srcPathInsideFilterChk:
+                        continue
+
                     count, size = self.iterCopy(
                         parentSrcPath=srcPath,
                         parentDstPath=parentDstPath,
-                        filterAllPathStrs=filterAllPathStrs,
+                        filterAllPaths=filterAllPaths,
                         topParentSrcPath=topParentSrcPath
                     )
                     countAccumulated += count
                     sizeAccumulated += size
 
                 else:
-                    pass
+                    continue
             else:
                 if isinstance(self.filterPattern, list):
-                    if self.filterType == "exclude" and str(srcPath) in filterAllPathStrs:
+                    if self.filterType == "exclude" and srcPath in filterAllPaths:
                         continue
-                    elif self.filterType == "include" and str(srcPath) not in filterAllPathStrs:
+                    elif self.filterType == "include" and srcPath not in filterAllPaths:
                         continue
                     else:
                         count, size = self.copyFile(
@@ -473,22 +497,17 @@ class Category(Profile): # {{{
             filterAllPaths = []
             if isinstance(self.filterPattern, list):
                 for pattern in self.filterPattern:
-                    if not pattern.startswith("\\") and pattern.startswith("/"):
-                        pattern = "/" + pattern
-
                     filterPaths = list(parentSrcPath.glob(pattern))
                     if len(filterPaths) == 0:
                         continue
                     filterAllPaths.extend(filterPaths)
-
-            filterAllPathStrs = list(map(lambda p: str(p), filterAllPaths))
 
 
             # Copy files from source to destination
             currentParentSrcCount, currentParentSrcSize = self.iterCopy(
                 parentSrcPath=parentSrcPath,
                 parentDstPath=parentDstPath,
-                filterAllPathStrs=filterAllPathStrs,
+                filterAllPaths=filterAllPaths,
                 )
             self.backupCount += currentParentSrcCount
             self.backupSize  += currentParentSrcSize

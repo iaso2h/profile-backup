@@ -28,7 +28,9 @@ Back up profiles from all kind of profiles. The location of these profiles somew
     * AutoHotkey
     * Wezterm
     * MPV
-    
+    * XnViewMP
+    * Rime
+
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~
 * ~~Store the software info into JSON file~~(It's non-goal, because you won't be able to set up a python function to maximize the versibility in that way)
