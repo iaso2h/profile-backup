@@ -284,6 +284,7 @@ Profile(
             filterPattern=[
                 "build",
                 "sync",
+                "sounds",
                 "*.userdb",
                 "installation.yaml",
                 "user.yaml",

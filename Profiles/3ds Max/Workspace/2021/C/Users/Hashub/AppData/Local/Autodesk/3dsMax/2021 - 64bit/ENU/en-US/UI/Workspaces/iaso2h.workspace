@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<WorkspaceMeta WorkspaceName="iaso2h" IsSystemDefault="false" IsHidden="false" Version="1">
+    <subsystemOptionsList>
+        <option subsystem="kCui" isSaving="true" />
+        <option subsystem="kMenu" isSaving="true" />
+        <option subsystem="kMeta" isSaving="true" />
+        <option subsystem="kRibbon" isSaving="true" />
+        <option subsystem="kSystemSettings" isSaving="true" />
+        <option subsystem="kViewportPresets" isSaving="true" />
+    </subsystemOptionsList>
+    <runScript>
+        <script isSaving="false" path="" exitPath="" />
+    </runScript>
+</WorkspaceMeta>

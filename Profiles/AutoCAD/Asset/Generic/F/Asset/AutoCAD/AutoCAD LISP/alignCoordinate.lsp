@@ -1,0 +1,31 @@
+; https://www.cadtutor.net/forum/topic/64556-align-block-and-attributes-to-x-y-or-z/
+(defun c:alignCoordinate (/ a i k p s)
+ ;; RJP - 01.03.2018
+ (or (setq k (getenv "AlignBlocks")) (setq k "X"))
+ (if (and (not (initget "X Y Z"))
+   (setq k (cond ((getkword (strcat "\nAlignment [X/Y/Z] <" k ">: ")))
+		 (k)
+	   )
+   )
+   (setq p (getpoint "\nPick an alignment point: "))
+   (setq s (ssget ":L" '((0 . "insert"))))
+     )
+   (progn
+     (setenv "AlignBlocks" k)
+     (setq i (vl-position k '("X" "Y" "Z")))
+     (setq a (nth i p))
+     (foreach b (mapcar 'vlax-ename->vla-object (vl-remove-if 'listp (mapcar 'cadr (ssnamex s))))
+(setq p (vlax-get b 'insertionpoint))
+(vlax-put b
+	  'insertionpoint
+	  (cond	((= 0 i) (list a (cadr p) (caddr p)))
+		((= 1 i) (list (car p) a (caddr p)))
+		((list (car p) (cadr p) a))
+	  )
+)
+     )
+   )
+ )
+ (princ)
+)
+(vl-load-com)

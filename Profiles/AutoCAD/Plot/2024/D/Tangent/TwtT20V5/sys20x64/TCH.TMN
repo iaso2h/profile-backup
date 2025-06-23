@@ -1,0 +1,2251 @@
+/*
+天正菜单系统
+版本 3.0    2014-4-10 用于 T20-WT R17-19  ZHL
+
+1. 菜单语法
+   与AutoCAD菜单的语法类似，需注意：
+   (1)菜单条标记下的第一行为对象描述：即<对象名称>=<DXF过滤表>
+      对象名称不能用中文，过滤表为，需要匹配的DXF描述. 字符串的匹配规则参见AutoCAD的有关文档
+   (2)不要键入^C,^P之类的控制符号，这些控制已经没有意义。因为右键菜单只有在AutoCAD空闲时才能激活
+   (3)支持分级菜单，语法结构同AutoCAD菜单
+   (4)菜单项标签用{}扩起, 支持禁用标签~和标记标签!
+   (5)支持开关菜单[*SWITCH*], 与SWITCH菜单组关联
+
+2. 菜单条顺序
+   当先选中图形对象有多个可匹配的菜单条时，采用最先匹配的菜单条
+
+3. 默认菜单
+   当没有任何图形对象被选中时的菜单，不给出对象描述语句。
+
+4. 通用菜单
+   即选中的任何对象都可以匹配的菜单，必须放到最后的位置，如对象描述：OtherCase=0, "*"
+
+5. 屏幕菜单
+5. 屏幕菜单
+   放置在右键菜单之后 ***SCREEN 开始
+
+6. 菜单开关
+   放置在屏幕菜单之后，***SWITCH开始    
+
+6. 菜单资源
+   放置在菜单开关之后，***RESOURCE开始
+
+*/
+
+MENU_TITLE="天正TWT7"
+
+
+
+
+
+/////给排水右键菜单TWT7
+
+
+
+// 常用功能
+***COMMON
+ID_RepeatCmd     [重复命令];
+ID_TObjinfo      [对象查询]'TObjinfo
+ID_TSelObj       [过滤选择]glxz
+ID_SelVPipe	     [选择管线]xzgx
+ID_FloorCp		 [楼层复制]lcfz
+ID_DragCopy      [天正拷贝]tzkb
+                 [--]
+ID_DrawPipe      [绘制管线]hzgx
+ID_StandPipe     [立管布置]lgbz
+                 [--]
+ID_Valve	     [阀门阀件]fmfj
+ID_RYPT		     [任意喷头]rypt
+ID_Well          [布 置 井]bzj
+                 [--]
+ID_Text          [单行文字]ttext
+ID_DimPipeDn     [多管管径]gjbz
+Id_Dimmp         [逐点标注]TDimMP
+                 [--]
+ID_MnViewpoi     [->视图设置]
+ID_Wireframe       [三维线框]_shademode 3 
+ID_Gouraud         [体 着 色]_shademode g 
+ID_3DOrbit         [动态观察]'3DOrbit
+                   [--]
+ID_VpointTop       [平 面 图]shademode 2 -view _top 
+ID_VpointLef       [左 立 面]-view _left 
+ID_VpointRig       [右 立 面]-view _right 
+ID_VpointFro       [正 立 面]-view _front 
+ID_VpointBac       [背 立 面]-view _back 
+                   [--]
+ID_VpointSW        [西南轴测]-view _swiso 
+ID_VpointSE        [东南轴测]-view _seiso 
+ID_VpointNE        [东北轴测]-view _neiso 
+ID_VpointNW        [<-西北轴测]-view _nwiso 
+
+
+
+//在位编辑一般天正对象
+
+***INPLACE1
+ID_OK            [确定]5001
+ID_CANCEL        [取消]5002
+ID_TObjedit	     [对象编辑]5003
+	[--]   
+ID_DOWN_MARK     [下标]5004
+ID_UP_MARK       [上标]5005
+ID_CIRCLE        [圆圈文字]5006
+ID_Word          [专业词库]5016
+ID_SPECIAL_CHAR   [->特殊字符]
+ID_ANGLE_CHAR       [角度]5007
+ID_TOLERANCE_CHAR   [公差]5008
+ID_DIA_CHAR         [直径]5009
+ID_PERCENT_CHAR     [百分号]5010
+ID_ONE_STEEL        [一级钢]5011
+ID_TWO_STEEL        [二级钢]5012
+ID_THREE_STEEL      [三级钢]5013
+ID_FOUR_STEEL       [四级钢]5014
+ID_SPECIAL_CHAR     [<-特殊字符]5015
+
+
+// 在位编辑天正表格单元格
+***INPLACE5
+ID_OK            [确定]5001
+ID_CANCEL        [取消]5002
+ID_TObjedit	     [对象编辑]5003
+ID_CellEdit      [单元编辑]5022
+	[--]   
+ID_DOWN_MARK     [下标]5004
+ID_UP_MARK       [上标]5005
+ID_CIRCLE        [圆圈文字]5006
+ID_Word          [专业词库]5016
+ID_SPECIAL_CHAR   [->特殊字符]
+ID_ANGLE_CHAR       [角度]5007
+ID_TOLERANCE_CHAR   [公差]5008
+ID_DIA_CHAR         [直径]5009
+ID_PERCENT_CHAR     [百分号]5010
+ID_ONE_STEEL        [一级钢]5011
+ID_TWO_STEEL        [二级钢]5012
+ID_THREE_STEEL      [三级钢]5013
+ID_FOUR_STEEL       [四级钢]5014
+ID_SPECIAL_CHAR     [<-特殊字符]5015
+
+
+***TCH_VERPIPE
+VerPipe=0,"TCH_PIPE",8,"*",280,1
+ID_ModifyPipe	         [修改管线]xggx
+ID_PipeElevation         [立管标高]dgbg
+ID_SprinkLoc             [立管定位]ptdw
+ID_PipeRadius            [立管半径]lgbj
+                  [--]
+ID_DrawPipe              [绘制管线]hzgx
+ID_DrawPipeByLine        [沿线绘管]yxhg
+ID_StandPipe             [立管布置]lgbz
+ID_SelVPipe	             [选择立管]xzlg
+ID_SXKW                  [上下扣弯]sxkw
+ID_MutiPipe              [绘制多管]hzdg
+                  [--]
+ID_DimStandPipe	         [立管编号]bzlg
+ID_PlusSerial	         [编号增一]bhzy
+ID_MinusSerial	         [编号减一]bhjy
+Id_VPipeSort             [立管排序]lgpx
+                  [--]
+ID_EqLine2Pipe           [设备连管]sblg
+                  [--]
+ID_S_THICKPIPE           [*SWITCH*]
+
+
+***TCH_PIPE
+Pipe=0,"TCH_PIPE,TCH_PIPEFITTING",8,"*"
+ID_ModifyPipe            [->管线编辑]xggx
+ID_ModifyPipe	             [修改管线]xggx
+ID_PipeElevation             [单管标高]dgbg
+ID_ChangePipeDn              [更改管径]gggj  
+ID_PipeDimAlign				 [管标对齐]gbdq       
+         [--]
+ID_PipeUp                    [管线置上]gxzs
+ID_PipeDown                  [管线置下]gxzx
+ID_PipeBreak                 [管线打断]gxdd
+ID_PipeJoin                  [管线连接]gxlj
+                  [--]
+ID_ErasePipe                 [删除管线]scgx
+ID_FilletPipe                [管线倒角]gxdj
+ID_ExternPipe                [管线延长]gxyc
+                  [--]
+ID_CHDASH                    [虚实变换]xsbh
+ID_SetDash                   [<-线型比例]xxbl
+
+ID_DrawPipe              [绘制管线]hzgx
+ID_StandPipe             [立管布置]lgbz
+ID_GXSJ                  [管线升降]gxsj
+ID_SXKW                  [上下扣弯]sxkw
+ID_MutiPipe              [绘制多管]hzdg
+ID_DoublePipe 			 [双线水管]hsxg	
+                  [--]
+ID_LGLJ                  [立干连接]lglj
+ID_GXLD                  [管线联动]gxld
+ID_BreakSign             [断管符号]dgfh
+ID_EqLine2Pipe           [设备连管]sblg
+Id_Pipe2Lvtry            [管连洁具]gljj
+ID_KLJJ                  [快连洁具]kljj 
+                  [--]
+ID_PipeOnText            [管线文字]gxwz
+ID_DimPipeDn             [多管管径]gjbz
+ID_Gradient              [管道坡度]gdpd
+ID_ChangeDirct           [改变流向]gblx
+                  [--]
+ID_S_THICKPIPE           [*SWITCH*]
+ID_S_PIPEELE             [*SWITCH*]
+
+
+***TCH_DOUBLELINEPIPE
+Pipe=0,"TCH_DOUBLELINEPIPE",8,"*"
+ID_DoublePipe 			 [双线水管]hsxg	
+ID_DoubleValve		     [双线阀门]sxfm
+ID_DoubleTrans		     [大小接头]dxjt
+                  [--]
+ID_GXSJ                  [管线升降]gxsj
+ID_SXKW		             [上下扣弯]sxkw
+ID_DimPipeDn             [多管管径]gjbz
+ID_PipeDimAlign			 [管标对齐]gbdq  
+ID_PipeElevation         [单管标高]dgbg	
+ID_ExternPipe            [管线延长]gxyc
+ID_PipeBreak             [管线打断]gxdd
+ID_PipeJoin              [管线连接]gxlj
+ID_SetDash               [线型比例]xxbl
+                  [--]
+ID_S_THICKPIPE           [*SWITCH*]
+
+
+***TCH_VPIPEDIM
+Pipe=0,"TCH_VPIPEDIM",8,"*"
+ID_DimStandPipe	         [立管编号]bzlg
+ID_PlusSerial	         [编号增一]bhzy
+ID_MinusSerial	         [编号减一]bhjy
+Id_VPipeSort             [立管排序]lgpx
+ID_ModifyDim             [修改标注]xgbz
+
+***TCH_VALVE
+Valve=0,"TCH_PIPEVALVE",8,"*"
+ID_Valve	         [阀门阀件]fmfj
+ID_Attachment		 [管道附件]gdfj
+ID_EqScale           [设备缩放]sbsf
+ID_BuildValve        [造 阀 门]zfm
+                 [--]
+ID_34CornerValve     [三四通阀]sstf
+ID_CornerValve       [角    阀]jf
+
+
+
+***TCH_SPRINKLER
+Sprinkler=0,"TCH_EQUIPMENT",300,"喷头"
+ID_SprinkLoc         [喷头定位]ptdw
+ID_XGPT		         [修改喷头]xgpt
+                 [--]
+ID_RYPT		         [任意喷头]rypt
+ID_ZXPT		         [直线喷头]zxpt
+ID_HXPT		         [弧线喷头]hxpt
+ID_JXPT		         [矩形喷头]jxpt
+ID_SXPT		         [扇形喷头]sxpt
+ID_DJPT		         [等距喷头]djpt
+                 [--]
+ID_SprinkConv        [喷头转化]ptzh
+ID_MoveEq            [设备移动]sbyd
+Id_DimSprinkLen      [喷头尺寸]ptcc
+ID_EqLine2Pipe       [设备连管]sblg
+ID_EqScale           [设备缩放]sbsf
+ID_ShowCir           [保护半径]bhbj
+                 [--]
+ID_DimSprinkDn       [喷淋管径]plgj
+ID_SprinkCalc	     [喷淋计算]pljs
+
+
+***TCH_HYDRAND
+Sprinkler=0,"TCH_EQUIPMENT",8,"@消火栓"
+ID_BMHQ		         [布灭火器]bmhq
+ID_BXHS		         [布消火栓]bxhs
+ID_GXHS		         [改消火栓]gxhs
+ID_XHS               [布系统栓]xhs
+//ID_ReplaceHydrant    [消防替换]xfth
+//ID_ReversalHydrant   [消防翻转]xffz
+                 [--]
+ID_LXHS		         [连消火栓]lxhs
+ID_MoveEq            [设备移动]sbyd
+ID_EqScale           [设备缩放]sbsf
+ID_ShowCir           [保护半径]bhbj
+//ID_ChgEqPt           [改接线点]gjxd
+
+
+***TCH_FIRE_EXTINGUISHER
+Sprinkler=0,"TCH_FIRE_EXTINGUISHER",8,"@灭火器"
+ID_BMHQ		         [布灭火器]bmhq
+ID_GMHQ		         [改灭火器]gmhq
+                 [--]
+ID_MoveEq            [设备移动]sbyd
+ID_ShowCir           [保护半径]bhbj
+
+
+
+***TCH_EQOUT
+Sprinkler=0,"TCH_EQUIPMENT",8,"@给排水室外"
+ID_OutTk             [室外图库]swtk
+                 [--]
+//ID_WaterMeter        [水 表 井]sbj
+//ID_OutHydrant        [消 火 栓]swxf
+ID_POOL              [布 置 池]bzc
+                 [--]
+ID_EqScale           [设备缩放]sbsf
+ID_EditEq    		 [修改设备]xgfj
+
+***TCH_WELLRAIN
+Sprinkler=0,"TCH_WELL",8,"@雨水井"
+ID_Well              [布 置 井]bzj
+ID_XGJ               [修 改 井]xgj
+                 [--]
+ID_WellDim2          [管底标注]gdbz
+ID_WellDim           [井底标注]jbz
+ID_WellSerial        [井 编 号]jbh
+ID_DBGX              [躲避更新]dbgx
+ID_CheckWell         [搜 索 井]ssj
+ID_MoveWellDim       [编号移动]bhyd
+ID_GroundEle         [地面标高]dmbg     
+                 [--]
+ID_RainMouse         [雨 水 口]ysk
+ID_Gully2Well        [雨水连井]yslj
+                 [--]
+//ID_WellCalc          [埋深计算]msjs
+ID_VSection          [纵断面图]zdmt
+                 [--]
+ID_RainArea	         [汇流面积]hlmj
+ID_RainCalc	         [雨水水力]yssl
+                 [--]
+ID_EqScale           [设备缩放]sbsf
+ID_S_PIPEELE         [*SWITCH*]
+
+***TCH_RAIN
+Rain=0,"TCH_EQUIPMENT",8,"@雨水口"
+ID_RainMouse         [雨 水 口]ysk
+ID_Well              [布 置 井]bzj
+                 [--]
+ID_Gully2Well        [雨水连井]yslj
+                 [--]
+ID_EqScale           [设备缩放]sbsf
+
+
+***TCH_WELL
+Sprinkler=0,"TCH_WELL"
+ID_Well              [布 置 井]bzj
+ID_XGJ               [修 改 井]xgj
+ID_WellDim2          [管底标注]gdbz
+ID_WellDim           [井底标注]jbz
+ID_WellSerial        [井 编 号]jbh
+ID_DBGX              [躲避更新]dbgx
+ID_CheckWell         [搜 索 井]ssj
+ID_MoveWellDim       [编号移动]bhyd
+                 [--]
+ID_GroundEle         [地面标高]dmbg
+//ID_WellCalc          [埋深计算]msjs
+ID_VSection          [纵断面图]zdmt
+                 [--]
+ID_EqScale           [设备缩放]sbsf
+
+***TCH_VERTICALSECTION
+VericalSection=0,"TCH_VERTICALSECTION,TCH_VERTICALSECTION_FEED"
+ID_ALLMODIFY         [整体修改]TObjedit
+ID_CELLMODIFY        [单元修改]dyxg
+                 [--]
+ID_VSEle             [纵断标高]zdbg
+ID_SplitVS           [一分为二]yfwe
+ID_VSModifyHead		 [修改表头]xgbt
+                 [--]
+ID_VSection          [纵断面图]zdmt
+
+***TCH_WELLDIM
+welldim=0,"TCH_WELLDIM"
+ID_WellDim2          [管底标注]gdbz
+ID_WellDim           [井底标注]jbz
+ID_ModifyDim         [修改标注]xgbz
+                 [--]
+ID_WellSerial        [井 编 号]jbh
+ID_GroundEle         [地面标高]dmbg
+
+***TCH_WATERTANK
+watertank=0,"TCH_WATERTANK"
+ID_WaterTank		[绘制水箱]hzsx	
+                 [--]
+ID_Overfall 		[溢 流 管]ylg	
+ID_WaterIn  		[进 水 管]jsg	
+
+***TCH_PUMP
+pump=0,"TCH_PUMP",8,"@水泵"
+ID_DrawPump			[绘制水泵]hzsb	
+                 [--]
+ID_SelPump			[水泵选型]sbxx	
+ID_PumpBase			[水泵基础]sbjc	
+ID_PumpPipe         [进出水管]jcsg
+
+***POOL
+pool=0,"TCH_PUMP",8,"@给排水室外"
+ID_TwtCalchfc		 [容积计算]hfc		
+                 [--]
+ID_POOL              [布 置 池]bzc
+
+
+***TCH_EQUIPMENT
+Equipment=0,"TCH_EQUIPMENT",8,"*"
+ID_SysAttch          [系统附件]xtfj
+ID_GSFJ		         [给水附件]gsfj
+ID_PSFJ		         [排水附件]psfj
+                 [--]
+ID_EditEq    		 [修改附件]xgfj
+ID_MoveEq            [设备移动]sbyd
+ID_EqLine2Pipe       [设备连管]sblg
+ID_EqScale           [设备缩放]sbsf
+//ID_ChgEqPt           [改接线点]gjxd
+ID_ReversalEq        [附件翻转]fjfz
+ID_ThickBlk          [图块加粗]tkjc
+
+***TCH_PIPETEXT
+Valve=0,"TCH_PIPETEXT",8,"*"
+ID_PipeOnText            [管线文字]gxwz
+ID_EqualHeight           [统一字高]tyzg
+
+***TCH_ARROW
+Valve=0,"TCH_ARROW",8,"*"
+ID_ChangeDirct           [改变流向]gblx
+ID_Gradient              [管道坡度]gdpd
+                 [--]
+ID_DimMirror             [标注镜像]bzjx
+ID_ResetDn               [标注复位]bzfw
+                 [--]
+ID_EqualHeight           [统一字高]tyzg
+
+***TCH_ELEVATION
+Valve=0,"TCH_ELEVATION",8,"*"
+ID_EraseDim              [删除标注]scbz
+                 [--]
+ID_ELEDIM1               [单注标高]dzbg
+ID_EDITELE               [修改标高]xgbg
+ID_ELEDIM2               [连注标高]TMElev
+
+***TCH_MultiDimDn
+MultiDimDn=0,"TCH_PIPEMULTDIM",8,"*"
+ID_ModifyMultDim         [多标修改]dbxg
+ID_ModifyDim             [修改标注]xgbz
+                 [--]
+ID_DimMPipeDn            [多管标注]dgbz
+ID_DimPipeDn             [多管管径]gjbz
+ID_ChangePipeDn          [更改管径]gggj
+
+// 墙体菜单
+***WALL
+Wall=0,"TCH_WALL"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+               [->曲线编辑]
+Id_TFillet        [倒 墙 角]TFillet
+ID_TOffset        [净距偏移]TOffset
+ID_Offset         [偏　　移]Offset
+ID_Trim           [修　　剪]^C^C_trim
+ID_Extend         [延　　伸]^C^C_extend
+ID_Break          [<-打　　断]^C^C_break
+ID_TObjedit    [对象编辑]TObjedit
+               [--]
+ID_TWall2Axis  [墙生轴线]TWall2Axis
+               [--]
+ID_Opening     [插入门窗]TOpening
+               [--]
+Id_FixWall     [修 墙 角]TFixWall
+Id_AlignWall   [边线对齐]TAlignWall
+               [--]
+Id_WallThick   [改 墙 厚]TWallThick
+Id_ExtThick    [改外墙厚]TExtThick
+               [--]
+ID_S_BOLDLINE  [*SWITCH*]
+ID_S_SOLIDFILL [*SWITCH*]
+ID_S_BASELINE  [*SWITCH*]
+
+
+// 门窗菜单
+***OPENING
+Opening=0,"TCH_OPENING"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+ID_TObjedit    [对象编辑]TObjedit
+               [--]
+ID_MirWinIO    [内外翻转]TMirWinIO
+ID_MirWinLR    [左右翻转]TMirWinLR
+
+
+
+// 柱子菜单
+***COLTOOL
+Column=0,"TCH_COLUMN"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+ID_TObjedit    [对象编辑]TObjedit
+               [--]
+Id_Fzh         [标 准 柱]TGColumn
+Id_TCornColu   [角　　柱]TCornColu
+Id_TPolyColu   [PLINE转柱]TPolyColu
+               [--]
+Id_ChHeight    [改 高 度]TChHeight
+               [--]
+ID_S_BOLDLINE  [*SWITCH*]
+ID_S_SOLIDFILL [*SWITCH*]
+
+
+// 轴线菜单
+***DOTTOOL
+Dote=0,"LINE,ARC,CIRCLE",8,"@轴线"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_Move           [<-移　　位]TMove
+                [--]
+Id_Desaxis      [绘制轴网]TRectAxis
+                [--]
+Id_Stod         [单线变墙]TSWall
+                [--]
+Id_Axadd        [添加轴线]TInsAxis
+//Id_TInsAxisR    [添加径轴]TInsAxisR
+Id_TClipAxis    [轴线裁剪]TClipAxis
+                [--]
+Id_TAxisDim2p   [轴网标注]TMultAxisDim
+Id_TAxisDimp    [单轴标注]TSingleAxisDim
+//Id_TAxisDim2p   [两点轴标]TAxisDim2p
+//Id_TAxisDimp    [逐点轴标]TAxisDimp
+
+
+
+// 轴网标注菜单
+***AXITOOL
+Axis=0,"TCH_AXIS_LABEL"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+ID_TObjedit    [对象编辑]TObjedit
+               [--]
+Id_Axcha       [单轴变号]TAxisNo
+Id_Maxcha      [重排轴号]TReAxisNo
+Id_TAddLabel   [添补轴号]TAddLabel
+Id_TDelLabel   [删除轴号]TDelLabel
+
+// 尺寸标注菜单
+***DMTOOL
+Dim=0,"DIMENSION"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+               [--]
+ID_MergeDim    [连接尺寸]TMergeDim
+ID_BreakDim    [增补尺寸]TBreakDim
+ID_ConvDim     [转化尺寸]TConvDim
+ID_DimStyle    [标注样式]DDIM
+
+
+***TCH_DIMENSION
+Dimension=0,"TCH_DIMENSION"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+                [--]
+Id_Dimmp        [逐点标注]TDimMP
+Id_DimRad       [半径标注]TDimRad
+                [--]
+ID_ChDimText    [更改文字]TChDimText
+ID_ResetDimP    [文字复位]TResetDimP
+ID_ResetDimT    [文字复值]TResetDimT
+                [--]
+ID_DimTrimExt   [裁剪延伸]TDimTrimExt
+ID_DimDel       [取消尺寸]TDimDel
+ID_DimBreak     [拆分区间]TDimBreak
+ID_MergeDim     [连接尺寸]TMergeDim
+ID_BreakDim     [增补尺寸]TBreakDim
+ID_DimTog		[切换角标]TDimTog
+
+***TCH_DIMENSION
+Dimension=0,"TCH_DIMENSION2"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+                [--]
+Id_Dimmp        [逐点标注]TDimMP
+Id_DimRad       [半径标注]TDimRad
+                [--]
+ID_ChDimText    [更改文字]TChDimText
+ID_ResetDimP    [文字复位]TResetDimP
+ID_ResetDimT    [文字复值]TResetDimT
+                [--]
+ID_DimTrimExt   [裁剪延伸]TDimTrimExt
+ID_DimDel       [取消尺寸]TDimDel
+ID_DimBreak     [拆分区间]TDimBreak
+ID_MergeDim     [连接尺寸]TMergeDim
+ID_BreakDim     [增补尺寸]TBreakDim
+ID_DimTog		[切换角标]TDimTog
+ID_DimTog		[切换角标]TDimTog
+                [--]
+ID_DimAdjust    [尺寸自调]TDimAdjust
+
+// 文字菜单
+***TEXTTOOL
+TEXT=0,"TCH_TEXT,TCH_MTEXT,TCH_MTEXTNEW"
+ID_TObjedit    [文字编辑]TObjedit
+               [--]
+ID_Text        [单行文字]TText
+ID_InsText     [专业文字]zywz
+ID_MText       [多行文字]TMText
+ID_FYWZ        [分页文字]fywz
+               [--]
+ID_TextStyle   [文字样式]TStyleEx
+ID_TextPlus    [递增文字]dzwz
+ID_EqualHeight [统一字高]tyzg
+ID_AdjText     [转角自纠]TTextAdjust
+ID_TextFind    [查找替换]TRepFind
+ID_FrameOff    [屏蔽框关]WipeOut;F;Off
+Id_Gb_Big5	   [繁简转换]TBIG5_GB
+               [--]
+               [->通用编辑]
+ID_Explode        [分　　解]Explode
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]T63_TDragCopy
+ID_DragMove       [自由移动]T63_TDragMove
+ID_TMove          [<-移　　位]T63_TMove
+
+// 文字菜单
+***TEXTTOOL1
+TEXT=0,"TEXT,MTEXT"
+ID_Text        [单行文字]TText
+ID_InsText     [专业文字]zywz
+ID_MText       [多行文字]TMText
+ID_FYWZ        [分页文字]fywz
+               [--]
+ID_TextStyle   [文字样式]TStyleEx
+ID_TextPlus    [递增文字]dzwz
+ID_EqualHeight [统一字高]tyzg
+ID_AdjText     [转角自纠]TTextAdjust
+ID_TextConv    [文字转化]TTextConv
+ID_TextMerge   [文字合并]TTextMerge
+ID_TextFind    [查找替换]TRepFind
+Id_Gb_Big5	   [繁简转换]TBIG5_GB
+               [--]
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+
+
+// 表格菜单
+***TBLTOOL
+Table=0,"TCH_SHEET"
+ID_TObjedit     [表格编辑]TObjedit
+                [--]
+ID_NewSheet     [新建表格]TNewSheet
+ID_SheetEdit    [全屏编辑]TSheetEdit
+ID_ColEdit      [表列编辑]TColEdit
+                [--]
+ID_SplitSheet   [拆分表格]TSplitSheet
+ID_MergeSheet   [合并表格]TMergeSheet
+                [--]
+ID_RowEdit      [表行编辑]TRowEdit
+ID_InsertRow    [增加表行]zjbh
+ID_RemoveRow    [删除表行]scbh
+                [--]
+ID_CellEdit     [单元编辑]TCellEdit
+ID_CellPlus     [单元递增]dydz
+ID_CellSum      [单元累加]TSumCellDigit
+ID_CellCopy     [单元复制]dyfz
+ID_CellMerge    [单元合并]TCellMerge
+ID_DelMerge     [撤销合并]cxhb
+                [--]
+ID_Sheet2Word   [转出Word]Sheet2Word
+ID_Sheet2Excel  [转出Excel]Sheet2Excel
+ID_ReadExcel    [读入Excel]Excel2Sheet
+
+
+// 老天正喷头菜单
+***OLDTGTOOL
+BlockInsert=0,"INSERT",8,"P_PL_PT"
+ID_SprinkConv        [喷头转化]ptzh
+ID_TObjedit          [图块编辑]TObjedit
+
+// 图块菜单
+***BLOCKTOOL
+BlockInsert=0,"INSERT",8,"@管件"
+ID_TObjedit    [图块编辑]TObjedit
+ID_ThickBlk    [图块加粗]tkjc
+ID_BlkBrush    [图 块 刷]tks
+               [--]
+ID_BlkMan      [通用图库]TBlkMan
+
+// 图块菜单
+***BLOCKTOOL
+BlockInsert=0,"INSERT,TCH_BLOCK_INSERT",8,"@洁具"
+ID_RepLvtry    [洁具替换]jjth
+ID_LvtryLib    [洁具入库]jjrk
+Id_FreeLvtry   [任意洁具]ryjj  
+Id_DefineLvtry [定义洁具]dyjj  
+Id_Pipe2Lvtry  [管连洁具]gljj  
+ID_KLJJ        [快连洁具]kljj
+//Id_DimSprinkLen  [洁具尺寸]ptcc  
+               [--]
+ID_TObjedit    [图块编辑]TObjedit
+ID_BlkMan      [通用图库]TBlkMan
+
+// 图块菜单
+***BLOCKTOOL
+BlockInsert=0,"INSERT"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+ID_TObjedit    [对象编辑]TObjedit
+ID_REFEDIT     [在位编辑]REFEDIT
+//ID_BlkLay      [图块改层]TBlkLay
+//ID_ChangeCol   [图块改色]dkgs
+               [--]
+ID_BlkMask1      [XCLIP]XCLIP;N;Y;S
+ID_FrameOn     [Boundary]XCLIP;P
+Id_BINDREF          [BindRef]TBINDREF;I
+Id_FINDREF          [ReloadRef]TFINDREF
+               [--]
+ID_Blknme      [Block Name]TBlkname
+ID_APLUS_BUNIQUE      [Block Random]randomiseblocks
+ID_APLUS_BUNIQUE      [New Instance]BlockNewInstance
+//               [--]
+//ID_BlkMan      [通用图库]TBlkMan
+
+
+// 图块菜单
+***BLOCKTOOL1
+BlockInsert=0,"TCH_BLOCK_INSERT"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+ID_TObjedit    [对象编辑]TObjedit
+               [--]
+ID_BlkMan      [通用图库]TBlkMan
+
+
+// 封闭的多段线菜单
+***POLY_REGION
+PolyRegion=0,"POLYLINE,LWPOLYLINE",70,1 
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+               [--]
+ID_IPoly       [布尔运算]TPolyBool
+ID_Extrude     [拉　　伸]Extrude
+               [--]
+ID_Offset      [偏　　移]_Offset
+ID_Lengthen    [拉　　长]_lengthen
+ID_Trim        [修　　剪]_trim
+ID_Extend      [延　　伸]_extend
+ID_Break       [打　　断]_break
+ID_Chamfer     [倒　　角]_chamfer
+ID_Fillet      [圆　　角]_Fillet
+               [--]
+ID_DrawPline   [参照绘制]hddx
+ID_RevPline    [反　　向]TRevPline
+ID_Clip2d      [图形裁减]TClip
+Id_Towidth     [加粗曲线](_@ld"tool1");towidth;
+ID_CHDASH      [虚实变换]xsbh;
+ID_SetDash     [线型比例]xxbl
+ID_PEdit       [编辑pline]PEdit
+
+
+***POLY_CURVE
+PolyCurve=0,"POLYLINE,LWPOLYLINE",70,0
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+               [--]
+ID_Offset      [偏　　移]Offset
+ID_Lengthen    [拉　　长]_lengthen
+ID_Trim        [修　　剪]_trim
+ID_Extend      [延　　伸]_extend
+ID_Break       [打　　断]_break
+ID_Chamfer     [倒　　角]_chamfer
+ID_Fillet      [圆　　角]_Fillet
+               [--]
+ID_DrawPline   [参照绘制]hddx
+ID_RevPline    [反　　向]TRevPline
+Id_Towidth     [加粗曲线](_@ld"tool1");towidth;
+ID_CHDASH      [虚实变换]xsbh;
+ID_SetDash     [线型比例]xxbl
+ID_PEdit       [编辑pline]PEdit
+
+***CURVE
+curve = 0, "LINE,ARC,CIRCLE"
+               [->通用编辑]
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [<-移　　位]TMove
+               [--]
+ID_Offset      [偏　　移]Offset
+ID_Lengthen    [拉　　长]^C^C_lengthen
+ID_Trim        [修　　剪]^C^C_trim
+ID_Extend      [延　　伸]^C^C_extend
+ID_Break       [打　　断]^C^C_break
+ID_Chamfer     [倒    角]^C^C_chamfer
+ID_Fillet      [圆　　角]Fillet
+               [--]
+Id_Towidth     [加粗曲线](_@ld"tool1");towidth;
+ID_CHDASH      [虚实变换]xsbh;
+ID_SetDash     [线型比例]xxbl
+
+
+
+***COMPONENTS
+component=0,"TCH_*"
+ID_TObjedit       [对象编辑]TObjedit
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Explode        [分　　解]Explode
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [移　　位]TMove
+
+
+***OTHERS
+others=0,"*"
+ID_PROPERTIES     [对象特性]Properties
+                  [--]
+ID_Erase          [删　　除]Erase
+ID_Copy           [复　　制]Copy
+ID_Move           [移　　动]Move
+ID_Mirror         [镜　　像]Mirror
+ID_Rotate         [旋　　转]Rotate
+                  [--]
+ID_DragCopy       [自由复制]TDragCopy
+ID_DragMove       [自由移动]TDragMove
+ID_TMove          [移　　位]TMove
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// 屏幕菜单
+
+***SCREEN
+
+//TArch Begin
+
+ID_Project     [->设　　置]
+ID_OUTMEMU           [室外菜单](TSetMenu "out.tmn" )
+                     [--]
+ID_Project			 [工程管理]TProjectManager
+ID_TConfig			 [初始设置]tzsz
+ID_SetToolbar		 [工 具 条]gjt
+                     [--]
+ID_WConfig			 [导出设置]dcsz
+ID_RConfig			 [导入设置]drsz
+                     [--]
+ID_SelVPipe	         [选择管线]xzgx
+ID_FloorPt			 [楼层设置]lcsz
+ID_FloorCp			 [楼层复制]lcfz
+                     [--]
+ID_SnapAng			 [依线正交]yxzj
+ID_TPScale			 [当前比例]TPScale
+ID_LayColor          [图层管理]gxsz
+//ID_LayColor          [文字管理]TTextManager
+ID_TextStyle         [文字样式]TStyleEx
+ID_LineLib           [线 型 库]XXK
+ID_LineStyle         [<-文字线型]xxgl
+
+
+ID_TArch5      [->建　　筑]
+Id_Desaxis           [绘制轴网]TRectAxis
+Id_Dwall             [绘制墙体]TgWall
+Id_Fzh               [标 准 柱]TGColumn
+Id_TCornColu         [角　　柱]TCornColu
+ID_Door              [门　　窗]TOpening
+
+                     [--]
+Id_Tstair            [双跑楼梯]TRStair
+Id_Lstair            [直线梯段]TLStair
+Id_Astair            [圆弧梯段]TAStair
+Id_Lbalcony          [阳　　台]TBalcony
+Id_Step              [台　　阶]TStep
+Id_Slope             [坡　　道]TAscent
+ID_SlopeRoof         [任意坡顶]TSlopeRoof
+                     [--]
+ID_UpdSpace          [搜索房间]TUpdSpace
+Id_Lvtry             [布置洁具]TSan
+ID_Apart             [布置隔断]TApart
+ID_Clap              [布置隔板]TClap
+                     [--]
+ID_LoadTch           [转条件图]ztjt
+Id_DelWinText        [删门窗名]smcm
+Id_ColNull           [柱子空心]zzkx
+ID_S_BOLDLINE		 [*SWITCH*]
+ID_S_SOLIDFILL           [<-*SWITCH*]
+
+//TWT Begin
+
+ID_TwtPipe	         [->管　　线]
+ID_DrawPipe	         [绘制管线]hzgx
+ID_DrawPipeByLine    [沿线绘管]yxhg
+ID_StandPipe         [立管布置]lgbz
+ID_SXKW		         [上下扣弯]sxkw
+ID_SelVPipe	         [选择管线]xzgx
+ID_MutiPipe          [绘制多管]hzdg
+ID_DoublePipe 		 [双线水管]hsxg	
+            [--]
+ID_LGLJ              [立干连接]lglj
+ID_GXLD              [管线联动]gxld
+ID_GXSJ              [管线升降]gxsj
+ID_GXZD              [管线遮挡]gxzd
+ID_PipeBreak         [管线打断]gxdd
+ID_PipeJoin          [管线连接]gxlj
+ID_PipeUp            [管线置上]gxzs
+ID_PipeDown          [管线置下]gxzx
+ID_ExternPipe        [管线延长]gxyc
+ID_TGCR              [套管插入]tgcr
+            [--]
+ID_ModifyPipe        [修改管线]xggx
+ID_ModifyDoublePipe	 [修改双管]xgsg
+ID_PipeElevation     [单管标高]dgbg
+ID_FilletPipe        [管线倒角]gxdj
+ID_BreakSign         [断管符号]dgfh
+ID_EqLine2Pipe       [设备连管]sblg
+ID_SetMatSpec        [管材规格]gcgg
+ID_ChangeSpec        [变更管材]bggc
+ID_CalcEle			 [坡高计算]pgjs
+ID_CheckInt			 [碰撞检查]3wpz
+ID_ThickPipe         [<-管线粗细]gxcx
+//                 [--]
+//ID_FloorPipe         [->地热盘管]drpg
+//ID_FloorPipe         [地热盘管]drpg
+//ID_DoubleFloorPipe   [双线盘管]sxpg
+//ID_SelFloorPipe      [<-<-选择盘管]xzpg
+
+
+ID_TwtPlane	         [->平　　面]
+ID_LoadTch           [转条件图]ztjt  
+Id_FreeLvtry         [任意洁具]ryjj  
+Id_DefineLvtry       [定义洁具]dyjj  
+Id_Pipe2Lvtry        [管连洁具]gljj  
+ID_KLJJ              [快连洁具]kljj
+            [--]	
+ID_Valve	         [阀门阀件]fmfj
+ID_GSFJ		         [给水附件]gsfj
+ID_PSFJ		         [排水附件]psfj
+ID_Attachment		 [管道附件]gdfj
+ID_InsMeter	         [常用仪表]cyyb
+            [--]
+ID_EditEq    		 [修改附件]xgfj
+ID_MoveEq            [设备移动]sbyd
+ID_EqLine2Pipe       [设备连管]sblg
+ID_EqScale           [设备缩放]sbsf   
+ID_FilletPipe2       [排水倒角]psdj   
+           [--]			 
+ID_HoleBase          [基 础 洞]jcd   
+ID_HoleGround        [楼 板 洞]lbd   
+            [--]			 
+ID_Amount	         [材料统计]cltj
+ID_FindSheet         [统计查询]tjcx
+ID_MergeSheet        [<-合并统计]hbtj
+
+
+
+ID_PlaneFire	     [->平面消防]
+ID_BMHQ                  [布灭火器]bmhq
+ID_BXHS		         [布消火栓]bxhs
+ID_LXHS		         [连消火栓]lxhs
+            [--]
+ID_RYPT		         [任意喷头]rypt
+ID_JDPT		         [交点喷头]jdpt
+ID_ZXPT		         [直线喷头]zxpt
+ID_HXPT		         [弧线喷头]hxpt
+ID_JXPT		         [矩形喷头]jxpt
+ID_SXPT		         [扇形喷头]sxpt
+ID_DJPT		         [等距喷头]djpt
+ID_SprinkConv        [喷头转化]ptzh
+            [--]
+ID_XGPT		         [修改喷头]xgpt
+ID_SprinkLoc         [喷头定位]ptdw
+Id_DimSprinkLen      [喷头尺寸]ptcc
+ID_SysAttch          [系统附件]xtfj
+ID_EqLine2Pipe       [设备连管]sblg
+ID_MoveEq            [设备移动]sbyd
+ID_ShowCir           [保护半径]bhbj
+ID_LongPath          [最远路径]zylj
+            [--]
+ID_DimSprinkDn       [喷淋管径]plgj
+ID_SprinkCalc	     [<-喷淋计算]pljs
+
+
+ID_SiphonRainwater	     [->虹吸雨水]
+ID_HSHF		         [汇水划分]hshf
+ID_HSMJ		         [汇水面积]hsmj
+ID_WMJS		         [屋面计算]wmjs
+            [--]
+ID_BYSD		         [布雨水斗]bysd
+ID_LYSD		         [连雨水斗]lysd
+            [--]
+ID_HXJS		         [虹吸计算]hxjs
+            [--]
+ID_YLY		         [溢 流 堰]yly
+            [--]
+ID_S_RAINAREA		 [<-*SWITCH*]
+
+
+
+ID_TwtSys	[->系　　统]
+ID_BuildSys          [系统生成]xtsc
+				[--]
+ID_PrinkSys          [喷洒系统]psxt
+ID_HydrantSys        [消防系统]xfxt
+ID_DirtSys           [排水原理]wsyl
+ID_FeedSys           [住宅给水]gsyl
+ID_FeedSys2          [公建给水]gjgs
+ID_PrincipleSys      [绘展开图]hzkt
+				[--]
+ID_SysAttch          [系统附件]xtfj
+ID_Aerate            [通 气 帽]tqm
+ID_InsCheck          [检 查 口]jck
+ID_XHS               [消 火 栓]xhs
+ID_ScaleSys          [系统缩放]xtsf
+ID_ExternPipe        [管线延长]gxyc
+ID_ModifyFloor       [改楼层线]glcx
+ID_ReversalEq        [附件翻转]fjfz
+ID_SysSel            [<-系统选择]xtxz
+
+			[->水 泵 间]	
+ID_WaterTank		[绘制水箱]hzsx	
+ID_Overfall 		[溢 流 管]ylg	
+ID_WaterIn  		[进 水 管]jsg	
+ID_WaterTankSys		[水箱系统]sxxt	
+					[--]
+ID_SelPump			[水泵选型]sbxx	
+ID_DrawPump			[绘制水泵]hzsb	
+ID_PumpBase			[水泵基础]sbjc	
+ID_PumpPipe			[进出水管]jcsg	
+					[--]
+Id_Sectnum1		    [剖面剖切]TSection
+ID_PumpSect		    [剖面生成]sbpm
+					[--]
+ID_DoublePipe 		[双线水管]hsxg	
+ID_ModifyDoublePipe	[修改双管]xgsg
+ID_DoubleValve 		[双线阀门]sxfm
+					[--]
+ID_Valve		    [单线阀门]fmfj
+ID_Attachment	    [<-管道附件]gdfj	
+
+ID_TwtCalc	[->计　　算]
+ID_ModifyNg			[住宅参数]xgdl
+ID_TwtCalcgs		[给水计算]FeedCalcMan
+					[--]
+ID_DirtSys          [排水原理]wsyl
+ID_TwtCalcps2	    [排水计算]wsjs
+					[--]
+ID_HydrantSys		[消防系统]xfxt
+ID_HydrantCalc		[消防计算]xfjs
+					[--]
+ID_DimSprinkDn      [喷淋管径]plgj
+ID_SprinkCalc	    [喷淋计算]pljs
+					[--]
+ID_ZZJS           [住宅简算]zzjs
+ID_QMJS           [气灭简算]qmjs
+ID_UnitChange           [单位换算]dwhs
+ID_TwtCalcysl		[用 水 量]ysl
+ID_TwtCalcysl		[热用水量]rysl
+ID_TwtCalcsx		[水箱计算]sxjs
+ID_TwtCalcqyg		[气压水罐]qysg
+ID_TwtCalczsc		[贮 水 池]zsc	
+ID_TwtCalcjykb		[减压孔板]jykb
+ID_TwtCalcxhs		[消 火 栓]xhsjs
+ID_TwtCalcmhq		[灭 火 器]mhq
+ID_SCYL		        [<-水锤压力]scyl
+//					[--]
+//ID_DrawId   		[->焓 湿 图]ysl
+//ID_DrawId   		[绘焓湿图]hhst
+//ID_IdParaMeter 		[状态计算]ztjs
+//ID_Idprocess 		[<-空气处理]kqcl
+		
+
+
+			[--]
+
+ID_TwtDim	[->专业标注]
+ID_DimStandPipe	[标注立管]bzlg
+ID_CTLB         [查替立编]ctlb
+Id_VPipeSort    [立管排序]lgpx
+Id_DimPipeSeral [入户管号]rhgh
+Id_PipeSeralSort[入户排序]rhpx
+Id_DimSanitary  [标注洁具]bzjj
+ID_PipeOnText   [管线文字]gxwz
+ID_Gradient     [管道坡度]gdpd
+           [--]
+ID_DimPipeDn    [多管管径]gjbz
+ID_DimSinPipeDn [单管管径]dggj
+ID_DimMPipeDn   [多管标注]dgbz
+ID_DimMove      [管径移动]gjyd
+ID_DimMirror    [标注镜像]bzjx
+ID_ResetDn      [标注复位]bzfw
+ID_PipeDimAlign [管标对齐]gbdq
+ID_EraseDim     [删除标注]scbz
+ID_ModifyDim    [修改标注]xgbz
+           [--]
+ID_ELEDIM1      [单注标高]dzbg
+ID_ELEDIM2      [连注标高]TMElev
+ID_Coord        [注坐标点]TCoord
+Id_Arrow        [箭头引注]TArrow
+//Id_Dimyi1		[引出标注]TLeader
+Id_Dimyi1		[引出标注]ycbz
+Id_Dimyi2       [多线引出]TComposing
+Id_Compass      [画指北针]TNorthThumb
+ID_Rupture		[加折断线]TRupture
+Id_Revcloud		[绘制云线]trevcloud
+ID_DwgName      [图名标注]TDrawingName
+ID_S_DyCoord    [<-*SWITCH*]
+
+ID_Dimension [->尺寸标注]
+Id_Dimmp        [逐点标注]TDimMP
+Id_QuickDim		[快速标注]TQuickDim
+Id_DimSprinkLen [喷头尺寸]ptcc
+Id_DimRad       [半径标注]TDimRad
+Id_DimDia       [直径标注]TDimDia
+ID_DimAng       [角度标注]TDimAng
+ID_DimArc       [弧长标注]TDimArc
+                [--]
+ID_ChDimText    [更改文字]TChDimText
+ID_ResetDimP    [文字复位]TResetDimP
+ID_ResetDimT    [文字复值]TResetDimT
+                [--]
+ID_DimTrimExt   [裁剪延伸]TDimTrimExt
+ID_DimDel       [取消尺寸]TDimDel
+ID_DimBreak     [拆分区间]TDimBreak
+ID_MergeDim     [连接尺寸]TMergeDim
+ID_BreakDim     [增补尺寸]TBreakDim
+ID_DimTog		[切换角标]TDimTog
+                [--]
+ID_DimAdjust    [尺寸自调]TDimAdjust
+ID_S_DIMADJ     [*SWITCH*]
+ID_S_TextLayerChange     [<-*SWITCH*]
+
+ID_TextStyle		[->文字表格]
+ID_TextStyle			[文字样式]TStyleEx
+ID_Text					[单行文字]TText
+ID_MText				[多行文字]TMText
+ID_FYWZ                                 [分页文字]fywz
+ID_InsText				[专业词库]TWordLib        
+						[--]
+ID_AdjText				[转角自纠]TTextAdjust
+ID_TextPlus             [递增文字]dzwz
+ID_TextConv				[文字转化]TTextConv
+ID_TextMerge			[文字合并]TTextMerge
+ID_equalHeight			[统一字高]tyzg
+ID_wzdq			[文字对齐]wzdq
+						[--]
+ID_NewSheet				[新建表格]TNewSheet
+ID_SheetEdit			[->表格编辑]
+ID_SheetEdit				[全屏编辑]TSheetEdit
+ID_SplitSheet				[拆分表格]TSplitSheet
+ID_MergeSheet				[合并表格]TMergeSheet
+							[--]
+ID_ColEdit					[表列编辑]TColEdit
+ID_RowEdit					[表行编辑]TRowEdit
+ID_InsertRow				[增加表行]TSheetInsertRow
+ID_RemoveRow				[删除表行]TSheetDelRow
+							[--]
+ID_CellEdit					[单元编辑]TCellEdit
+ID_CellPlus					[单元递增]TCopyAndPlus
+ID_CellSum                  [单元累加]TSumCellDigit
+ID_CellCopy					[单元复制]TCopyCell
+ID_CellMerge				[单元合并]TCellMerge
+ID_DelMerge					[撤销合并]TDelMerge	      	
+							[--]
+ID_Sheet2Word               [转出Word]Sheet2Word
+ID_Sheet2Excel		    	[转出Excel]Sheet2Excel
+ID_ReadExcel		    	[<-读入Excel]Excel2Sheet
+					[--]
+ID_TextFind				[查找替换]TRepFind                
+Id_Gb_Big5				[<-繁简转换]TBIG5_GB
+
+
+ID_BlkMan   [->图　　库]
+ID_BlkMan         [图库管理]tkw
+ID_GJK            [构 件 库]GJKW 
+ID_GJK            [天正图集]tztj 
+ID_Valve	      [阀门阀件]fmfj
+//ID_34CornerValve  [三四通阀]sstf
+//ID_CornerValve    [角    阀]jf
+ID_InsMeter	      [常用仪表]cyyb
+ID_Attachment     [管道附件]gdfj
+ID_SysAttch       [系统附件]xtfj
+ID_BuildValve     [造 阀 门]zfm
+ID_BuildValve	  [<-造 附 件]zfj
+
+
+ID_Layer   [->图　　层]
+ID_LayColor       [图层管理]gxsz			   
+ID_LayMan         [图层控制]tckz
+Id_Clrtos		  [图变单色]tbds
+ID_ResColor		  [颜色恢复]yshf
+			   [--]
+ID_OpenLayer      [打开图层]OpenLayer
+ID_OpenSelLayer   [只开选层]OpenSelLayer
+ID_OpenAllLayer   [开全部层]OpenAllLayer
+ID_CloseSelLayer  [关闭图层]CloseSelLayer
+			   [--]
+ID_LockLayer      [锁定图层]LOCKSELLAYER
+ID_LockNoSelLay   [锁非选层]sfxc
+ID_UnLockLayer    [解锁图层]UNLOCKSELLAYER
+			   [--]
+ID_ForzenLayer    [冻结图层]FrozenLayer
+ID_UnFrozenAllLayer [解冻全层]UnFrozenAllLayer
+			   [--]
+ID_DelLay         [删除选层]EraseSelLayer
+ID_ConvertLayer   [转换图层]ConvertLayer
+ID_MergeLay       [合并图层]hbtc
+			   [--]
+Id_Mkwin        		[定义视口]TMakeVP
+Id_VPSys          		[视口图层]skxt
+ID_ForzenViewLayer    	[冻结视口]FrozenViewLayer
+ID_UnFrozenViewAllLayer [<-解冻视口]UnFrozenViewAllLayer
+ 
+
+ID_TOOL     [->绘图工具]
+ID_TObjinfo    [对象查询]'TObjinfo
+ID_TSelObj     [对象选择]TSelObj
+ID_CAMERA	   [相机透视]TCamera
+               [--]
+ID_DragCopy    [自由复制]TDragCopy
+ID_DragMove    [自由移动]TDragMove
+ID_TMove       [移　　位]TMove
+ID_PasteClip   [自由粘贴]TPasteClip
+               [--]
+ID_RemoveDup   [消除重线]TRemoveDup
+ID_RectAngle   [矩　　形]TRect
+ID_CHDASH      [虚实变换]xsbh
+ID_ReLineType  [修正线形]xzxx
+ID_ModElev     [统一标高]TModElev
+ID_ChangeCol   [图块改色]dkgs
+               [--]
+ID_AddHole     [图案加洞]THatchAddHole
+ID_DelHole     [图案减洞]THatchDelHole
+Id_Lnptlib     [线 图 案]TLinePattern
+               [--]
+ID_TgErase     [过滤删除]glsc
+ID_SeOutline   [搜索轮廓]TSeOutline
+ID_CutDrawing  [<-图形切割]TCutDrawing
+ 
+     
+ID_SYSTOOL     [->文件布图]
+ID_Open        [打开文件]TOpen
+ID_TSaveAs     [图形导出]TSaveAs
+ID_BatSave     [批转旧版]TBatSave
+ID_TExplode    [分解对象]TExplode
+ID_XMLexport   [三维漫游]TGetXML
+              [--]
+Id_BINDREF          [绑定参照]TBINDREF
+Id_FINDREF          [重载参照]TFINDREF
+			  [--]
+ID_SplitDwg    [备档拆图]bdct
+ID_CompareDwg  [图纸比对]tzbd
+//ID_CompareDwg2 [局部比对]jbbd
+Id_TitleList	 [图纸目录]TTitleList
+               [--]
+Id_Sectnum3    [三维剖切]TSectionAll
+ID_GXPM        [更新剖面]TSUpdate
+ID_CheckInt	   [碰撞检查]3wpz
+               [--]
+ID_PROTECTDWG  [图纸保护]tzbh
+ID_UNLOCKDWG   [图纸解锁]tzjs
+               [--]
+Id_Mkwin        [定义视口]TMakeVP
+Id_VPSys        [视口图层]skxt
+ID_ForzenViewLayer    	[冻结视口]FrozenViewLayer
+ID_UnFrozenViewAllLayer [解冻视口]UnFrozenViewAllLayer
+ID_TPScale      [当前比例]TPScale
+Id_Chscl        [改变比例]TChScale
+ID_ResetDn      [标注复位]bzfw
+ID_BatPlot      [批量打印]tgbatplots
+Id_Title        [<-插入图框]TTitleFrame
+
+
+
+
+              [->帮　　助]            
+ID_Help            [在线帮助]zxbz
+ID_Flash           [在线演示]zxys    
+ID_TwtLaw          [规范查询]gfcx
+ID_CurTips         [日积月累]TCurTips
+ID_CatchScreen     [天正抓屏]tzzp
+//ID_TGdownload      [资源下载]TTgDownLoad
+//ID_ZTJC            [字体检查]ztjc
+ 
+                   [--]
+ID_TwtAbout        [<-版本信息]bbxx
+
+
+//Twt End
+
+***SWITCH
+** ID_S_BOLDLINE
+GET = GetBoldLineState       //取状态  
+SET = SetBoldLineState       //设状态
+0 = ID_BOLDLINE_OFF,  "粗线关闭"  //状态0
+1 = ID_BOLDLINE_ON,   "粗线打开"  //状态1
+
+** ID_S_SOLIDFILL
+GET = GetSolidFillState       //取状态  
+SET = SetSolidFillState       //设状态
+0 = ID_SOLIDFILL_OFF,  "填充关闭"  //状态0
+1 = ID_SOLIDFILL_ON,   "填充打开"  //状态1
+
+**ID_S_DyCoord
+GET = GetDynamicCoord
+SET = SetDynamicCoord
+0 = ID_DYCOORD_OFF, "静态标注"
+1 = ID_DYCOORD_ON,  "动态标注"
+
+**ID_S_DIMADJ
+GET = GetDimAdjState       //取状态  
+SET = SetDimAdjState       //设状态
+0 = ID_DIMADJ_OFF,  "o自调关o"  //状态0
+1 = ID_DIMADJUp,   "o上　调o"  //状态1
+2 = ID_DIMADJDn,   "o下　调o"  //状态2
+
+**ID_S_TextLayerChange
+GET = GetTextLayerChange
+SET = SetTextLayerChange
+0 = ID_TEXTLAYERCHANGE_CURRENT, "o当前层o"
+1 = ID_TEXTLAYERCHANGE_DEFAULT, "o默认层o"
+
+**ID_S_BASELINE
+GET = GetBaselineState       //取状态  
+SET = SetBaselineState       //设状态
+0 = ID_DOUBLE_WALL,  "o 双线 o"  //状态0
+1 = ID_SINGLE_DOUBLE,   "o单双线o"  //状态1
+2 = ID_SINGLE_WALL, "o 单线 o"
+
+**ID_S_RAINAREA
+GET = GetRainAreaState
+SET = SetRainAreaState
+0 = ID_RAINAREA_OFF, "面积关闭"
+1 = ID_RAINAREA_ON,  "面积打开"
+
+
+**ID_S_THICKPIPE
+GET = GetBoldPipeState
+SET = SetBoldPipeState
+0 = ID_BOLDPIPE_OFF, "管线细显"
+1 = ID_BOLDPIPE_ON,  "管线粗显"
+
+**ID_S_PIPEELE
+GET = GetPipeEleState
+SET = SetPipeEleState
+0 = ID_PIPEELE_OFF, "关闭标高"
+1 = ID_PIPEELE_ON,  "显示标高"
+
+**ID_S_DyCoord
+GET = GetDynamicCoord
+SET = SetDynamicCoord
+0 = ID_DYCOORD_OFF, "静态标注"
+1 = ID_DYCOORD_ON,  "动态标注"
+
+***RESOURCE
+
+//平面
+ID_Plan     = "", "进入平面设计子菜单"
+ID_Axis     = "Tch_AXIS", "进入轴网设计子菜单"
+
+ID_DYCOORD_OFF = "ID_LIGHT_OFF", "坐标标注和标高标注由静态变为动态: Shift+F4 (动态时从世界坐标系WCS取值)"
+ID_DYCOORD_ON = "ID_LIGHT_ON", "坐标标注和标高标注由动态变为静态: Shift+F4 (静态时从当前坐标系取值)"
+
+Id_Desaxis  = "Tch_AXIS", "生成正交轴网、斜交轴网或单向轴网：ZXZW"
+Id_Caxis    = "Tch_Caxis", "生成弧线轴网，提供与直线轴网连接的处理：HXZW"
+Id_Axadd    = "TCH_ADDAXIS", "在已有轴网基础上增加轴线并插入轴号：TJZX"
+Id_axdel    = "Tch_16_Del", "删除图中选定的轴线及其轴号：SCZX"
+Id_Chaxio   = "Tch_16_Chaxio", "轴线和附加轴线互相切换"
+Id_Rduplace = "Tch_16_Rduplac", "消除重叠的轴线或将串连在同一直线、弧线上的多根轴线合为一根"
+Id_Dimax    = "Tch_AxisDim", "在已生成的双向轴网上标注轴线号和尺寸"
+Id_Dimax1   = "Tch_16_Dmawf", "对圆弧轴网进行角度标注"
+Id_TInsAAxis = "" , "在两组直线轴网之间插入一组相切的圆弧轴网：CHZW"
+Id_TWall2Axis = "TCH_WALL2AXIS" , "在已有墙中按墙基线生成定位轴线：QSZW"
+Id_TInsAxisR = "Tch_16_Dmaddx" , "在已有圆弧轴网上添加新的径向轴线并插入轴号：TJJZ"
+Id_TRectClipAxis = "TCH_ClipAxis1" , "在轴网中裁剪, 去除某个矩形区域"
+Id_TClipAxis = "TCH_ClipAxis1" , "裁掉轴网的一部分：ZXCJ"
+Id_TAxisDim2p = "Tch_16_dimax" , "选择起始轴与结束轴标注其中各轴号与尺寸：LDZB"
+Id_TAxisDimp = "Tch_AxisDimp" , "逐个选择轴线标注互不相关的多个轴号：ZDZB"
+Id_TAddLabel = "Tch_16_AxAdd" , "在已有轴号基础上，关联增加新轴号：TBZH"
+Id_TDelLabel = "TCH_16_AxDel" , "在已有轴网上删除轴号, 其余轴号自动重排：SCZH"
+Id_Axcha    = "Tch_ChAxisNo", "只改变图中单根轴线的编号：DZBH"
+Id_Maxcha   = "Tch_16_Maxcha", "改变图中一组轴线编号，该组编号自动进行重新排序：CPZH"
+Id_Axstr    = "Tch_16_Axstr", "沿尺寸界线方向拖动带轴号的轴网标注线的位置"
+Id_Axmov    = "Tch_16_Axmov", "沿尺寸界线方向移动带轴号的轴网标注线的位置"
+Id_Chdote   = "", "切换轴线的线型"
+
+
+
+//墙生成
+ID_Wall     = "Tch_16_Swall", "进入墙体创建和编辑子菜单"
+Id_Dwall    = "Tch_16_Dwall", "连续绘制双线直墙和弧墙：HZQT"
+Id_DivWall = "Tch_16_DivWall" , "将一段墙按轴线间距等分, 垂直方向加墙延伸到给定边界：DFJQ"
+Id_Stod     = "Tch_16_Stod", "将已绘制好的单线墙转换为双线墙：DXBQ"
+Id_TFillet  = "Tch_FilWall" , "将转角墙按给定半径倒圆角生成弧墙,或将墙角交接好：DQJ" 
+Id_FixWall = "Tch_FixWall" , "将互相交叠的两道墙分别在交点处断开并修理墙角：XQJ"
+Id_WallThick = "Tch_16_WThick" , "批量改墙厚: 墙基线不变,墙线一律改为居中：GQH"
+Id_ExtThick = "Tch_16_EThick" , "注意修改外墙墙厚前, 应先进行外墙识别,否则命令不会执行：GWQH"
+Id_AlignWall = "TCH_ALIGNWALL" , "墙基线不变, 墙线偏移到过给定点：BXDQ"
+
+//墙编辑
+Id_AxisWall = "Tch_16_Zxbs", "根据已经绘制好的轴网生成墙体：QSZX"
+Id_Hpwallp  = "Tch_16_Hpwallp", "在墙线一侧加保温层：JBWC"
+Id_DelInsulate = "" , "将墙线一侧的保温层清除：XBWC"
+Id_ChEWallHeight = "" , "修改图中已定义的外墙高度与底标高, 自动将内墙忽略：GWQG"
+Id_ChHeight = "TCH_ChHeight" , "修改图中已定义的各墙柱的高度与底标高：GGD"
+Id_UcsWall = "Tch_16_UCSWall" , "临时定义一个基于所选墙面(分侧)的UCS, 在指定视口转为立面显示"
+Id_ShapeWall = "Tch_ShapeWall" , "在立面显示状态, 将墙按给定的轮廓线切割生成非矩形的立面：YXLM"
+Id_DelWallShape = "Tch_RectWall" , "在立面显示状态, 将非矩形的立面部分删除, 墙面恢复矩形：JXLM"
+Id_MarkWall = "" , "自动识别内外墙, 适用于一般情况：SBNW"
+Id_MarkIntWall = "" , "人工识别内墙, 用于内天井、局部平面等无法自动识别的情况: ZDNQ"
+Id_MarkExtWall = "" , "人工识别外墙, 用于内天井、局部平面等无法自动识别的情况: ZDWQ"
+Id_HLExtWall = "" , "亮显已经识别过的外墙: JLWQ"
+Id_Wlend    = "Tch_16_Wlend", "双线墙的端头在封闭和不封闭之间切换: QDFK"
+Id_Addbutr  = "Tch_16_Addbutr", "构造平面形状局部凸出的墙体，附加在双线墙上形成一体: QTZX"
+Id_TAUpdPatch = "" , "把经过复制、修改的墙体造型与双线墙更新，重新成为一体: GXZX"
+Id_Wall2Curve = "TCH_Wall2Curve" , "在墙任意一侧, 按指定偏移距离生成与其平行的线或弧: PXSX"
+ID_AdjWallBase = "", "在不改变边线位置前提下，调整墙体基线的位置: BXDQ"
+ID_WallTool  = "", "进入墙体工具菜单，区分内外墙，墙体造型"
+ID_TOffset   = "Tch_Offset", "按较近的墙边距离进行偏移，可用于【测量－>绘图】的流程"
+ID_BOLDLINE_OFF = "ID_LIGHT_OFF",  "墙柱由细线显示切换为粗线显示"
+ID_BOLDLINE_ON  = "ID_LIGHT_ON",   "墙柱由粗线显示切换为细线显示"
+ID_SOLIDFILL_OFF = "ID_LIGHT_OFF",  "混凝土墙柱由空心显示切换为填充显示"
+ID_SOLIDFILL_ON  = "ID_LIGHT_ON",   "混凝土墙柱由填充显示切换为空心显示"
+
+//插门窗与门窗库
+ID_Opening  = "TCH_Window", "进入门窗插入分菜单，插入各种门窗和洞"
+ID_Door     = "Tch_Door", "在墙上插入由可定制形状的门: PTM"
+Id_Window   = "Tch_Window", "在墙上插入由可定制形状的窗: PTC"
+Id_Window2  = "Tch_CornWin", "在图中沿墙插入转角窗: ZJC"
+Id_Wdplan   = "", "选择已有门窗作为新门窗改绘的原形，并构造门窗制作的环境: MCYX"
+Id_OpXTem  = "" , "放弃制作门窗, 从门窗制作的环境中退出: QZMC"
+Id_Door2Lib2d = "" , "将门窗制作环境中的平面门加入平面门库"
+Id_Win2Lib2d = "" , "将门窗制作环境中的平面窗加入平面窗库"
+Id_DoorLib2d = "" , "进入二维门库进行目录图块的管理"
+Id_WinLib2d = "" , "进入二维窗库进行目录图块的管理"
+Id_Door2Lib3d = "" , "将门窗制作环境中的三维门加入三维门库"
+Id_Win2Lib3d = "" , "将门窗制作环境中的三维窗加入三维窗库"
+Id_WDLib3d = "" , "进入三维门窗库进行目录图块的管理"
+Id_BayWin   = "Tch_BayWin", "通过参数构造凸窗并插入墙上: TC"
+Id_DoorWin = "Tch_DoorWin1" , "给出参数插入门联窗: MLC"
+Id_TWODoor = "Tch_TwoDoor" , "给出参数插入子母门: ZMM"
+Id_ArcWin = "Tch_ArcWin" , "在弧墙上插入圆弧窗: HC"
+Id_InsHole = "TCH_16_SQRHOLE" , "插入或替换成矩形洞口,有四种类型可选: JXD"
+Id_PolyHole = "TCH_16_SQRHOLE2" , "在立面显示状态, 按给定的闭合pline轮廓线生成任意深度的洞口: RYD"
+Id_OpSlot = "Tch_16_Addmdbt" , "在门窗两侧加墙垛, 三维以与四周加全门窗框套: JMCT"
+Id_DelOpSlot = "Tch_16_Delmdbt" , "删除已经加的门窗框套: XMCT"
+Id_ChWinLab  = "Tch_ChWinLab" , "选择门窗, 输入或改变这些门窗的名称: GMCM"
+Id_ValidOp = "TCH_VALIDOP" , "显示电子表格检查当前图中已插入的门窗数据: MCJC"
+Id_WDTabStyle = "" , "显示文字样式对话框, 由用户定义门窗名称默认样式使用的字体"
+Id_StatOp = "Tch_16_Wdtable" , "统计本图中使用的门窗参数, 检查后生成门窗表: MCB"
+Id_PrjOP = "" , "统计本工程中多个平面图使用的门窗参数, 检查后生成门窗总表: MCZB"
+ID_OpeningName = "Tch_ChWinLab", "进入门窗名称子菜单，更改门窗名称和统计门窗"
+ID_OpeningLib  = "", "进入门窗库子菜单，门窗库的维护"
+ID_MirWinLR       = "TCH_16_MIRRX", "批量左右翻转已画在图中的门窗"
+ID_MirWinIO       = "TCH_16_MIRRY", "批量内外翻转已画在图中的门窗"
+
+
+//插柱
+ID_Column   = "Tch_StdColu", "进入柱子分菜单，插入和编辑柱子"
+Id_Fzh      = "Tch_StdColu", "在轴线的交点处插入方柱,圆柱或八角柱: BZZ"
+Id_TCornColu = "TCH_CornColu" , "在墙角插入形状与墙一致的角柱, 可改各段长度: JZ"
+Id_TPolyColu = "TCH_POLYCOL" , "把闭合PLINE定义的柱断面转为柱"
+
+
+//楼梯与电梯
+ID_Stair     = "Tch_Stair", "进入楼梯子菜单，构造楼梯、电梯和扶梯"
+Id_Ddlst     = "Tch_16_Ddlst", "按参数交互方式生成剖面的或可见的楼梯"
+Id_Rltplib   = "Tch_16_Rltplib", "按参数交互方式生成楼梯栏杆，且楼梯栏杆库可由用户自行扩充"
+Id_Connrail  = "Tch_16_Join",  "对楼梯扶手的接头位置作细部处理"
+Id_Handrail  = "Tch_16_Handrail",  "自动识别剖面楼梯与可见楼梯，绘制楼梯栏杆及扶手"
+Id_Handrail1 = "Tch_16_Handrail1", "自动识别剖面楼梯与可见楼梯，绘制实心楼梯栏板"
+Id_Autostr   = "Tch_16_Autostr", "在对话框中输入梯段参数, 绘制单台或双台自动扶梯"
+Id_Tstair    = "Tch_16_Tstair", "在对话框中输入梯间参数, 直接绘制两跑楼梯: SPLT"
+Id_Lstair    = "Tch_16_Lstair", "在对话框中输入梯段参数绘制直线梯段,用来组合复杂楼梯: ZXTD"
+Id_Astair    = "Tch_16_Astair", "在对话框中输入梯段参数,绘制弧形梯段,用来组合复杂楼梯: YHTD"
+Id_TCStair   = "" , "以图中的直线与圆弧作为梯段边线输入踏步参数绘制楼梯: RYTD"
+ID_LIFT      = "Tch_16_Lift", "在电梯间井道内插入电梯门，绘制电梯简图: DT"
+Id_THandRail = "" , "以沿上楼方向的Pline路径为基线, 生成楼梯扶手: FS"
+ID_TRail      = "Tch_Rail", "沿着路径(pline/矩形楼梯/扶手)排列栏杆: LG"
+
+// 室内外构件
+ID_OutComp  = "", "进入室内外构件设施子菜单，构造阳台、台阶、散水和室内外高差"
+Id_Lbalcony = "Tch_16_Lbalcony", "直接绘制阳台或把预先绘制好的PLINE转成阳台: YT"
+Id_Step     = "Tch_16_Step", "直接绘制台阶或把预先绘制好的PLINE转成台阶: TJ"
+Id_Slope    = "Tch_16_Slope", "通过参数构造室外坡道: PD"
+Id_Outlna   = "", "通过自动搜索外墙线，绘制二维散水: EWSS"
+Id_3DOutlna   = "", "由已经绘制二维散水生成三维散水: SWSS"
+ID_ElevDiff  = "", "在首层平面图上构造室内外高差平台，用于无地下室: NWGC"
+
+// 三维部件
+ID_3DComp   = "", "进入三维部件子菜单，创建平板、竖板等可有多种用途的部件"
+ID_Slab      = "TCH_16_ST_PLAT", "构造水平面的板(柱)式构件，用作楼板、平屋顶和楼梯休息平台等: PB"
+ID_VertSlab  = "TCH_16_ST_PLATV", "构造竖直方向的板件，用作遮阳板，阳台隔断等: SB"
+ID_CurveMesh = "", "用已经绘制的路径(pline/扶手等)和形状(pline)来放样生成均匀截面的物体: LJQM"
+ID_RailLib  = "", "从栏杆单元库中调出栏杆单元，以便编辑后进行排列生成栏杆: LGK"
+ID_MergeFace = "", "把选中的三维面(3DFACE)合并成多格面(PFACE)：MPHC"
+ID_sf3d      = "Tch_16_Sf3d", "选中的线和平面沿当前坐标系的Z轴方向赋予厚度"
+ID_Tl3d      = "", "将有厚度线转换为三维面（3DFACE）"
+ID_3d_Hide   = "", "将用户不需显示的表面(3Dface/PFace)边线特性改为不可见: YQBX"
+ID_Clip3D    = "", "对三维对象(不包括天正对象)进行切割，以便对赋予不同的特性: SWQG"
+
+// Roof
+ID_Roof      = "", "进入屋顶子菜单，构造各种屋顶和老虎窗"
+ID_ROFLNA    = "TCH_SITE1",  "自动跨越门窗洞口搜索墙线的封闭区域，生成屋顶平面轮廓线: SWDX"
+Id_Rpipe     = "Tch_16_Rpipe", "在屋顶平面图中绘制雨水管"
+ID_DORMER    = "TCH_SITE4",  "在三维屋顶生成多种老虎窗形式: JLHC"
+Id_Polyroof  = "TCH_SITE3", "生成对称的正多边锥形攒尖屋顶，考虑出挑与起脊，可加宝顶或尖锥"
+Id_Hiproof   = "TCH_SITE2", "可建立多种三维屋顶，在双坡与单坡屋顶中同时可以生成山墙，与下部墙体连接"
+ID_SlopeRoof = "TCH_SITE", "由封闭的多段线生成指定坡度的屋顶，对象编辑可分别修改各坡度: RYPD"
+
+// Space
+ID_SPace     = "", "进入房间子菜单，查询和标注房间面积和名称"
+ID_SpArea    = "TCH_16_RMAREA", "查询房间面积，并可以以单行文字的方式标注在图上: CXMJ"
+ID_UpdSpace  = "TCH_16_UPSPACE", "新生成或更新已有的房间信息对象，可以进行对象编辑: SSFJ"
+ID_SpOutline = "", "生成房间轮廓线，可用来构造踢脚线等: FJLK"
+ID_SpGround  = "", "自动搜索房间轮廓，并生成平板作为房间地面: FJDM"
+ID_ApartArea = "", "计算住宅单元的套内建筑面积：TNMJ"
+ID_PlusText  = "", "对选取的一组数值型文字进行求和: MJLJ"
+ID_Apart     = "TCH_Apart", "通过线选对已经插入的洁具，布置卫生间隔断: BZGD"
+ID_Clap      = "TCH_Clap", "通过线选对已经插入的洁具，布置卫生间隔板: BZGB"
+
+
+//文字表格
+ID_TextTab   = "Tch_Text", "进入文字处理子菜单，输入文字和制作表格"
+ID_TextStyle = "TCH_16_GETFONT", "创建或修改命名天正扩展文字样式并设置图形中文字的当前样式"
+ID_AdjText   = "TCH_16_TEXTADJUST", "把转角方向不符合建筑制图标准的文字(如倒置的文字)予以纠正"
+ID_Text      = "Tch_Text2", "创建符合中国建筑制图标注的天正单行文字"
+ID_InsText = "TEL_16_ELECTEXT", "动态插入、替换专业词汇"
+ID_MText     = "TCH_MTEXT", "创建符合中国建筑制图标注的天正整段文字"
+ID_FYWZ      = "TCH_MTEXT", "创建符合中国建筑制图标注的天正整段可分页文字"
+ID_TextFind    = "ICON_16_TEXTFIND", "文字查找和替换"
+ID_CurveText = "TCH_CurveText", "沿着曲线排列文字"
+ID_TextConv  = "TCH_16_TEXTCONV", "把AutoCAD单行文字转化为天正单行文字"
+ID_TextPlus  = "TEL_16_PLUSTEXT", "拷贝文字，并根据文字末尾字符递增或递减"
+ID_EqualHeight  = "TEL_16_EQUALHEIGHT", "将所选文字（天正文字，ACAD文字，天正标注）重新定义字高"
+ID_TextMerge = "TCH_16_TEXTMER", "把TArch3.x的分开的中英文文字合成一行"
+ID_TextMask  = "TCH_TEXTMASK", "使得文字遮盖背景，而无需裁剪背景"
+Id_Gb_Big5   = "Tch_16_Gb_Big5", "将图中的文字由国标码转为台湾的BIG5码,请自己更改文字样式字体"
+Id_Big5_Gb   = "Tch_16_Big5_Gb", "将图中的文字由台湾的BIG5码转为国标码,请自己更改文字样式字体"
+ID_LineStyle = "TCH_16_XXGL", "创建或修改带文字的线型"
+ID_LineLib = "TWT_16_XXK", "管理天正线形库。初始设置线形的下拉列表数据源"
+ID_wzdq = "TWT_16_wzdq", "使得文字按照基准线对齐"
+
+//表格
+ID_NewSheet  = "TCH_NewSheet", "绘制新的表格并输入表格文字"
+ID_SheetEdit = "TCH_SHEETEDIT", "对表格内容进行全屏编辑"
+ID_CellEdit  = "TCH_SHEETCEL", "编辑表格单元格，修改属性或文字"
+ID_CellMerge = "Tch_MergCell", "合并表格的单元格"
+ID_RowEdit   = "TCH_SHEETROW", "编辑表格的一行或多行"
+ID_ColEdit   = "TCH_SHEETCOL", "编辑表格的一列或多列"
+ID_CellPlus = "TEL_16_CELLPLUS", "将含数字的文本拷贝并同时将文本内的某一项按增量定义增加, 按SHIFT为直接拷贝，按CTRL为递减: DYDZ"
+ID_CellCopy = "TEL_16_CELLCOPY", "复制表格中某一单元内容至目标单元"
+ID_Sheet2Excel = "TCH_SHEET2EXCEL", "把天正表格输出到Excel新表单中或者更新到当前表单的选中区域"
+ID_ReadExcel   = "TCH_EXCEL2SHEET", "根据Excel选中的区域，创建或更新图中相应的天正表格"
+ID_InsertRow   = "TEL_16_INSERTROW", "在指定行之前或之后增加一行, 也可用[表行编辑]实现"
+ID_RemoveRow   = "TEL_16_REMOVEROW", "删除指定行, 也可用[表行编辑]实现"
+ID_DelMerge   = "TEL_16_DELMERGE", "撤销合并单元格, 也可用[单元编辑]实现"
+ID_SplitSheet  = "TCH_SplitSheet","将表格分解为多个子表格，有行拆分和列拆分两种"
+ID_MergeSheet  = "TCH_MergeSheet","将为多个表格合并为一个表格，有行合并和列合并两种"
+ID_Sheet2Word  = "TCH_SHEET2WORD","把天正表格输出为Word中的表格"
+ID_CellSum     = "TCH_SumCell","累加表格行或者列的数值内容，结果填写在单元格中：DYLJ"
+ID_FindSheet  = "TWT_16_TJCX","选中统计表的内容，搜索图上相应的图元，并选中"
+
+// 标注
+ID_Dimension = "TCH_16_DIMMP", "进入尺寸标注子菜单，对图形进行尺寸标注和编辑尺寸标注"
+ID_DimWin    = "Tch_16_Dimwdf", "标注门窗的定位尺寸，即第三道尺寸线"
+ID_DimWall   = "TCH_16_DIMW", "对两点连线穿越的墙体进行墙厚标注"
+Id_Dimmp     = "TCH_16_DIMMP", "点取各标注点，沿给定的一个直线方向标注连续尺寸"
+Id_DimWC     = "TCH_16_DIMWPT", "按墙中心线标各墙间距，用于公共卫生间等隔断标注"
+ID_DimTP     = "Tch_16_Dimtpt", "对两点连线穿越过的墙体轴线等对象已经相关的其他对象进行定位标注"
+Id_DimRad    = "Icon_16_Dimrad", "对弧墙或弧线进行半径标注"
+ID_ChDimText = "ICON_16_DIMHOM", "更改尺寸标注的文字"
+ID_ResetDimP = "TCH_16_DIMTXTRS", "尺寸文字的位置恢复到默认的尺寸线中点上方"
+ID_ResetDimT = "TCH_16_DIMRES", "尺寸文字恢复为默认的测量值"
+ID_DimAdjust = "Tch_16_Dim_UpDn", "对天正尺寸标注的文字位置进行自动调整，使得文字不重叠"
+ID_DimAdjUp  = "TCH_16_Dim_Up", "自调方式由向上调切换为向下调"
+ID_DimAdjDn  = "TCH_16_Dim_Down", "自调方式由向下调切换为自调关闭"
+ID_DIMADJ_OFF = "ID_LIGHT_OFF",  "尺寸自调方式由关闭切换为向上调" 
+ID_TEXTLAYERCHANGE_DEFAULT = "ID_DEFAULT_LAYER", "尺寸标注、符号标注、文字标注在默认图层"
+ID_TEXTLAYERCHANGE_CURRENT = "ID_CURRENT_LAYER", "尺寸标注、符号标注、文字标注在当前图层"
+ID_DimTrimExt = "ICON_16_DIMBAS", "根据给定的新位置，对尺寸标注进行裁减或延伸"
+ID_DimDel    = "TCH_16_DIMDEL", "取消连续标注的一个区间"
+ID_MergeDim  = "TCH_16_DMMGE", "把平行的多个尺寸标注连成一个连续的对象"
+ID_BreakDim  = "TCH_16_DMDIV", "对已有的尺寸标注增加标注点"
+ID_DimTog    = "Tch_16_dimtog", "对角度标注、弦长标注和弧长标注进行相互转化"
+ID_ConvDim   = "TCH_16_DIMCONV", "把AutoCAD的尺寸标注转化为天正的尺寸标注"
+ID_DimStyle  = "ICON_16_DIMSTY", "创建并修改标注样式"
+ID_DimAng    = "ICON_16_DIMANG", "基于两条线创建角度标注"
+ID_DimBreak  = "TCH_16_DIMBRK", "把一组尺寸标注打断成两段独立的尺寸标注"
+Id_DimDia    = "Icon_16_Dimdia", "对圆进行直径标注"
+ID_DimArc    = "TCH_16_DIMARC", "对弧线标注弧长"
+Id_QuickDim  = "TCH_16_QUICKDIM","快速识别天正对象的外轮廓或者基线点，沿着对象的长宽方向标注对象的几何特征尺寸：KSBZ"
+
+
+// 符号标注
+ID_SymDim    = "TCH_DIM", "进入符号标注子菜单，标注各种工程符号"
+Id_Indexnum1 = "Tch_16_Indexnum3", "为图中另有详图的某一部分或构件注上索引号: ZXSY"
+Id_Indexnum2 = "Tch_16_Indexnum2", "为图中另有剖面详图的某一部分或构件注上索引号: PQSY"
+Id_Indexdim  = "Tch_16_Indexdim", "为图中局部详图标注索引图号: SYTM"
+ID_SECTNUM1  = "Tch_16_Sectnum1", "在图中标注剖面剖切符号: PMPQ"
+ID_SECTNUM2  = "Tch_16_Sectnum2", "在图中标注断面剖切符号: DMPQ"
+ID_ARROW     = "Tch_16_Arrow", "绘制指示方向的箭头及引线: JTYZ"
+Id_Dchzh     = "Tch_16_Dchzh", "绘制对称轴及符号: HDCZ"
+Id_Compass   = "Tch_16_Compass", "在图中画指北针: HZBZ"
+ID_DIMYI1    = "Tch_16_Dimyi1", "可用引线引出来对多个标注点做同一内容的标注: YCBZ"
+Id_Dimyi2    = "Tch_16_Dimyi2", "用以标注工程作法: ZFBZ"
+ID_ELEDIM1    = "Tch_16_Eledim1", "一次只标注一个标高，通常用于平面标高标注: DZBG"
+ID_EDITELE    = "TWT_16_XGBG", "修改标高的标注文字，并更新相关的标注"
+ID_ELEDIM2    = "Tch_16_Eledim2", "连续标注标高，通常用于立剖面标高标注: LZBG"
+ID_DwgName   = "Tch_DwgName", "标注图名比例: TMBZ"
+ID_Coord     = "TCH_COORDXY", "对总平面图进行坐标标注: ZZBD"
+ID_Rupture   = "TCH_16_SSECT", "绘制折断线: JZDX"
+ID_CheckCoord = "Tch_CheckCoord", "通过一个给定基准坐标点检查其他坐标点是否正确：ZBJC"
+ID_Revcloud   = "TCH_16_REVCLOUD","在图纸上以云线符号标注出要求修改的范围"
+
+// 图块和图库
+ID_Block     = "Tch_BlkLib", "进入图库子菜单，图库维护和图块插入已经编辑"
+ID_BlkMan    = "Tch_BlkLib", "新建或打开图库，编辑图库内容，插入图块: TYTK"
+ID_BlkConv   = "", "把AutoCAD的图块转化为天正图块: TKZH"
+ID_BlkMask1  = "Tch_BlkMask1", "给图块增加可以用外包矩形遮挡背景的特征: JXPB"
+ID_BlkMask2  = "Tch_BlkMask2", "给图块增加可以用精确外轮廓遮挡背景的特征: JQPB"
+ID_BlkUnMask = "Tch_BlkMask3", "取消图块遮挡背景的特征: QXPB"
+ID_FrameOn   = "", "开启屏蔽边框"
+ID_FrameOff  = "TCH_16_WOUTOFF", "隐藏Wipeout屏蔽边框"
+ID_REFEDIT   = "ICON_16_REFED_EDIT", "对图块进行在位编辑，所有的同名图块参照将一起生效：REFEDIT"
+ID_BlkLay    = "TCH_16_BLKLAY", "修改图块内部的图层，配合三维渲染软件赋材质：TKGC"
+ID_BlkBrush   = "TWT_16_TKS", "将选中的图块刷成目标图块。可拷贝图层，颜色，比例，角度，块名"
+ID_GJK       = "Tch_BlkLib", "新建或打开构件库，编辑构件库内容，插入对象构件: GJK"
+
+// 工具
+ID_TOOL      = "Tch_Tools1", "进入工具子菜单，提供多种零杂工具"
+ID_DragCopy  = "Tch_DragCopy", "动态连续的复制对象: ZYFZ"
+ID_DragMove  = "Tch_DragMove", "动态的进行移动、旋转和镜像: ZYYD"
+ID_TMove     = "Tch_TMove", "按给定的位移值进行精确数值的移动: YW"
+ID_LayMan    = "Tch_LayMan", "管理天正的图层系统。图层混乱的图纸，可以利用建筑标识实现给排水和建筑图层整体开关"
+ID_SlbMan    = "Tch_SlbMan", "幻灯库管理，可以对多个幻灯库进行操作: HDGL"
+ID_PlEdit    = "ICON_16_PEDIT", "进入多段线编辑菜单，反向、交、并、差"
+ID_RevPline  = "TCH_16_REVPLINE", "对多段线的方向进行逆转: FX"
+ID_UPoly     = "Tch_UPoly", "对两个封闭多段线形成的区域进行并集形成新的多段线: JJ"
+ID_SPoly     = "Tch_SPoly", "对两个封闭多段线形成的区域进行差集形成新的多段线: CJ"
+ID_IPoly     = "Tch_IPoly", "对两个封闭多段线形成的区域进行交集形成新的多段线: BJ"
+ID_Sol2Face  = "", "把ACIS实体转为三维曲面: STZM"
+ID_RemoveDup = "TCH_16_RMDUP", "消除重合的线、弧: XCCX"
+ID_GetExtend = "", "测量所选对象的最小包容立方体范围: CLBJ"
+ID_Calc      = "Icon_16_Cal", "调用Windows计算器，用于一般算术计算"
+ID_FilRoad   = "", "把对折角道路倒成圆角道路"
+Id_Towidth   = "Tch_16_Latoplc", "加粗指定的曲线"
+ID_ModElev   = "TCH_16_ModElev", "用于二维图，把所有图形对象都放在0标高上，以避免图形对象不共面: TYBG"
+ID_ResColor  = "TEL_16_MUTICOLOR", "把当前图各个图层的颜色恢复为图层文件layedef.dat所规定的颜色"
+Id_Clrtos    = "TEL_16_ONECOLOR", "将平面图中各图层的颜色改为指定的一种颜色"
+ID_PasteClip = "ICON_16_Paste", "粘贴已经复制在裁剪版上的图形，可以动态调整待粘贴待图形：ZYNT"
+ID_PJOIN     = "","将若干彼此相接的LINE(线)、ARC(弧)、POLYLINE(复线)连接成整段的POLYLINE(复线)"
+ID_JOIN         = "TCH_16_JOIN1", "将两条在同一直线上的线段或两段相同的弧或直线与圆弧相连接"
+ID_CHDASH       = "TCH_16_CHDASH", "使线型在虚线与实线之间进行切换"
+ID_UcsElev   = "", "把UCS设置到平面两点所确定的立面上：SZLM"
+Id_ColNull   = "TEL_16_ZZKX", "把建筑条件图中的实心柱子改为空心柱子"
+Id_DelWinText   = "TEL_16_SMCM", "把建筑条件图中的门窗标注删除"
+ID_PTBREAK      = "TCH_16_PTBREAK", "将通过交点并在同一平面上的若干根线或弧同时打断"
+ID_ReLineType  = "TEL_16_XZXX", "带文字线形的管线，在逆向绘制的时候，文字会倒过来。本命令可以修正这种管线"
+ID_DrawPline  = "TCH_16_DRAWLINE", "右键菜单执行。根据已经选中的PLINE线作为参考绘制新的PLINE"
+
+
+// 布图
+ID_Layout    = "TCH_Layout", "进入布图子菜单，确定图幅和输出比例准备输出图纸"
+Id_Mkwin     = "TCH_16_MakeVP", "在模型空间中，用窗口选中部分图形，并在图纸上确定其位置: DYSK"
+Id_Title     = "Tch_16_Title", "在模型空间或图纸空间插入图框，并可预览选取图幅"
+Id_ChScl     = "TCH_16_CHSCL", "改变T6图上某一区域或图纸上某一视口的出图比例，并使得文字标注等字高合理: GBBL"
+ID_winin     = "Icon_16_Zooall", "在图纸上放大已布置的模型视口, 以便全屏编辑和查看"
+Id_Nftitle   = "", "打开（或关闭）图框层"
+ID_SavLayout = "", "保存图纸上的当前布局，以便布局修改后可以恢复: BJBC"
+ID_ResLayout = "", "恢复上次保存的图纸布局: BJHF"
+ID_PSToNew   = "", "把Tch3.x旧图的图纸空间布局转成新的图纸布局"
+Id_Hidewd    = "Icon_16_Print", "在图纸上定义以消隐方式输出的视口"
+Id_Mviewh    = "Icon_16_Printe", "把图纸上的所有视口设置为不消隐的出图方式"
+Id_Title2     = "TEL_16_Title", "从图框库选取图框插入或入库"
+ID_CHSCL2     = "TWT_16_GBBL", "改变T3图上某一区域或图纸上某一视口的出图比例，并使得文字标注等字高合理"
+ID_Project   = "TCH_PROJECT","管理用户定义的工程设计项目中参与生成立面剖面三维的各平面图形文件或区域定义"
+ID_BatPlot     = "ICON_16_PRINT", "根据搜索图框，可以同时打印若干图幅"
+Id_VPSys     = "TWT_16_SKXT", "在图纸空间中，可指定某视口仅显示某1系统的图层。如给水系统。可实现1个模型绘制多个视口打印"
+Id_BINDREF   = "TCH_Bindref","绑定图面所有外部参照:BDCZ"
+Id_FINDREF   = "TCH_Findref"," 找到图纸上所有已卸载的外部参照并重新加载:CZCZ"
+ID_TitleList = "TCH_DrawingTitle", "在指定工程文件夹中添加图纸，自动生成图纸目录：TZML"
+
+
+
+// 文件接口
+ID_FileIO    = "", "进入文件接口子菜单，给其他应用准备条件图"
+ID_Open      = "Icon_16_Open", "打开图形文件，当遇到Acad2000以前的其他语种的图形时，制止乱码: DKWJ"
+ID_ConvTch   = "", "把旧版的二维平面图转成新版的图形: JTZH"
+
+ID_GroupFloor = "TCH_GroupFloor", "把多个标准成组合成为整个建筑物的三维模型: LCZH"
+ID_Map2D     = "", "把三维视图按照当前的视图角度转化为二维线框图: TXBX"
+ID_TExplode  = "TCH_Explode", "把天正定义的对象分解为AutoCAD基本对象: FJDX"
+ID_XMLexport  = "TCH_OBJ2XML", "导出天正对象到XML接口文件准备碰撞检查"
+ID_TSaveAs   = "Icon_16_Save", "把天正定义的对象分解为TArch3.x兼容的AutoCAD基本对象，并另存为其他文件: LCJB"
+ID_ExportDwg = "", "进入条件图子菜单，给结构和设备专业准备条件图"
+Id_Sd_Found  = "Tch_16_Sd_Found", "将TArch3.x兼容的施工图转换为天正结构基础条件图"
+ID_SD_FLR1   = "Tch_16_Sd_Flr1", "将TArch3.x兼容的施工图转换为天正结构虚线楼板条件图"
+Id_Sd_Flr2   = "Tch_16_Sd_Flr2", "将TArch3.x兼容的施工图转换为天正结构实线楼板条件图"
+Id_Hv_Pln    = "Tch_16_Hv_Pln", "将TArch3.x兼容的施工图转换为天正设备条件图"
+Id_Wldash    = "Tch_16_Wldash", "自动搜索封闭墙线，并将其转换为虚线线型"
+Id_Wlrecv    = "Tch_16_Wlrecv", "自动搜索封闭墙线，将已变虚的墙线再变为实线"
+Id_WlRecv1    = "Tch_16_Wlrecv1", "有选择地将虚墙线变为实线"
+Id_Wldash1   = "Tch_16_Wldash1", "有选择地将实墙线变为虚线"
+Id_Latoplc   = "Tch_16_Latoplc", "将选中的墙线向两侧加粗"
+Id_Latopli   = "Tch_16_Latopli", "将选中的墙线向内加粗"
+Id_Pltola    = "", "将已经由'墙线加粗'或'向内加粗'命令变粗的双线墙恢复原状"
+ID_PROTECTDWG = "TWT_16_TZBH", "把要保护的图元制作成1个不能炸开的图块，并用密码保护"
+ID_UNLOCKDWG = "TWT_16_TZJS", "把已经保护的图纸解锁炸开"
+
+
+// 常用菜单,观察设置
+ID_Setting   = "", "进入设置观察子菜单，设置TArch5的绘图环境和全局参数"
+ID_RepeatCmd = "", "重复执行上一个命令"
+ID_UpdView   = "", "刷新显示AutoCAD的视口边框：F4"
+ID_ViewMode  = "", "控制图形的二维和三维显示状态"
+ID_MkHide    = "TCH_MKHIDE", "临时隐藏部分对象，以便观察和编辑其他对象: JBYC"
+ID_UnHide    = "TCH_UNHIDE", "恢复临时被隐藏的对象: HFKJ"
+ID_CurTips   = "TCH_16_TCHTIP", "进入时示日积月累命令提示界面: RJYL"
+ID_TFloorlist = "","调出本工程的楼层组合表, 输入或改变参数: LCB"
+ID_TLHeight = "" , "从现在开始设置的新层高值: DQCG"
+ID_TPScale = "TEL_16_CURSCLAE" , "从现在开始设置的新绘图比例: DQBL"
+ID_TSHOW2D = "" , "仅显示天正自定义对象的二维特性: WQEW" 
+ID_TSHOW3D = "" , "仅显示天正自定义对象的三维特性: WQSW"
+ID_TSHOWAUTO = "" , "按当前视图方向自动判断以二维或三维显示天正自定义对象: ZDQD"
+ID_TSelObj = "Tch_SelObj" , "先选参考图元,选择其它符合参考图元过滤条件的图形,生成选择集: DXXZ"
+ID_TObjInfo = "TCH_ObjInfo" , "随光标移动,在各个图元上面动态显示其信息,并可进行编辑: DXCX"
+ID_TObjEdit = "TCH_ObjEdit", "依照各自定义对象特性, 自动调出对应的参数对话框进行编辑: DXBJ"
+ID_Help     = "TCH_HELP", "启动天正建筑5.0的在线帮助系统"
+ID_VRCAMERA = "", "利用已有的相机，身临其境的在三维建筑中漫游: XNMY"
+ID_PathVideo = "", "相机点和目标点分别沿着自己的路径，摄制视频动画: HRDH"
+ID_WalkVideo = "", "相机位置和观察角度都沿着给定的路径，设置视频动画: SPDH"
+ID_MaxVport = "", "模型空间的当前视口放大到全屏，并保存当前配置以便恢复：SKFD"
+ID_ResVport = "", "恢复视口放大前的视口配置：SKHF"
+Id_CheckPlot = "TWT_16_DYJC" , "天正对象颜色设置为随块,打印会崩溃,本命令自动修正当前图纸,改为随层"
+ID_Wireframe = "ICON_16_WIREFRAME","将视口设置为三维线框:  SHADEMODE 3"
+ID_Gouraud   = "ICON_16_GOURAUD", "将视口设置为体着色:  SHADEMODE G"
+ID_3DOrbit   = "ICON_16_3DORBIT", "控制交互式三维对象视图"
+ID_CatchScreen   = "TWT_16_TZZP", "可将当前视图抓屏存为jpg格式图片"
+ID_SnapAng = "TEL_16_SNAPANG" , "按线的角度来改变坐标系的角度，如果不选线，则恢复默认0°"
+ID_Camera    = "ICON_16_CAMERA", "用相机拍照的方法建立透视图: XJTS"
+ID_TGdownload = "TCH_TGDOWNLD", "从天正官方网站下载天正最新程序进行软件更新:ZYXZ"
+ID_ZTJC    = "TCH_16_ZTJC", "检查图纸缺失的字体文件通过网络从天正官网下载: ZTJC"
+
+
+// Acad常用功能
+ID_MnViewpoi = "ICON_16_VIETOP", "设置视图"
+ID_VpointTop = "ICON_16_VIETOP", "将视点设置在上面:   VIEW TOP"
+ID_VpointBot = "ICON_16_VIEBOT", "将视点设置在下面:   VIEW BOTTOM"
+ID_VpointLef = "ICON_16_VIELEF", "将视点设置在左面:   VIEW LEFT"
+ID_VpointRig = "ICON_16_VIERIG", "将视点设置在右面:   VIEW RIGHT"
+ID_VpointFro = "ICON_16_VIEFRO", "将视点设置在前面:   VIEW FRONT"
+ID_VpointBac = "ICON_16_VIEBAC", "将视点设置在后面:   VIEW BACK"
+ID_VpointSW  = "ICON_16_VIESWI", "将视点设置为西南等轴测:   VIEW SWISO"
+ID_VpointSE  = "ICON_16_VIESEI", "将视点设置为东南等轴测:   VIEW SEISO"
+ID_VpointNE  = "ICON_16_VIENEI", "将视点设置为东北等轴测:   VIEW NEISO"
+ID_VpointNW  = "ICON_16_VIENWI", "将视点设置为西北等轴测:   VIEW NWISO" 
+
+
+ID_Erase     = "ICON_16_ERASE", "从图形删除对象:   ERASE"
+ID_Copy      = "ICON_16_COPYOB", "复制对象:   COPY"
+ID_Mirror    = "ICON_16_MIRROR", "创建镜像对象:   MIRROR"
+ID_Rotate    = "ICON_16_ROTATE", "按基点旋转对象:   ROTATE"
+ID_Explode   = "ICON_16_EXPLOD", "将对象分解成若干个下一级对象:   EXPLODE"
+ID_Move      = "ICON_16_MOVE", "在指定方向上按指定距离位移对象:   MOVE"
+ID_RectAngle = "ICON_16_RECTAN","绘制矩形多段线:  RECTANG"
+ID_DDATTE    = "", "编辑图块的属性: DDATTE"
+ID_PEdit     = "ICON_16_PEDIT", "编辑多段线和三维多边形网格:   PEDIT"
+ID_Offset    = "ICON_16_Offset","创建同心圆、平行线和等距曲线:   OFFSET"
+ID_Lengthen  = "ICON_16_LENGTH", "拉长对象:   LENGTHEN"
+ID_Trim      = "ICON_16_TRIM", "用其他对象定义的剪切边上修剪对象:   TRIM"
+ID_Extend    = "ICON_16_Extend", "延伸对象到另一对象:   EXTEND"
+ID_Break     = "ICON_16_BRE2PT", "部分删除对象或把对象分解为两部分:   BREAK"
+ID_Chamfer   = "ICON_16_CHAMFE", "给对象加倒角:   CHAMFER"
+ID_Fillet    = "ICON_16_FILLET", "给对象加圆角:   FILLET"
+
+ID_Extrude   = "ICON_16_EXTRUD", "通过拉伸现有二维对象来创建三维实体:   EXTRUDE"
+ID_SolidEdit = "", "三维实体的编辑:  SOLIDDIT"
+ID_Separate  = "ICON_16_SEPARATE", "将不连续的三维实体对象分割为独立的三维实体对象:  SOLIDEDIT BODY SEPARATE"
+ID_Slice     = "ICON_16_SLICE", "用平面剖切一组实体:   SLICE"
+ID_Section   = "ICON_16_SECTIO", "用平面和实体的截面创建面域:   SECTION"
+ID_Interfere = "ICON_16_INTERF", "用两个或多个实体的公共部分创建三维组合实体:  INTERFERE"
+ID_Union     = "ICON_16_UNION", "用并集创建组合面域或实体:   UNION"
+ID_Subtract  = "ICON_16_SUBTRA", "用差集创建组合面域或实体:   SUBTRACT"
+ID_Intersect = "ICON_16_INTERS", "从实体或面域的交集创建组合实体或面域:   INTERSECT"
+ID_PROPERTIES = "ICON_16_PRPCHK", "控制现有对象特性：PROPERTIES"
+
+
+/////////////////给排水TWT
+
+
+//平面
+Id_Lvtry  = "tch_detail", "在厨房或厕所中沿墙布置卫生洁具"
+Id_FreeLvtry  = "TWT_16_SANITARY", "在厨房或厕所中任意布置卫生洁具"
+Id_DefineLvtry  = "TWT_16_DYJJ", "定义卫生洁具的给水点及排水点"
+ID_Valve = "TWT_16_FMFJ", "在管线上插入平面或系统形式的阀门图块"
+ID_GSFJ = "TWT_16_GSFJ", "在管线上插入平面或系统形式的给水附件图块"
+ID_PSFJ = "TWT_16_PSFJ", "在管线上插入平面或系统形式的排水附件图块"
+ID_Attachment = "TWT_16_GDFJ", "在管线上插入平面或系统形式的管道附件图块"
+ID_Amount = "TWT_16_AMOUNT", "对当前图进行材料统计，并按管线、附件、设备排序"
+ID_EditEq = "TWT_16_XGFJ", "修改图中所有附件属性"
+ID_EqLine2Pipe = "TWT_16_SBLG", "连接干管和所选设备"
+ID_EqScale = "TWT_16_SBSF", "对设备进行缩放处理，所连管线联动。可对同种设备整体修改"
+ID_LINE2PIPE = "TWT_16_XZGX", "将普遍LINE线根据其层转化为天正管线, 管线的颜色/线形/管材随层默认"
+ID_SetMatSpec = "TWT_16_GCGG", "设置系统管材的管径(公称直径,计算内径,外径)"
+ID_34CornerValve = "TWT_16_SSTF", "在三通管线上插入三通阀门，在四通管线上插入四通阀门"
+ID_CornerValve = "TWT_16_JF", "在2垂直管线上插入角阀，并可动态决定插入角度"
+ID_InsBlk = "TWT_16_CYTK", "插入给排水常用图块，用户可自由加入新图块"
+ID_BuildValve = "TWT_16_ZFM", "用户自定义平面阀门/附件图块"
+ID_ChgEqPt = "TWT_16_GJXD", "设备一般接线点都在图块中心，如果连接管线位置不合适，可用本命令调整"
+ID_ReversalEq = "TWT_16_FJFZ", "翻转系统图给水、排水附件"
+ID_ThickBlk = "TWT_16_TKJC", "将GJ层上的图块或天正设备加粗或变细线，图块必须是由PLINE制作的。"
+ID_RepLvtry  = "TWT_16_JJTH", "将用户入库定义好的洁具整图替换图中未定义的洁具图块"
+ID_LvtryLib  = "TWT_16_TKRK", "将用户定义好的洁具入库, 以便以后替换"
+ID_InsMeter = "TWT_16_CYYB", "在管线上插入仪表"
+ID_ChangeSpec = "TWT_16_BGGC", "统一修改图中某1管材的管线，变更为另外一种管材。同时修改其标注"
+ID_HoleGround = "TWT_16_LBD", "绘制楼板洞"
+ID_HoleBase = "TWT_16_JCD", "在墙体上绘制基础洞"
+
+//消防平面
+ID_GMHQ = "TWT_16_GMHQ", "多选修改灭火器"
+ID_BMHQ = "TWT_16_BMHQ", "可框选消火栓布置，也可任意布置灭火器"
+ID_BXHS = "TWT_16_BXHS", "设置平面消火栓的形式及系统接管方式，布置消火栓"
+ID_GXHS = "TWT_16_GXHS", "多选修改消火栓"
+ID_LXHS = "TWT_16_LXHS", "连接消火栓和立管"
+ID_RYPT = "TWT_16_RYPT", "在图纸中自由插入喷头"	
+ID_JDPT = "TWT_16_JDPT", "在LINE,ARC,PIPE交点处插入喷头"	
+ID_SXPT = "TWT_16_SXPT", "在扇形内，根据一定间距弧形插入喷头"	
+ID_ZXPT = "TWT_16_ZXPT", "在两点间沿线布置喷头"
+ID_HXPT = "TWT_16_HXPT", "沿弧线布置喷头"
+ID_JXPT = "TWT_16_JXPT", "在区域内按矩形或菱形布置喷头"
+ID_DJPT = "TWT_16_DJPT", "在区域内按一定的间距矩形布置喷头"
+ID_XGPT = "TWT_16_XGPT", "对喷头的样式、插入比例等参数进行编辑"
+ID_MoveEq = "TWT_16_SBYD", "移动move天正设备，并在新老位置重新接管线"
+ID_XHS = "TWT_16_XHS", "布置系统单/双消火栓"
+ID_ReplaceHydrant = "TWT_16_XFTH", "替换平面或系统消火栓图例, 如单栓变双栓"
+ID_SprinkLoc = "TWT_16_PTDW", "测量某喷头到墙或其它喷头的距离，并可以修正位置"
+ID_SprinkConv = "TWT_16_PTZH", "将天正3喷头图块转化为天正新版喷头"
+ID_ReversalHydrant = "TWT_16_XFFZ", "将平面消火栓图块白面和黑面互换位置"
+ID_ShowCir = "TWT_16_BHBJ", "显示喷头和消火栓的保护面积，【修改喷头】可编辑保护半径值"
+ID_LongPath = "TWT_16_ZYLJ", "搜索出本图最不利点到起始立管的路径"
+
+//管线
+ID_PipeBreak = "TWT_16_PIPEBREAK", "将某根管线打断成2根管线"
+ID_PipeJoin = "TWT_16_PIPEJOIN", "将2根平行的管线合并成1根管线"
+ID_SXKW = "TWT_16_SXKW", "在管线上插入扣弯"
+ID_ModifyPipe = "TWT_16_XGGX", "修改管线的管材、管径、标高、坡度等参数"
+ID_ModifyDoublePipe = "TWT_16_XGSG", "修改管线的线型、图层、管径、标高等参数"
+ID_StandPipe = "TWT_16_LGBZ", "布置平面立管"
+ID_DrawPipe = "TWT_16_HZGX", "绘制平面管线"
+ID_PipeElevation = "TWT_16_DGBG", "修改单根管线的标高"
+ID_ErasePipe = "TWT_16_ERASEPIPE", "删除所选管线"
+ID_FilletPipe = "TWT_16_GXDJ", "管线倒角"
+ID_FilletPipe2 = "TWT_16_GXDJ", "对重力流管线自动进行倒角处理"
+ID_BreakSign = "TWT_16_DGFH", "在管线末端插入断管符号"
+ID_PipeUp = "TWT_16_GXZS", "在同标高条件下, 该管线打断其他所连管线"
+ID_PipeDown = "TWT_16_GXZX", "在同标高条件下, 该管线被其他所连管线打断"
+Id_Pipe2Lvtry = "TWT_16_GLJJ", "连接干管与洁具, 洁具必须已经定义过"
+ID_KLJJ = "TWT_16_KLJJ", "框选图面管线与洁具，一键完成管线与洁具的连接，且可自动识别定义过的洁具类型"
+ID_MutiPipe = "TWT_16_HZDG", "同时绘制平行的多根管线, 如冷热管, 热给水,热回水"
+ID_ExternPipe = "TWT_16_GXYC", "沿管线方向延长管线端点，注意要点取靠近需要延长的端点，支持相关管线及设备联动"
+ID_PipeRadius = "TWT_16_LGBJ", "修改立管或扣弯的半径"
+ID_ChamferPipe = "TWT_16_SXDJ", "双线倒角，类似CHAMFER命令"
+ID_ThickPipe = "TWT_16_THICK2THIN", "设置当前图所有管线是否进行加粗"
+ID_BOLDPIPE_OFF = "ID_BOLDPIPE_OFF", "设置当前图所有管线细线显示"
+ID_BOLDPIPE_ON = "ID_BOLDPIPE_ON", "设置当前图所有管线加粗显示"
+ID_PIPEELE_OFF = "ID_PIPEELE_OFF", "设置当前图所有管线关闭标高显示"
+ID_PIPEELE_ON = "ID_PIPEELE_ON", "设置当前图所有管线显示标高"
+ID_SelVPipe = "TWT_16_XZLG", "过滤选择立管以及标注"
+ID_DrawPipeByLine = "TWT_16_YXHG", "根据已有线段作为参考，平行绘制管线"
+ID_ModifyFloor = "TWT_16_GLCX", "对楼层线进行镜像或者移动"
+ID_CalcEle = "TWT_16_PDDG", "根据管线的坡度计算连续管线的各段起点终点标高，根据起点终点标高反算管线坡度"
+ID_TGCR = "TWT_16_TGCR", "对穿墙管线进行套管的插入"
+ID_GXLD = "TWT_16_GXLD", "快速移动管线位置，并且与其相关联的管线会产生联动反应"
+ID_GXSJ = "TWT_16_GXSJ", "将某段管线的某一部分进行升高或降低"
+ID_LGLJ = "TWT_16_LGLJ", "完成立管与干管之间的连接"
+ID_GXZD = "TWT_16_GXZD", "将某根管线的某段进行遮挡"
+ID_DYCOORD_OFF = "ID_LIGHT_OFF", "坐标标注和标高标注由静态变为动态: (动态时从世界坐标系WCS取值更新)"
+ID_DYCOORD_ON = "ID_LIGHT_ON", "坐标标注和标高标注由动态变为静态: (静态时保留原坐标标注值不变)"
+
+//系统
+ID_BuildSys = "TWT_16_XTSC", "根据平面图生成系统轴测图"
+ID_PrinkSys = "TWT_16_PSXT", "生成喷洒系统图"
+ID_HydrantSys = "TWT_16_XFXT", "生成消防系统图"
+ID_PrincipleSys = "TWT_16_HZKT", "绘展开图"
+ID_SysAttch = "TWT_16_XTFJ", "插入系统图附件"
+ID_Aerate = "TWT_16_TQM", "在管线末端插入通气帽,并标注尺寸"
+ID_ScaleSys = "TWT_16_XTSF", "系统图中各个配件距离过小而需要将其统一放大一些，可用此命令来解决。管道长度进行缩放，但保证配件大小不变。 "
+ID_FloorLine = "TWT_16_HLBX", "根据楼层数和楼层高，绘制楼板线及标注"
+ID_SysSel = "TWT_16_XTXZ", "选择系统图上任意一根管线，与之相连的所有管线、设备都被选中"
+ID_InsCheck = "TWT_16_JCK", "在距地面一定高度插入检查口,并标注尺寸"
+ID_DirtSys = "TWT_16_WSYL", "生成污水原理图，可以进行污水计算"
+ID_FeedSys = "TWT_16_ZZYL", "生成住宅给水原理图，可以进行给水计算"
+ID_FeedSys2 = "TWT_16_GJYL", "生成公建给水原理图，可以进行给水计算"
+
+ID_WaterTank = "TWT_16_HZSX", "绘制水箱"
+ID_DrawPump = "TWT_16_HZSB", "绘制水泵"
+ID_InsertPump = "TWT_16_SBXT", "插入立式水泵详图"
+ID_CreateHole = "TWT_16_KK", "绘制开孔符号"
+ID_DoublePipe = "TWT_16_HSXG", "绘制双线水管，可自动生成弯头、3通、法兰、变径"
+ID_PipeUpDown = "TWT_16_GDSJ", "在双线水管上插入上下扣弯"
+ID_InsFlange = "TWT_16_FLLJ", "点取双线水管的中心线，可插入法兰"
+ID_DoubleValve = "TWT_16_SXFM", "在双线水管上插入阀门阀件，并打断水管"
+ID_DelValve = "TWT_16_SCFM", "删除双线水管上的阀门阀件，并合并水管"
+ID_PumpBase = "TWT_16_SBJC", "绘制水泵基础"
+ID_SelPump = "TWT_16_SBXX", "已知流量及扬程，软件自动选择合适的水泵厂家及型号规格"
+ID_ExtDoublePipe = "TWT_16_SXYC", "延长或缩短双线水管"
+ID_PumpSect = "TWT_16_SBXT", "自动生成水泵间剖面，注意：必须选择天正剖切线"
+ID_Overfall = "TWT_16_YLG", "在水箱上增加溢流管"
+ID_WaterIn = "TWT_16_JSG", "在水箱上增加进水管"
+ID_PumpPipe = "TWT_16_JCSG", "绘制水泵的进出水管，可自动确定标高并绘制相关阀门"
+ID_WaterTankSys = "TWT_16_SXXT", "根据水箱平面图生成水箱系统图"
+ID_DoubleTrans = "TWT_16_DXJT", "在双线水管末端插入大小接头"
+
+//室外
+ID_OutTk = "TWT_16_SWTK", "与室外设计有关的图库，如树、总图图例、路灯、风玫瑰等"
+ID_RainMouse = "TWT_16_YSK", "在图中插入单蓖或双蓖雨水口"
+ID_OutHydrant = "TWT_16_SWXHS", "在图中插入室外消火栓"
+ID_Well = "TWT_16_BZJ", "在图中布置检查井、阀门井、跌水井、水封井"
+ID_XGJ = "TWT_16_XGJ", "对图中已绘制井进行样式、井径、地面标高、井面标高等参数的批量修改"
+ID_WaterMeter = "TWT_16_SBJ", "在图中插入室外水表井"
+ID_POOL = "TWT_16_BZC", "在图中插入化粪池、隔油池、沉淀池、降温池、中和池"
+ID_TREE     = "TWT_16_PMS", "绘制总图的树, 可根据一定间距连续绘制也可自由插入"
+ID_DRoad     = "Tch_16_Droad", "绘制总图的道路, 也可以绘制纵断面图的双线管井"
+ID_Gradient = "TWT_16_GDPD", "标注管道坡度, 可动态决定箭头方向" 
+ID_VSection = "TWT_16_DPDMT", "绘制纵断面图, 需要管线已经标注好管径和坡度" 
+ID_FallWell = "TWT_16_HDSJ", "生成纵断面图发现井底标高超过地面标高, 应将检查井换为跌水井,并标注." 
+ID_Gully2Well = "TWT_16_YSLJ", "将选中的雨水口与最近的雨水检查井用管线连接"
+ID_CheckInt = "TWT_16_JCJC", "将图中管线交叉的地方用红叉表示出来，提醒用户修改管线标高" 
+ID_WellCalc = "TWT_16_MSJS", "与【纵断面图】类似，只是不从图面读取，而是用户自定义井与管线信息。" 
+Id_PipeArrow = "TWT_16_YXJT", "标注箭头, 可动态决定箭头方向" 
+ID_ChangeDirct = "TWT_16_GBLX", "改变管道水流方向，并把已经标注的坡度箭头转向" 
+ID_CheckWell = "TWT_16_WELLFIND", "搜索指定井的位置，检查是否有重名，是否有漏排" 
+ID_VSEle = "TWT_16_ZDBG", "编辑纵断面图各井的井面标高和跌水井的井底标高" 
+ID_SplitVS = "TWT_16_YFWE", "将自定义实体的整体纵断面图，切分为2断纵断面图" 
+ID_OutdoorPipe = "TWT_16_CHLJ", "延长出户管至室外管网，并在相交出插入一个井"
+ID_MoveWellDim = "TWT_16_BHYD", "对井编号移动位置或恢复原位" 
+ID_SECTNUM3  = "Tch_16_Sectnum1", "对全专业图纸进行剖切"
+ID_GXPM  = "TWT_16_GXPM", "当进行过剖切的平面发生变化的时候，可实时进行平面与剖切面的联动"
+
+       
+//专业标注
+ID_DimStandPipe = "TWT_16_BZLG", "对立管进行编号标注或修改立管编号"
+ID_PlusSerial = "TWT_16_BHZY", "对立管编号统一增1"
+ID_MinusSerial = "TWT_16_BHJY", "对立管编号统一减1"
+Id_DimPipeSeral = "Tch_16_Indexdim", "标注管线的入户管号"
+Id_DimSanitary = "TWT_16_BZJJ", "在系统图标注洁具"
+ID_PipeOnText = "TWT_16_GXWZ", "在管线上标注管线类型的文字，如H，管线被文字遮挡" 
+ID_DimPipeDn = "TWT_16_DGGJ", "多选管线，标注管径" 
+ID_DimMPipeDn = "TWT_16_DGBZ", "在多根管线上标注管径" 
+ID_DimSprinkDn = "TWT_16_PXGJ", "计算喷淋管径并标注图中" 
+Id_DimSprinkLen = "TWT_16_PTCC", "标注喷头尺寸" 
+ID_ChangePipeDn = "TWT_16_GGGJ", "更改管径标注" 
+ID_WellDim = "TWT_16_JBZ", "修改井地面标高, 并标注井编号及标高" 
+ID_EraseDim = "TWT_16_ERASEDIM", "删除标注 （管径、标高、箭头等）" 
+ID_ModifyDim = "TWT_16_XGBZ", "批量修改管底标注、井底标注、立管标注、多管标注"
+ID_ResetDn = "TWT_16_BZFW", "由于更改比例等原因管径标注位置不合适，本命令使标注回到默认位置" 
+ID_PipeDimAlign = "TWT_16_GBDQ", "标注线划过的单管或双管按标注对齐（直管左对齐，弧管中心对齐）" 
+ID_GroundEle = "TWT_16_DMBG", "同时定义多个井地面标高，同时修改标注" 
+ID_WellSerial = "TWT_16_JBH", "修改井编号, 并更新标注" 
+ID_DBGX = "TWT_16_DBGX", "井编号可以躲避井、管线、管径标注、管底标注等实体信息，使井编号更新到井附近空白处" 
+ID_ModifyMultDim = "TWT_16_DBXG", "修改【多管管径标注】" 
+Id_PipeSeralSort = "TWT_16_RHPX", "入户管号按左右或上下进行排序"
+ID_DimSinPipeDn = "TWT_16_GJBZ", "单选管线，标注管径" 
+ID_WellDim2 = "TWT_16_GDBZ", "标注井所接各段管线的管低标高" 
+Id_VPipeSort = "TWT_16_LGPX", "立管编号按左右或上下进行排序"
+ID_DimMove = "TWT_16_GJYD", "支持批量管线的管径移动、复位" 
+ID_DimMirror = "TWT_16_BZJX", "对管道坡度、管长标注沿管道镜像" 
+ID_CTLB = "TWT_16_CTLB", "快速完成对立管编号的查找与替换"
+
+   
+
+//计算
+ID_TwtCalcgs = "TWT_16_CALGS", "给水水力计算"
+ID_TwtCalcps = "TWT_16_XQWS", "小区污水水力计算"
+ID_TwtCalcps2 = "TWT_16_XQWS", "室内排水计算"
+ID_DirtWellQ = "TWT_16_WJLL", "小区污水水力计算前输入井流量，注意不包括转输流量"
+ID_TwtCalcmhq = "TWT_16_CALMHQ", "灭火器计算"
+ID_TwtCalcxhs = "TWT_16_XHSJS", "消火栓计算"
+ID_TwtCalcjykb = "TWT_16_CALJYKB", "减压孔板计算"
+ID_TwtCalcysl = "TWT_16_YSL", "用水量计算"
+ID_TwtCalcsx = "TWT_16_SXJS", "水箱计算"
+ID_TwtCalchfc = "TWT_16_CALHFC", "化粪池计算"
+ID_TwtCalczsc = "TWT_16_ZSCJS", "贮水池计算"
+ID_TwtCalcqyg = "TWT_16_CALQYG", "气压罐计算"
+ID_SprinkCalc = "TWT_16_PLJS", "喷淋水力计算"
+ID_RainCalc = "TWT_16_YSJS", "室外雨水水力计算"
+ID_OutCalc = "TWT_16_CALWS", "室外污水、雨水水力计算"
+ID_ModifyNg = "TWT_16_XGDL", "修改给水系统中当量值，以便进行给水计算"
+ID_HydrantCalc = "TWT_16_XFJS", "消火栓水力计算"
+ID_RoofCalc = "TWT_16_WMYS", "屋面雨水水量计算"
+ID_RainArea = "TWT_16_HLMJ", "计算室外雨水水力计算之前，要对每一个井进行汇流面积输入"
+ID_RAINAREA_OFF  = "ID_LIGHT_OFF", "不显示绘制面积"
+ID_RAINAREA_ON  = "ID_LIGHT_ON", "显示绘制面积"
+ID_DirtArea = "TWT_16_FWMJ", "市政污水水力计算参数，输入每个井的服务面积，人口密度，污水定额等"
+ID_CalCivilDirt = "TWT_16_SZWS", "市政污水水力计算"
+
+ID_UnitChange = "TWT_16_DWHS", "单位换算：DWHS"
+ID_DrawId = "TH_16_HHST", "绘制焓湿图"
+ID_IdParaMeter = "TH_16_ZTJS", "根据焓湿图，计算空间状态参数"
+ID_Idprocess = "TH_16_KJCL", "根据焓湿图，进行空气处理过程计算"
+ID_QMJS = "TWT_16_QMJS", "计算气体灭火时需要的灭火设计用量或惰化设计用量以及泄压口面积"
+ID_ZZJS = "TWT_16_ZZJS", "计算住宅给水的流量、管径与流速"
+ID_SCYL = "TWT_16_SCYL", "计算消防水泵出水管的停泵水锤压力"
+	
+			
+// 系统工具
+ID_SYSTOOL   = "Tch_Tools1", "进入系统工具子菜单，提供多种零杂系统工具"
+ID_Open      = "Icon_16_Open", "打开图形文件，当遇到Acad2000以前的其他语种的图形时，制止乱码"
+ID_TSaveAs   = "Icon_16_Save", "把天正定义的对象分解为TElec3.x兼容的AutoCAD基本对象，并另存为其他文件"
+ID_BatSave   = "TEL_16_BATSAVE", "把TElec6的图批量转成TElec3的图"
+ID_SetToolbar = "TEL_16_TOOLBAR", "设置天正快捷工具条: SETTB"
+ID_LoadTch = "TEL_16_LOADTCH", "调建筑条件图，并将墙，柱变细线, 删除无用层图元: ZTJT"
+ID_TConfig = "TEL_16_SETTING", "对整个天正给排水软件进行初始设置"
+ID_LayColor    = "TCH_LAYCOLOR", "设定天正的图层系统的颜色"
+ID_SlbMan    = "Tch_SlbMan", "幻灯库管理，可以对多个幻灯库进行操作"
+ID_Calc      = "Icon_16_Cal", "调用Windows计算器，用于一般算术计算"
+ID_OUTMEMU = "TWT_16_OUT", "打开天正室外部分菜单"
+ID_WConfig = "TEL_16_WSETTING", "导出设置，包括初始设置，快捷命令，工具条等"
+ID_RConfig = "TEL_16_RSETTING", "导入设置，包括初始设置，快捷命令，工具条等"
+ID_FloorPt = "TEL_16_LCJD", "新建楼层，删除楼层，查看楼层"
+ID_FloorCp = "TEL_16_LCFZ", "按照楼层基点进行楼层之间的复制。此命令运行之前必须设置过楼层基点"
+
+// 绘图工具
+ID_TOOL      = "Tch_Tools1", "进入绘图工具子菜单，提供多种零杂绘图工具"
+ID_DragCopy  = "Tch_DragCopy", "动态连续的复制对象"
+ID_DragMove  = "Tch_DragMove", "动态的进行移动、旋转和镜像"
+ID_TMove     = "Tch_TMove", "按给定的位移值进行精确数值的移动"
+ID_PasteClip = "ICON_16_Paste", "粘贴已经复制在裁剪版上的图形，可以动态调整待粘贴待图形"
+Id_Lnptlib   = "Tch_16_Lnptlib", "绘制线图案"
+ID_AddHole   = "TCH_AddHole", "给填充图案挖去一块空白区域"
+ID_DelHole   = "TCH_DelHole", "给填充图案内的空白区域补上"
+Id_TgErase   = "TEL_16_DELASSIST", "多功能删除命令"
+ID_DWGCUT1 = "TWT_16_JXCJ", "从平面图切矩形割出一部分作为详图的底图"
+ID_CutDrawing = "TCH_CUT1", "从平面图切割出一部分作为详图的底图"
+ID_ChangeCol = "TEL_16_CHANGECOL", "修改选中图块的颜色"
+ID_UPoly     = "Tch_UPoly", "对两个封闭多段线形成的区域进行并集形成新的多段线"
+ID_SPoly     = "Tch_SPoly", "对两个封闭多段线形成的区域进行差集形成新的多段线"
+ID_IPoly     = "Tch_IPoly", "对两个封闭多段线形成的区域进行交集形成新的多段线"
+ID_Line2Wire = "TEL_16_LINE2WIRE", "将普通LINE线转为天正当前导线层上的导线"
+ID_CHDASH    = "TCH_16_CHDASH", "使线型在虚线与实线之间进行切换"
+ID_TSelObj   = "Tch_SelObj" , "先选参考图元,选择其它符合参考图元过滤条件的图形,生成选择集"
+ID_TObjInfo  = "TCH_ObjInfo" , "随光标移动,在各个图元上面动态显示其信息,并可进行编辑"
+ID_TObjEdit  = "TCH_ObjEdit", "依照各自定义对象特性, 自动调出对应的参数对话框进行编辑"
+Id_ArcNet  = "TEL_16_ARCNET", "绘制弧线网格, 辅助平面弧线布置"
+ID_SetDash = "TEL_16_LINESCALE", "设置线型比例" 
+ID_SplitDwg = "TWT_16_BDCT", "把1张dwg文件按图框拆成若干小图。"
+ID_SeOutline = "Tch_16_Eoline1", "对二维图搜索外包轮廓"
+ID_CompareDwg = "TWT_16_TZBD", "选择2个dwg文件，对整图进行比对（速度较慢），白色部分表示完全一致。注意基点insbase要一致"
+ID_CompareDwg2 = "TWT_16_JBBD", "选择2个dwg文件，对所选PLINE内进行比对（速度快），白色部分表示完全一致。注意基点insbase要一致"
+
+// 帮助
+ID_TwtLaw = "TEL_16_LAWELE", "提供各种给排水在线规范"
+ID_TwtAbout = "TEL_16_TELABOUT", "天正给排水版本信息"
+ID_CurTips   = "TCH_16_TCHTIP", "进入时示日积月累命令提示界面: RJYL"
+ID_Help     = "TCH_HELP", "启动天正给排水的在线帮助系统"
+ID_Flash     = "TEL_16_FLASH", "启动天正给排水的在线演示系统"
+			
+// 图层
+ID_Layer   = "Tch_Tools1", "进入图层子菜单，提供多种图层操作"
+ID_CloseSelLayer = "TWT_16_GXZC", "关闭选择实体所在的层"
+ID_OpenSelLayer = "TWT_16_KXZC", "除选择实体所在的层之外都关闭"
+ID_OpenAllLayer = "TWT_16_KQBC", "打开所有的层"
+ID_LockLayer = "TWT_16_SXZC", "锁定选择实体所在的层"
+ID_UnLockLayer = "TWT_16_JXZC", "解开选择实体所在的已经锁定的层"
+ID_OpenLayer = "TWT_16_DKTC", "打开已经关闭的图层"
+ID_ConvertLayer = "TWT_16_TCZH", "将某图层上所有实体转换到目标图层，可实现旧版图纸升级到新版图纸"
+ID_LockNoSelLay = "TWT_16_SFXC", "锁定选择实体之外所有的层"
+ID_DelLay = "TWT_16_SCXC", "删除选择层所有的实体"
+ID_MergeLay = "TWT_16_HBTC", "合并2个图层，并删除其中的一个"
+ID_ForzenLayer = "TCH_16_FREEZEOTHER", "冻结选择实体所在的层"
+ID_UnFrozenAllLayer = "TCH_16_UNFREEZE", "解冻所有的层"
+ID_ForzenViewLayer = "TCH_16_FREEZEOTHER", "冻结视口中选择实体所在的层"
+ID_UnFrozenViewAllLayer = "TCH_16_UNFREEZE", "解冻视口中所有的层"
+Id_Clrtos    = "TEL_16_ONECOLOR", "将平面图中各图层的颜色改为指定的一种颜色: TBDS"
+ID_ResColor  = "TEL_16_MUTICOLOR", "把当前图各个图层的颜色恢复为当前图层标准所规定的颜色: YSHF"
+
+//地热
+ID_FloorPipe = "TH_16_DRPG", "绘制地热盘管"
+ID_SelFloorPipe = "TH_16_XZPG", "选择已经打散的地热盘管，并给出总长度"
+ID_DoubleFloorPipe = "TH_16_SXPG", "绘制双线地热盘管，可连接盘管与分集水器"
+
+//在位编辑
+ID_DOWN_MARK = "TCH_16_subspt","先选择文字改下标"
+ID_UP_MARK   = "TCH_16_supspt","先选择文字改上标"
+ID_ANGLE_CHAR = "TCH_16_DEGREE","添加角度符号"
+ID_TOLERANCE_CHAR = "TCH_16_TOLER","添加公差符号"
+ID_DIA_CHAR   =  "TCH_16_DIA","添加直径符号"
+ID_PERCENT_CHAR = "TCH_16_PERCEN","添加百分号"
+ID_ONE_STEEL    = "TCH_16_1ST","添加一级钢符号"
+ID_TWO_STEEL    = "TCH_16_2ND","添加二级钢符号"
+ID_THREE_STEEL  =  "TCH_16_3RD","添加三级钢符号"
+ID_FOUR_STEEL   =  "TCH_16_4TH","添加四级钢符号"
+ID_SPECIAL_CHAR  = "TCH_16_SPEC","添加特殊字符"
+ID_Word  = "TCH_16_WORD","引用专业词库里面的词汇"
+ID_CIRCLE = "TCH_16_CCHAR","为选择的文字外加圆圈"
+
+//虹吸雨水
+ID_HSHF = "Tch_AXIS","拾取屋面汇水面积所需要的围合线"
+ID_HSMJ = "TWT_16_HSMJ","在屋面汇水划分的基础上将已确定的划分区域进行面积围合,将其面积数值显示与图中"
+ID_WMJS = "TWT_16_WMYS","通过对已围合的屋面汇水面积进行提取,框选计算屋面雨水流量"
+ID_BYSD = "TWT_16_BYSD","布置虹吸雨水斗"
+ID_LYSD = "TWT_16_LYSD","将雨水管线与虹吸雨水斗进行连接"
+ID_HXJS = "TWT_16_YSJS","对平面虹吸雨水布置图进行计算"
+ID_YLY = "TWT_16_YLY","溢流堰计算"
+
+//新建筑
+ID_TDoor     = "T20_DOOR", "在墙上插入各种门"
+ID_TWindow   = "T20_WINDOW", "在墙上插入各种窗"

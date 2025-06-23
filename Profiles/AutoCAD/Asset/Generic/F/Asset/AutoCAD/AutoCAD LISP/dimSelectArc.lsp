@@ -1,0 +1,11 @@
+(defun c:dimSelectArc (/ ss) 
+  (defun *error* (msg) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "函数已取消"))) 
+      (princ (strcat "Error: " msg "\n"))
+    )
+    (princ)
+  )
+
+  (setq ss (ssget "_X" '((0 . "ARC_DIMENSION"))))
+  (sssetfirst nil ss)
+)

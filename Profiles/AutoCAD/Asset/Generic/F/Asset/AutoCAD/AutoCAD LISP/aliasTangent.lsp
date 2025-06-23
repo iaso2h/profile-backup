@@ -1,0 +1,22 @@
+;;天正命令
+(defun c:2w () (command "._tswall") (princ))
+(defun c:ca () (command "._tplustext") (princ))
+(defun c:cl () (command "._tlengthsum") (princ))
+(defun c:el () (command "._tmelev") (princ))
+(defun c:fw () (command "._tfixwall") (princ))
+(defun c:rad () (command "._tdimrad") (princ))
+(defun c:t () (command "._ttext") (princ))
+(defun c:tt () (command "._tmtext") (princ))
+(defun c:tbl () (command "._tsymbcut") (princ))
+(defun c:tm () (command "._ttextmerge") (princ))
+(defun c:ts () (command "._tsectstair") (princ))
+(defun c:th () (command "._thatch") (princ))
+(defun c:ss () (command "._tselobj") (princ))
+(defun c:wa () (command "._tgwall") (princ))
+(defun c:wc () (command "._tgcolumn") (princ))
+
+;;天正顺序调换
+(defun c:so () (command "._tseoutline") (princ))
+(defun c:ssf () (command "._tupdspace") (princ))
+(princ "iaso2h: 天正T20命令缩写加载完毕\n")
+(princ)

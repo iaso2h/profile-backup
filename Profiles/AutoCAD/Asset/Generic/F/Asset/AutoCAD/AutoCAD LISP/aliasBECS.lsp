@@ -1,0 +1,13 @@
+;;becs2018
+(defun c:2w () (command "._lj_dxbq") (princ))
+(defun c:ca () (command "._lj_mjjs") (princ))
+(defun c:set () (command "._lj_glxz") (princ))
+(defun c:sz () (command "._lj_gcsz") (princ))
+(defun c:t () (command "._lj_dhwz") (princ))
+(defun c:tm () (command "._lj_wzhb") (princ))
+(defun c:fw () (command "._lj_xqj") (princ))
+(defun c:gc () (command "._lj_gcgz") (princ))
+(defun c:bg () (command "._lj_jnbg") (princ))
+(defun c:jc () (command "._lj_jnjc") (princ))
+(defun c:gr () (command "._lj_grjs3") (princ))
+(princ "\niaso2h: 斯维尔节能2018命令缩写加载完毕")

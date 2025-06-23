@@ -1,0 +1,979 @@
+MENU_TITLE="BECS2018"
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// 屏幕菜单
+
+***SCREEN
+
+**DEFAULT
+TITLE="全部菜单"
+                
+         [->条 件 图]
+ID_TCZH     [图层转换]LJ_TCZH
+ID_ZTJT     [转条件图]LJ_ZTJT
+ID_DRRV     [导入Revit]LJ_DRRV
+                [--]
+ID_ZZZH     [柱子转换]LJ_ZZZH
+ID_QCZH     [墙窗转换]LJ_QCZH
+ID_MCZH     [门窗转换]LJ_MCTH
+	        [--]
+ID_FZZX     [辅助轴线]LJ_FZZX
+ID_XCCX     [消除重线]LJ_XCCX
+	        [--]	    
+ID_BJTS	    [<-背景褪色]LJ_BJTS
+
+         [->轴　　网]
+ID_ZXZW     [直线轴网]LJ_ZXZW
+ID_HXZW     [弧线轴网]LJ_HXZW
+ID_ZWBZ     [轴网标注]LJ_ZWBZ
+ID_ZHBZ     [轴号标注]LJ_ZHBZ
+ID_QSZW     [<-墙生轴网]LJ_QSZW
+
+
+         [->墙　　柱]
+ID_CRMC     [插入门窗]LJ_MC
+//ID_MCZH   [门窗组合]LJ_MCZH
+            [--]    
+ID_DQCG     [当前层高]LJ_DQCG            
+            [--]            
+ID_CJQT     [创建墙体]LJ_CJQT
+ID_DXBQ     [单线变墙]LJ_DXBQ
+ID_QTFD     [墙体分段]LJ_QTFD
+ID_CFQD     [窗分墙段]LJ_CFQD
+ID_GGD      [改 高 度]LJ_GGD
+            [--]
+ID_BZZ      [标 准 柱]LJ_BZZ
+ID_JZ       [角　　柱]LJ_JZ
+Id_YXZ      [异 形 柱]LJ_YXZ
+ID_ZRQZ     [转热桥柱]LJ_ZRQZ2
+ID_ZFQD     [柱分墙段]LJ_ZFQD
+ID_QTHF     [墙体恢复]LJ_QTLM R
+            [--]
+ID_DQJ      [倒 墙 角]LJ_DQJ
+ID_XQJ      [修 墙 角]LJ_XQJ
+ID_QJDQ     [<-墙基对齐]LJ_QJDQ
+
+         
+	     [->门　　窗]
+ID_LDMC     [两点门窗]LJ_LDMC
+ID_MCDD     [门窗打断]LJ_MCDD
+ID_ZJC      [转 角 窗]LJ_ZJC
+ID_DXC      [带 型 窗]LJ_DXC
+            [--]
+ID_MZC      [门 转 窗]LJ_MZC
+ID_CZM      [窗 转 门]LJ_CZM
+            [--]
+ID_MCZK     [门窗展开]LJ_MCZK
+ID_CRCS     [插入窗扇]LJ_CRCS
+            [--]
+ID_MCBH     [门窗编号]LJ_GMCH
+ID_MCZL     [<-门窗整理]LJ_MCZL
+
+         [->屋　　顶]
+ID_QQWD     [墙齐屋顶]LJ_QQWD
+ID_SWDX     [搜屋顶线]LJ_SWDX
+ID_RZPD     [人字坡顶]LJ_RZPD
+ID_DPWD     [多坡屋顶]LJ_DPWD
+ID_LSWD     [拉伸屋顶]LJ_LSWD
+ID_JXWD     [建斜屋顶]LJ_JXWD
+ID_XZWD     [线转屋顶]LJ_XZWD
+ID_PWD      [平 屋 顶]LJ_PWD
+            [--]
+ID_DYTC     [定义天窗]LJ_DYTC
+ID_CRTC     [插入天窗]LJ_BZTC
+ID_JLHC     [<-加老虎窗]LJ_JLHC
+
+
+         [->空间划分]
+ID_S_LAYAPART  [*SWITCH*]         
+               [--]
+ID_SSFJ     [搜索房间]LJ_SSFJ
+//ID_FJPX     [房间排序]LJ_FJPX
+ID_SSHX     [搜索户型]LJ_TNMJ
+ID_SZTJ	    [设置天井]LJ_SZTJ
+ID_FJFM	    [房间赋名]LJ_FJFM
+ID_FJZL	    [房间整理]LJ_FJZL
+            [--]
+ID_JLCK	    [建楼层框]LJ_JLCK
+ID_LCB	    [<-楼 层 表]LJ_LCB
+
+
+         [->检查选择]
+ID_GBTC	    [关闭图层]LJ_GBTC
+ID_GLTC	    [隔离图层]LJ_GLTC
+ID_TCQK	    [图层全开]LJ_TCQK
+ID_TCGL     [图层管理]LJ_TCGL
+ID_GJXS	    [关键显示]LJ_GJXS            
+ID_hfXS	    [恢复显示]LJ_HFXS            
+ID_MXGC     [模型观察]LJ_MXGC
+            [--]
+ID_BHJC     [闭合检查]LJ_BHJC
+ID_CDJC	    [重叠检查]LJ_CDJC
+ID_ZQJC     [柱墙检查]LJ_ZQJC
+ID_MXJC	    [模型检查]LJ_MXJC
+ID_QJJC	    [墙基检查]LJ_QJZL
+            [--]
+ID_DXCX     [对象查询]LJ_DXCX
+ID_DXLL     [对象浏览]LJ_DXLL
+            [--]
+ID_GLXZ     [过滤选择]LJ_GLXZ
+ID_XZWQ     [选择外墙]LJ_XZWQ2
+ID_XZNQ     [选择内墙]LJ_XZNQ
+ID_XZHQ     [选择户墙]LJ_XZHQ2
+ID_XZCH     [选择窗户]LJ_XZWC2
+ID_XZWM     [选择外门]LJ_XZWM2
+ID_XZFJ     [选择房间]LJ_XZFJ
+            [--]
+ID_XGMQ     [选共面墙]LJ_XGMQ
+ID_LMXS     [<-立面显示]LJ_LMXS
+
+            
+         [->设置计算]
+ID_GCSZ	    [工程设置]LJ_GCSZ
+            [--]
+ID_GCGZ	    [工程构造]LJ_GCGZ            
+ID_CLK	    [材 料 库]LJ_CLK
+ID_GZK	    [构 造 库]LJ_GZK
+            [--]
+ID_MCLX     [门窗类型]LJ_MCLX
+ID_ZYLX     [遮阳类型]LJ_ZYLX
+ID_FJLX     [房间类型]LJ_FJLX
+ID_JBSZ     [局部设置]^P(progn (princ "\n请用选择工具配合特性表进行局部设置!")(princ));_properties
+            [--]
+ID_XTFQ     [系统分区]LJ_XTFQ
+            [--]
+ID_SJTQ	    [数据提取]LJ_SJTQ
+ID_NHJS     [能耗计算]LJ_NHFX
+ID_JNJC     [节能检查]LJ_JNJC
+            [--]
+ID_CQB      [窗 墙 比]LJ_CQB
+ID_WCB      [外 窗 表]LJ_WCB
+ID_KQMJ     [开启面积]LJ_KQMJ
+ID_PJKZ     [平均ｋ值]LJ_PJKZ
+ID_ZYXS     [常规遮阳]LJ_ZYXS
+ID_HJZY     [环境遮阳]LJ_HJZY
+            [--]
+ID_GRJS     [隔热计算]LJ_GRJS3
+ID_JLJC     [结露检查]LJ_JLJC
+ID_FCYS     [防潮验算]LJ_FCYS
+            [--]
+ID_JNBG	    [节能报告]LJ_JNBG
+ID_BSB	    [<-报 审 表]LJ_BSB
+
+
+         [->节　　点]
+ID_S_RECTMAT  [*SWITCH*] 
+ID_S_HBBLINE  [*SWITCH*]
+ID_S_HBRESULT  [*SWITCH*]
+            [--]        
+ID_JDGL     [节点管理]LJ_JDGL
+ID_JDBJ     [节点编辑]LJ_JDBJ
+ID_CJDB     [插节点表]LJ_CJDB
+ID_CRJX     [传热基线]LJ_CRJX
+ID_JCLK     [建材料块]LJ_JCLK
+ID_RQBJ     [热桥边界]LJ_RQBJ
+ID_CPBH     [重排编号]LJ_CPBH
+ID_ZDWG     [自动网格]LJ_ZDWG
+            [--]
+ID_XXCR     [线性传热]LJ_XXCR
+ID_JWDC     [解温度场]LJ_JWDC2
+            [--]
+ID_JDBZ     [<-节点标注]LJ_RQ_JDBZ
+
+
+         [->文字标注]
+ID_WZBJ     [文字编辑]LJ_WZBJ
+ID_CZTH     [查找替换]LJ_CZTH
+            [--]  
+ID_DCBG     [导出表格]LJ_DCEX
+ID_DRBG     [导入表格]LJ_DREX 
+            [--]           
+ID_ZBZ      [指 北 针]LJ_ZBZ
+ID_DHWZ	    [单行文字]LJ_DHWZ
+ID_JTYZ     [箭头引注]LJ_JTYZ
+ID_CCBZ     [<-尺寸标注]LJ_ZDBZ
+      
+               
+            [->文件帮助]
+ID_TXDC       [图形导出]LJ_TXDC             
+ID_DCST	      [导出审图]LJ_DCST
+ID_DCGB       [导出Gbxml]LJ_DCGB
+ID_GXGZ       [更新构造]LJ_GXGZ
+              [--]
+ID_ZXBZ       [在线帮助]LJ_ZXBZ
+ID_RJYL       [日积月累]LJ_RJYL
+              [--]
+ID_BBXX       [<-版本信息]LJ_BBXX
+
+
+***POPUP  //右键菜单
+
+// 模型空间右键菜单
+**MODEL
+
+
+//ID_RepeatCmd       [重复命令];
+ID_Line 		[Line]line
+ID_Polyline 		[Polyline]Pline
+ID_POLYLINES_PLCO [Polyline Continue]PLCO
+                   [--]
+ID_MXGC            [模型观察]LJ_MXGC          
+//ID_GJXS	    [关键显示]LJ_GJXS H N
+//ID_GJXS	    [恢复显示]LJ_GJXS U   
+		   [--]
+//ID_GLXZ            [过滤选择]LJ_GLXZ
+ID_XZFJ           [->选择预设]
+ID_XZWQ     [选择外墙]LJ_XZWQ2
+ID_XZNQ     [选择内墙]LJ_XZNQ
+ID_XZHQ     [选择户墙]LJ_XZHQ
+ID_XZCH     [选择窗户]LJ_XZWC2
+ID_XZWM     [选择外门]LJ_XZWM2
+ID_XZFJ     [<-选择房间]LJ_XZFJ
+//ID_DXCX            [对象查询]LJ_DXCX
+//ID_MnPersShad   [->着色模式]
+//ID_2doptim         [二维线框]_shademode 2
+//ID_Wireframe       [三维线框]_shademode 3 
+//ID_Hidden          [消　　隐]_shademode h 
+//ID_Flat            [平面着色]_shademode f 
+//ID_Gouraud         [体 着 色]_shademode g 
+//ID_FlatEdges       [带边框平面着色]_shademode l
+//ID_GourEdges       [<-带边框体着色]_shademode o
+//ID_STSZ         [->视图设置]
+//ID_3DOrbit         [动态观察]'3DOrbit
+//                   [--]
+//ID_VpointTop       [平 面 图]shademode 2 -view _top 
+//ID_VpointBot     [仰　　视]-view _bottom 
+//ID_VpointLef       [左 立 面]-view _left 
+//ID_VpointRig       [右 立 面]-view _right 
+//ID_VpointFro       [正 立 面]-view _front 
+//ID_VpointBac       [背 立 面]-view _back 
+//                   [--]
+//ID_VpointSW        [西南轴测]-view _swiso 
+//ID_VpointSE        [东南轴测]-view _seiso 
+//ID_VpointNE        [东北轴测]-view _neiso 
+//ID_VpointNW        [<-西北轴测]-view _nwiso
+                 [--]
+ID_ZXZW          [Axis]LJ_ZXZW
+ID_CJQT          [Wall]LJ_CJQT
+//ID_BZZ           [Pillar]LJ_BZZ
+//ID_CRMC          [插入门窗]LJ_MC
+//                 [--]
+//ID_SSFJ          [搜索房间]LJ_SSFJ
+//ID_SWDX          [搜屋顶线]LJ_SWDX
+//ID_JLCK	         [建楼层框]LJ_JLCK
+//                 [--]
+//ID_GCSZ	         [工程设置]LJ_GCSZ
+//ID_GCGZ	         [工程构造]LJ_GCGZ
+
+
+// 墙体菜单
+**WALL
+Wall=0,"SWR_WALL"
+ID_DXBJ        [对象编辑]LJ_DXBJ
+               [--]
+ID_Opening     [->门    窗]
+ID_CRMC         [插入门窗]LJ_MC
+ID_DXC          [带 型 窗]LJ_DXC
+ID_ZJC          [<-转 角 窗]LJ_ZJC
+ID_MCLX        [门窗类型]LJ_MCLX
+               [--]
+//ID_GQH         [改 墙 厚]LJ_GQH
+//ID_GWQH        [改外墙厚]LJ_GWQH
+//ID_GGD         [改 高 度]LJ_GGD
+//ID_GWQG        [改外墙高]LJ_GWQG
+ID_QTFD        [WallCut]LJ_QTFD
+               [--]
+ID_QTHF        [墙体恢复]LJ_QTLM R
+//               [--]
+//ID_S_BASELINE  [*SWITCH*]               
+//ID_BOLDLINE    [{!=G_BoldMode}加粗状态]^P(progn (S_BoldMode) (princ))
+//ID_SOLIDFILL   [{!=G_FillMode}填充状态]^P(progn (S_FillMode) (princ))
+
+
+// 门窗菜单
+
+**OPENING
+Opening=0,"SWR_OPENING,SWR_CORNER_WINDOW"
+ID_DXBJ        [对象编辑]LJ_DXBJ
+//				[--]
+//ID_JMCT        [加门窗套]LJ_JMCT
+//ID_XMCT        [消门窗套]LJ_XMCT
+               [--]
+ID_MCBH        [Add Label]LJ_GMCH . 
+ID_BHFW      [Reset Label]LJ_BHFW	
+//ID_WCB         [外 窗 表]LJ_WCB
+//ID_MZC         [门 转 窗]LJ_MZC
+//ID_CZM         [窗 转 门]LJ_CZM
+ID_MCLX        [门窗类型]LJ_MCLX
+ID_ZYLX        [遮阳类型]LJ_ZYLX
+//               [--]
+//ID_MCZK        [门窗展开]LJ_MCZK
+
+
+// 轴线菜单
+**AXIS
+AXIS=0,"LINE,ARC,CIRCLE",8,"@公用-轴网"
+ID_ZXZW         [直线轴网]LJ_ZXZW
+ID_HXZW         [弧线轴网]LJ_HXZW
+                [--]
+ID_ZWBZ         [轴网标注]LJ_ZWBZ
+ID_ZHBZ         [轴号标注]LJ_ZHBZ
+                [--]
+ID_DXBQ         [单线变墙]LJ_DXBQ
+ID_ZGXX         [轴改线型]LJ_ZGXX
+
+
+// 轴网标注菜单
+**AXIS_LABEL
+AXIS_LABEL=0,"SWR_AXIS_LABEL"
+ID_TBZH        [添补轴号]LJ_TBZH
+ID_SCZH        [删除轴号]LJ_SCZH
+               [--]
+ID_BBZC        [变标注侧]LJ_BBZC
+ID_DHBC        [单号变侧]LJ_DHBC
+               [--]
+ID_DPZH        [倒排轴号]LJ_DPZH
+
+
+// 柱子菜单
+**COLUMN
+Column=0,"SWR_COLUMN"
+ID_DXBJ        [对象编辑]LJ_DXBJ
+ID_BEBJ        [布尔编辑]LJ_BEBJ
+               [--]
+ID_BZZ         [标 准 柱]LJ_BZZ
+ID_JZ          [角　　柱]LJ_JZ
+//ID_GZZ         [构 造 柱]LJ_GZZ
+ID_YXZ         [异 形 柱]LJ_YXZ
+               [--]
+ID_ZQQB        [柱齐墙边]LJ_ZQQB               
+ID_GGD         [改 高 度]LJ_GGD
+ID_PYSX        [偏移生线]LJ_PYSX
+               [--]
+ID_BOLDLINE    [{!=G_BoldMode}加粗状态]^P(progn (S_BoldMode) (princ))
+ID_SOLIDFILL   [{!=G_FillMode}填充状态]^P(progn (S_FillMode) (princ))
+
+
+//人字坡顶
+**SLOPE2ROOF
+slope2roof=0, "SWR_STDROOF", 376, 1
+ID_DXBJ        [对象编辑]LJ_DXBJ
+ID_BEBJ        [布尔编辑]LJ_BEBJ
+               [--]
+ID_JLHC        [加老虎窗]LJ_JLHC
+ID_CRTC         [插 天 窗]LJ_BZTC
+ID_QQWD        [墙齐屋顶]LJ_QQWD
+ID_WDJD        [屋顶加洞]LJ_WDJD
+ID_WDXD        [屋顶消洞]LJ_WDXD
+               [--]
+ID_ZXBJ        [Z 向编辑]LJ_ZXBJ
+
+
+//屋顶
+**ROOF
+roof=0, "SWR_*ROOF"
+ID_DXBJ        [对象编辑]LJ_DXBJ
+ID_JLHC        [加老虎窗]LJ_JLHC
+ID_CRTC         [插 天 窗]LJ_BZTC
+ID_QQWD        [墙齐屋顶]LJ_QQWD p 
+ID_WDJD        [屋顶加洞]LJ_WDJD
+ID_WDXD        [屋顶消洞]LJ_WDXD
+               [--]
+ID_ZXBJ        [Z 向编辑]LJ_ZXBJ
+
+
+//楼层框
+**FLOOR_FRAME
+FLOOR_FRAME=0, "SWR_FLOOR_FRAME"
+ID_SJTQ	    [数据提取]LJ_SJTQ
+ID_NHJS     [能耗计算]LJ_NHFX
+ID_JNJC     [节能检查]LJ_JNJC
+            [--]
+ID_CQB      [窗 墙 比]LJ_CQB
+ID_MCLX     [门窗类型]LJ_MCLX
+ID_WCB      [外 窗 表]LJ_WCB
+            [--]
+ID_MXGC     [模型观察]LJ_MXGC
+//ID_SWZH	    [三维组合]LJ_SWZH1
+            [--]
+ID_JNBG	    [节能报告]LJ_JNBG
+ID_BSB	    [报 审 表]LJ_BSB
+            [--]
+ID_DCST	    [导出审图]LJ_DCST
+
+
+// ARCH尺寸标注
+**ARCH_DIMENSION
+Arch_Dimension=0,"SWR_DIMENSION"
+ID_DimStyle     [标注样式]DDIM
+                [--]
+ID_CJYS         [裁剪延伸]LJ_CJYS
+ID_QXCC         [取消尺寸]LJ_QXCC
+ID_LJCC         [连接尺寸]LJ_LJCC
+ID_ZBCC         [增补尺寸]LJ_ZBCC
+ID_QHJB         [切换角标]LJ_QHJB
+ID_CCZT         [尺寸自调]LJ_CCZT
+ID_QXZT         [取消自调]LJ_QXZT
+ID_CCFZ         [尺寸复值]LJ_CCFZ
+                [--]
+ID_S_DIMADJ     [*SWITCH*]
+ID_DIMCHECK     [{!=G_DimCheck}尺寸检查]^P(progn (S_DimCheck) (princ))
+
+
+// 半径直径标注
+**RADIUS_DIMENSION
+Radius_Dimension=0,"SWR_RADIUSDIM"
+//ID_GGWZ         [更改文字]LJ_GGWZ
+ID_WZFW         [文字复位]LJ_WZFW
+//ID_WZFZ         [文字复值]LJ_WZFZ
+                [--]
+ID_DIMCHECK     [{!=G_DimCheck}尺寸检查]^P(progn (S_DimCheck) (princ))
+
+
+// 房间
+**SPACE
+SPACE=0,"SWR_SPACE"
+ID_DXBJ         [对象编辑]LJ_DXBJ
+                [--]
+ID_FJLX         [房间类型]LJ_FJLX
+ID_MJLJ         [面积累加]LJ_MJLJ
+ID_SZTJ	    [设置天井]LJ_SZTJ p 
+
+
+// ARCH文字菜单
+**ARCH_TEXT
+ARCH_TEXT=0,"SWR_TEXT,SWR_MTEXT"
+ID_DXBJ        [对象编辑]LJ_DXBJ
+ID_WZYS        [文字样式]LJ_WZYS
+               [--]
+ID_DHWZ        [单行文字]LJ_DHWZ
+
+
+// AUTOCAD文字菜单
+**TEXT
+TEXT=0,"TEXT"
+ID_WZYS        [文字样式]LJ_WZYS
+               [--]
+ID_DHWZ        [单行文字]LJ_DHWZ
+               [--]
+ID_WZZH        [文字转化]LJ_WZZH
+ID_WZHB        [文字合并]LJ_WZHB
+               [--]
+ID_CZTH        [查找替换]LJ_CZTH
+
+
+// 表格菜单
+**ARCH_TABLE
+ARCH_TABLE=0,"SWR_SHEET", 75, 0
+ID_DXBJ        [对象编辑]LJ_DXBJ
+ID_CZTH        [查找替换]LJ_CZTH
+	       [--]               
+ID_XJBG        [新建表格]LJ_XJBG
+ID_BHBJ        [Row Edit]LJ_BHBJ
+ID_BLBJ        [Column Edit]LJ_BLBJ
+ID_DYBJ        [Cell Edit]LJ_DYBJ
+               [--]
+ID_DCBG        [导出表格]LJ_DCEX
+ID_DRBG        [Read Excel]LJ_DREX 
+
+
+**ARCH_TABLE1
+SelRange=0,"SWR_SHEET", 75, 4
+ID_BG_DYSX     [单元属性]LJ_BG_DYSX
+ID_BG_DYHB     [单元合并]LJ_BG_DYHB
+//ID_BG_DYFJ     [单元分解]LJ_BG_DYFJ
+
+**ARCH_TABLE2
+SelRow=0,"SWR_SHEET", 75, 5
+ID_BG_BHSX     [表行属性]LJ_BG_BHSX
+ID_BG_BHSC     [表行删除]LJ_BG_BHSC
+               [--]
+ID_BG_BHQY     [表行前移]LJ_BG_BHQY
+ID_BG_BHHY     [表行后移]LJ_BG_BHHY
+               [--]
+ID_BG_QCKH     [前插空行]LJ_BG_QCKH
+ID_BG_HCKH     [后插空行]LJ_BG_HCKH
+               [--]
+ID_BG_QFZH     [前复制行]LJ_BG_QFZH
+ID_BG_HFZH     [后复制行]LJ_BG_HFZH
+
+**ARCH_TABLE3
+SelColumn=0,"SWR_SHEET", 75, 6
+ID_BG_BLSX     [表列属性]LJ_BG_BlSX
+ID_BG_BLSC     [表列删除]LJ_BG_BLSC
+               [--]
+ID_BG_BLQY     [表列前移]LJ_BG_BLQY
+ID_BG_BLHY     [表列后移]LJ_BG_BLHY
+               [--]
+ID_BG_QCKL     [前插空列]LJ_BG_QCKL
+ID_BG_HCKL     [后插空列]LJ_BG_HCKL
+               [--]
+ID_BG_QFZL     [前复制列]LJ_BG_QFZL
+ID_BG_HFZL     [后复制列]LJ_BG_HFZL
+
+
+// 封闭的多段线菜单
+
+**POLY_REGION
+PolyRegion=0,"POLYLINE,LWPOLYLINE",70,1 
+ID_RZPD     [->G-Object]LJ_RZPD
+ID_YXZ      [钢筋砼柱]LJ_YXZ p 2 
+ID_RZPD     [人字坡顶]LJ_RZPD 
+ID_DPWD     [多坡屋顶]LJ_DPWD p 
+ID_PWD      [<-平 屋 顶]LJ_PWD p 
+               [--]
+ID_POLYLINES_PLU       [Poly Union]PLU
+ID_JJ       [->Boolean]
+//ID_BJ       [Union]LJ_BJ
+ID_JJ       [Intersect]LJ_JJ
+ID_CJ       [<-Subtract]LJ_CJ
+               [--]
+ID_POLYLINES_PLAV     [->Vertex]
+ID_POLYLINES_PLAV [+]PLAV
+ID_POLYLINES_PLEV [-]PLEV
+ID_POLYLINES_PLP [Purge]PLP
+ID_POLYLINES_PLP [<-Simplify]Simplify
+ID_POLYLINES_PLR [Rectify]PLR
+//ID_Offset      [偏　　移]_Offset
+//ID_Trim        [修　　剪]_trim
+//ID_Break       [打　　断]_break
+//ID_Chamfer     [倒　　角]_chamfer
+//ID_Fillet      [圆　　角]_Fillet
+//               [--]
+//ID_PEdit       [编辑  PL]PEdit
+
+
+**POLY_CURVE
+PolyCurve=0,"POLYLINE,LWPOLYLINE",70,0
+ID_Offset      [偏　　移]Offset
+ID_Lengthen    [拉　　长]_lengthen
+ID_Trim        [修　　剪]_trim
+ID_Extend      [延　　伸]_extend
+ID_Break       [打　　断]_break
+ID_Chamfer     [倒　　角]_chamfer
+ID_Fillet      [圆　　角]_Fillet
+               [--]
+ID_PLFX         [PL　反向]LJ_PLFX
+               [--]
+ID_LJQX        [连接曲线]LJ_LJQX
+ID_PEdit       [编辑  PL]PEdit
+
+**ARC
+Arc = 0, "ARC"
+ID_Offset      [偏　　移]Offset
+ID_Lengthen    [拉　　长]^C^C_lengthen
+ID_Trim        [修　　剪]^C^C_trim
+ID_Extend      [延　　伸]^C^C_extend
+ID_Break       [打　　断]^C^C_break
+ID_Chamfer     [倒    角]^C^C_chamfer
+ID_Fillet      [圆　　角]Fillet
+               [--]
+ID_LJQX        [连接曲线]LJ_LJQX
+ID_XBPL        [线变  PL]LJ_XBPL
+               [--]
+ID_BJBZ        [半径标注]LJ_BJBZ
+ID_HCBZ        [弧长标注]LJ_HCBZ
+
+**LINE
+curve = 0, "LINE"
+               [->通用编辑]
+ID_Offset      [偏　　移]Offset
+ID_Lengthen    [拉　　长]^C^C_lengthen
+ID_Trim        [修　　剪]^C^C_trim
+ID_Extend      [延　　伸]^C^C_extend
+ID_Break       [打　　断]^C^C_break
+ID_Chamfer     [倒    角]^C^C_chamfer
+ID_Fillet      [<-圆　　角]Fillet
+               [--]
+ID_ZZZH        [柱子转换]LJ_ZZZH
+ID_QCZH        [墙窗转换]LJ_QCZH
+	       [--]
+ID_FZZX        [辅助轴线]LJ_FZZX
+ID_DXBQ        [单线变墙]LJ_DXBQ
+               [--]
+ID_JCQX        [加粗曲线]LJ_JCQX
+ID_LJQX        [连接曲线]LJ_LJQX
+ID_XBPL        [线变　PL]LJ_XBPL
+
+
+**CIRCLE
+circle = 0, "CIRCLE"
+ID_Offset      [偏　　移]Offset
+ID_Trim        [修　　剪]^C^C_trim
+ID_Break       [打　　断]^C^C_break
+               [--]
+ID_JCQX        [加粗曲线]LJ_JCQX
+               [--]
+ID_BJBZ        [半径标注]LJ_BJBZ
+ID_ZJBZ        [直径标注]LJ_ZJBZ
+
+
+// 开关菜单
+***SWITCH
+
+**ID_S_DIMADJ
+
+GET     =   G_DimAdj                //取状态  
+SET     =   S_DimAdj                //设状态
+0       =   ID_DIMADJ_OFF,  "o自调关o"    //状态0
+1       =   ID_DIMADJUp,   "o上　调o"     //状态1
+2       =   ID_DIMADJDn,   "o下　调o"     //状态2
+
+**ID_S_BASELINE
+
+GET     =   G_WallBase              //取状态  
+SET     =   S_WallBase              //设状态
+0       =   ID_DOUBLE_WALL,  "o 双线 o"   //状态0
+1       =   ID_SINGLE_DOUBLE,   "o单双线o" //状态1
+2       =   ID_SINGLE_WALL, "o 单线 o"
+
+**ID_S_BOLDLINE
+
+GET     =   G_BoldMode              //取状态  
+SET     =   S_BoldMode              //设状态
+0       =   ID_BOLDLINE0,   "o加粗关o"   //状态0
+1       =   ID_BOLDLINE1,   "o加粗开o"   //状态1
+
+**ID_S_SOLIDFILL
+
+GET     =   G_FillMode              //取状态  
+SET     =   S_FillMode              //设状态
+0       =   ID_SOLIDFILL0,   "o填充关o"   //状态0
+1       =   ID_SOLIDFILL1,   "o填充开o"   //状态1
+
+**ID_S_RECTMAT
+GET     =   G_HBRectMode              //取状态  
+SET     =   S_HBRectMode              //设状态
+0       =   ID_SOLIDFILL0,   "o网　格o"   //状态0
+1       =   ID_SOLIDFILL1,   "o图　案o"   //状态1
+
+**ID_S_HBBLINE
+GET     =   G_HBBaseLineMode              //取状态  
+SET     =   S_HBBaseLineMode              //设状态
+0       =   ID_LAYBLINE0,   "传热基线"   //状态0
+1       =   ID_LAYBLINE1,   "传热基线"   //状态1
+
+**ID_S_HBRESULT
+GET     =   G_HBResultMode              //取状态  
+SET     =   S_HBResultMode              //设状态
+0       =   ID_LAYRESULT0,   "分析结果"   //状态0
+1       =   ID_LAYRESULT1,   "分析结果"   //状态1
+
+**ID_S_LAYAPART
+GET     =   G_ApartmentLayerMode              //取状态  
+SET     =   S_ApartmentLayerMode              //设状态
+0       =   ID_LAYAPART0,   "户　　型"   //状态0
+1       =   ID_LAYAPART1,   "户　　型"   //状态1
+
+***RESOURCE
+ID_DOUBLE_WALL     =  "SX", "双线显示切换为单线+双线显示"
+ID_SINGLE_DOUBLE   =  "DSX", "单线+双线显示切换为单线显示"
+ID_SINGLE_WALL     =  "DX", "单线显示切换为双线显示"
+ID_BOLDLINE0        =  "WALL-B1",  "切换墙柱的粗细显示状态"
+ID_BOLDLINE1        =  "WALL-B2",  "切换墙柱的粗细显示状态"
+ID_SOLIDFILL0       =  "RQ_WG1",  "切换墙柱的填充显示状态"
+ID_SOLIDFILL1       =  "RQ_WG2",  "切换墙柱的填充显示状态"
+
+ID_LAYBLINE0 = "TCGB", "切换传热基线图层的开关显示"
+ID_LAYBLINE1 = "TCQK", "切换传热基线图层的开关显示"
+ID_LAYRESULT0 = "TCGB", "切换热桥分析结果图层的开关显示"
+ID_LAYRESULT1 = "TCQK", "切换热桥分析结果图层的开关显示"
+ID_LAYAPART0 = "TCGB", "切换户型图层开关状态"
+ID_LAYAPART1 = "TCQK", "切换户型图层开关状态"
+
+
+//2d条件图******************************************************
+ID_TCZH    = "TCZH", "转换图层标准：TCZH"                                          //{图层转换}
+ID_ZTJT    = "ZTJT", "把二维条件图转三维，把柱子转换和墙窗转换合成一个步骤：TCZH"  //{转条件图}
+ID_DRRV    = "DRRV", "导入Revit模型对象，需要预先在Revit中【导出斯维尔】生成中间数据文件：DRRV"  //{导入Revit}
+ID_ZZZH    = "ZZZH", "对天正建筑3.0和理正建筑图档中的柱子进行转换: ZZZH"           //{柱子转换}
+ID_QCZH    = "QCZH", "对天正建筑3.0和理正建筑图档中的墙体门窗进行转换: QCZH"       //{墙窗转换}
+ID_MCZH    = "MCTH", "对天正建筑3.0或理正的门窗进行转换：MCZH"                     //{门窗转换}
+ID_FZZX    = "FZZX", "在两根墙线中间生成临时辅助轴线，用于描图：FZZX"              //{辅助轴线}
+ID_XCCX    = "XCCX", "消除图中重合的线和弧: XCCX"			           //{消除重线}
+ID_BJTS	   = "BJTS", "对条件图无关的图形褪色显示以便突出关键的图形：BJTS"          //{背景褪色}
+ID_QJDQ    = "QJPY", "通过对齐点的方式，改变墙体基线到新的位置：QJDQ"		   //{墙基对齐} 
+ID_MCDD    = "FH_MCDD", "将门窗分打断成两个：MCDD"                                 //{门窗打断}
+ID_DQJ     = "DQJ" , "将墙角交接好或按给定半径倒圆角生成弧墙：DQJ"		   //{倒墙角} 
+ID_XQJ     = "XQJ" , "将互相交叠的两段墙分别在交点处断开并修理墙角：XQJ"           //{修墙角}
+ID_CFQD    = "FH_CFQD", "用窗将所在墙打断：CFQD"                                   //{窗分墙段}
+ID_ZFQD    = "FH_ZFQD", "将构造柱转换成砼墙：ZFQD"                                 //{柱分墙段}
+ID_TXDR	   = "TXDR", "导入天正建筑3.0、5.0和6.0图纸：TXDR"
+ID_JBZH    = "JBZH", "对天正建筑3.0的图纸做局部转换：JBZH"
+
+
+//轴网******************************************************
+ID_ZXZW    = "ZXZW", "生成正交轴网或单向轴网：ZXZW"                     //{直线轴网}
+ID_HXZW    = "HXZW", "生成弧线轴网或圆轴网：HXZW"		        //{弧线轴网}
+ID_ZWBZ    = "LDZB", "选择起始轴与结束轴标注其中各轴号与尺寸：ZWBZ"	//{轴网标注}
+ID_ZHBZ    = "ZDZB", "逐个选择轴线标注互不相关的轴号：ZHBZ"		//{轴号标注}
+ID_QSZW    = "QSZW", "按墙基线生成定位轴线：QSZW"			//{墙生轴网}
+
+
+//墙柱******************************************************
+ID_DQCG    = "DQCG", "设置当前的层高，作为新建墙的默认高度: DQCG"               //{当前层高}
+ID_CJQT    = "HZQT", "连续绘制双线直墙和弧墙：CJQT"			        //{创建墙体}
+ID_DXBQ    = "DXBQ", "将已绘制好的单线(或轴线)转成(或生成)墙体：DXBQ"	        //{单线变墙}
+ID_QTFD    = "QTFD", "把整段墙体分成多段，以便设置不同构造: QTFD"               //{墙体分段}
+ID_BZZ     = "BZZ", "在轴线的交点处插入方柱,圆柱或正多边形柱: BZZ"	        //{标准柱}
+ID_JZ      = "JZ" , "在墙角插入形状与墙一致的角柱: JZ"		                //{角柱}
+ID_WQJZ    = "WQJZ" , "在外墙墙角插入形状与墙一致的角柱: WQJZ"		        //{外墙角柱}
+ID_ZRQZ    = "ZGZZ", "把来自Arch建筑图中的柱转为节能中的热桥柱，以便作为热桥: ZRQZ"	//{转热桥柱}
+ID_YXZ     = "YXZ" , "把闭合PLINE定义的柱断面转为柱: YXZ"		        //{异形柱}
+ID_ZQQB    = "ZQQB", "把柱子对齐到指定的墙边: ZQQB"			        //{柱齐墙边}
+
+
+//门窗******************************************************
+ID_CRMC    = "MC",   "在墙上插入各种门窗或进行门窗替换: CRMC"		                   //{插入门窗}
+ID_LDMC    = "LDMC", "在墙上取两点作为门窗的边界插入门或窗: LDMC"		           //{两点门窗}
+// ID_MCZH    = "MCZH", "在墙上插入相互连接的多个门窗: MCZH"                               //{门窗组合}
+ID_DXC     = "DXC",  "在一段或连续多段墙上插入带型窗: DXC"			           //{带型窗}
+ID_ZJC     = "ZJC",  "在墙角处插入转角(凸)窗: ZJC"				           //{转角窗}
+ID_DYTC    = "DYTC", "将封闭多义线或圆定义成天窗: DYTC"                                    //{定义天窗}
+ID_MZC     = "FH_MZC",  "把门对象中的玻璃门或透明部分转成窗对象，以便节能分析中按窗对待：MZC" //{门转窗}
+ID_CZM     = "FH_CZM",  "把窗成门：CZM"                                                       //{窗转门}
+ID_MCZL    = "MCJC", "按门窗编号整理浏览门窗: MCZL"                                           //门窗整理
+ID_MCZK    = "CLZK", "把窗的立面展开大样图框内，以便设置开启窗扇: MCZK"		//{门窗展开}
+ID_CRCS      = "OV_SZKQ", "插入矩形窗扇: CRCS"	               //{插入窗扇}
+
+//屋顶******************************************************
+ID_SWDX      =  "SWDX", "自动跨越门窗洞口搜索墙线的封闭区域，生成屋顶平面轮廓线: SWDX"	              //{搜屋顶线}
+ID_RZPD      =  "RZPD", "由闭合曲线生成标准的人字坡顶，包括特殊情况单坡屋顶: RZPD"		      //{人字坡顶}
+ID_DPWD      =  "DPWD", "由闭合曲线生成指定坡度的屋顶，不等坡时可以用对象编辑可分别修改各坡度: DPWD"  //{多坡屋顶}
+ID_PWD       =  "PWD", "由闭合曲线生成平屋顶: PWD"                                                    //{平屋顶}
+ID_DPWD      =  "DPWD", "由闭合曲线生成指定坡度的屋顶，不等坡时可以用对象编辑可分别修改各坡度: DPWD"  //{多坡屋顶}
+ID_JXWD      =  "JXWD", "根据已知三点标高，建空间斜屋面，组成复杂屋顶: JXWD"                          //{建斜屋顶}
+ID_LSWD      =  "LSWD", "将用PLine表达的屋面轮廓线纵向拉伸并向下赋予一个屋面厚度，生成屋顶对象: LSWD"  //{拉伸屋顶}
+ID_XZWD      =  "XZWD", "根据由线构成的二维视图生成三维屋顶：XZWD"                                     //{线转屋顶}
+ID_CRTC      =  "CTC", "在三维屋顶上插入天窗: CRTC"					            //{插入天窗}
+ID_JLHC      =  "JLHC",  "在三维屋顶坡面上生成各种老虎窗: JLHC"					      //{加老虎窗}
+ID_QQWD      =  "QQWD",  "将人字屋顶下的外墙对齐至屋顶: QQWD"				              //{墙齐屋顶}
+ID_QTHF      =  "YXLM",  "将【墙齐屋顶】后的墙体恢复成矩形立面"				      //{墙体恢复}
+ID_ZXBJ      =  "ZXBJ", "升降物体或竖直阵列物体: ZXBJ"                                        //{Z 向编辑}
+
+  
+//房间检查******************************************************
+ID_JDJC      = "JDJC", "检查墙角是否准确较于一点，提供自动更正、补短墙或放置标记: JDJC"  //{节点检查}
+ID_BHJC      =  "BHJC", "利用鼠标在图中移动，检查房间是否闭合: BHJC"		          //{闭合检查}
+ID_CDJC      =  "CDJC", "检查重叠的墙体、柱子和门窗，列出检查提示，可以观察、删除和做标记: CDJC"  //{重叠检查}
+ID_SSFJ      =  "SSFJ", "生成或更新已有的房间对象并识别内外墙: SSFJ"	                 //{搜索房间}
+ID_FJPX      =  "FJPX", "对所选房间的编号按给定的起始编号排序: FJPX"	                  //{房间排序}
+ID_SSHX      =  "TNMJ", "生成户型对象并识别户墙：SSHX"			                  //{搜索户型}
+ID_SZTJ      =  "SZTJ", "生成天井并可识别外墙: SZTJ"			                  //{设置天井}
+ID_FJFM      =  "FJFM", "根据房间内的文字批量设置为对应的房间名称: FJFM"			              //{房间赋名}
+ID_FJZL      =  "FJZL", "浏览房间并统一整理房间名称等信息: FJZL"			              //{房间整理}
+//ID_GQJC      =  "GQJC", "搜索房间后，检测出没有围成房间的孤墙，并将其选中: GQJC"          //{孤墙检查}
+ID_MXJC      =  "MXJC", "节能分析前，检查出模型中能够引起分析中断的错误，并列出结果表格: MXJC"        //{模型检查}
+ID_ZQJC      = "ZQJC", "检查柱子内部的墙是否正确交接: ZQJC"                                          //[柱墙检查]
+ID_QJJC      =  "FH_QJJC", "节能分析前，检查墙体基线闭合情况: QJJC"                                     //{墙基检查}
+
+//楼层组合******************************************************
+ID_JLCK	   = "JLCK", "创建楼层框对象，用于确定（全部平面图都在当前图）标准层平面图与自然层的对应关系: JLCK"  //{建楼层框}
+ID_LCB     = "LCB",  "设置楼层表，以便确定标准层和自然层的对应关系: LCB"                                     //{楼层表}
+ID_MXGC    = "MXGC", "利用渲染技术模拟真实模型，并可查看建筑数据和围护结构热工参数: MXGC"                    //{模型观察}
+//ID_SWZH    = "SWZH", "把多个标准层按楼层表指定的顺序和关系，组合成三维建筑模型: SWZH"                        //{三维组合}
+
+//图层显示******************************************************
+ID_GJXS	     = "GJXS", "只显示关键对象（与节能相关的）：GJXS"   //{关键显示}
+ID_GBTC      = "GBTC", "关闭所选对象所在图层: GBTC"		//{关闭图层}
+ID_GLTC      = "GLTC", "只开所选对象所在图层: GLTC"		//{隔离图层}
+ID_TCQK      = "TCQK", "打开所有图层: TCQK"		        //{图层全开}
+ID_TCGL      = "TCGL", "管理斯维尔的图层系统: TCGL"		//{图层管理}
+ID_MPGC      = "MPGC", "充满整个显示器屏幕进行观察: MPGC"			        //{满屏观察}
+ID_MPBJ      = "MPBJ", "留下命令行和屏幕菜单，其他区域都是绘图去: MPBJ"			//{满屏编辑}
+ID_SKFD      = "SKFD", "模型空间的当前视口放大到全屏，并保存当前配置以便恢复：SKFD"	//{视口放大}
+ID_SKHF      = "SKHF", "恢复视口放大前的视口配置：SKHF"			                //{视口恢复}
+ID_YSSK      = "YSSK", "把图块内0层的图形颜色改为随块，以便设置颜色: YSSK"
+ID_SWZH      = "SWZH", "在对话框中各个视图下右键点击保存图片即可在节能报告中输出建筑立面效果图：SWZH"			             
+ID_PMJT      = "FH_PMJT", "在节能报告中分层输出建筑平面大样图: PMJT"                                       //{平面简图}
+
+
+//选择浏览******************************************************
+ID_DXCX      = "DXCX" , "随光标移动,在各个图元上面动态显示其信息,并可进行编辑: DXCX"	    //{对象查询}
+ID_DXLL      = "DXLL", "逐个浏览所选类型的对象，注意先启动对象特性表: DXLL"                 //{对象浏览}
+ID_GLXZ      = "DXXZ" , "先选参考图元,选择其它符合参考图元过滤条件的图形,生成选择集: GLXZ"  //{过滤选择}
+ID_XZWQ      =  "XZWQ", "过滤选择出外墙，以便单独设置其属性：XZWQ"                          //{选择外墙}
+ID_XZNQ      =  "XZNQ", "过滤选择出内墙，以便单独设置其属性：XZNQ"                          //{选择内墙}
+ID_XZHQ      =  "XZHQ", "过滤选择出户墙，以便单独设置其属性：XZHQ"                          //{选择户墙}
+ID_XZCH      =  "XZCH", "过滤选择出窗户，以便单独设置其属性：XZCH"                          //{选择窗户}
+ID_XZWM      =  "XZWM", "过滤选择出外门，以便单独设置其属性：XZWM"                          //{选择外门}
+ID_XZFJ      =  "XZFJ", "按功能、名称、编号过滤选择出房间，以便单独设置其属性：XZFJ"        //{选择房间}
+ID_XZWH      =  "XZWH", "选择组成所选房间或建筑轮廓的墙体以便设置其属性：XZWH"              //{选择围护}
+ID_DXBJ      = "DXBJ", "依照各自定义对象特性, 自动调出对应的参数对话框进行编辑: DXBJ"	    //{对象编辑}
+ID_BEBJ      = "BEBJ",  "用交、并、差的方法修改对象的边界：BEBJ"                            //{布尔编辑}
+ID_WHGL	     = "WHGL", "按类型、构造等条件过滤选择围护结构：WHGL"
+ID_XGMQ      = "XGMQ", "根据选中的参考墙，将模型中与参考墙属于同一立面的墙体过滤出来：XGMQ"
+ID_LMXS      = "LMXS", "按立面、朝向两种方式显示墙体立面或朝向属性：LMXS"
+
+
+
+// 热工设置******************************************************
+ID_GCSZ    = "GCSZ", "设置本工程有关的全局参数: GCSZ"                  //{工程设置}
+ID_GCGZ    = "GCGZ", "设置本工程使用到的围护结构的构造: GCGZ"          //{工程构造}
+ID_CLK     = "CLK",  "创建新的材料库或修改已有材料库数据: CLK"         //{材料库}
+ID_GZK     = "GZK",  "创建新的围护结构构造库或修改已有的构造库: GZK"   //{构造库}
+ID_MCBH    = "MCBH", "给门窗编号，或批量自动编号：MCBH"                //{门窗编号}
+ID_MCLX    = "MCLX", "设置门窗与节能相关的参数：MCLX"                  //{门窗类型}
+ID_ZYLX    = "ZYLX", "设置本工程要使用的遮阳类型，并可赋给门窗: ZYLX"  //{遮阳类型}
+ID_FJLX    = "FJLX", "补充和设置房间功能：FJLX"                        //{房间类型}
+ID_MJLJ    = "MJLJ", "对选取的一组数值型文字进行求和: MJLJ"				//{面积累加}
+ID_XTFQ    = "XTLX", "增加和设置多个空调系统：XTFQ"                    //{系统分区}
+ID_TQRQ    = "TQRQ", "在外墙与内墙的T型交点处，当外墙采用内保温时，保温层被内墙切断，本命令在交点处创建虚拟柱用于计算热桥：TQRQ"  //{T墙热桥}
+ID_JBSZ    = "JBSZ", "设置局部围护结构的构造和属性：<Ctrl+1>"          //{局部设置}
+ID_JMCT     = "JMCT" , "在门窗二维两侧加墙垛, 三维四周加框套: JMCT"		        //{加门窗套}
+ID_XMCT     = "XMCT" , "删除已经加的门窗框套: XMCT"					//{消门窗套}
+
+
+//节能设计******************************************************
+ID_SJTQ	   = "SJTQ", "提取计算（或设置）建筑的体形系数及相关数据：SJTQ"                      //{数据提取} 
+ID_NHJS    = "NHFX", "按选用的节能标准或细则，计算建筑物各种形式的能耗，通常在不满足规定性指标时进行: NHJS" //{能耗计算} 
+ID_JNJC    = "JNJC", "根据有关的节能设计规范对建筑做节能规定性指标的检查：JNJC"              //{能耗检查}
+ID_JZSJ    = "JZSJ", "根据建筑轮廓提取建筑的面积和体积等数据: JZSJ"
+ID_CQB     = "CQB",  "自动计算窗墙面积比：CQB"                                               //{窗墙比} 
+ID_WCB     = "MCB", "按朝向统计外窗表：WCB"                                                  //{外窗表}
+ID_KQMJ    = "FH_KQMJ", "统计开启面积: KQMJ"                                                    //{开启面积}
+ID_PJKZ    = "PJKZ", "计算考虑热桥情况下的的外墙平均传热系数: PJKZ"                          //{平均K值}
+ID_HJZY    = "JN_HJZY", "用模拟法计算环境遮阳系数(【工程设置】决定是否采纳)：HJZY"             //{环境遮阳}
+ID_ZYXS    = "ZYXS", "根据《夏热冬暖居住标准》或《公建标准》计算外遮阳系数：ZYXS"            //{遮阳系数}
+ID_GRJS    = "GRJS", "根据《民用建筑热工设计规范》检查围护结构内表面温度是否过热：GRJS"      //{隔热计算} 
+ID_JLJC    = "JLJC", "检查给定传热系数是否满足《采暖居住标准（JGJ26-95）》 4.2.7条：JLJC"    //{结露检查}
+ID_FCYS    = "FCYS", "防潮验算：FCYS"    //{防潮验算}
+ID_HDZS    = "HDZS", "夏热冬暖地区耗电指数简化算法：HDZS"
+ID_CNJN	   = "CNJN", "输出采暖地区的节能计算表格：CNJN"
+ID_DOE2    = "DOE2", "用DOE2.1E对建筑的能耗进行分析: DOE2"
+ID_JGCK	   = "JGCK", "将能耗分析的结果以表格形式列在图中：JGCK"
+ID_JNBG	   = "JNBG", "输出Word格式的节能报告书：JNBG"                                      //{节能报告}
+ID_BSB     = "BSB", "输出Word格式的节能报审表：BSB"                                        //{报审表}
+ID_DCST	   = "DCST", "导出审图文件：DCST"                                                  //{导出审图}
+ID_DRST	   = "DRST", "导入审图文件：DRST"
+ID_TXDC    = "TXDC", "导出ACAD格式或天正3格式: TXDC"				        //{图形导出}
+
+ID_SZBG	   = "SZBG", "输出Word格式的深圳节能报告书：SZBG"                                      //{深圳报告}
+ID_DCGB    = "FH_DCGB", "计算模型导出到gbxml格式文件: DCGB"             //{导出Gbxml}
+
+
+//线性热桥**********************************************************
+ID_CJDB      = "RQ_CJDB", "插入线性热桥节点表: CJDB"		               //{插节点表}
+ID_CRJX      = "RQ_CRJX", "绘制传热基线: CRJX"		               //{传热基线}
+ID_JCLK      = "RQ_JCLK", "绘制矩形材料块: JCLK"		               //{建材料块}
+ID_RQBJ      = "RQ_RQBJ", "由用户点取边界，弹出对话框设置“材料”、“绝热”、“室内”、“室外”: RQBJ"		               //{热桥边界}
+ID_CPBH      = "RQ_CPBH", "重排矩形材料块编号: CPBH"		               //{重排编号}
+ID_ZDWG      = "RQ_ZDWG", "自动为节点划分网格: ZDWG"		               //{自动网格}
+ID_XXCR      = "RQ_XXCR", "计算线性传热系数: XXCR"		               //{线性传热}
+ID_JWDC     = "RQ_JWDC", "温度场求解: JWDC"		               //{解温度场}
+ID_JDBZ      = "RQ_JDBZ", "标注墙角热桥节点编号: RQ_JDBZ"		               //{节点标注}
+
+//注释工具**********************************************************
+ID_WZBJ      = "WZBJ", "编辑各种文字和字符: WZBJ"		               //{文字编辑}
+ID_ZBZ       = "ZBZ",  "创建指北针对象: ZBZ"                                   //{指北针}
+ID_WZYS      =  "WZYS", "创建或修改文字字样式: WZYS"                           //{文字样式}
+ID_DHWZ      =  "DHWZ", "创建单行文字: DHWZ"		                       //{单行文字}
+ID_MText     =  "DUHWZ", "创建整段文字"			                       //{多行文字}
+ID_JTYZ      =  "JTYZ", "创建箭头标注符号: JTYZ"		               //{箭头引注}
+ID_CCBZ      = "ZDBZ", "点取各标注点，沿给定的一个直线方向标注连续尺寸: CCBZ"  //{尺寸标注}
+ID_XJBG      =  "XJBG", "创建新的表格: XJBG"				       //{新建表格}
+ID_DCBG      = "DCBG", "把斯维尔表格输出到Excel或Word中: DCBG"                               //{导出表格}
+ID_DRBG      = "DRBG", "根据Excel或Word选中的区域，创建或更新图中相应的斯维尔表格: DRBG"     //{导入表格}
+ID_CZTH      = "CZTH", "对图中文字进行查找和替换：CZTH"			       //{查找替换}
+ID_WZZH      = "WZZH", "把AutoCAD单行文字转化为斯维尔单行文字: WZZH"      //{文字转换}
+ID_WZHB      = "WZHB", "把分开的文字合成一行: WZHB: WZHB"                 //{文字合并}
+ID_QPBJ      = "QPBJ", "对表格内容进行全屏编辑: QPBJ"
+ID_DYBJ      = "DYBJ", "编辑表格单元格，修改属性或文字: DYBJ"
+ID_DYHB      = "DYHB", "合并表格的单元格: DYHB"
+ID_BHBJ      = "BHBJ", "编辑表格的一行或多行: BHBJ"
+ID_BLBJ      = "BLBJ", "编辑表格的一列或多列: BLBJ"
+ID_GGWZ      = "GGWZ", "更改尺寸标注的文字: GGWZ"			      //{更改文字}
+ID_ZBCC      = "ZBCC", "对已有的尺寸标注增加标注点: ZBCC"		      //{增补尺寸}
+ID_BGBZ	     = "BGBZ", "标注地面标高: BGBZ"
+
+
+//帮  助***********************************************************
+ID_HelpMenu  = "HELP", "进入帮助子菜单"
+ID_SYXD      = "SYXD", "启动使用向导"		          //{使用向导}
+ID_ZXBZ      = "ZXBZ", "启动在线帮助系统"		  //{在线帮助}
+ID_RJYL      = "RJYL", "进入日积月累提示界面: RJYL"	          //{日积月累}
+ID_JXYS      = "JXYS", "启动功能演示Flash动画系统!"               //{教学演示}
+ID_ZXJC      = "ZXJC", "ZXJC"					  //{自学教程}
+ID_CJWT      = "CJWT", "CJWT" 					  //{常见问题}
+ID_BBXX      = "BBXX", "查看版本信息: BBXX"             //{版本信息}
+ID_SYSC      = "SYSC", "打开使用手册目录：SYSC"         //{使用手册}
+ID_GXGZ      = "GXGZ", "在线更新构造库：GXGZ"         //{更新构造}
+
+
+//------------------右键菜单----------------
+Id_ZGXX     = "ZGXX", "切换轴线的线型: ZGXX"
+ID_PYSX     = "PXSX" , "按指定偏移边线距离生成与其平行的曲线: PYSX"	//{偏移生线}
+ID_GQH      = "GQH" , "按基线居中修改选中的墙体厚度：GQH"               //{改墙厚}
+ID_GWQH     = "GWQH" , "修改外墙墙厚（包括偏心)：GWQH"                  //{改外墙厚}
+ID_GGD      = "GGD" , "修改墙柱的高度与底标高：GGD"			//{改高度}
+ID_GWQG     = "GWQG" , "修改外墙高度与底标高：GWQG"		        //{改外墙高}
+ID_JJPY     = "JJPY",  "按墙边线的净空间距离偏移创建新墙: JJPY"         //{净距偏移}
+
+
+ID_DimStyle  = "BZYS","设定标注的样式"
+ID_CJYS      = "CJYS", "根据给定的新位置，对尺寸标注进行裁减或延伸: CJYS"		//{裁剪延伸}
+ID_QXCC      = "QXCC", "取消连续标注的一个区间: QXCC"					//{取消尺寸}
+ID_LJCC      = "LJCC", "把平行的多个尺寸标注连成一个连续的对象: LJCC"			//{连接尺寸}
+ID_ZBCC      = "ZBCC", "对已有的尺寸标注增加标注点: ZBCC"				//{增补尺寸}
+ID_QHJB      = "QHJB", "对角度标注、弦长标注和弧长标注进行相互转化: QHJB"		//{切换角标}
+ID_DimAdjUp  = "ST", "自调方式由向上调切换为向下调"					//{上调}
+ID_DimAdjDn  = "XT", "自调方式由向下调切换为自调关闭"					//{下调}
+ID_DIMADJ_OFF= "ZTG",  "尺寸自调方式由关闭切换为向上调" 				//{自调关闭}
+ID_CCZT      = "CCZT", "对斯维尔尺寸标注的文字位置进行自动调整，使得文字不重叠: CCZT"	//{尺寸自调}
+ID_QXZT		= "QXZT","取消思维尔尺寸标注文字位置的自动调节模式:QXZT"
+ID_CCFZ      = "CCFZ",  "更改过的文字恢复为默认的文字: CCFZ"                            //{尺寸复值}
+ID_DIMCHECK	= "CCJC",""
+
+ID_WZFW      = "WZFW", "将箭头符号、剖切号、半径和直径标注的文字恢复到原位：WZFW"        //{文字复位}
+ID_WZFZ      = "WZFZ", "将箭头符号、剖切号、半径和直径标注的文字恢复到原值：WZFZ"        //{文字复值}
+
+
+//************** Acad常用功能*********************************************
+ID_VpointTop = "ICON_16_VIETOP", "将视点设置在上面:   VIEW TOP"
+ID_VpointBot = "ICON_16_VIEBOT", "将视点设置在下面:   VIEW BOTTOM"
+ID_VpointLef = "ICON_16_VIELEF", "将视点设置在左面:   VIEW LEFT"
+ID_VpointRig = "ICON_16_VIERIG", "将视点设置在右面:   VIEW RIGHT"
+ID_VpointFro = "ICON_16_VIEFRO", "将视点设置在前面:   VIEW FRONT"
+ID_VpointBac = "ICON_16_VIEBAC", "将视点设置在后面:   VIEW BACK"
+ID_VpointSW  = "ICON_16_VIESWI", "将视点设置为西南等轴测:   VIEW SWISO"
+ID_VpointSE  = "ICON_16_VIESEI", "将视点设置为东南等轴测:   VIEW SEISO"
+ID_VpointNE  = "ICON_16_VIENEI", "将视点设置为东北等轴测:   VIEW NEISO"
+ID_VpointNW  = "ICON_16_VIENWI", "将视点设置为西北等轴测:   VIEW NWISO" 
+//------------------------------------------------------------------------
+ID_2doptim   = "ICON_16_2DOPTIM", "将视口设置为二维线框:  SHADEMODE 2"
+ID_Wireframe = "ICON_16_WIREFRAME","将视口设置为三维线框:  SHADEMODE 3"
+ID_Hidden    = "ICON_16_HIDDEN", "将视口设置为隐藏线:  SHADEMODE H"
+ID_Flat      = "ICON_16_FLAT","将视口设置为平面着色:  SHADEMODE F"
+ID_Gouraud   = "ICON_16_GOURAUD", "将视口设置为体着色:  SHADEMODE G"
+ID_FlatEdges = "ICON_16_FLATEDGES","将视口设置为带边框平面着色:  SHADEMODE L"
+ID_GourEdges = "ICON_16_GOUREDGES","将视口设置为带边框体着色:  SHADEMODE O"
+//------------------------------------------------------------------------------
+ID_Erase     = "ICON_16_ERASE", "从图形删除对象:   ERASE"
+ID_Copy      = "ICON_16_COPYOB", "复制对象:   COPY"
+ID_Mirror    = "ICON_16_MIRROR", "创建镜像对象:   MIRROR"
+ID_Rotate    = "ICON_16_ROTATE", "按基点旋转对象:   ROTATE"
+ID_Explode   = "ICON_16_EXPLOD", "将对象分解成若干个下一级对象:   EXPLODE"
+ID_Move      = "ICON_16_MOVE", "在指定方向上按指定距离位移对象:   MOVE"
+ID_RectAngle = "ICON_16_RECTAN","绘制斯维尔矩形对象:  JX"
+ID_DDATTE    = "", "编辑图块的属性: DDATTE"
+ID_PEdit     = "ICON_16_PEDIT", "编辑多段线和三维多边形网格:   PEDIT"
+ID_Offset    = "PY","创建同心圆、平行线和等距曲线:   OFFSET"
+ID_Lengthen  = "ICON_16_LENGTH", "拉长对象:   LENGTHEN"
+ID_Trim      = "XJ", "用其他对象定义的剪切边上修剪对象:   TRIM"
+ID_Extend    = "YS", "延伸对象到另一对象:   EXTEND"
+ID_Break     = "DD", "部分删除对象或把对象分解为两部分:   BREAK"
+ID_Chamfer   = "ICON_16_CHAMFE", "给对象加倒角:   CHAMFER"
+ID_Fillet    = "ICON_16_FILLET", "给对象加圆角:   FILLET"
+//--------------------------------------------------------------------------
+ID_Extrude   = "ICON_16_EXTRUD", "通过拉伸现有二维对象来创建三维实体:   EXTRUDE"
+ID_SolidEdit = "", "三维实体的编辑:  SOLIDDIT"
+ID_Separate  = "ICON_16_SEPARATE", "将不连续的三维实体对象分割为独立的三维实体对象:  SOLIDEDIT BODY SEPARATE"
+ID_Slice     = "ICON_16_SLICE", "用平面剖切一组实体:   SLICE"
+ID_Section   = "ICON_16_SECTIO", "用平面和实体的截面创建面域:   SECTION"
+ID_Interfere = "ICON_16_INTERF", "用两个或多个实体的公共部分创建三维组合实体:  INTERFERE"
+ID_Union     = "ICON_16_UNION", "用并集创建组合面域或实体:   UNION"
+ID_Subtract  = "ICON_16_SUBTRA", "用差集创建组合面域或实体:   SUBTRACT"
+ID_Intersect = "ICON_16_INTERS", "从实体或面域的交集创建组合实体或面域:   INTERSECT"
+ID_PROPERTIES= "ICON_16_PRPCHK", "控制现有对象特性：PROPERTIES"
+
+
