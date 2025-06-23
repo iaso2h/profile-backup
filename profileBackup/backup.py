@@ -280,10 +280,10 @@ class Category(Profile): # {{{
 
         """
         # Recording
-        if not self.profileName in type(self).relPathsTopParentSrc:
+        if self.profileName not in type(self).relPathsTopParentSrc:
             type(self).relPathsTopParentSrc[self.profileName] = {}
 
-        if not topParentSrcPath in type(self).relPathsTopParentSrc[self.profileName]:
+        if topParentSrcPath not in type(self).relPathsTopParentSrc[self.profileName]:
             type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath] = []
         relPathTopParentSrcList = type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath]
 
@@ -317,7 +317,7 @@ class Category(Profile): # {{{
                 shutil.copy2(srcPath, dstPath)
 
             print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white]")
-            count += count
+            count += 1
             size += srcPath.stat().st_size
 
         return count, size # }}}
@@ -440,9 +440,9 @@ class Category(Profile): # {{{
         if not topParentDstPath:
             topParentDstPath = parentDstPath
 
-        if not self.profileName in type(self).syncFilesToDelete:
+        if self.profileName not in type(self).syncFilesToDelete:
             type(self).syncFilesToDelete[self.profileName] = {}
-        if not topParentSrcPath in type(self).syncFilesToDelete[self.profileName]:
+        if topParentSrcPath not in type(self).syncFilesToDelete[self.profileName]:
             type(self).syncFilesToDelete[self.profileName][topParentSrcPath] = []
         syncFilesToDeleteRelCurrentParentDst = type(self).syncFilesToDelete[self.profileName][topParentSrcPath]
 
@@ -460,7 +460,7 @@ class Category(Profile): # {{{
             else:
                 relPathTopParentDst = str(dstPath.relative_to(topParentDstPath))
 
-                if not relPathTopParentDst in relPathsTopParentSrc:
+                if relPathTopParentDst not in relPathsTopParentSrc:
                     syncFilesToDeleteRelCurrentParentDst.append(dstPath) # }}}
 
 

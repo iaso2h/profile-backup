@@ -1,7 +1,7 @@
 # File: profileBakup
 # Author: iaso2h
-# Description: Backup software profiles on Windows
-# Version: 0.1.13
+# Description: Back up software profiles on Windows
+# Version: 0.1.14
 # Last Modified: 2025-06-23
 import recipe
 
@@ -10,7 +10,7 @@ import cli
 import argparse
 import pytest
 
-# TODO: adapt user name in new desitionation
+# TODO: adapt username in new desitionation
 
 
 if __name__ == "__main__":
