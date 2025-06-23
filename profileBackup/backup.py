@@ -18,7 +18,7 @@ print = util.print
 class Profile(): # {{{
     totalBackupCount = 0
     totalBackupSize = 0
-    foundFileMessage = "Backing up" if not config.DRYRUN else "Found"
+    foundFileMessage = "Backed up" if not config.DRYRUN else "Found"
     profileDict: dict = {  } # type: ignore
     def __init__(self, profileName, categories, enabled):
         # Default value
@@ -100,11 +100,6 @@ class Category(Profile): # {{{
         filterType: str,
         filterPattern,
     ):
-        # Default value
-        self.versionStr = ""
-        self.backupCount = 0
-        self.backupSize = 0
-
         self.profileName  = profileName
         self.categoryName = categoryName
         self.enabled      = enabled
@@ -467,19 +462,24 @@ class Category(Profile): # {{{
     def backup(self): # {{{
         # Alter global silent report for current backup session
         config.SILENTMODE = self.silentReport
+        self.backupCount = 0
+        self.backupSize = 0
 
         print(f"  {util.getTimeStamp()}[white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
         for parentSrcPath in self.parentSrcPaths:
+
             # Get version string
             if isinstance(self.versionFind, Callable):
                 try:
-                    self.versionStr = self.versionFind(parentSrcPath)
+                    self.versionFind = self.versionFind(parentSrcPath)
+                    if self.versionFind == "":
+                        self.versionFind = "Generic"
                 except Exception as e:
+                    self.versionFind = "Generic"
                     print(e)
                     print('[red]  Version string use "Generic" instead\n[/red]')
-                    self.versionStr = "Generic"
 
-            print(f"    {util.getTimeStamp()}[white]Checking up files for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            print(f"    {util.getTimeStamp()}[white]Checking up files for [green bold]{self.profileName} {self.categoryName}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
             # Get parent destination path
             parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
@@ -487,7 +487,7 @@ class Category(Profile): # {{{
                     config.DESTPATH, # type: ignore
                     self.profileName,
                     self.categoryName,
-                    self.versionStr,
+                    self.versionFind,
                     parentSrcPath.anchor[:1],
                     parentSrcRelAnchorPath
                 )
@@ -514,17 +514,18 @@ class Category(Profile): # {{{
 
 
             # Get path strings that relative to the current source parent path
-            relPathsTopParentSrc = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
-            # Mark down files that doesn't exist in destination directory for the current parent source directory
-            if config.COPYSYNC:
-                self.iterSync(
-                    relPathsTopParentSrc=relPathsTopParentSrc,
-                    parentDstPath=parentDstPath,
-                    topParentSrcPath=parentSrcPath
-            )
+            if currentParentSrcCount:
+                relPathsTopParentSrc = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
+                # Mark down files that doesn't exist in destination directory for the current parent source directory
+                if config.COPYSYNC:
+                    self.iterSync(
+                        relPathsTopParentSrc=relPathsTopParentSrc,
+                        parentDstPath=parentDstPath,
+                        topParentSrcPath=parentSrcPath
+                )
 
             # Report count for the current parent source directory
-            print(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionStr}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            print(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
         # Report count for the current category
         print(f"  {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")

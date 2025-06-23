@@ -1,7 +1,7 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Back up software profiles on Windows
-# Version: 0.1.14
+# Version: 0.1.15
 # Last Modified: 2025-06-23
 import recipe
 

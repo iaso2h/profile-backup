@@ -113,16 +113,18 @@ def parseBackupFiles(profileNamesChosen: list[backup.Profile]): #  {{{
 
 
     config.EXPORTLOG = True
-    for profileName in (backup.Profile.profileDict[profileName] for profileName in profileNamesChosen):
-        if not profileName.enabled:
+    for profileName in profileNamesChosen:
+        profile = backup.Profile.profileDict[profileName]
+        if not profile.enabled:
             continue
 
 
-        print(f"\n{util.getTimeStamp()}[white]Checking up [green bold]{profileName.profileName}[/green bold][/white]...")
-        for category in profileName.categories:
-            if category.enabled:
-                category.backup()
-        print(f"{util.getTimeStamp()}[white]{profileName.foundFileMessage} [purple bold]{profileName.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profileName.backupSize)}[/blue bold] for [green bold]{profileName.profileName}[/green bold].[/white]")
+        print(f"\n{util.getTimeStamp()}[white]Checking up [green bold]{profile.profileName}[/green bold][/white]...")
+        for category in profile.categories:
+            if not category.enabled:
+                continue
+            category.backup()
+        print(f"{util.getTimeStamp()}[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
     print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profileNamesChosen}[/green bold].[/white]\n\n\n\n\n")
 
 
@@ -269,4 +271,10 @@ def confirmRun(profilesChosen: list[backup.Profile]):
             abortExit()
 
     if not config.DRYRUN:
+        backup.Profile.updateFoundFileMessage()
+        for profileName in backup.Profile.profileDict.keys():
+            backup.Profile.profileDict[profileName].backupCount = 0
+            backup.Profile.profileDict[profileName].backupSize = 0
+        backup.Profile.totalBackupCount = 0
+        backup.Profile.totalBackupSize = 0
         parseBackupFiles(profilesChosen) # type: ignore
