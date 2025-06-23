@@ -242,6 +242,7 @@ def program() -> None:
             keyboardInterruptExit()
         else:
             abortExit()
+    backup.Profile.updateFoundFileMessage()
 
 
     parseBackupFiles(profileNamesChosen) # type: ignore

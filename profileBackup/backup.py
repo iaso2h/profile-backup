@@ -76,6 +76,10 @@ class Profile(): # {{{
 
         self._categories = val
     # }}}
+
+    @classmethod
+    def updateFoundFileMessage(cls):
+        cls.foundFileMessage = "Backing up" if not config.DRYRUN else "Found"
 # }}}
 
 
