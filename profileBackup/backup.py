@@ -304,6 +304,10 @@ class Category(Profile): # {{{
                         print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
                     except PermissionError:
                         print(f"[red]    Skip file due to permission error: [yellow]{relPathTopParentSrcStr}[/yellow][/red]")
+                else:
+                    count += 1
+                    size += srcPath.stat().st_size
+                    print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
             else:
                 print(f"[gray]    Skip unchanged file: {relPathTopParentSrcStr}[/gray]")
         else:
