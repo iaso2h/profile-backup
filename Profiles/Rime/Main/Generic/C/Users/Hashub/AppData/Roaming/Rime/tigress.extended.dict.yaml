@@ -190,6 +190,7 @@ encoder:
 拔网线	umif
 长相思	peqh
 
+
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu
@@ -208,7 +209,8 @@ encoder:
 啱啱	dvdv
 啱先	dvqp
 鬼咁	agdz
-𣏼係	lejt
+冇係	lejt
+冇有	nmnv	1000
 差唔多	gdll
 唔係	dwjt
 唔使	dwjf
@@ -277,8 +279,8 @@ encoder:
 是但	otjo
 黐线	xjif
 黐嘿线	xdif
-𣏼嘢	ledd
-𣏼乜嘢	ladd	400
+冇嘢	ledd
+冇乜嘢	ladd	400
 做咩	jcdg
 做咩啊	jddt	400
 做咩嗜	jddq
@@ -300,6 +302,16 @@ encoder:
 倾偈	jvjo
 做紧乜嘢	jpad
 
+伯爷	juhb
+伯娘	jubi
+舅爷	pqab
+舅娘	pqbi
+叔娘	yfbi
+姨爷	bmhb	400
+外奶	lybv
+外爹	lyhb
+阿婆	ztkr
+阿公	zthk
 
 #----------增加单字----------#
 #虎码是全字集，收字量近10W，一般无需加单字

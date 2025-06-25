@@ -6,20 +6,20 @@ schema:
     - PY_c  # 拼音方案
     - easy_english # 英文
   description: |
-    虎码官方词库
-    敲 ` 鍵進入拼音反查
-  name: "虎码官方词库"
+    虎码
+    敲 ` 键進入拼音反查
+  name: "虎码"
   schema_id: tigress
   version: 0.9
 
 
-switches: # 0 默认关，1
+switches: # 0 默认关，1 默认开
   - name: ascii_mode
     reset: 0
     states: [ 中文, 西文 ]  #中英文状态
   - name: extended_char  #自定义字集
     reset: 0
-    states: [ 全集 , 常用 ]
+    states: [ 全字集 , 常用字 ]
   - name: pinyin  #拼音滤镜
     reset: 0
     states: [ 拼, pīn ]
@@ -119,7 +119,7 @@ speller:
   # 若要添加四码上屏功能，在  ^;\w+ 后面 加上  |^\w{4}$  即可
 
 translator:
-  dictionary: tigress
+  dictionary: tigress # tigress | tiger
   enable_charset_filter: false
   enable_encoder: false
   enable_sentence: false
@@ -132,6 +132,7 @@ translator:
     # - "xform/^/ /" #提示前面 +间距
 
 
+# 拼音反查
 reverse_lookup:
   dictionary: PY_c
   prefix: "`"
@@ -144,46 +145,6 @@ reverse_lookup:
     - "xform/^/ /"
   # suffix: "'"
 
-
-
-key_binder:
-  #  import_preset: default
-  bindings:
-    # - { when: composing, accept: Return, send: Escape }
-    - { accept: space, send: space, when: has_menu } #有候选时空格上屏首选
-    #- { accept: space, send: Escape, when: composing } #无候选时(空码)空格清屏
-    - { accept: semicolon, send: 2, when: has_menu } # 分号次选
-    - { when: has_menu, accept: apostrophe, send: 3 } # 引号三选
-    # - { when: composing, accept: Tab, send: Escape } # tab清屏
-    - { when: has_menu, accept: minus, send: Page_Up } # - 向后翻页
-    - { when: has_menu, accept: equal, send: Page_Down } # = 向前翻页
-    - { when: has_menu, accept: Shift+Tab, send: Page_Up } # - 向后翻页
-    - { when: has_menu, accept: Tab, send: Page_Down } # = 向前翻页
-    # - { when: composing, accept: bracketleft, send: Page_Up } # [ 后翻
-    # - { when: composing, accept: bracketright, send: Page_Down } # ] 前翻
-    - { accept: "Control+o", toggle: simplification, when: composing }  # 简繁开关
-    # - { accept: "Control+Shift+O", toggle: fanjian, when: composing }  # 繁简开关
-    - { accept: "Control+p", toggle: pinyin, when: composing }  # PC 拼音开关
-    - { accept: "Control+i", toggle: emoji_cn, when: composing }  # PC emoji开关
-    - { accept: "Control+u", toggle: charset_comment_filter, when: composing }  # PC Unicode分区开关
-    - { accept: "Control+y", toggle: udpf_switch, when: composing }  #PC Unicode编码开关
-    - { accept: "Control+h", toggle: extended_char, when: composing } # PC 自定字集开关
-    - { accept: "Control+Shift+H", toggle: extended_char, when: composing } # PC 自定字集开关2
-    - { accept: "Control+j", toggle: chaifen, when: composing } # PC 拆分滤镜开关
-    # - { when: composing, accept: '&', toggle: emoji_cn } # 手机 emoji开关
-    # - { when: composing, accept: '*', toggle: simplification } # 手机 繁简开关
-    # - { when: composing, accept: '\', toggle: pinyin } # 手机 拼音开关
-    # - { when: composing, accept: '^', toggle: charset_comment_filter } # 手机 Unicode分区开关1
-    # - { when: composing, accept: '#', toggle: charset_comment_filter } # 手机 Unicode分区开关2
-    # - { accept: "%", toggle: udpf_switch, when: composing }  #手机 Unicode编码开关
-    # - { accept: "+", toggle: udpf_switch, when: composing }  #手机 Unicode编码开关
-    # - { when: composing, accept: '_', toggle: extended_char} # 手机 自定字集开关1
-    # - { when: composing, accept: ':', toggle: extended_char} # 手机 自定字集开关2
-    # - { when: composing, accept: '"', toggle: chaifen } # 手机 拆分滤镜开关
-    - { when: has_menu, accept: Right, send: Down } # 右方向键 向后移动焦点
-    - { when: has_menu, accept: Left, send: Up } # 左方向键 向前移动焦点
-    - { when: always, accept: "Control+period" , toggle: ascii_punct } # 中英标点切换
-    - { when: always, accept: "Shift+space" , toggle: full_shape } # 全半角切换
 
 recognizer:
   import_preset: default
@@ -199,7 +160,7 @@ recognizer:
   # alternative_select_labels: [ ㊀, ㊁, ㊂, ㊃, ㊄, ㊅, ㊆, ㊇, ㊈ ]  #自定义候选序号显示符
 
 historySJ:
-  input: z
+  input: "z"
   size: 1
   initial_quality: 0
 

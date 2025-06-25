@@ -1,0 +1,62 @@
+*AutoCAD to SolidWorks font width mapping file (for True Type fonts)
+*Created: February 13, 2004
+
+* file format: 3 columns, semicolon (;) delimited
+* first column = True Tipe Font Face names (for example <Times New Roman>)
+* second column = SolidWorks ttf -> AutoCAD ttf font width adjustment
+* last column = SolidWorks ttf -> AutoCAD "txt" font width adjustment
+
+* You can add fonts to the mapping file.
+* For any fonts which is not included to this mapping file default width adjustment (1.0) factor is used.
+* You can add comments to the mapping file. Comment lines must be prefaced with the asterisk (*) symbol.
+
+
+Arial;0.948;0.605
+Arial Narrow;0.87;0.605
+Century Gothic;0.913;0.75
+SansSerif;0.733;0.473
+Tahoma;0,913;0.75
+Times New Roman;0.933;0.663
+
+SWRomnc;1.0;1.001
+SWRomnd;1.0;1.001
+SWRomns;1.0;1.001
+SWRomnt;1.0;1.001
+SWScrpc;1.0;0.99
+SWScrps;1.0;0.985
+SWSimp;1.0;1.002
+
+SWAstro;1.0
+SWGDT;0.84
+SWIsop1;0.94
+SWIsop2;0.94
+SWIsop3;0.94
+SWIsot1;0.94
+SWIsot2;0.94
+SWIsot3;0.94
+
+SWMap;0.77
+SWMath;0.85
+SWMeteo;0.526
+SWMusic;0.475
+
+SWTxt;0.993
+
+Italic;0.955
+Italicc;0.955
+Italict;0.955
+Romanc;0.95
+Romand;0.95
+Romans;0.94
+Romant;0.95
+Scriptc;0.97
+Scripts;0.98
+Simplex;0.95
+Txt;0.95
+Monotxt;0.97
+Greekc;0.95
+Greeks;0.93
+Complex;0.95
+Gothice;0.95
+Gothicg;0.95
+Gothici;0.91

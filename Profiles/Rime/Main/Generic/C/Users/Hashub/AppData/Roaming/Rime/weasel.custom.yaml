@@ -2,7 +2,7 @@ customization:
   distribution_code_name: Weasel
   distribution_version: 0.17.4
   generator: "Weasel::UIStyleSettings"
-  modified_time: "Mon Jun 23 10:19:57 2025"
+  modified_time: "Wed Jun 25 08:24:57 2025"
   rime_version: 1.13.1
 patch:
   "preset_color_schemes/blackpink":

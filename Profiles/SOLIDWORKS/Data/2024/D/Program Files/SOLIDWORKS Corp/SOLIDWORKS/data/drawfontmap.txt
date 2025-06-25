@@ -1,0 +1,47 @@
+*AutoCAD SHX or TTF to SolidWorks or Windows True Type font, mapping file
+*Created: October 18, 2001
+
+* file format: 3 columns, space delimited
+* first column = AutoCAD *.shx or *.ttf font names, 
+* second column = SolidWorks or Windows installed *.ttf font names
+* last column = SolidWorks->AutoCAD width adjustment factor
+* All font names in the columns below must not contain file extensions.
+* Font names in the right hand column must be SolidWorks or Windows installed True Type fonts.
+* You can add fonts and rows to the mapping file.
+* For any fonts in mapping file that are not installed, substitute default fonts are used.
+* You can add comments to the mapping file. Comment lines must be prefaced with the asterisk (*) symbol.
+
+complex  SWComp   0.97
+gdt      SWGDT    0.825
+* amgdt    SWGDT    0.825
+* amgdtans SWGDT    0.825
+gothice  SWGothe  0.97
+gothicg  SWGothg  0.97
+gothici  SWGothi  0.97
+greekc   SWGrekc  0.97
+greeks   SWGreks  0.97
+isocp    SWIsop1  0.96
+isocp2   SWIsop2  0.96
+isocp3   SWIsop3  0.96
+isoct    SWIsot1  0.97
+isoct2   SWIsot2  0.97
+isoct3   SWIsot3  0.97
+italic   SWItal   0.85
+italicc  SWItalc  1.0
+italict  SWItalt  1.0
+monotxt  SWMono   0.98
+romanc   SWRomnc  0.97
+romand   SWRomnd  0.97
+romans   SWRomns  0.97
+romant   SWRomnt  0.97
+scriptc  SWScrpc  0.96
+scripts  SWScrps  0.84
+simplex  SWSimp   0.97
+syastro  SWAstro  0.97
+symap    SWMap    0.97
+symath   SWMath   0.95
+symeteo  SWMeteo  0.95
+symusic  SWMusic  0.94
+txt      SWTxt    0.96
+
+
