@@ -50,59 +50,65 @@ def deleteObsoleteDstFiles(): # {{{
                     print(f"  [red]{f}[/red][blue]({fileSize})[/blue]")
 
     # Prompt to delete the files
-    if syncFileToDeleteChk:
-        ans = False
-        try:
-            ans = beaupy.confirm(
-                    "[white]The files listed above is going to be deleted, are you sure?[/white]",
-                    yes_text="[blue]Yes[/blue]",
-                    no_text="[blue]No[/blue]",
-                    default_is_yes=False,
-                )
-        except (KeyboardInterrupt, beaupy.Abort) as e:
-            if isinstance(e, KeyboardInterrupt):
-                keyboardInterruptExit()
-            else:
-                abortExit()
+    if not syncFileToDeleteChk:
+        return
+
+    ans = False
+    try:
+        ans = beaupy.confirm(
+                "[white]The files in destination listed above aren't found in the source paths. Do you want to delete them?[/white]",
+                yes_text="[blue]Yes[/blue]",
+                no_text="[blue]No[/blue]",
+                default_is_yes=False,
+            )
+    except (KeyboardInterrupt, beaupy.Abort) as e:
+        if isinstance(e, KeyboardInterrupt):
+            keyboardInterruptExit()
+        else:
+            abortExit()
 
 
-        if not ans:
-            return
+    if not ans:
+        return
 
 
-        deleteCountTotal = 0
-        deleteSizeTotal  = 0
+    deleteCountTotal = 0
+    deleteSizeTotal  = 0
+    deleteCountByProfile = 0
+    deleteSizeByProfile  = 0
+    print("\n\n\n\n\n")
+    config.EXPORTLOG = True
+
+    for profileName, syncFilesToDeleteByParent in backup.Category.syncFilesToDelete.items():
+        print(f"  [red]Deleting files/dirs from Profile {profileName}[/red]")
         deleteCountByProfile = 0
         deleteSizeByProfile  = 0
-        print("\n\n\n\n\n")
-        for profileName, syncFilesToDeleteByParent in backup.Category.syncFilesToDelete.items():
-            print(f"  [red]Deleting files/dirs from Profile {profileName}[/red]")
-            deleteCountByProfile = 0
-            deleteSizeByProfile  = 0
-            for parentPath, fileToDelete in syncFilesToDeleteByParent.items():
-                print(f"    [red]Deleting files/dirs from Profile {profileName} [yellow]{parentPath}[/yellow][/red]")
-                deleteCountByParentDst = 0
-                deleteSizeByParentDst  = 0
-                if fileToDelete:
-                    for f in fileToDelete:
-                        deleteCountByParentDst += 1
+        for parentPath, fileToDelete in syncFilesToDeleteByParent.items():
+            print(f"    [red]Deleting files/dirs from Profile {profileName} [yellow]{parentPath}[/yellow][/red]")
+            deleteCountByParentDst = 0
+            deleteSizeByParentDst  = 0
+            if fileToDelete:
+                for f in fileToDelete:
+                    deleteCountByParentDst += 1
+                    if f.is_dir():
+                        os.rmdir(f)
+                    else:
                         deleteSizeByParentDst  += f.stat().st_size
-                        if f.is_dir():
-                            os.rmdir(f)
-                        else:
-                            os.remove(f)
-                            deleteCountByProfile += deleteCountByParentDst
-                            deleteSizeByProfile += deleteSizeByParentDst
+                        os.remove(f)
 
+                deleteSizeByProfile += deleteSizeByParentDst
+                deleteCountByProfile += deleteCountByParentDst
                 print(f"    [red][purple]{deleteCountByParentDst}[/purple] files/dirs of [blue]{util.humanReadableSize(deleteSizeByParentDst)}[/blue] deleted from: [yellow]{parentPath}[/yellow][/red]")
 
 
-            deleteCountTotal += deleteCountByProfile
-            deleteSizeTotal += deleteSizeByProfile
-            print(f"  [red][purple]{deleteCountByProfile}[/purple] files/dirs of [blue]{util.humanReadableSize(deleteSizeByProfile)}[/blue] deleted from Profile: {profileName}[/red]")
+        deleteCountTotal += deleteCountByProfile
+        deleteSizeTotal += deleteSizeByProfile
+        print(f"  [red][purple]{deleteCountByProfile}[/purple] files/dirs of [blue]{util.humanReadableSize(deleteSizeByProfile)}[/blue] deleted from Profile: {profileName}[/red]")
 
 
-        print(f"[bold red][purple bold]{deleteCountTotal}[/purple bold] obsolete files/directories of [blue bold]{util.humanReadableSize(deleteSizeTotal)}[/blue bold] have been removed[/bold red]")
+    print(f"[bold red][purple bold]{deleteCountTotal}[/purple bold] obsolete files/directories of [blue bold]{util.humanReadableSize(deleteSizeTotal)}[/blue bold] have been removed[/bold red]")
+
+    config.EXPORTLOG = False
 # }}}
 
 
@@ -113,6 +119,7 @@ def parseBackupFiles(profileNamesChosen: list[backup.Profile]): #  {{{
 
 
     config.EXPORTLOG = True
+
     for profileName in profileNamesChosen:
         profile = backup.Profile.profileDict[profileName]
         if not profile.enabled:
@@ -127,13 +134,32 @@ def parseBackupFiles(profileNamesChosen: list[backup.Profile]): #  {{{
         print(f"{util.getTimeStamp()}[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
     print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profileNamesChosen}[/green bold].[/white]\n\n\n\n\n")
 
-
-    # Print out the files to delete in synchronizing mode
-    if not config.DRYRUN and config.COPYSYNC and backup.Category.syncFilesToDelete != {}:
-        deleteObsoleteDstFiles()
-
     config.EXPORTLOG = False
 # }}}
+
+
+def endDryrunPrompt(profilesChosen: list[backup.Profile]):
+    try:
+        config.DRYRUN = not beaupy.confirm(
+            f"End the [purple bold]dry run mode[/purple bold] and confirm the whole backup process?",
+            yes_text="[blue]Yes[/blue]",
+            no_text="[blue]No[/blue]",
+            default_is_yes=True,
+        )
+    except (KeyboardInterrupt, beaupy.Abort) as e:
+        if isinstance(e, KeyboardInterrupt):
+            keyboardInterruptExit()
+        else:
+            abortExit()
+
+    if not config.DRYRUN:
+        backup.Profile.updateFoundFileMessage()
+        for profileName in backup.Profile.profileDict.keys():
+            backup.Profile.profileDict[profileName].backupCount = 0
+            backup.Profile.profileDict[profileName].backupSize = 0
+        backup.Profile.totalBackupCount = 0
+        backup.Profile.totalBackupSize = 0
+        parseBackupFiles(profilesChosen)
 
 
 def program() -> None:
@@ -249,32 +275,12 @@ def program() -> None:
 
     parseBackupFiles(profileNamesChosen) # type: ignore
 
-    if backup.Category.totalBackupCount > 0 and config.DRYRUN:
-        backup.Category.totalBackupCount = 0 # Rest the total count
-        confirmRun(profileNamesChosen) # type: ignore
+    if config.DRYRUN:
+        if backup.Category.totalBackupCount > 0:
+            backup.Category.totalBackupCount = 0 # Rest the total count
+            endDryrunPrompt(profileNamesChosen) # type: ignore
+
+        deleteObsoleteDstFiles()
     else:
+        deleteObsoleteDstFiles()
         print("\n[purple bold]Everything is already up-to-date! You're good to go.[/purple bold]")
-
-
-def confirmRun(profilesChosen: list[backup.Profile]):
-    try:
-        config.DRYRUN = not beaupy.confirm(
-            f"End the [purple bold]dry run mode[/purple bold] and confirm the whole backup process?",
-            yes_text="[blue]Yes[/blue]",
-            no_text="[blue]No[/blue]",
-            default_is_yes=True,
-        )
-    except (KeyboardInterrupt, beaupy.Abort) as e:
-        if isinstance(e, KeyboardInterrupt):
-            keyboardInterruptExit()
-        else:
-            abortExit()
-
-    if not config.DRYRUN:
-        backup.Profile.updateFoundFileMessage()
-        for profileName in backup.Profile.profileDict.keys():
-            backup.Profile.profileDict[profileName].backupCount = 0
-            backup.Profile.profileDict[profileName].backupSize = 0
-        backup.Profile.totalBackupCount = 0
-        backup.Profile.totalBackupSize = 0
-        parseBackupFiles(profilesChosen) # type: ignore

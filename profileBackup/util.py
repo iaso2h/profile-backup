@@ -53,6 +53,10 @@ def humanReadableSize(sizeBytes: int) -> str:
 
 def print(*args, **kwargs):
     if not config.SILENTMODE:
+        if len(args) == 1 and isinstance(args[0], str):
+            if "Skip unchanged" in args[0]:
+                return
+
         console.print(*args, **kwargs)
     if config.EXPORTLOG:
         convertedArgs = []

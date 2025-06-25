@@ -261,8 +261,8 @@ class Category(Profile): # {{{
     def copyFile( # {{{
             self,
             srcPath: Path,
-            topParentSrcPath: Path,
-            topParentDstPath: Path,
+            parentSrcPath: Path,
+            parentDstPath: Path,
             ) -> Tuple[int, int]:
         """Backup file and return backup file count
 
@@ -274,21 +274,15 @@ class Category(Profile): # {{{
         Returns: number count and size count of backuped files
 
         """
-        # Recording
-        if self.profileName not in type(self).relPathsTopParentSrc:
-            type(self).relPathsTopParentSrc[self.profileName] = {}
-
-        if topParentSrcPath not in type(self).relPathsTopParentSrc[self.profileName]:
-            type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath] = []
-        relPathTopParentSrcList = type(self).relPathsTopParentSrc[self.profileName][topParentSrcPath]
+        relPathTopParentSrcList = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
 
 
         # Compose destination path
-        relPathTopParentSrc    = srcPath.relative_to(topParentSrcPath)
+        relPathTopParentSrc    = srcPath.relative_to(parentSrcPath)
         relPathTopParentSrcStr = str(relPathTopParentSrc)
         relPathTopParentSrcList.append(relPathTopParentSrcStr)
 
-        dstPath = Path(topParentDstPath, relPathTopParentSrc)
+        dstPath = Path(parentDstPath, relPathTopParentSrc)
 
 
         # Decide whether to dry run
@@ -346,6 +340,11 @@ class Category(Profile): # {{{
         # Initialization for the first function call
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
+        # Recording
+        if self.profileName not in type(self).relPathsTopParentSrc:
+            type(self).relPathsTopParentSrc[self.profileName] = {}
+        if parentSrcPath not in type(self).relPathsTopParentSrc[self.profileName]:
+            type(self).relPathsTopParentSrc[self.profileName][parentSrcPath] = []
 
         for srcPath in parentSrcPath.iterdir():
             if srcPath.is_dir():
@@ -407,8 +406,8 @@ class Category(Profile): # {{{
                     else:
                         count, size = self.copyFile(
                             srcPath=srcPath,
-                            topParentSrcPath=topParentSrcPath,
-                            topParentDstPath=parentDstPath,
+                            parentSrcPath=topParentSrcPath,
+                            parentDstPath=parentDstPath,
                         )
                         countAccumulated += count
                         sizeAccumulated += size
@@ -518,15 +517,14 @@ class Category(Profile): # {{{
 
 
             # Get path strings that relative to the current source parent path
-            if currentParentSrcCount:
-                relPathsTopParentSrc = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
-                # Mark down files that doesn't exist in destination directory for the current parent source directory
-                if config.COPYSYNC:
-                    self.iterSync(
-                        relPathsTopParentSrc=relPathsTopParentSrc,
-                        parentDstPath=parentDstPath,
-                        topParentSrcPath=parentSrcPath
-                )
+            relPathsTopParentSrc = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
+            # Mark down files that doesn't exist in destination directory for the current parent source directory
+            if config.COPYSYNC:
+                self.iterSync(
+                    relPathsTopParentSrc=relPathsTopParentSrc,
+                    parentDstPath=parentDstPath,
+                    topParentSrcPath=parentSrcPath
+            )
 
             # Report count for the current parent source directory
             print(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
