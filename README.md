@@ -30,6 +30,7 @@ Back up profiles from all kind of profiles. The location of these profiles somew
     * MPV
     * XnViewMP
     * Rime
+    * Powershell
 
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~

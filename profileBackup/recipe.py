@@ -229,8 +229,11 @@ Profile(
             recursiveCopy=True,
             silentReport=False,
             parentSrcPaths=Path(appDataPath, "Roaming/Everything"),
-            filterType="include",
-            filterPattern=lambda _: True,
+            filterType="exclude",
+            filterPattern=[
+                "Search History.csv",
+                "Run History.csv"
+            ]
         ),
     ]
 )
@@ -293,6 +296,26 @@ Profile(
                 "user.yaml",
                 "weasel.yaml",
             ],
+        ),
+    ]
+)
+Profile(
+    profileName="Powershell",
+    enabled=True,
+    categories=[
+        Category(
+            profileName="Powershell",
+            categoryName="Profile",
+            versionFind="Generic",
+            enabled=True,
+            recursiveCopy=True,
+            silentReport=False,
+            parentSrcPaths=Path(homePath, "Documents/WindowsPowerShell"),
+            filterType="exclude",
+            filterPattern=[
+                "profile.ps1",
+                "Modules"
+            ]
         ),
     ]
 )

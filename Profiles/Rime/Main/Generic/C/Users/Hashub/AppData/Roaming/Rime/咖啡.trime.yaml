@@ -23,7 +23,7 @@ author: 咖啡
 
 Custom: #以下参数自行调整，测试手机分辨率1080*2400。
   #候选栏及编码区
-  A: &提示区高 10 #comment_height
+  A: &提示区高 18 #comment_height
   B: &候选区高度 20 #candidate_view_height
   C: &候选字间距 7 #candidate_padding
   #主键盘
@@ -37,7 +37,7 @@ Custom: #以下参数自行调整，测试手机分辨率1080*2400。
   #字符键盘
   ❶: &常用字符键盘列表行高 48 #=主键高-6
   #字体
-  ㊀: &编码区字号 20 #text_size
+  ㊀: &编码区字号 18 #text_size
   ㊁: &悬浮窗候选项序号大小 20 #label_text_size
   ㊂: &候选字号 20 #candidate_text_size
   ㊃: &候选注释字号 14 #候选注释字体大小
@@ -128,7 +128,7 @@ style:
   preview_offset: 10 #按键提示纵向偏移
   preview_text_size: 30 #按键提示字号
   proximity_correction: true #将按键之间的空白区域分配给相邻的按键，避免空按
-  reset_ascii_mode: false #显示键盘时重置为中文状态
+  reset_ascii_mode: true #显示键盘时重置为中文状态
   round_corner: 0 #按键圆角半径
   shadow_radius: 0.0 #按键字母阴影
   key_border: *key_border ##同文晢无作用，无障碍用#按键边缘阴影
@@ -614,9 +614,9 @@ preset_keyboards:
     - {width: 1}
     #29-35
     - {click: z, long_click: _Keyboard_clip, swipe_up: _Keyboard_clip, swipe_down: 'Z', key_back_color: Z_kb, hilited_key_back_color: Z_ka, key_text_color: Z_tb, hilited_key_text_color: Z_ta, key_symbol_color: Z_sb, hilited_key_symbol_color: Z_sa, key_border_color: Z_bk, key_border: *key_border}
-    - {click: x, long_click: cut, swipe_up: SXZT, swipe_down: 'X', key_back_color: X_kb, hilited_key_back_color: X_ka, key_text_color: X_tb, hilited_key_text_color: X_ta, key_symbol_color: X_sb, hilited_key_symbol_color: X_sa, key_border_color: X_bk, key_border: *key_border}
-    - {click: c, long_click: copy, swipe_up: q_fhjq, swipe_down: 'C', key_back_color: C_kb, hilited_key_back_color: C_ka, key_text_color: C_tb, hilited_key_text_color: C_ta, key_symbol_color: C_sb, hilited_key_symbol_color: C_sa, key_border_color: C_bk, key_border: *key_border}
-    - {click: v, long_click: paste, swipe_down: 'V', key_back_color: V_kb, hilited_key_back_color: V_ka, key_text_color: V_tb, hilited_key_text_color: V_ta, key_symbol_color: V_sb, hilited_key_symbol_color: V_sa, key_border_color: V_bk, key_border: *key_border}
+    - {click: x, long_click: cut, swipe_up: cut, swipe_down: 'X', key_back_color: X_kb, hilited_key_back_color: X_ka, key_text_color: X_tb, hilited_key_text_color: X_ta, key_symbol_color: X_sb, hilited_key_symbol_color: X_sa, key_border_color: X_bk, key_border: *key_border}
+    - {click: c, long_click: copy, swipe_up: copy, swipe_down: 'C', key_back_color: C_kb, hilited_key_back_color: C_ka, key_text_color: C_tb, hilited_key_text_color: C_ta, key_symbol_color: C_sb, hilited_key_symbol_color: C_sa, key_border_color: C_bk, key_border: *key_border}
+    - {click: v, long_click: paste, swipe_up: paste, swipe_down: 'V', key_back_color: V_kb, hilited_key_back_color: V_ka, key_text_color: V_tb, hilited_key_text_color: V_ta, key_symbol_color: V_sb, hilited_key_symbol_color: V_sa, key_border_color: V_bk, key_border: *key_border}
     - {click: b, long_click: "<", swipe_up: "<", swipe_down: 'B', key_back_color: B_kb, hilited_key_back_color: B_ka, key_text_color: B_tb, hilited_key_text_color: B_ta, key_symbol_color: B_sb, hilited_key_symbol_color: B_sa, key_border_color: B_bk, key_border: *key_border}
     - {click: n, long_click: ">", swipe_up: ">", swipe_down: 'N', key_back_color: N_kb, hilited_key_back_color: N_ka, key_text_color: N_tb, hilited_key_text_color: N_ta, key_symbol_color: N_sb, hilited_key_symbol_color: N_sa, key_border_color: N_bk, key_border: *key_border}
     - {click: m, long_click: "/", swipe_up: "/", swipe_down: 'M', key_back_color: M_kb, hilited_key_back_color: M_ka, key_text_color: M_tb, hilited_key_text_color: M_ta, key_symbol_color: M_sb, hilited_key_symbol_color: M_sa, key_border_color: M_bk, key_border: *key_border}
@@ -633,7 +633,7 @@ preset_keyboards:
     - {click: '!', composing: SX2, long_click: '?', swipe_up: '?', swipe_down: _Keyboard_emoji, key_symbol_offset_x: 0, key_symbol_offset_y: 10, key_back_color: Comma_back_color, key_text_color: Comma_text_color, key_symbol_color: Comma_symbol_color, hilited_key_back_color: hilited_Comma_back_color, hilited_key_text_color: hilited_Comma_text_color, hilited_key_symbol_color: hilited_Comma_Symbol_color, key_border_color: Comma_key_border_color, key_border: *key_border}
     - {click: Space, width: 34.3, long_click: VOICE_ASSIST_Ch, swipe_left: Left, swipe_right: Right,  swipe_up: Up, swipe_down: Down, key_text_size: 10, key_text_offset_y: *空格文字y偏移, key_symbol_offset_y: *空格符号y偏移, key_symbol_offset_x: 0, key_back_color: Space_back_color, key_text_color: Space_text_color, key_symbol_color: Space_symbol_color, hilited_key_back_color: hilited_Space_back_color, hilited_key_text_color: hilited_Space_text_color, hilited_key_symbol_color: hilited_Space_Symbol_color, key_border_color: Space_key_border_color, key_border: *key_border}
     # TODO: switch to Chinese character
-    - {width: 12, composing: CX, click: ',', long_click: '.', swipe_up: '.', swipe_down: _Keyboard_emoji, key_symbol_offset_x: 0, key_symbol_offset_y: 10, key_back_color: Period_back_color, key_text_color: Period_text_color, key_symbol_color: Period_symbol_color, hilited_key_back_color: hilited_Period_back_color, hilited_key_text_color: hilited_Period_text_color, hilited_key_symbol_color: hilited_Period_Symbol_color, key_border_color: Period_key_border_color, key_border: *key_border}
+    - {click: ',', width: 12, composing: CX, long_click: '.', swipe_up: '.', swipe_down: _Keyboard_emoji, key_symbol_offset_x: 0, key_symbol_offset_y: 10, key_back_color: Period_back_color, key_text_color: Period_text_color, key_symbol_color: Period_symbol_color, hilited_key_back_color: hilited_Period_back_color, hilited_key_text_color: hilited_Period_text_color, hilited_key_symbol_color: hilited_Period_Symbol_color, key_border_color: Period_key_border_color, key_border: *key_border}
     - {click: Return, width: *回车宽度, swipe_up: Theme_settings, long_click: m_bs, key_symbol_offset_x: 0, key_back_color: Return_back_color, key_text_color: Return_text_color, key_symbol_color: Return_symbol_color, hilited_key_back_color: hilited_Return_back_color, hilited_key_text_color: hilited_Return_text_color, hilited_key_symbol_color: hilited_Return_Symbol_color, key_border_color: Return_key_border_color, key_border: *key_border}
     - {width: *曲面屏右}
     #46
@@ -936,7 +936,7 @@ preset_keyboards:
   jisuan:
     name: '计算键盘'
     author: 'tutu'
-    ascii_mode: 0
+    ascii_mode: 1
     key_symbol_offset_x: *符号X偏移
     key_symbol_offset_y: *符号Y偏移
     key_text_offset_x: 0
@@ -2013,7 +2013,7 @@ preset_keys:
   Keyboard_symbols_sequence: {label: '序Ⅰ', send: Eisu_toggle, select: symbols_sequence}
   Keyboard_symbols_sequence2: {label: '序Ⅱ', send: Eisu_toggle, select: symbols_sequence2}
   Keyboard_number: {label: '123', send: Eisu_toggle, select: number}
-  keyboard_jisuan: {label: "", send: Eisu_toggle, select: jisuan}
+  keyboard_jisuan: {label: "🧮", send: Eisu_toggle, select: jisuan}
   #Keyboard_number: {label: 'ϟ12', send: Eisu_toggle, select: number}
   Keyboard_default: {label: '返回', functional: false, send: Eisu_toggle, select: .default} #候选翻页返回用的此项
   Keyboard_default1: {label: '返回', send: Eisu_toggle, select: .default} #候选翻页返回用的此项
@@ -2080,7 +2080,6 @@ preset_keys:
   m_vj: {label: Ⓙ, functional: false, send: Eisu_toggle, select: "defaultzj"}
   m_vjg: {label: ○, functional: false, send: Eisu_toggle, select: "default"}
   m_back: {label: 返回, functional: false, send: Eisu_toggle, select: .last_lock}
-  XMJSQ: {label: ＝, functional: false, send: function, command: run, option: "com.miui.calculator"}
   MT: {label: Ⓜ, functional: false, send: function, command: run, option: "bin.mt.plus"}
   HDSS: {label: ◫, functional: false, send: function, command: run, option: "https://www.zdic.net/hans/?q=%4$s"}
   m_咖: {label: "凡", send: Eisu_toggle, select: .default}
@@ -2091,21 +2090,7 @@ preset_keys:
   m_勿: {label: "为", send: Eisu_toggle, select: .default}
   m_传: {label: "序", send: Eisu_toggle, select: .default}
   m_播: {label: "章", send: Eisu_toggle, select: .default}
-  #lua脚本命令
-  _Keyboard_clip: {label: "⏍", functional: false, send: function, command: "kf剪切板.lua", option: "default"}
-  _Keyboard_phrase: {label: '📒', functional: true, send: Eisu_toggle, select: _phrase_board}
-  _Keyboard_symbols: {label: '符号', functional: false, send: function, command: 'kf符号键盘.lua', option: "%1$s"}
-  _Keyboard_jisuan: {label: 计算, send: function, command: '计算.lua'}
-  _lua_script_all: {label: 脚本, send: function, command: '01 脚本启动器/脚本启动器.lua', option: "%1$s"}
-
-  #_Keyboard_clip: {label: '剪切板', functional: true, send: Eisu_toggle, select: _clip_board}
-  #_Keyboard_phrase: {label: 短语, send: function, command: '自定义短语板.lua', option: "%1$s"}
-  #_Keyboard_candidate: {label: '候选', functional: true, send: Eisu_toggle, select: _candidate_board}
-  #_add_phrase: {label: '添加', functional: true, send: function, command: add_phrase}
-  #_Keyboard_script: {label: '脚本', functional: true, send: Eisu_toggle, select: _script}
-  _Theme_fresh: {label: 刷新主题, send: function, command: 'kf刷新当前主题.lua', option: "《《命令行》》【【随机图片】】"}
   #中文键盘输入英文符号
-  #keyboard中允许一定程度的简写 #- {click: o, long_click: {commit: "_"}, label_symbol: '_'}
   s_xhxm: {label: "_", commit: "_"}
   s_mwyr: {label: "$", commit: "$"}
   s_jkhc: {label: "#", commit: "#"}
@@ -2122,16 +2107,13 @@ preset_keys:
   # trime设置
   IME_switch1: {label: ●, functional: false, send: LANGUAGE_SWITCH}
   K_back1: {label: "返回", functional: false, send: Eisu_toggle, select: .last_lock}
-  Keyboard_default: {label: "返回", functional: false, send: Eisu_toggle, select: .last_lock}
   K_backk: {label: " ", send: Eisu_toggle, select: .default}
   Schema_Eng: {label: En, send: Control+Shift+0}
   Settings: {label: ⚙, functional: false, send: SETTINGS}
-  Comment_switch: {toggle: _hide_comment, send: Mode_switch, states: [ ϟ.., "ϟ  "]}
   Date: {label: "🗓", send: function, command: date, option: "yyyy-MM-dd"}
   Date1: {label: "日期", send: function, command: date, option: "yyyy.M.d E HH:mm"}
   ChineseDate: {label: "🗓", send: function, command: date, option: "zh_CN@calendar=chinese"} #农历等日期(>=Android 7.0)：date 语言@calendar=历法 格式。具体參見https://developer.android.com/reference/android/icu/util/Calendar.html
   EnglishDate: {label: " ", send: function, command: date, option: "en_US@calendar=english"}
-  HDSS: {label: ◫, functional: false, send: function, command: web_search, option: "https://www.zdic.net/hans/?q=%4$s"}
   MYGD: {label: 🈱, functional: false, send: function, command: web_search, option: "https://typer.owenyang.top"}
   ZTSS: {label: 🔍, functional: false, send: function, command: web_search, option: "https://zi.tools/zi/%4$s"}
   LLQ: {label: ◰, functional: false, send: function, command: web_search, option: "%4$s"} # 直达光标前http开头的网址或搜索光标前内容
@@ -2145,18 +2127,24 @@ preset_keys:
 
 
   #无障碍
-  _Keyboard_script: {label: 脚本, functional: false, send: Eisu_toggle, select: _script}
+  #lua脚本命令
+  _Keyboard_phrase: {label: '📒', functional: true, send: Eisu_toggle, select: _phrase_board}
+  _Keyboard_symbols: {label: '符号', functional: false, send: function, command: 'kf符号键盘.lua', option: "%1$s"}
+  _Keyboard_jisuan: {label: 计算, send: function, command: '计算.lua'}
+  _lua_script_all: {label: 脚本, send: function, command: '01 脚本启动器/脚本启动器.lua', option: "%1$s"}
+
+  #_Keyboard_clip: {label: '剪切板', functional: true, send: Eisu_toggle, select: _clip_board}
+  #_Keyboard_phrase: {label: 短语, send: function, command: '自定义短语板.lua', option: "%1$s"}
+  #_Keyboard_candidate: {label: '候选', functional: true, send: Eisu_toggle, select: _candidate_board}
+  #_add_phrase: {label: '添加', functional: true, send: function, command: add_phrase}
+  #_Keyboard_script: {label: '脚本', functional: true, send: Eisu_toggle, select: _script}
+  _Theme_fresh: {label: 刷新主题, send: function, command: 'kf刷新当前主题.lua', option: "《《命令行》》【【随机图片】】"}
   clip_board: {label: 剪切板, send: Control+Shift+v}
-  _Keyboard_phrase: {label: "📒", functional: false, send: Eisu_toggle, select: _phrase_board}
   _Keyboard_candidate: {label: 候选, functional: false, send: Eisu_toggle, select: _candidate_board}
-  float_mode: {when: always, toggle: float_mode, functional: false, send: Mode_switch, states: [ 悬浮, 恢复 ]}
-  small_mode: {when: always, toggle: small_mode, functional: false, send: Mode_switch, states: [ 单手, 恢复 ]}
   Bianji: {label: 编辑当前主题, send: function, command: '01 脚本启动器/脚本库/编辑当前主题.lua', option: "%1$s"} #编辑当前主题
   Mabiao: {label: 编辑码表, send: function, command: '01 脚本启动器/脚本库/打开码表.lua', option: "%1$s"} #编辑码表
   duanyu: {label: 📋, send: function, command: '01 脚本启动器/脚本库/短语.lua', option: "%1$s"} #短语
   youdao: {label: 有道, send: function, command: '01 脚本启动器/脚本库/3 词典工具/有道翻译.lua', option: "%1$s"} #引导算
-  LuaNumQXJS: {label: 计算, text: '{Control+a}{LuaNum}', functional: false} #全选算
-  LuaNumHXJS: {label: 计算, text: '{Home}/{Home}{Shift+End}{LuaNum}', functional: false} #行选算
   lua_tq: {label: 🌧, send: function, command: "01 脚本启动器/脚本库/天气/天气.lua", option: "%1$s"}#选中的候选»天气信息
   BackToSentence: {label: 删句, send: Control+Shift+BackSpace}
   _Keyboard_script: {label: 脚本, functional: false, send: Eisu_toggle, select: _script}
@@ -2169,7 +2157,7 @@ preset_keys:
   yjjc: {label: ⊕️, send: function, command: '01 脚本启动器/脚本库/一键加词.lua', option: "%1$s"}
   LuaNumQXJS: {label: 计算, text: '{Control+a}{LuaNum}', functional: false} #全选算
   LuaNumHXJS: {label: 计算, text: '{Home}/{Home}{Shift+End}{LuaNum}', functional: false} #行选算
-  _Keyboard_emoji: {label: 表情, send: function, command: 'emoji键盘.lua', option: "《《命令行&&查当前候选》》"}#根据当前候选查找对应城市天气信息
+  _Keyboard_emoji: {label: 表情, send: function, command: 'emoji键盘.lua', option: "《《命令行&&查当前候选》》"}
   lua_tq2: {label: 当前天气, send: function, command: '01 脚本启动器/脚本库/天气/天气.lua', option: "《《命令行》》【【深圳】】"}#城市名称为自定义项,可替换为 武汉,北京,广州等常用城市名
   VOICE_ASSIST0: {label: 🎙, send: function, command: '01 脚本启动器/脚本库/语音加提示.lua', option: "%1$s"}
   SXZT: {label: 🔄, send: function, command: '01 脚本启动器/脚本库/刷新当前主题.lua', option: "%1$s"}
@@ -2177,15 +2165,12 @@ preset_keys:
   _Keyboard_fuhao: {label: 😄, functional: false, send: function, command: '符号键盘.lua', option: "%1$s"}
 
   _Keyboard_clip: {label: "⏍", send: Eisu_toggle, select: _clip_board}
-  # nerd font that match editing
   _Keyboard_edit: {label: "☩", send: Eisu_toggle, select: _edit_board}
   _Keyboard_Color: {label: 🥶, send: function, command: 'emoji键盘.lua'}
 #  lbs_lua: {label: 加詞, send: function, command: '蓝宝石一键加词.lua'}
   lbs_lua: {label: 加詞, send: function, command: '蓝宝石一键加词.lua', option: "《《命令行》》【【SapphirePro_yhc.txt】】【【SapphirePro_danzi.txt】】【【1】】"}#加词模式 1为弹出输入框，2为在第三方输入框添加，词库名称和单字码表名为自定义项，可以不是单字表，但是建议使用单字表，(PS：码表文件太大会卡死
   lbs_lua2: {label: 一键加词, send: function, command: '蓝宝石一键加词.lua', option: "《《命令行》》【【SapphirePro_yhc.txt】】【【SapphirePro_danzi.txt】】【【2】】"}#加词模式 1为弹出输入框，2为在第三方输入框添加，词库名称和单字码表名为自定义项，可以不是单字表，但是建议使用单字表，(PS：码表文件太大会卡死
-  XMJSQ: {label: ＝, functional: false, send: function, command: run, option: "com.miui.calculator"} #小米计算器app包名
   q_zhuuji: {label: 助記, functional: false, send: Eisu_toggle, select: "defaultzj"}
-  # nerd font notebook that match editing
   _lua_phrase: {label: "📒", send: function, command: '01 脚本启动器/脚本库/短语.lua', option: "%1$s"}
   q_fhjq: {label:"符号", send: function, command: '01 脚本启动器/脚本库/符号键盘加强版.lua', option: "%1$s"}
   HMCH: {label: '🐯', functional: false, send: function, command: web_search, option: "https://tiger-code.com/search?query=%4$s"}
@@ -2195,6 +2180,5 @@ preset_keys:
   SX2: {label: 叁, send: 3}
   SSX: {label: 四选, send: 4}
   WX: {label: 五选, send: 5}
-  ZTSS: {label: 🔍, functional: false, send: function, command: web_search, option: "https://zi.tools/zi/%4$s"}
   DelH: {label: "Del↔", functional: false, text: "{End}{Shift+Home}{Delete}"}  #删除行
   Hint_switch: {toggle: _hide_key_hint, functional: false, send: Mode_switch, states: [ ≑, ≟]}
