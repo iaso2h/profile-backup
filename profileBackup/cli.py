@@ -80,6 +80,9 @@ def deleteObsoleteDstFiles(): # {{{
     config.EXPORTLOG = True
 
     for profileName, syncFilesToDeleteByParent in backup.Category.syncFilesToDelete.items():
+        if not any(list(syncFilesToDeleteByParent.values())):
+            continue
+
         print(f"  [red]Deleting files/dirs from Profile {profileName}[/red]")
         deleteCountByProfile = 0
         deleteSizeByProfile  = 0
