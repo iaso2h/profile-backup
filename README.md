@@ -1,36 +1,26 @@
 # Introduction
 Back up profiles from all kind of profiles. The location of these profiles somewhat resemble dotfiles on Linux but they are tend to be scattered at different locations, hence I wrote this app to tackle the chaos. Right now it's built on Windows only and targetting softwares on Windows.
-# Supported software
-* 3ds Max
-* SolidWorks
-* Blender
-* AutoCAD
-* Photoshop
-* Everything
-* TubesT
 # Roadmap
-* Include recipe:
+* Recipe TODO :
     * Vivaldi broswer preferences and highlighted note data
     * WPS
     * Foxit
-    * Rime
     * Windows themes
     * Anytext Searcher
     * Adobe series?
-    * Jetbrain editor?
     * CAXA
     * FreeCAD
-    * Kate
-    * MindManager
+    * ~~Kate~~
     * OBS studio
     * Obsidian
-    * PixPin
+    * ~~PixPin~~
     * AutoHotkey
-    * Wezterm
-    * MPV
-    * XnViewMP
-    * Rime
-    * Powershell
+    * ~~Wezterm~~
+    * ~~MPV~~
+    * ~~XnViewMP~~
+    * ~~Rime~~
+    * ~~Powershell~~
+    * ~~PowerToys~~
 
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~

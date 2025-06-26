@@ -1,0 +1,125 @@
+let mapleader=" "
+
+set clipboard=idaeput
+set gdefault
+set hlsearch
+" set smartcase
+set ignorecase
+set incsearch
+set lazyredraw
+set timeoutlen=500
+" Idea only
+set ideaglobalmode
+set ideajoin
+set ideastatusicon=gray
+set ideawrite=file
+
+" Use ctrl-c as an ide shortcut in normal and visual modes
+sethandler <C-c> n-v:ide i:vim
+sethandler <C-v> n-v:vim i:ide
+sethandler <C-j> n-v:ide i:vim
+" Visual block mode
+nmap <A-v> <C-v>
+" Naviagtion
+map L $
+map H 0
+map [[ :action EditorCodeBlockStart<CR>
+map ]] :action EditorCodeBlockEnd<CR>
+" Insert mode
+imap <C-a> <Home>
+imap <C-e> <End>
+imap <C-h> <Left>
+imap <C-l> <Right>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-w> <C-Right>
+imap <C-b> <C-Left>
+imap <C-d> <Del>
+imap <C-o> <Left><Right>
+imap <C-f> :action InsertInlineCompletionAction<CR>
+" Pageup & Pagedown
+map <A-d> <C-f>
+map <A-e> <C-b>
+" Change jump
+nmap <A-o> :action JumpToLastChange<CR>
+nmap <A-i> :action JumpToNextChange<CR>
+map <leader>o :action RecentLocations<CR>
+" Toggle Highlight
+nmap <leader>h :nohls<CR>
+vmap <leader>h <esc>
+" Join without space
+nmap gJ Jx
+" Paste register0
+nmap <leader>p "0p
+nmap <leader>P "0P
+" Convert \ to /
+nnoremap g/ '<,'>:s/\\/\//<CR>
+" Mimicking VS Code line editing
+map  <A-j> :action MoveLineDown<CR>
+map  <A-k> :action MoveLineUp<CR>
+map  <A-S-j> :action EditorDuplicate<CR>
+nmap <A-S-k> :action EditorDuplicate<CR><UP>
+nmap <C-S-A-j> :action MoveStatementDown<CR>
+nmap <C-S-A-k> :action MoveStatementUp<CR>
+" View/Editor tab
+map <C-w>o :action CloseAllEditorsButActive<CR>
+map <C-w>a :action CloseAllEditors<CR>
+map q :action CloseContent<CR>
+map Q :action CloseContent<CR>
+map [b :action NextTab<CR>
+map ]b :action PreviousTab<CR>
+map <leader>z :action HideAllWindows<CR>
+" Clone caret
+nmap <C-A-j> :action EditorCloneCaretBelow<CR>
+nmap <C-A-k> :action EditorCloneCaretAbove<CR>
+" Usages
+nmap <leader>u :action HighlightUsagesInFile<CR>
+nmap <leader>n :action GotoNextElementUnderCaretUsage<CR>
+nmap <leader>N :action GotoPrevElementUnderCaretUsage<CR>
+" Definition
+nmap <leader>d :action QuickImplementations<CR>
+nmap gD :action GotoImplementation<CR>
+" Error
+nmap ]e :action GotoNextError<CR>
+nmap [e :action GotoPreviousError<CR>
+
+" -----------Plug-ins
+" -----Easymotion
+let g:easymotion_do_mapping = 0
+Plug 'easymotion/vim-easymotion'
+nmap <space>f <Plug>(easymotion-s)
+nmap <leader>f <Plug>(easymotion-sl)  
+" -----Commentary
+" BUG:
+" Plug 'tpope/commentary'
+set commentary
+xmap C gcc
+" -----Exchange
+let g:exchange_no_mappings = 1
+Plug 'tommcdo/vim-exchange'
+nmap gx <Plug>(Exchange)
+xmap X <Plug>(Exchange)
+nmap gxc <Plug>(ExchangeClear)
+nmap gxx <Plug>(ExchangeLine)
+" -----Indent object
+Plug 'michaeljsmith/vim-indent-object'
+" -----Surround
+let g:surround_no_insert_mappings = 1
+Plug 'tpope/vim-surround'
+nmap gs ys
+nmap gS yS
+nmap gss yss
+nmap gSs ySs
+nmap gSS ySS
+xmap S   gs
+" -----Switch
+set switch
+
+
+set ReplaceWithRegister
+
+" let g:textobj_entire_no_default_key_mappings = 1
+" Plug 'kana/vim-textobj-entire'
+" omap ag <Plug>(textobj-entire-a)
+" omap ig <Plug>(textobj-entire-i)
+

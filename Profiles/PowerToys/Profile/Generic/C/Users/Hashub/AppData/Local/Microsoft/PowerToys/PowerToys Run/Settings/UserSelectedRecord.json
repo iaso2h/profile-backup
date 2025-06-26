@@ -1,0 +1,203 @@
+{
+  "Records": {
+    "Calculator : Packaged application": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-01T12:16:18.7584984Z",
+      "Title": "Calculator",
+      "Search": "cacl",
+      "Score": 0,
+      "SubTitle": "Packaged application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "wezterm.exe : Run command": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-04-05T15:06:34.3773391Z",
+      "IconPath": "D:\\Program Files\\WezTerm\\wezterm.exe",
+      "Title": "wezterm.exe",
+      "Search": "wezterm",
+      "Score": 0,
+      "SubTitle": "Run command",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Steam : Application": {
+      "SelectedCount": 79,
+      "LastSelected": "2025-06-25T06:36:38.4438032Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Steam\\Steam.lnk",
+      "Title": "Steam",
+      "Search": "steam",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "regedit.exe : Run command": {
+      "SelectedCount": 5,
+      "LastSelected": "2025-06-16T12:44:14.1866717Z",
+      "IconPath": "C:\\WINDOWS\\regedit.exe",
+      "Title": "regedit.exe",
+      "Search": "regedit",
+      "Score": 0,
+      "SubTitle": "Run command",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "https://steam/ : Open in default browser": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-04-27T12:18:13.2470391Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Local\\Vivaldi\\Application\\vivaldi.exe",
+      "Title": "https://steam/",
+      "Search": "steam",
+      "Score": 0,
+      "SubTitle": "Open in default browser",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "Watt Toolkit : Application": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-05-08T15:39:53.4628356Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Watt Toolkit\\Watt Toolkit.lnk",
+      "Title": "Watt Toolkit",
+      "Search": "wa",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "calc.exe : Run command": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-06-08T11:12:50.9515376Z",
+      "IconPath": "C:\\WINDOWS\\system32\\calc.exe",
+      "Title": "calc.exe",
+      "Search": "calc",
+      "Score": 0,
+      "SubTitle": "Run command",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Logitech Options : Application": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-05-10T15:58:24.6693063Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Logitech\\Logitech Options.lnk",
+      "Title": "Logitech Options",
+      "Search": "logi",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Obsidian : Application": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-05-21T16:44:50.7654763Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Obsidian.lnk",
+      "Title": "Obsidian",
+      "Search": "OBI",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Registry Editor : Application": {
+      "SelectedCount": 12,
+      "LastSelected": "2025-06-25T14:07:55.010638Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Registry Editor.lnk",
+      "Title": "Registry Editor",
+      "Search": "re",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "eventvwr.msc : Run command": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-01T14:13:48.7143417Z",
+      "IconPath": "C:\\WINDOWS\\system32\\eventvwr.msc",
+      "Title": "eventvwr.msc",
+      "Search": "eventvwr.msc",
+      "Score": 0,
+      "SubTitle": "Run command",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Services : Application": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-01T14:14:38.7957843Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\services.lnk",
+      "Title": "Services",
+      "Search": "services.msc",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Ubisoft Connect : Application": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-08T11:06:42.4303285Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Ubisoft\\Ubisoft Connect\\Ubisoft Connect.lnk",
+      "Title": "Ubisoft Connect",
+      "Search": "ubisoft",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "https://regedti/ : Open in default browser": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-17T04:47:01.3016452Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Local\\Vivaldi\\Application\\vivaldi.exe",
+      "Title": "https://regedti/",
+      "Search": "regedti",
+      "Score": 0,
+      "SubTitle": "Open in default browser",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "Control Panel : Application": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-22T03:44:20.7141902Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\System Tools\\Control Panel.lnk",
+      "Title": "Control Panel",
+      "Search": "cntrol",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Event Viewer : Application": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-06-26T08:53:34.0701485Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Event Viewer.lnk",
+      "Title": "Event Viewer",
+      "Search": "event",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u4E8B\u4EF6\u67E5\u770B\u5668 : \u5E94\u7528\u7A0B\u5E8F": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-26T03:02:52.24168Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Event Viewer.lnk",
+      "Title": "\u4E8B\u4EF6\u67E5\u770B\u5668",
+      "Search": "eve",
+      "Score": 0,
+      "SubTitle": "\u5E94\u7528\u7A0B\u5E8F",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u6CE8\u518C\u8868\u7F16\u8F91\u5668 : \u5E94\u7528\u7A0B\u5E8F": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-26T07:19:58.0937244Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Registry Editor.lnk",
+      "Title": "\u6CE8\u518C\u8868\u7F16\u8F91\u5668",
+      "Search": "regdit",
+      "Score": 0,
+      "SubTitle": "\u5E94\u7528\u7A0B\u5E8F",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "XnView MP : \u5E94\u7528\u7A0B\u5E8F": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-26T08:10:09.4808638Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\XnView MP\\XnView MP.lnk",
+      "Title": "XnView MP",
+      "Search": "xnv",
+      "Score": 0,
+      "SubTitle": "\u5E94\u7528\u7A0B\u5E8F",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Kate : \u5E94\u7528\u7A0B\u5E8F": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-06-26T08:15:00.7156284Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Kate\\Kate.lnk",
+      "Title": "Kate",
+      "Search": "kate",
+      "Score": 0,
+      "SubTitle": "\u5E94\u7528\u7A0B\u5E8F",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    }
+  }
+}

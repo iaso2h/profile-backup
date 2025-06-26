@@ -180,6 +180,7 @@ encoder:
 #----------三简多重----------#
 
 攞	uyi
+嚿	dlu	400
 
 #----------无码加词_全码词----------#
 #支持无码加词，但只能用标准打词法，即：四码全码打出来
@@ -202,7 +203,7 @@ encoder:
 睡大街	qmpg
 拔网线	umif
 长相思	peqh
-
+口决	dkwn	50
 
 #---------地方名称---------
 南庄	nmxg	400
@@ -217,6 +218,7 @@ encoder:
 嗰度	djxl
 噉样	daeg	100
 乜嘢	aadd
+乜说话	assa	50
 契弟	apht
 伯爷	juhb
 伯娘	jubi
@@ -228,6 +230,7 @@ encoder:
 外爹	lyhb
 阿婆	ztkr
 阿公	zthk
+家姐	wjbf
 老嘢	qldd
 细蚊仔	icjh
 啱啱	dvdv
@@ -245,6 +248,8 @@ encoder:
 一係	fiht
 同埋	mfgd
 特登	qghz
+专登	mahz
+鸡毛扫	rvub
 即管	izrw
 为咗	isdn
 揾食	uoqs
@@ -266,6 +271,9 @@ encoder:
 矮瓜	oxyg
 乌蝇	xucd
 生果	lsqe
+寻日	bkor
+寻晚	bkow
+今物	jaqn	400
 打冷震	uwtf
 打噎	uadg	100
 联针	qhzn
@@ -285,6 +293,7 @@ encoder:
 心喐喐	hddn
 乌卒卒	xzzj
 黑麻麻	pzzm
+夜麻麻	zzzm
 乌灯黑火	xcpc	100
 肥腾腾	vvvh
 瘦蜢蜢	acch	100
@@ -313,9 +322,17 @@ encoder:
 做咩嗜	jddq
 食饭	qx	100
 食晏	qsow
+吃朝	deno
+吃晏	deow
+吃夜	dezj
+煮朝	qono
+煮晏	qoow
+煮夜	qozj
 梗喺啦	eddi
 藞苴	lmlf
 蚀底	qcxb
+银纸	ziib
+
 落堂	lksg
 攞苦嚟辛	uldn
 仲係	jddj
@@ -331,3 +348,63 @@ encoder:
 做紧乜嘢	jpad
 间尺	aoci
 间条	aohe
+仲未	jdaw
+未好	awbh
+仲係	jdjt
+仲有	jdnv	100
+都係	qojt
+等阵	rgty
+扮懵	uhhl	100
+担戴	uonp
+似样	jveg	400
+慌失失	htth	400
+睩大眼	qmqi
+吊砂煲	dmjd	100
+无嗱嗱	dddj	150
+实食冇黐牙	wqnl
+抛浪头	ukwm	100
+世侄	lajy
+极之	ecri
+猛咁	mhdz
+往阵时	wtok	50
+旧阵时	gtok
+周身蚁	mzci
+冚家	wvwj	50
+得食	woqs
+猪仔得食墟墟冚	qjww
+懒到出汁	hysk
+埋站	gdiy
+人一世物一世	jfll	400
+悭皮	hprp
+悭钱	hpzf	100
+一辘	fiyz	100
+有排	nvur
+大件事	mjfd	100
+鬼揞眼	auqi
+睬佢都傻	qjqj
+睇小	qhyx
+扮嘢	uhdd
+冻过水	wkks	100
+攞景	uyog
+冷衫	wjte	400
+条气唔顺	hvdo
+得啖笑	wdrt
+食啖饭	qdqx
+成世	nala	50
+未够格	ages	100
+拈刺咁拈	uedy
+可恼也	zhey
+乌哩单刀	xdhp	100
+颈渴	rwko
+肚饿	vgqt
+肚饥	vgqo	400
+囉㖞	dldd	400
+贪得意	jwxh	400
+搏彩	unye
+又平又靓	rera	400
+稳阵	xxty
+嘥钱	dwzf
+嘥力	dwsl
+嘥时嘥力	dods
+屎忽	cpne
+衰仔	tdjh

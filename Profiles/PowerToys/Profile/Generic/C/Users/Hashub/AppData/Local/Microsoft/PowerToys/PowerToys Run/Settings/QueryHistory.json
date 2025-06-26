@@ -1,0 +1,272 @@
+{
+  "Items": [
+    {
+      "Query": "cacl",
+      "ExecutedDateTime": "2025-04-01T20:16:18.7588001+08:00"
+    },
+    {
+      "Query": "wezterm",
+      "ExecutedDateTime": "2025-04-01T20:30:44.0655554+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-04-04T12:59:25.2416333+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-04-05T10:41:30.002841+08:00"
+    },
+    {
+      "Query": "regedit",
+      "ExecutedDateTime": "2025-04-05T13:13:15.4009198+08:00"
+    },
+    {
+      "Query": "wezterm",
+      "ExecutedDateTime": "2025-04-05T23:06:34.3775281+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-04-06T18:36:30.9351354+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-04-21T12:41:45.9929684+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-04-23T21:18:42.0266588+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-04-27T20:18:13.2472598+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-04-28T12:26:30.8918611+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-04-29T20:47:48.4767721+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-04-29T20:48:36.6400416+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-05T12:30:36.2573058+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-05-05T17:55:38.2851468+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-05T20:16:07.9054927+08:00"
+    },
+    {
+      "Query": "calc",
+      "ExecutedDateTime": "2025-05-05T20:17:06.2955504+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-08T12:29:54.878769+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-05-08T23:37:13.9774549+08:00"
+    },
+    {
+      "Query": "wa",
+      "ExecutedDateTime": "2025-05-08T23:39:53.4628504+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-09T22:23:24.2226455+08:00"
+    },
+    {
+      "Query": "s",
+      "ExecutedDateTime": "2025-05-09T23:26:48.2202856+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-05-10T12:31:40.6784205+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-10T18:07:05.1684933+08:00"
+    },
+    {
+      "Query": "logi",
+      "ExecutedDateTime": "2025-05-10T23:58:24.6693882+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-15T21:26:22.8459998+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-05-17T18:11:49.8609512+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-18T17:49:21.7256357+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-05-19T12:28:29.9193806+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-20T21:28:06.0233282+08:00"
+    },
+    {
+      "Query": "OBI",
+      "ExecutedDateTime": "2025-05-22T00:44:50.7658241+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-22T22:54:00.1390902+08:00"
+    },
+    {
+      "Query": "tea",
+      "ExecutedDateTime": "2025-05-22T23:18:35.5777799+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-05-24T18:27:42.1055766+08:00"
+    },
+    {
+      "Query": "regedit",
+      "ExecutedDateTime": "2025-05-24T18:35:25.7866378+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-24T18:37:49.2154797+08:00"
+    },
+    {
+      "Query": "regedit",
+      "ExecutedDateTime": "2025-05-24T18:51:23.6261962+08:00"
+    },
+    {
+      "Query": "red",
+      "ExecutedDateTime": "2025-05-24T18:57:22.123873+08:00"
+    },
+    {
+      "Query": "re",
+      "ExecutedDateTime": "2025-05-24T19:02:59.1010808+08:00"
+    },
+    {
+      "Query": "rege",
+      "ExecutedDateTime": "2025-05-24T19:07:13.2426148+08:00"
+    },
+    {
+      "Query": "re",
+      "ExecutedDateTime": "2025-05-24T19:10:43.5479202+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-05-31T22:00:57.8492803+08:00"
+    },
+    {
+      "Query": "eventvwr.msc",
+      "ExecutedDateTime": "2025-06-01T22:13:48.7145876+08:00"
+    },
+    {
+      "Query": "services.msc",
+      "ExecutedDateTime": "2025-06-01T22:14:38.7958009+08:00"
+    },
+    {
+      "Query": "calc",
+      "ExecutedDateTime": "2025-06-01T22:23:09.3258477+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-06-03T21:21:44.4236564+08:00"
+    },
+    {
+      "Query": "reg",
+      "ExecutedDateTime": "2025-06-06T23:18:33.839327+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-06-08T18:40:44.9712727+08:00"
+    },
+    {
+      "Query": "ubisoft",
+      "ExecutedDateTime": "2025-06-08T19:06:42.4305054+08:00"
+    },
+    {
+      "Query": "calc",
+      "ExecutedDateTime": "2025-06-08T19:12:50.9515436+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-06-15T18:32:23.0295172+08:00"
+    },
+    {
+      "Query": "stea",
+      "ExecutedDateTime": "2025-06-15T18:42:52.9013565+08:00"
+    },
+    {
+      "Query": "regedit",
+      "ExecutedDateTime": "2025-06-16T20:44:14.1869279+08:00"
+    },
+    {
+      "Query": "re",
+      "ExecutedDateTime": "2025-06-16T20:53:45.1722709+08:00"
+    },
+    {
+      "Query": "regedti",
+      "ExecutedDateTime": "2025-06-17T12:47:01.3019042+08:00"
+    },
+    {
+      "Query": "re",
+      "ExecutedDateTime": "2025-06-17T12:47:05.7849949+08:00"
+    },
+    {
+      "Query": "cntrol",
+      "ExecutedDateTime": "2025-06-22T11:44:20.7144032+08:00"
+    },
+    {
+      "Query": "steam",
+      "ExecutedDateTime": "2025-06-25T14:36:38.4441004+08:00"
+    },
+    {
+      "Query": "reg",
+      "ExecutedDateTime": "2025-06-25T21:33:13.4432841+08:00"
+    },
+    {
+      "Query": "e",
+      "ExecutedDateTime": "2025-06-25T22:03:32.5198851+08:00"
+    },
+    {
+      "Query": "re",
+      "ExecutedDateTime": "2025-06-25T22:07:55.0110059+08:00"
+    },
+    {
+      "Query": "event",
+      "ExecutedDateTime": "2025-06-26T10:40:06.8955739+08:00"
+    },
+    {
+      "Query": "eve",
+      "ExecutedDateTime": "2025-06-26T11:02:52.241906+08:00"
+    },
+    {
+      "Query": "regdit",
+      "ExecutedDateTime": "2025-06-26T15:19:58.093851+08:00"
+    },
+    {
+      "Query": "xnv",
+      "ExecutedDateTime": "2025-06-26T16:10:09.4808696+08:00"
+    },
+    {
+      "Query": "kate",
+      "ExecutedDateTime": "2025-06-26T16:15:00.7156336+08:00"
+    },
+    {
+      "Query": "event",
+      "ExecutedDateTime": "2025-06-26T16:53:34.0703762+08:00"
+    }
+  ]
+}

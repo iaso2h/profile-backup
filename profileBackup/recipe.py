@@ -321,3 +321,132 @@ Profile(
         },
     ]
 )
+Profile(
+    profileName="PixPin",
+    enabled=True,
+    categories=[
+        {
+            "categoryName": "Profile",
+            "versionFind": "Generic",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": Path(appDataPath, "Local/PixPin/Config"),
+            "filterType": "include",
+            "filterPattern": lambda _: True,
+        },
+    ]
+)
+Profile(
+    profileName="Vivaldi",
+    enabled=True,
+    categories=[
+        {
+            "categoryName": "Profile",
+            "versionFind": "Generic",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": Path(appDataPath, "Local/Vivaldi/User Data/Default"),
+            "filterType": "include",
+            "filterPattern": [
+                "Preferences",
+                "Shortcuts",
+            ]
+        },
+    ]
+)
+Profile(
+    profileName="Wezterm",
+    enabled=True,
+    categories=[
+        {
+            "categoryName": "Profile",
+            "versionFind": "Generic",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": homePath,
+            "filterType": "include",
+            "filterPattern": [
+                ".wezterm.lua",
+            ]
+        },
+    ]
+)
+# TODO: no shortcut backup yet
+Profile(
+    profileName="Kate",
+    enabled=True,
+    categories=[
+        {
+            "categoryName": "Profile",
+            "versionFind": "Generic",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": Path(appDataPath, "Local"),
+            "filterType": "include",
+            "filterPattern": [
+                "katerc",
+                "katevirc",
+            ]
+        },
+    ]
+)
+Profile(
+    profileName="PowerToys",
+    enabled=True,
+    categories=[
+        {
+            "categoryName": "Profile",
+            "versionFind": "Generic",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": Path(appDataPath, "Local/Microsoft/PowerToys"),
+            "filterType": "exclude",
+            "filterPattern": [
+                "**/*log*",
+                "Updates",
+            ]
+        },
+    ]
+)
+Profile(
+    profileName="Git",
+    enabled=True,
+    categories=[
+        {
+            "categoryName": "Profile",
+            "versionFind": "Generic",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": homePath,
+            "filterType": "include",
+            "filterPattern": [
+                ".gitconfig",
+            ]
+        },
+    ]
+)
+Profile(
+    profileName="Idea",
+    enabled=True,
+    categories=[
+        {
+            "categoryName": "Profile",
+            "versionFind": "Generic",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": homePath,
+            "filterType": "include",
+            "filterPattern": [
+                ".vimrc",
+                ".ideavimrc",
+            ]
+        },
+    ]
+)

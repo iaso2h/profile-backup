@@ -760,7 +760,7 @@ preset_keyboards:
 
     - {width: *曲面屏左}
     - {width: 4.9}
-    - {click: '_{K_back}', key_back_color: A_kb, hilited_key_back_color: A_ka, key_text_color: A_tb, hilited_key_text_color: A_ta, key_symbol_color: A_sb, hilited_key_symbol_color: A_sa, key_border_color: A_bk, key_border: *key_border}
+    - {click: '	{K_back}', label: "Tab", key_back_color: A_kb, hilited_key_back_color: A_ka, key_text_color: A_tb, hilited_key_text_color: A_ta, key_symbol_color: A_sb, hilited_key_symbol_color: A_sa, key_border_color: A_bk, key_border: *key_border}
     - {click: '/{K_back}', key_back_color: S_kb, hilited_key_back_color: S_ka, key_text_color: S_tb, hilited_key_text_color: S_ta, key_symbol_color: S_sb, hilited_key_symbol_color: S_sa, key_border_color: S_bk, key_border: *key_border}
     - {click: ':{K_back}', key_back_color: D_kb, hilited_key_back_color: D_ka, key_text_color: D_tb, hilited_key_text_color: D_ta, key_symbol_color: D_sb, hilited_key_symbol_color: D_sa, key_border_color: D_bk, key_border: *key_border}
     - {click: ';{K_back}', key_back_color: F_kb, hilited_key_back_color: F_ka, key_text_color: F_tb, hilited_key_text_color: F_ta, key_symbol_color: F_sb, hilited_key_symbol_color: F_sa, key_border_color: F_bk, key_border: *key_border}
