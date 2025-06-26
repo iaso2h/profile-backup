@@ -70,11 +70,8 @@ class Profile(): # {{{
     def categories(self, val):
         if not isinstance(val, list):
             raise ValueError(f"list is expceted for categories under Profile {self.profileName}.")
-        for category in val:
-            if not isinstance(category, Category):
-                raise ValueError(f"{type(category)} value is inside the list of categories which must be consist of Catogory class only.")
 
-        self._categories = val
+        self._categories = [Category(profileName=self.profileName, **categoryArgs) for categoryArgs in val]
     # }}}
 
     @classmethod
@@ -126,7 +123,7 @@ class Category(Profile): # {{{
     @categoryName.setter
     def categoryName(self, val):
         if not isinstance(val, str):
-            raise ValueError(f"string value is expected from the categoryName parameter from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"string value is expected from the categoryName parameter for category {self.categoryName} from profile {self.profileName}.")
         self._categoryName = val
     # }}}
 
@@ -137,7 +134,7 @@ class Category(Profile): # {{{
     @recursiveCopy.setter
     def recursiveCopy(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool value is expected from the recursiveCopy parameter from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"bool value is expected from the recursiveCopy parameter for category {self.categoryName} from configuration {self.profileName}.")
         self._recursiveCopy = val
     # }}}
 
@@ -148,7 +145,7 @@ class Category(Profile): # {{{
     @silentReport.setter
     def silentReport(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool is expected from the silentReport parameter from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"bool is expected from the silentReport parameter for category {self.categoryName} from profile {self.profileName}.")
         self._silentReport = val
     # }}}
 
@@ -160,7 +157,7 @@ class Category(Profile): # {{{
     def parentSrcPaths(self, val):
         # Validate path pattern
         def skip(valParentSrcPaths):
-            print(f"[gray]Skipped unfound parent source paths for {valParentSrcPaths} from {self.categoryName} from {self.profileName} configuration.[/gray]")
+            print(f"[gray]Skipped unfound parent source paths for {valParentSrcPaths} for category {self.categoryName} from profile {self.profileName}.[/gray]")
             self.enabled = False
 
         def checkDirPath(paths: list[ Path ]):
@@ -209,7 +206,7 @@ class Category(Profile): # {{{
                 else:
                     self._parentSrcPaths = [srcPath]
         else:
-            raise ValueError(f"Path object, Path glob generator or string is expected from the parentSrcPath parameter from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"Path object, Path glob generator or string is expected from the parentSrcPath parameter for category {self.categoryName} from profile {self.profileName}.")
     # }}}
 
     # Validation of versionFind {{{
@@ -219,7 +216,7 @@ class Category(Profile): # {{{
     @versionFind.setter
     def versionFind(self, val):
         if not isinstance(val, Callable) and not isinstance(val, str):
-            raise ValueError(f"string or function is expected from the versionFind parameter from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"string or function is expected from the versionFind parameter for category {self.categoryName} from profile {self.profileName}.")
 
         self._versionFind = val
         if self._versionFind == "":
@@ -233,9 +230,9 @@ class Category(Profile): # {{{
     @filterType.setter
     def filterType(self, val):
         if not isinstance(val, str):
-            raise ValueError(f"string is expected from the filterType parameter from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"string is expected from the filterType parameter for category {self.categoryName} from profile {self.profileName}.")
         if val != "include" and val != "exclude":
-            raise ValueError(f"filterType parameter must be either 'include' or 'exclude' from {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"filterType parameter must be either 'include' or 'exclude' for category {self.categoryName} from profile {self.profileName}.")
 
         self._filterType = val
     # }}}
@@ -247,12 +244,12 @@ class Category(Profile): # {{{
     @filterPattern.setter
     def filterPattern(self, val):
         if not isinstance(val, list) and not isinstance(val, Callable):
-            raise ValueError(f"list or function is expected as the filterPattern parameter for {self.categoryName} from {self.profileName} configuration.")
+            raise ValueError(f"list or function is expected as the filterPattern parameter for category {self.categoryName} from profile {self.profileName}.")
 
         if isinstance(val, list):
             for k in val:
                 if not isinstance(k, str):
-                    raise ValueError(f"a filterPattern list must only contain string as the parameter for {self.categoryName} from {self.profileName} configuration.")
+                    raise ValueError(f"a filterPattern list must only contain string as the parameter for category {self.categoryName} from profile {self.profileName}.")
 
         self._filterPattern = val
     # }}}
