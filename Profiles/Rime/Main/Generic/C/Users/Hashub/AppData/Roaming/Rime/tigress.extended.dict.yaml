@@ -136,51 +136,30 @@ encoder:
 #----------其他分区----------#
 
 #----------一简多重----------#
-# ！	a	0
-# 》	b	0
-# 〉	b	0
-# 】	c	0
-# 〕	c	0
-# 、	d	0
-# |	d	0
-# （	e	0
-# “	f	0
-# ‘	f	0
-# ”	g	0
-# ’	g	0
-# 『	h	0
-# ——	i	0
-# —	i	0
-# 』	j	0
-# ￥	k	0
-# $	k	0
-# %	l	0
-# 」	m	0
-# 「	n	0
-# 〖	o	0
-# 〗	p	0
-# ：“	q	0
-# ：‘	q	0
-# ）	r	0
-# ……	s	0
-# …	s	0
-# →	t	0
-# ~	u	0
-# 《	v	0
-# 〈	v	0
-# ？	w	0
-# 【	x	0
-# 〔	x	0
-# ·	y	0
-
+嘅	d	200
 #----------二简多重----------#
+甲	sj	10000
+谂	sj	20000
 
-#准	wu
+
+係	jt	50
+冇	nm	200
+
 
 #----------三简多重----------#
+不说话	css	1000
+来不来	aca	500
+看不看	ucu	500
+知道了	ohr	10000
 
 攞	uyi
 嚿	dlu	400
+有冇有	nnn
+係冇係	jnj
+係唔係	jdj	400
+使唔使	jdj	399
+得唔得	wdw	400
+
 
 #----------无码加词_全码词----------#
 #支持无码加词，但只能用标准打词法，即：四码全码打出来
@@ -204,6 +183,8 @@ encoder:
 拔网线	umif
 长相思	peqh
 口决	dkwn	50
+一路顺风	fpoo	1310
+机加工	esug
 
 #---------地方名称---------
 南庄	nmxg	400
@@ -212,7 +193,7 @@ encoder:
 
 
 #---------粤语---------
-係咪	jtdp
+係咪	jtdp	1000
 人哋	hdge
 呢度	dcxl
 嗰度	djxl
@@ -233,11 +214,12 @@ encoder:
 家姐	wjbf
 老嘢	qldd
 细蚊仔	icjh
-啱啱	dvdv
+啱啱	dvdv	400
 啱先	dvqp
 鬼咁	agdz
 冇係	lejt
 冇有	nmnv	1000
+冇使	nmjf
 差唔多	gdll
 唔係	dwjt
 唔使	dwjf
@@ -309,6 +291,7 @@ encoder:
 佢哋	jndg
 吖嘛	dhdz
 傻閪	jtav	400
+臭閪	omav
 笨柒	rekr
 是但	otjo
 黐线	xjif
@@ -332,7 +315,6 @@ encoder:
 藞苴	lmlf
 蚀底	qcxb
 银纸	ziib
-
 落堂	lksg
 攞苦嚟辛	uldn
 仲係	jddj
@@ -398,7 +380,7 @@ encoder:
 颈渴	rwko
 肚饿	vgqt
 肚饥	vgqo	400
-囉㖞	dldd	400
+囉㖞	dydd	400
 贪得意	jwxh	400
 搏彩	unye
 又平又靓	rera	400
@@ -408,3 +390,7 @@ encoder:
 嘥时嘥力	dods
 屎忽	cpne
 衰仔	tdjh
+係冇係	jnjt
+人哋	jrdg	400
+有冇有	nnnv	400
+返到	xryp

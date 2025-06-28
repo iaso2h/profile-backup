@@ -2,8 +2,18 @@ customization:
   distribution_code_name: Weasel
   distribution_version: 0.17.4
   generator: "Rime::SwitcherSettings"
-  modified_time: "Sun Jun 22 18:37:39 2025"
+  modified_time: "Fri Jun 27 13:41:45 2025"
   rime_version: 1.13.1
+key_binder:
+  bindings:
+    - {accept: space, send: Escape, when: composing}
+    - {accept: space, send: space, when: has_menu}
+    - {accept: minus, send: Page_Up, when: has_menu}
+    - {accept: equal, send: Page_Down, when: has_menu}
+    - {accept: "Shift+Tab", send: Page_Up, when: has_menu}
+    - {accept: Tab, send: Page_Down, when: has_menu}
+    - {accept: Right, send: Down, when: has_menu}
+    - {accept: Left, send: Up, when: has_menu}
 patch:
   "ascii_composer/good_old_caps_lock": true
   "ascii_composer/switch_key":
@@ -14,20 +24,8 @@ patch:
     Shift_L: commit_code
     Shift_R: commit_code
   schema_list:
+    - {schema: easy_english}
     - {schema: tigress}
   "switcher/hotkeys":
     - "Control+grave"
     - "Control+F8"
-
-key_binder:
-  bindings:
-    # - { when: composing, accept: Return, send: Escape }
-    - { when: composing, accept: space, send: Escape } # 无候选时(空码)空格清屏
-    - { when: has_menu, accept: space, send: space }   # 有候选时空格上屏首选
-
-    - { when: has_menu, accept: minus, send: Page_Up }
-    - { when: has_menu, accept: equal, send: Page_Down }
-    - { when: has_menu, accept: Shift+Tab, send: Page_Up }
-    - { when: has_menu, accept: Tab, send: Page_Down }
-    - { when: has_menu, accept: Right, send: Down } # 右方向键 向后移动焦点
-    - { when: has_menu, accept: Left, send: Up } # 左方向键 向前移动焦点
