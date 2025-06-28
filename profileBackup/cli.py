@@ -128,13 +128,21 @@ def parseBackupFiles(profileNamesChosen: list[backup.Profile]): #  {{{
         if not profile.enabled:
             continue
 
-
-        print(f"\n{util.getTimeStamp()}[white]Checking up [green bold]{profile.profileName}[/green bold][/white]...")
+        bufferOutput = []
+        bufferOutput.append(f"\n{util.getTimeStamp()}[white]Checking up [green bold]{profile.profileName}[/green bold][/white]...")
         for category in profile.categories:
             if not category.enabled:
                 continue
-            category.backup()
-        print(f"{util.getTimeStamp()}[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
+            category.backup(bufferOutput)
+        if profile.backupCount > 0:
+            bufferOutput.append(f"\n{util.getTimeStamp()}[white]{profile.foundFileMessage} [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
+        else:
+            bufferOutput.append(f"\n{util.getTimeStamp()}[white]Skipped [purple bold]{profile.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(profile.backupSize)}[/blue bold] for [green bold]{profile.profileName}[/green bold].[/white]")
+            bufferOutput[0] = bufferOutput[0].replace("Checking up", "Skipped")
+
+        for line in bufferOutput:
+            print(line)
+
     print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profileNamesChosen}[/green bold].[/white]\n\n\n\n\n")
 
     config.EXPORTLOG = False

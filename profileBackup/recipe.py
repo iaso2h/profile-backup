@@ -1,6 +1,9 @@
-from backup import Profile, appDataPath, homePath
+from backup import Profile
 from pathlib import Path
+
+import os
 import winreg as wrg
+appDataPath = Path(os.getenv('APPDATA')).parent
 
 Profile(
     profileName="demoBackup",
@@ -49,7 +52,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": homePath.glob("Autodesk/3ds Max*/User Settings"),
+            "parentSrcPaths": Path.home().glob("Autodesk/3ds Max*/User Settings"),
             "filterType": "include",
             "filterPattern": lambda _: True,
         },
@@ -294,7 +297,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": Path(homePath, "Documents/WindowsPowerShell"),
+            "parentSrcPaths": Path(Path.home(), "Documents/WindowsPowerShell"),
             "filterType": "exclude",
             "filterPattern": [
                 "profile.ps1",
@@ -366,7 +369,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": homePath,
+            "parentSrcPaths": Path.home(),
             "filterType": "include",
             "filterPattern": [
                 ".wezterm.lua",
@@ -423,7 +426,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": homePath,
+            "parentSrcPaths": Path.home(),
             "filterType": "include",
             "filterPattern": [
                 ".gitconfig",
@@ -441,7 +444,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": homePath,
+            "parentSrcPaths": Path.home(),
             "filterType": "include",
             "filterPattern": [
                 ".vimrc",

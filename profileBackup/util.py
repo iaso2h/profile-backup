@@ -51,10 +51,10 @@ def humanReadableSize(sizeBytes: int) -> str:
     return f"{size:.2f} {units[unitIdx]}"  # 2 decimal places (e.g., "3.14 MB")
 
 
-def print(*args, **kwargs):
+def print(*args, skipChk:bool=True, **kwargs) -> None:
     if not config.SILENTMODE:
         if len(args) == 1 and isinstance(args[0], str):
-            if "Skip unchanged" in args[0]:
+            if (skipChk and "skip" in args[0].lower()) or "permission error" in args[0]:
                 return
 
         console.print(*args, **kwargs)

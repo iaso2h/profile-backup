@@ -7,10 +7,6 @@ from types import GeneratorType
 from typing import Callable, Optional, Tuple, Iterator
 from pathlib import Path
 
-
-userName    = os.getlogin()
-appDataPath = Path("C:/Users/{}/AppData".format(userName))
-homePath    = Path("C:/Users/{}".format(userName))
 print = util.print
 
 
@@ -157,7 +153,7 @@ class Category(Profile): # {{{
     def parentSrcPaths(self, val):
         # Validate path pattern
         def skip(valParentSrcPaths):
-            print(f"[gray]Skipped unfound parent source paths for {valParentSrcPaths} for category {self.categoryName} from profile {self.profileName}.[/gray]")
+            print(f"[gray]Skipped unfound parent source paths for {valParentSrcPaths} for category {self.categoryName} from profile {self.profileName}.[/gray]", skipChk=False)
             self.enabled = False
 
         def checkDirPath(paths: list[ Path ]):
@@ -260,7 +256,8 @@ class Category(Profile): # {{{
             srcPath: Path,
             parentSrcPath: Path,
             parentDstPath: Path,
-            ) -> Tuple[int, int]:
+            bufferOutput: list[str],
+            ) -> Tuple[int, int, list[str]]:
         """Backup file and return backup file count
 
         Args:
@@ -286,31 +283,31 @@ class Category(Profile): # {{{
         count = 0
         size = 0
         if dstPath.exists():
-            if config.COPYOVERWRITE or (srcPath.stat().st_mtime - dstPath.stat().st_mtime) > 0:
+            if config.COPYOVERWRITE or srcPath.stat().st_mtime != dstPath.stat().st_mtime:
                 if not config.DRYRUN:
                     try:
                         shutil.copy2(srcPath, dstPath)
                         count += 1
                         size += srcPath.stat().st_size
-                        print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
+                        bufferOutput.append(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
                     except PermissionError:
-                        print(f"[red]    Skip file due to permission error: [yellow]{relPathTopParentSrcStr}[/yellow][/red]")
+                        bufferOutput.append(f"[red]    Skip file due to permission error: [yellow]{relPathTopParentSrcStr}[/yellow][/red]")
                 else:
                     count += 1
                     size += srcPath.stat().st_size
-                    print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
+                    bufferOutput.append(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
             else:
-                print(f"[gray]    Skip unchanged file: {relPathTopParentSrcStr}[/gray]")
+                bufferOutput.append(f"[gray]    Skip unchanged file: {relPathTopParentSrcStr}[/gray]")
         else:
             if not config.DRYRUN:
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
 
-            print(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white]")
+            bufferOutput.append(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white]")
             count += 1
             size += srcPath.stat().st_size
 
-        return count, size # }}}
+        return count, size, bufferOutput # }}}
 
 
     def iterCopy( # {{{
@@ -318,8 +315,9 @@ class Category(Profile): # {{{
         parentSrcPath: Path,
         parentDstPath: Path,
         filterAllPaths: list[Path],
+        bufferOutput: list[str],
         topParentSrcPath: Optional[Path] = None,
-    ) -> Tuple[int, int]:
+    ) -> Tuple[int, int, list[str]]:
         """Iter through a parent source directory to validate and copy each file
 
         Args:
@@ -371,10 +369,11 @@ class Category(Profile): # {{{
                         if srcPathInsideFilterChk:
                             continue
 
-                        count, size = self.iterCopy(
+                        count, size, bufferOutput = self.iterCopy(
                             parentSrcPath=srcPath,
                             parentDstPath=parentDstPath,
                             filterAllPaths=filterAllPaths,
+                            bufferOutput=bufferOutput,
                             topParentSrcPath=topParentSrcPath
                         )
                         countAccumulated += count
@@ -389,10 +388,11 @@ class Category(Profile): # {{{
                         elif self.filterType == "include" and srcPath not in filterAllPaths:
                             continue
                         else:
-                            count, size = self.copyFile(
-                                srcPath,
-                                topParentSrcPath,
-                                parentDstPath,
+                            count, size, bufferOutput = self.copyFile(
+                                srcPath=srcPath,
+                                parentSrcPath=topParentSrcPath,
+                                parentDstPath=parentDstPath,
+                                bufferOutput=bufferOutput,
                             )
                             countAccumulated += count
                             sizeAccumulated += size
@@ -402,17 +402,18 @@ class Category(Profile): # {{{
                         elif self.filterType == "include" and not self.filterPattern(srcPath):
                             continue
                         else:
-                            count, size = self.copyFile(
+                            count, size, bufferOutput = self.copyFile(
                                 srcPath=srcPath,
                                 parentSrcPath=topParentSrcPath,
                                 parentDstPath=parentDstPath,
+                                bufferOutput=bufferOutput
                             )
                             countAccumulated += count
                             sizeAccumulated += size
         except PermissionError:
             print(f"[red]    Skip directory due to permission error: [yellow]{parentSrcPath}[/yellow][/red]")
 
-        return countAccumulated, sizeAccumulated # }}}
+        return countAccumulated, sizeAccumulated, bufferOutput # }}}
 
 
     def iterSync( # {{{
@@ -462,13 +463,13 @@ class Category(Profile): # {{{
                     syncFilesToDeleteRelCurrentParentDst.append(dstPath) # }}}
 
 
-    def backup(self): # {{{
+    def backup(self, bufferOutput:list[str]): # {{{
         # Alter global silent report for current backup session
         config.SILENTMODE = self.silentReport
         self.backupCount = 0
         self.backupSize = 0
 
-        print(f"  {util.getTimeStamp()}[white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
+        bufferOutput.append(f"  {util.getTimeStamp()}[white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
         for parentSrcPath in self.parentSrcPaths:
 
             # Get version string
@@ -482,7 +483,7 @@ class Category(Profile): # {{{
                     print(e)
                     print('[red]  Version string use "Generic" instead\n[/red]')
 
-            print(f"    {util.getTimeStamp()}[white]Checking up files for [green bold]{self.profileName} {self.categoryName}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            bufferOutput.append(f"    {util.getTimeStamp()}[white]Checking up files for [green bold]{self.profileName} {self.categoryName}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
             # Get parent destination path
             parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
@@ -507,10 +508,11 @@ class Category(Profile): # {{{
 
 
             # Copy files from source to destination
-            currentParentSrcCount, currentParentSrcSize = self.iterCopy(
+            currentParentSrcCount, currentParentSrcSize, bufferOutput = self.iterCopy(
                 parentSrcPath=parentSrcPath,
                 parentDstPath=parentDstPath,
                 filterAllPaths=filterAllPaths,
+                bufferOutput = bufferOutput
                 )
             self.backupCount += currentParentSrcCount
             self.backupSize  += currentParentSrcSize
@@ -527,10 +529,24 @@ class Category(Profile): # {{{
             )
 
             # Report count for the current parent source directory
-            print(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            if currentParentSrcCount > 0:
+                bufferOutput.append(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+            else:
+                bufferOutput.append(f"    {util.getTimeStamp()}[white]Skipped [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+                for lineIdx, line in enumerate(bufferOutput[::-1]):
+                    if "Checking up" in line:
+                        bufferOutput[-1 - lineIdx] = line.replace("Checking up", "Skipped")
+                        break
 
         # Report count for the current category
-        print(f"  {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
+        if self.backupCount > 0:
+            bufferOutput.append(f"  {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
+        else:
+            bufferOutput.append(f"  {util.getTimeStamp()}[white]Skipped [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
+            for lineIdx, line in enumerate(bufferOutput[::-1]):
+                if "Checking up" in line:
+                    bufferOutput[-1 - lineIdx] = line.replace("Checking up", "Skipped")
+                    break
 
         Profile.profileDict[self.profileName].backupCount += self.backupCount
         Profile.profileDict[self.profileName].backupSize  += self.backupSize
