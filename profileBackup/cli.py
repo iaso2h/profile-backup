@@ -37,7 +37,7 @@ beaupy.Config.raise_on_escape    = True
 
 def deleteObsoleteDstFiles(): # {{{
     syncFileToDeleteChk = False
-    for profileName, syncFilesToDeleteByParent in backup.Category.syncFilesToDelete.items():
+    for profileName, syncFilesToDeleteByParent in backup.FileCategory.syncFilesToDelete.items():
         for parentPath, fileToDelete in syncFilesToDeleteByParent.items():
             if fileToDelete:
                 if not syncFileToDeleteChk:
@@ -79,7 +79,7 @@ def deleteObsoleteDstFiles(): # {{{
     print("\n\n\n\n\n")
     config.EXPORTLOG = True
 
-    for profileName, syncFilesToDeleteByParent in backup.Category.syncFilesToDelete.items():
+    for profileName, syncFilesToDeleteByParent in backup.FileCategory.syncFilesToDelete.items():
         if not any(list(syncFilesToDeleteByParent.values())):
             continue
 
@@ -143,7 +143,7 @@ def parseBackupFiles(profileNamesChosen: list[backup.Profile]): #  {{{
         for line in bufferOutput:
             print(line)
 
-    print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalBackupSize)}[/blue bold] for [green bold]{profileNamesChosen}[/green bold].[/white]\n\n\n\n\n")
+    print(f"\n{util.getTimeStamp()}[white]{backup.Profile.foundFileMessage} [purple bold]{backup.Profile.totalFileBackupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(backup.Profile.totalFileBackupSize)}[/blue bold] for [green bold]{profileNamesChosen}[/green bold].[/white]\n\n\n\n\n")
 
     config.EXPORTLOG = False
 # }}}
@@ -168,8 +168,8 @@ def endDryrunPrompt(profilesChosen: list[backup.Profile]):
         for profileName in backup.Profile.profileDict.keys():
             backup.Profile.profileDict[profileName].backupCount = 0
             backup.Profile.profileDict[profileName].backupSize = 0
-        backup.Profile.totalBackupCount = 0
-        backup.Profile.totalBackupSize = 0
+        backup.Profile.totalFileBackupCount = 0
+        backup.Profile.totalFileBackupSize = 0
         parseBackupFiles(profilesChosen)
 
 
@@ -287,8 +287,8 @@ def program() -> None:
     parseBackupFiles(profileNamesChosen) # type: ignore
 
     if config.DRYRUN:
-        if backup.Category.totalBackupCount > 0:
-            backup.Category.totalBackupCount = 0 # Rest the total count
+        if backup.FileCategory.totalFileBackupCount > 0:
+            backup.FileCategory.totalFileBackupCount = 0 # Rest the total count
             endDryrunPrompt(profileNamesChosen) # type: ignore
 
         deleteObsoleteDstFiles()

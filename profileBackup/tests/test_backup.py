@@ -12,7 +12,7 @@ class TestBackup:
         parentSrcPath = Path(projectDir, "profileBackup", "tests", "test_backup_src_files")
         dstName = "test_backup_dst_full_include_files"
         config.profileConfigs.append(
-            backup.Category(
+            backup.FileCategory(
                 {
                     "name": dstName,
                     "enabled": True,
@@ -45,7 +45,7 @@ class TestBackup:
             else:
                 s.enabled = True
 
-        backup.Category.updateEnabledList()
+        backup.FileCategory.updateEnabledList()
         config.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
         config.DRYRUN         = True
         config.SILENTMODE     = True
@@ -55,7 +55,7 @@ class TestBackup:
             if s.enabled:
                 s.backup()
 
-        assert backup.Category.relPathsTopParentSrc[dstName][str(parentSrcPath)] == [
+        assert backup.FileCategory.relPathsTopParentSrc[dstName][str(parentSrcPath)] == [
             '0bf11eb5-8606-4520-ab6c-1610bd46b08c.dummy',
             '0c46af66-da27-4a73-8db4-e93696754bcf.dummy',
             '1709f887-18c1-4908-accd-ec948dcf65dd.dummy',
@@ -201,7 +201,7 @@ class TestBackup:
         dstName = "test_backup_dst_full_sync_files"
         versionStr = "unnamed"
         config.profileConfigs.append(
-            backup.Category(
+            backup.FileCategory(
                 {
                     "name": dstName,
                     "enabled": True,
@@ -234,7 +234,7 @@ class TestBackup:
             else:
                 s.enabled = True
 
-        backup.Category.updateEnabledList()
+        backup.FileCategory.updateEnabledList()
         config.DESTPATH       = Path(projectDir, "profileBackup", "tests", dstName)
         config.DRYRUN         = True
         config.SILENTMODE     = True
@@ -245,7 +245,7 @@ class TestBackup:
                 s.backup()
 
 
-        assert sorted(backup.Category.syncFilesToDelete[dstName][versionStr]) == sorted([
+        assert sorted(backup.FileCategory.syncFilesToDelete[dstName][versionStr]) == sorted([
             str(Path(config.DESTPATH, "api", "bar", "test1.txt")),
             str(Path(config.DESTPATH, "api", "bar", "empty_dir")) + os.path.sep,
             str(Path(config.DESTPATH, "api", "redist", "foo")) + os.path.sep,

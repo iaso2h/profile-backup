@@ -2,7 +2,7 @@ from backup import Profile
 from pathlib import Path
 
 import os
-import winreg as wrg
+import winreg
 appDataPath = Path(os.getenv('APPDATA')).parent
 
 Profile(
@@ -10,6 +10,7 @@ Profile(
     enabled=False,
     categories=[
         {
+            "type": "file",
             "categoryName": "Main",
             # 1. function with `parentSrcPath` as parameter
             # 2. string
@@ -36,6 +37,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Workspace",
             "versionFind": lambda parentSrcPath: parentSrcPath.parts[7][:4],
             "enabled": True,
@@ -47,6 +49,7 @@ Profile(
                 or str.startswith(srcPath.name, "Workspace"),
         },
         {
+            "type": "file",
             "categoryName": "User Settings",
             "versionFind": lambda parentSrcPath: parentSrcPath.parts[4][-4:],
             "enabled": True,
@@ -63,10 +66,11 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Language Configs",
-            "versionFind": lambda _: wrg.QueryValueEx(
-                wrg.OpenKey(
-                    wrg.HKEY_LOCAL_MACHINE,
+            "versionFind": lambda _: winreg.QueryValueEx(
+                winreg.OpenKey(
+                    winreg.HKEY_LOCAL_MACHINE,
                     "SOFTWARE\\SolidWorks\\IM"
                     ),
                 "IMSchedulerVersion"
@@ -83,10 +87,11 @@ Profile(
             ],
         },
         {
+            "type": "file",
             "categoryName": "Data",
-            "versionFind": lambda _: wrg.QueryValueEx(
-                    wrg.OpenKey(
-                        wrg.HKEY_LOCAL_MACHINE,
+            "versionFind": lambda _: winreg.QueryValueEx(
+                    winreg.OpenKey(
+                        winreg.HKEY_LOCAL_MACHINE,
                         "SOFTWARE\\SolidWorks\\IM"
                         ),
                     "IMSchedulerVersion"
@@ -101,6 +106,26 @@ Profile(
                 "drawfontmap.txt",
             ],
         },
+        {
+            "type": "registry",
+            "categoryName": "Settings",
+            "versionFind": lambda: winreg.QueryValueEx(
+                winreg.OpenKey(
+                    winreg.HKEY_LOCAL_MACHINE,
+                    "SOFTWARE\\SolidWorks\\IM"
+                    ),
+                "IMSchedulerVersion"
+                )[0][:4],
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            # TODO: glob different versions os SOLIDWORKS
+            "parentPath": "HKEY_CURRENT_USER\\Software\\SolidWorks\\SOLIDWORKS 2024",
+            "filterType": "exclude",
+            "filterPattern": [
+                r"\\Flyouts"
+            ],
+        },
     ]
 )
 Profile(
@@ -108,6 +133,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Main",
             "versionFind": lambda parentSrcPath: parentSrcPath.parts[7],
             "enabled": True,
@@ -126,6 +152,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Plot",
             "versionFind": lambda parentSrcPath: parentSrcPath.parts[6][-4:],
             "enabled": True,
@@ -156,6 +183,7 @@ Profile(
                     ] or srcPath.suffix == ".ctb" or srcPath.suffix == ".stb")
         },
         {
+            "type": "file",
             "categoryName": "YSTool",
             "versionFind": "Generic",
             "enabled": True,
@@ -166,6 +194,7 @@ Profile(
             "filterPattern": lambda _: True,
         },
         {
+            "type": "file",
             "categoryName": "Tangent",
             "versionFind": lambda parentSrcPath: parentSrcPath.parts[2][5:],
             "enabled": True,
@@ -176,6 +205,7 @@ Profile(
             "filterPattern": ["SYS/*.lay", "SYS/tangent.cuix", "sys20x64/*.dwt", "sys24x64/*.dwt", "sys24x64/Tch.tmn"],
         },
         {
+            "type": "file",
             "categoryName": "Asset",
             "versionFind": "Generic",
             "enabled": True,
@@ -192,6 +222,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Main",
             "versionFind": lambda parentSrcPath: parentSrcPath.parts[6][-4:],
             "enabled": True,
@@ -214,6 +245,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Main",
             "versionFind": "Generic",
             "enabled": True,
@@ -233,6 +265,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Main",
             "versionFind": lambda parentSrcPath: parentSrcPath.parts[7],
             "enabled": True,
@@ -249,6 +282,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Main",
             "versionFind": "Generic",
             "enabled": True,
@@ -265,6 +299,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Main",
             "versionFind": "Generic",
             "enabled": True,
@@ -292,6 +327,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -311,6 +347,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -329,6 +366,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -345,6 +383,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -364,6 +403,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -383,6 +423,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -402,6 +443,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -421,6 +463,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,
@@ -439,6 +482,7 @@ Profile(
     enabled=True,
     categories=[
         {
+            "type": "file",
             "categoryName": "Profile",
             "versionFind": "Generic",
             "enabled": True,

@@ -2,18 +2,22 @@ import shutil
 import util
 import config
 
+import _io
 import os
+import winreg
+import re
 from types import GeneratorType
-from typing import Callable, Optional, Tuple, Iterator
+from typing import Callable, Optional, Tuple, Iterator, cast
 from pathlib import Path
+from datetime import datetime
 
 print = util.print
 
 
 
 class Profile(): # {{{
-    totalBackupCount = 0
-    totalBackupSize = 0
+    totalFileBackupCount = 0
+    totalFileBackupSize = 0
     foundFileMessage = "Backed up" if not config.DRYRUN else "Found"
     profileDict: dict = {  } # type: ignore
     def __init__(self, profileName, categories, enabled):
@@ -67,7 +71,17 @@ class Profile(): # {{{
         if not isinstance(val, list):
             raise ValueError(f"list is expceted for categories under Profile {self.profileName}.")
 
-        self._categories = [Category(profileName=self.profileName, **categoryArgs) for categoryArgs in val]
+        self._categories = []
+        for categoryArgs in val:
+            if categoryArgs["type"] == "file":
+                del categoryArgs["type"]
+                self._categories.append(FileCategory(profileName=self.profileName, **categoryArgs))
+            elif categoryArgs["type"] == "registry":
+                del categoryArgs["type"]
+                self._categories.append(RegCategory(profileName=self.profileName, **categoryArgs))
+            else:
+                # raise error for invalid category type
+                raise ValueError(f"Invalid category type {categoryArgs["type"]} for category {categoryArgs["categoryName"]} under Profile {self.profileName}.")
     # }}}
 
     @classmethod
@@ -76,7 +90,7 @@ class Profile(): # {{{
 # }}}
 
 
-class Category(Profile): # {{{
+class FileCategory(Profile): # {{{
     syncFilesToDelete:    dict[str, dict[Path, list[Path]]] = {}
     relPathsTopParentSrc: dict[str, dict[Path, list[str]]] = {}
 
@@ -91,8 +105,11 @@ class Category(Profile): # {{{
         silentReport: bool,
         parentSrcPaths: str | Path | list[Path] | Iterator[Path] | map,
         filterType: str,
-        filterPattern,
+        filterPattern: str | Callable,
     ):
+        self.backupCount = 0
+        self.backupSize  = 0
+
         self.profileName  = profileName
         self.categoryName = categoryName
         self.enabled      = enabled
@@ -119,7 +136,7 @@ class Category(Profile): # {{{
     @categoryName.setter
     def categoryName(self, val):
         if not isinstance(val, str):
-            raise ValueError(f"string value is expected from the categoryName parameter for category {self.categoryName} from profile {self.profileName}.")
+            raise ValueError(f"string value is expected from the categoryName parameter for category {self.categoryName} under profile {self.profileName}.")
         self._categoryName = val
     # }}}
 
@@ -130,7 +147,7 @@ class Category(Profile): # {{{
     @recursiveCopy.setter
     def recursiveCopy(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool value is expected from the recursiveCopy parameter for category {self.categoryName} from configuration {self.profileName}.")
+            raise ValueError(f"bool value is expected from the recursiveCopy parameter for category {self.categoryName} under configuration {self.profileName}.")
         self._recursiveCopy = val
     # }}}
 
@@ -141,7 +158,7 @@ class Category(Profile): # {{{
     @silentReport.setter
     def silentReport(self, val):
         if not isinstance(val, bool):
-            raise ValueError(f"bool is expected from the silentReport parameter for category {self.categoryName} from profile {self.profileName}.")
+            raise ValueError(f"bool is expected from the silentReport parameter for category {self.categoryName} under profile {self.profileName}.")
         self._silentReport = val
     # }}}
 
@@ -153,7 +170,7 @@ class Category(Profile): # {{{
     def parentSrcPaths(self, val):
         # Validate path pattern
         def skip(valParentSrcPaths):
-            print(f"[gray]Skipped unfound parent source paths for {valParentSrcPaths} for category {self.categoryName} from profile {self.profileName}.[/gray]", skipChk=False)
+            print(f"[gray]Skipped unfound parent source paths for {valParentSrcPaths} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
             self.enabled = False
 
         def checkDirPath(paths: list[ Path ]):
@@ -202,7 +219,7 @@ class Category(Profile): # {{{
                 else:
                     self._parentSrcPaths = [srcPath]
         else:
-            raise ValueError(f"Path object, Path glob generator or string is expected from the parentSrcPath parameter for category {self.categoryName} from profile {self.profileName}.")
+            raise ValueError(f"Path object, Path glob generator or string is expected from the parentSrcPath parameter for category {self.categoryName} under profile {self.profileName}.")
     # }}}
 
     # Validation of versionFind {{{
@@ -212,7 +229,7 @@ class Category(Profile): # {{{
     @versionFind.setter
     def versionFind(self, val):
         if not isinstance(val, Callable) and not isinstance(val, str):
-            raise ValueError(f"string or function is expected from the versionFind parameter for category {self.categoryName} from profile {self.profileName}.")
+            raise ValueError(f"string or function is expected from the versionFind parameter for category {self.categoryName} under profile {self.profileName}.")
 
         self._versionFind = val
         if self._versionFind == "":
@@ -226,9 +243,9 @@ class Category(Profile): # {{{
     @filterType.setter
     def filterType(self, val):
         if not isinstance(val, str):
-            raise ValueError(f"string is expected from the filterType parameter for category {self.categoryName} from profile {self.profileName}.")
+            raise ValueError(f"string is expected from the filterType parameter for category {self.categoryName} under profile {self.profileName}.")
         if val != "include" and val != "exclude":
-            raise ValueError(f"filterType parameter must be either 'include' or 'exclude' for category {self.categoryName} from profile {self.profileName}.")
+            raise ValueError(f"filterType parameter must be either 'include' or 'exclude' for category {self.categoryName} under profile {self.profileName}.")
 
         self._filterType = val
     # }}}
@@ -240,12 +257,12 @@ class Category(Profile): # {{{
     @filterPattern.setter
     def filterPattern(self, val):
         if not isinstance(val, list) and not isinstance(val, Callable):
-            raise ValueError(f"list or function is expected as the filterPattern parameter for category {self.categoryName} from profile {self.profileName}.")
+            raise ValueError(f"list or function is expected as the filterPattern parameter for category {self.categoryName} under profile {self.profileName}.")
 
         if isinstance(val, list):
             for k in val:
                 if not isinstance(k, str):
-                    raise ValueError(f"a filterPattern list must only contain string as the parameter for category {self.categoryName} from profile {self.profileName}.")
+                    raise ValueError(f"a filterPattern list must only contain string as the parameter for category {self.categoryName} under profile {self.profileName}.")
 
         self._filterPattern = val
     # }}}
@@ -289,13 +306,13 @@ class Category(Profile): # {{{
                         shutil.copy2(srcPath, dstPath)
                         count += 1
                         size += srcPath.stat().st_size
-                        bufferOutput.append(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
+                        bufferOutput.append(f"[white]    {Profile.foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
                     except PermissionError:
                         bufferOutput.append(f"[red]    Skip file due to permission error: [yellow]{relPathTopParentSrcStr}[/yellow][/red]")
                 else:
                     count += 1
                     size += srcPath.stat().st_size
-                    bufferOutput.append(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
+                    bufferOutput.append(f"[white]    {Profile.foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white][blue]({util.humanReadableSize(size)})[/blue]")
             else:
                 bufferOutput.append(f"[gray]    Skip unchanged file: {relPathTopParentSrcStr}[/gray]")
         else:
@@ -303,7 +320,7 @@ class Category(Profile): # {{{
                 os.makedirs(dstPath.parent, exist_ok=True)
                 shutil.copy2(srcPath, dstPath)
 
-            bufferOutput.append(f"[white]    {type(self).foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white]")
+            bufferOutput.append(f"[white]    {Profile.foundFileMessage} file: [yellow]{relPathTopParentSrcStr}[/yellow][/white]")
             count += 1
             size += srcPath.stat().st_size
 
@@ -463,7 +480,7 @@ class Category(Profile): # {{{
                     syncFilesToDeleteRelCurrentParentDst.append(dstPath) # }}}
 
 
-    def backup(self, bufferOutput:list[str]): # {{{
+    def backup(self, bufferOutput:list[str]) -> list[str]: # {{{
         # Alter global silent report for current backup session
         config.SILENTMODE = self.silentReport
         self.backupCount = 0
@@ -488,13 +505,13 @@ class Category(Profile): # {{{
             # Get parent destination path
             parentSrcRelAnchorPath = parentSrcPath.relative_to(parentSrcPath.anchor)
             parentDstPath = Path(
-                    config.DESTPATH, # type: ignore
-                    self.profileName,
-                    self.categoryName,
-                    self.versionFind,
-                    parentSrcPath.anchor[:1],
-                    parentSrcRelAnchorPath
-                )
+                config.DESTPATH, # type: ignore
+                self.profileName,
+                self.categoryName,
+                self.versionFind,
+                parentSrcPath.anchor[:1],
+                parentSrcRelAnchorPath
+            )
 
 
             # Glob all filter pattern paths
@@ -530,7 +547,7 @@ class Category(Profile): # {{{
 
             # Report count for the current parent source directory
             if currentParentSrcCount > 0:
-                bufferOutput.append(f"    {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+                bufferOutput.append(f"    {util.getTimeStamp()}[white]{Profile.foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
             else:
                 bufferOutput.append(f"    {util.getTimeStamp()}[white]Skipped [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
                 for lineIdx, line in enumerate(bufferOutput[::-1]):
@@ -540,7 +557,7 @@ class Category(Profile): # {{{
 
         # Report count for the current category
         if self.backupCount > 0:
-            bufferOutput.append(f"  {util.getTimeStamp()}[white]{type(self).foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
+            bufferOutput.append(f"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
         else:
             bufferOutput.append(f"  {util.getTimeStamp()}[white]Skipped [purple bold]{self.backupCount}[/purple bold] files of [blue bold]{util.humanReadableSize(self.backupSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold].[/white]")
             for lineIdx, line in enumerate(bufferOutput[::-1]):
@@ -550,7 +567,305 @@ class Category(Profile): # {{{
 
         Profile.profileDict[self.profileName].backupCount += self.backupCount
         Profile.profileDict[self.profileName].backupSize  += self.backupSize
-        Profile.totalBackupCount += self.backupCount
-        Profile.totalBackupSize  += self.backupSize
+        Profile.totalFileBackupCount += self.backupCount
+        Profile.totalFileBackupSize  += self.backupSize
+
+        return bufferOutput
         # }}}
+
+# }}}
+
+
+class RegCategory(FileCategory): # {{{
+    def __init__(
+        self,
+        profileName: str,
+        categoryName: str,
+        versionFind: str | Callable,
+        enabled: bool,
+        recursiveCopy: bool,
+        silentReport: bool,
+        parentPath: str,
+        filterType: str,
+        filterPattern: str | Callable,
+    ):
+        self.hkey = cast(winreg.HKEYType, None)
+        self.component:str = ""
+        # UGLY:
+        # self.hkey: Optional[winreg.HKEYType] = None
+        self.profileName  = profileName
+        self.categoryName = categoryName
+        self.enabled      = enabled
+        if not self.enabled:
+            return
+
+        self.recursiveCopy = recursiveCopy
+        self.silentReport  = silentReport
+        self.parentPath    = parentPath
+        self.versionFind   = versionFind
+        self.filterType    = filterType
+        self.filterPattern = filterPattern
+
+    def __str__(self):
+        return f"{self.profileName} {self.categoryName}"
+
+    def __repr__(self):
+        return f"{type(self).__name__}(profileName={self.profileName}, categoryName={self.categoryName})"
+    # Validation of categoryName {{{
+    @property
+    def categoryName(self):
+        return self._categoryName
+    @categoryName.setter
+    def categoryName(self, val):
+        if not isinstance(val, str):
+            raise ValueError(f"string value is expected from the categoryName parameter for category {self.categoryName} under profile {self.profileName}.")
+        self._categoryName = val
+    # }}}
+
+    # Validation of recursiveCopy {{{
+    @property
+    def recursiveCopy(self):
+        return self._recursiveCopy
+    @recursiveCopy.setter
+    def recursiveCopy(self, val):
+        if not isinstance(val, bool):
+            raise ValueError(f"bool value is expected from the recursiveCopy parameter for category {self.categoryName} under configuration {self.profileName}.")
+        self._recursiveCopy = val
+    # }}}
+
+    # Validation of silentReport {{{
+    @property
+    def silentReport(self):
+        return self._silentReport
+    @silentReport.setter
+    def silentReport(self, val):
+        if not isinstance(val, bool):
+            raise ValueError(f"bool is expected from the silentReport parameter for category {self.categoryName} under profile {self.profileName}.")
+        self._silentReport = val
+    # }}}
+
+    # Validation of parentSrcPath {{{
+    @property
+    def parentPath(self):
+        return self._parentPath
+    @parentPath.setter
+    def parentPath(self, val):
+        # Validate path pattern
+        if not isinstance(val, str):
+            raise ValueError(f"string value is expected from the registry parent path for category {self.categoryName} under profile {self.profileName}.")
+        if "/" in val:
+            raise ValueError(fr'"/" character is not allowed in the registry parent path for category {self.categoryName} under profile {self.profileName}.')
+        if val[0] == "\\":
+            raise ValueError(f"the registry parent path must not start with a backslash for category {self.categoryName} under profile {self.profileName}.")
+        # Get hkey constant
+        hkeyStr = val[:val.index("\\")]
+        componentStr = val[val.index("\\")+1:]
+        if hkeyStr not in ("HKEY_CLASSES_ROOT", "HKEY_CURRENT_USER", "HKEY_LOCAL_MACHINE", "HKEY_USERS", "HKEY_CURRENT_CONFIG"):
+            raise ValueError(f"invalid registry hkey for category {self.categoryName} under profile {self.profileName}.")
+        else:
+            self.hkey = getattr(winreg, hkeyStr)
+            self.component = componentStr
+
+        try:
+            with winreg.OpenKey(self.hkey, self.component) as _:
+                pass
+        except FileNotFoundError:
+            self._enable = False
+            print(f"[gray]Skipped unfound registry parent path for {self._parentPath} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
+
+        self._parentPath = val
+    # }}}
+
+    # Validation of versionFind {{{
+    @property
+    def versionFind(self):
+        return self._versionFind
+    @versionFind.setter
+    def versionFind(self, val):
+        if not isinstance(val, Callable) and not isinstance(val, str):
+            raise ValueError(f"string or function is expected from the versionFind parameter for category {self.categoryName} under profile {self.profileName}.")
+
+        self._versionFind = val
+        if self._versionFind == "":
+            self._versionFind = "Generic"
+    # }}}
+
+    # Validation of filterType {{{
+    @property
+    def filterType(self):
+        return self._filterType
+    @filterType.setter
+    def filterType(self, val):
+        if not isinstance(val, str):
+            raise ValueError(f"string is expected from the filterType parameter for category {self.categoryName} under profile {self.profileName}.")
+        if val != "include" and val != "exclude":
+            raise ValueError(f"filterType parameter must be either 'include' or 'exclude' for category {self.categoryName} under profile {self.profileName}.")
+
+        self._filterType = val
+    # }}}
+
+    # Validation of filterPattern {{{
+    @property
+    def filterPattern(self) -> list[re.Pattern]:
+        return self._filterPattern
+    @filterPattern.setter
+    def filterPattern(self, val):
+        if not isinstance(val, list):
+            raise ValueError(f"list value is expected as the filterPattern parameter for category {self.categoryName} under profile {self.profileName}.")
+        for pattern in val:
+            if not isinstance(pattern, str):
+                raise ValueError(f"string value is expected in the filterPattern list for category {self.categoryName} under profile {self.profileName}.")
+        self._filterPattern = list(map(lambda p: re.compile(p), val))
+    # }}}
+
+    def shouldSkipKey(self, fullPath) -> bool: # {{{
+        """Check if key matches filter pattern"""
+        if self.filterType == "exclude":
+            for p in self.filterPattern:
+                if re.search(p, fullPath):
+                    return True
+            return False
+        else:
+            for p in self.filterPattern:
+                if not re.search(p, fullPath):
+                    return True
+            return False # }}}
+
+    @staticmethod
+    def formatRegValue(value, valueType) -> str: # {{{
+        """Format registry value according to its type"""
+        match valueType:
+            case winreg.REG_SZ:
+                return '"{}"'.format(
+                    value.replace('\\', '\\\\').replace('"', '\\"')
+                )
+            case winreg.REG_DWORD:
+                return f"dword:{value:08x}"
+            case winreg.REG_BINARY:
+                # Format as comma-separated hex bytes with leading zeros
+                hexBytes = [f"{byte:02x}" for byte in value]
+                return f"hex:{','.join(hexBytes)}"
+            case winreg.REG_MULTI_SZ:
+                # Format as hex(7) type with comma-separated bytes including null terminators
+                bytesList = []
+                for s in value:
+                    bytesList.extend([ord(c) for c in s])
+                    bytesList.append(0)  # null terminator
+                bytesList.append(0)  # final null terminator
+                hexStr = ','.join(f"{b:02x}" for b in bytesList)
+                return f"hex(7):{hexStr}"
+            case winreg.REG_EXPAND_SZ:
+                hexStr = ','.join(f"{ord(c):02x}" for c in value + "\0")
+                return f"hex(2):{hexStr}"
+            case _:
+                return f'"{value}"'  # Fallback for other types # }}}
+
+
+    def recursiveExport(self, currentPath, key, exportFile: _io.TextIOWrapper): # {{{
+        # Skip if matches ignore pattern
+        if self.shouldSkipKey(currentPath):
+            print(f"⏩ Skipping key: {currentPath}")
+            return
+
+        # Write key header
+        exportFile.write(f"[HKEY_CURRENT_USER\\{currentPath}]\n")
+
+        # Export values
+        try:
+            i = 0
+            while True:
+                try:
+                    name, value, valueType = winreg.EnumValue(key, i)
+                    if self.shouldSkipKey(f"{currentPath}\\{name}"):
+                        continue
+
+                    formattedValue = self.formatRegValue(value, valueType)
+
+                    # Write to file
+                    if name:
+                        exportFile.write(f'"{name}"={formattedValue}\n')
+                    else:  # Default value
+                        exportFile.write(f'@={formattedValue}\n')
+                    i += 1
+                except OSError:
+                    break
+        except WindowsError:
+            pass
+
+        exportFile.write("\n")  # Extra newline between keys
+
+        # Recursively export subkeys
+        try:
+            j = 0
+            while True:
+                try:
+                    subkeyName = winreg.EnumKey(key, j)
+                    fullSubpath = f"{currentPath}\\{subkeyName}"
+
+                    if not self.shouldSkipKey(fullSubpath):
+                        with winreg.OpenKey(key, subkeyName) as subkey:
+                            self.recursiveExport(fullSubpath, subkey, exportFile)
+                    else:
+                        print(f"⏩ Skipping key: {fullSubpath}")
+                    j += 1
+                except OSError:
+                    break
+        except WindowsError:
+            pass # }}}
+
+    def backup(self, bufferOutput:list[str]) -> list[str]:
+        """
+        Export registry key to .reg format with:
+        - Proper string escaping (only for data values, not key paths)
+        - Standard hex formatting (with leading zeros)
+        - No trailing commas
+        - Optional key filtering
+        - camelCase naming convention
+
+        Args:
+            component (str): Registry path (e.g., "SOFTWARE\\SolidWorks\\SOLIDWORKS 2024")
+            outputFilePath (str): Output .reg file path
+            ignorePattern (str): Regex pattern for keys to exclude (e.g., "\\Cache$|\\Temp$")
+        """
+        # TODO: distinguish file count from regitry count
+        if config.DRYRUN:
+            bufferOutput.append(f"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} registry at [green bold]{self._parentPath}[/green bold].[/white]")
+            Profile.profileDict[self.profileName].backupCount += 1
+            Profile.totalFileBackupCount += 1
+            return bufferOutput
+
+        versionFindStr = self.versionFind() if callable(self.versionFind) else self.versionFind
+        outputFilePath = Path(
+                config.DESTPATH, # type: ignore
+                self.profileName,
+                self.categoryName,
+                versionFindStr,
+                str(datetime.now().strftime("%Y%m%d_%H%M%S")) + ".reg"
+            )
+        try:
+            os.makedirs(outputFilePath.parent, exist_ok=True)
+            with open(outputFilePath, 'w', encoding='utf-16') as exportFile:
+                # Write REG file header
+                exportFile.write("Windows Registry Editor Version 5.00\n\n")
+
+                # Start export from root key
+                with winreg.OpenKey(self.hkey, self.component) as key:
+                    self.recursiveExport(self.component, key, exportFile)
+
+            print(f"✅ Successfully exported to {outputFilePath}")
+
+        except FileNotFoundError:
+            print(fr"Registry path: {self.hkey}\{self.component} doesn't exist.")
+        except PermissionError:
+            print("❌ Permission denied. Run as Administrator.")
+        except Exception as e:
+            print(f"❌ Error exporting registry: {str(e)}")
+
+        if not config.DRYRUN:
+            bufferOutput.append(f"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} registry at [green bold]{self._parentPath}[/green bold].[/white]")
+            Profile.profileDict[self.profileName].backupCount += 1
+            Profile.totalFileBackupCount += 1
+            return bufferOutput
+
+        return bufferOutput
 # }}}
