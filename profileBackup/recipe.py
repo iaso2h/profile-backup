@@ -109,18 +109,11 @@ Profile(
         {
             "type": "registry",
             "categoryName": "Settings",
-            "versionFind": lambda: winreg.QueryValueEx(
-                winreg.OpenKey(
-                    winreg.HKEY_LOCAL_MACHINE,
-                    "SOFTWARE\\SolidWorks\\IM"
-                    ),
-                "IMSchedulerVersion"
-                )[0][:4],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
             # TODO: glob different versions os SOLIDWORKS
-            "parentPath": "HKEY_CURRENT_USER\\Software\\SolidWorks\\SOLIDWORKS 2024",
+            "parentPaths": r"HKEY_CURRENT_USER\Software\SolidWorks\SOLIDWORKS \d+",
             "filterType": "exclude",
             "filterPattern": [
                 r"\\Flyouts"
