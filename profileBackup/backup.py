@@ -343,71 +343,74 @@ class Category(Profile): # {{{
         if parentSrcPath not in type(self).relPathsTopParentSrc[self.profileName]:
             type(self).relPathsTopParentSrc[self.profileName][parentSrcPath] = []
 
-        for srcPath in parentSrcPath.iterdir():
-            if srcPath.is_dir():
-                if self.recursiveCopy:
-                    # Check whether the directory is in the filter pattern list
-                    srcPathInsideFilterChk = False
+        try:
+            for srcPath in parentSrcPath.iterdir():
+                if srcPath.is_dir():
+                    if self.recursiveCopy:
+                        # Check whether the directory is in the filter pattern list
+                        srcPathInsideFilterChk = False
+                        if isinstance(self.filterPattern, list):
+                            if self.filterType == "exclude":
+                                for p in filterAllPaths:
+                                    if p.is_dir() and srcPath == p:
+                                        srcPathInsideFilterChk = True
+                                        break
+                            elif self.filterType == "include":
+                                for p in filterAllPaths:
+                                    if p.is_dir() and srcPath != p:
+                                        srcPathInsideFilterChk = True
+                                        break
+                        else:
+                            if self.filterType == "exclude" and self.filterPattern(srcPath):
+                                srcPathInsideFilterChk = True
+                                break
+                            elif self.filterType == "include" and not self.filterPattern(srcPath):
+                                srcPathInsideFilterChk = True
+                                break
+
+                        if srcPathInsideFilterChk:
+                            continue
+
+                        count, size = self.iterCopy(
+                            parentSrcPath=srcPath,
+                            parentDstPath=parentDstPath,
+                            filterAllPaths=filterAllPaths,
+                            topParentSrcPath=topParentSrcPath
+                        )
+                        countAccumulated += count
+                        sizeAccumulated += size
+
+                    else:
+                        continue
+                else:
                     if isinstance(self.filterPattern, list):
-                        if self.filterType == "exclude":
-                            for p in filterAllPaths:
-                                if p.is_dir() and srcPath == p:
-                                    srcPathInsideFilterChk = True
-                                    break
-                        elif self.filterType == "include":
-                            for p in filterAllPaths:
-                                if p.is_dir() and srcPath != p:
-                                    srcPathInsideFilterChk = True
-                                    break
+                        if self.filterType == "exclude" and srcPath in filterAllPaths:
+                            continue
+                        elif self.filterType == "include" and srcPath not in filterAllPaths:
+                            continue
+                        else:
+                            count, size = self.copyFile(
+                                srcPath,
+                                topParentSrcPath,
+                                parentDstPath,
+                            )
+                            countAccumulated += count
+                            sizeAccumulated += size
                     else:
                         if self.filterType == "exclude" and self.filterPattern(srcPath):
-                            srcPathInsideFilterChk = True
-                            break
+                            continue
                         elif self.filterType == "include" and not self.filterPattern(srcPath):
-                            srcPathInsideFilterChk = True
-                            break
-
-                    if srcPathInsideFilterChk:
-                        continue
-
-                    count, size = self.iterCopy(
-                        parentSrcPath=srcPath,
-                        parentDstPath=parentDstPath,
-                        filterAllPaths=filterAllPaths,
-                        topParentSrcPath=topParentSrcPath
-                    )
-                    countAccumulated += count
-                    sizeAccumulated += size
-
-                else:
-                    continue
-            else:
-                if isinstance(self.filterPattern, list):
-                    if self.filterType == "exclude" and srcPath in filterAllPaths:
-                        continue
-                    elif self.filterType == "include" and srcPath not in filterAllPaths:
-                        continue
-                    else:
-                        count, size = self.copyFile(
-                            srcPath,
-                            topParentSrcPath,
-                            parentDstPath,
-                        )
-                        countAccumulated += count
-                        sizeAccumulated += size
-                else:
-                    if self.filterType == "exclude" and self.filterPattern(srcPath):
-                        continue
-                    elif self.filterType == "include" and not self.filterPattern(srcPath):
-                        continue
-                    else:
-                        count, size = self.copyFile(
-                            srcPath=srcPath,
-                            parentSrcPath=topParentSrcPath,
-                            parentDstPath=parentDstPath,
-                        )
-                        countAccumulated += count
-                        sizeAccumulated += size
+                            continue
+                        else:
+                            count, size = self.copyFile(
+                                srcPath=srcPath,
+                                parentSrcPath=topParentSrcPath,
+                                parentDstPath=parentDstPath,
+                            )
+                            countAccumulated += count
+                            sizeAccumulated += size
+        except PermissionError:
+            print(f"[red]    Skip directory due to permission error: [yellow]{parentSrcPath}[/yellow][/red]")
 
         return countAccumulated, sizeAccumulated # }}}
 
