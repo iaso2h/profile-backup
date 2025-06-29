@@ -63,6 +63,8 @@ class Profile(): # {{{
         self.profileName = profileName
         self.categories  = categories
         self.enabled     = enabled
+        if not self.enabled:
+            return
         if self.profileName not in type(self).profileDict:
             type(self).profileDict[self.profileName] = self
 
@@ -754,7 +756,8 @@ class RegCategory(FileCategory): # {{{
         filterPattern: str | Callable,
     ):
         self.hkey = cast(winreg.HKEYType, None)
-        self.componentPathsMid:str = ""
+        self.hkeyStr: str = ""
+        self.componentPathsMid: str = ""
         self.componentPathStrs: list[str] = []
         # UGLY:
         # self.hkey: Optional[winreg.HKEYType] = None
@@ -827,15 +830,15 @@ class RegCategory(FileCategory): # {{{
         componentPathsValid = [
             part for part in componentPaths if not re.fullmatch(r"^[a-zA-Z]\W*$", part)  # Exclude regex patterns like \s*, \d+
         ]
-        hkeyStr = componentPathsValid[0]
+        self.hkeyStr = componentPathsValid[0]
         self.componentPathsMid = "\\".join(componentPathsValid[1:-1])
         fullPathPatFistStr = "\\".join(componentPathsValid[0:-1]) + "\\"
         fullPathPatStr = re.escape(fullPathPatFistStr) + val.replace(fullPathPatFistStr, "")
         fullPathPat = re.compile(fullPathPatStr)
-        if hkeyStr not in ("HKEY_CLASSES_ROOT", "HKEY_CURRENT_USER", "HKEY_LOCAL_MACHINE", "HKEY_USERS", "HKEY_CURRENT_CONFIG"):
+        if self.hkeyStr not in ("HKEY_CLASSES_ROOT", "HKEY_CURRENT_USER", "HKEY_LOCAL_MACHINE", "HKEY_USERS", "HKEY_CURRENT_CONFIG"):
             raise ValueError(f"invalid registry hkey for category {self.categoryName} under profile {self.profileName}.")
         else:
-            self.hkey = getattr(winreg, hkeyStr)
+            self.hkey = getattr(winreg, self.hkeyStr)
         try:
             with winreg.OpenKey(self.hkey, self.componentPathsMid) as _:
                 pass
@@ -850,8 +853,9 @@ class RegCategory(FileCategory): # {{{
             while True:
                 try:
                     subkey = winreg.EnumKey(key, i)
-                    fullPathStr = fr"{hkeyStr}\{self.componentPathsMid}\{subkey}"
-                    if not self.shouldSkipKey(fullPathStr) and fullPathPat.search(fullPathStr):
+                    fullPathStr = fr"{self.hkeyStr}\{self.componentPathsMid}\{subkey}"
+                    # Treat subkeys as values here to make parent subkeys always pass skip check if `self.filterType` is "include"
+                    if not self.shouldSkipKey(fullPathStr, False) and fullPathPat.search(fullPathStr):
                         self.componentPathStrs.append(subkey)
 
                     i += 1
@@ -894,7 +898,7 @@ class RegCategory(FileCategory): # {{{
         self._filterPattern = list(map(lambda p: re.compile(p), val))
     # }}}
 
-    def shouldSkipKey(self, fullPath) -> bool: # {{{
+    def shouldSkipKey(self, fullPath: str, isSubKey:bool) -> bool: # {{{
         """
         Determines if a registry key should be skipped based on filter patterns.
 
@@ -917,10 +921,16 @@ class RegCategory(FileCategory): # {{{
                     return True
             return False
         else:
-            for p in self.filterPattern:
-                if not re.search(p, fullPath):
-                    return True
-            return False # }}}
+            if isSubKey:
+                for p in self.filterPattern:
+                    if re.search(p, fullPath):
+                        return False
+                return True
+            else:
+                 # For values, always include them
+                return False
+            
+    # }}}
 
     @staticmethod
     def formatRegValue(value, valueType) -> str: # {{{
@@ -978,7 +988,7 @@ class RegCategory(FileCategory): # {{{
         self,
         currentComponentPath:str,
         key:winreg.HKEYType,
-        exportFile: _io.TextIOWrapper
+        exportFile: _io.TextIOWrapper,
     ): # {{{
         """
         Recursively exports registry keys and values to a .reg file.
@@ -997,12 +1007,9 @@ class RegCategory(FileCategory): # {{{
             - Handles registry access errors gracefully
             - Creates properly formatted .reg file entries with appropriate headers
         """
-        # Skip if matches ignore pattern
-        if self.shouldSkipKey(currentComponentPath):
-            return
 
         # Write key header
-        exportFile.write(f"[{self.hkey}\\{currentComponentPath}]\n")
+        exportFile.write(f"[{self.hkeyStr}\\{currentComponentPath}]\n")
 
         # Export values
         try:
@@ -1010,7 +1017,7 @@ class RegCategory(FileCategory): # {{{
             while True:
                 try:
                     name, value, valueType = winreg.EnumValue(key, i)
-                    if self.shouldSkipKey(f"{currentComponentPath}\\{name}"):
+                    if self.shouldSkipKey(f"{currentComponentPath}\\{name}", False):
                         continue
 
                     formattedValue = self.formatRegValue(value, valueType)
@@ -1036,7 +1043,7 @@ class RegCategory(FileCategory): # {{{
                     subkeyName = winreg.EnumKey(key, j)
                     fullSubpath = f"{currentComponentPath}\\{subkeyName}"
 
-                    if not self.shouldSkipKey(fullSubpath):
+                    if not self.shouldSkipKey(fullSubpath, True):
                         with winreg.OpenKey(key, subkeyName) as subkey:
                             self.recursiveExport(fullSubpath, subkey, exportFile)
                     j += 1
@@ -1061,10 +1068,16 @@ class RegCategory(FileCategory): # {{{
                         exportFile.write("Windows Registry Editor Version 5.00\n\n")
 
                         # Start export from root key
-                        with winreg.OpenKey(self.hkey, self.componentPathsMid) as key:
-                            self.recursiveExport(self.componentPathsMid, key, exportFile)
+                        parentComponentPath = self.componentPathsMid + "\\" + componentStr
+                        with winreg.OpenKey(self.hkey, parentComponentPath) as key:
+                            self.recursiveExport(parentComponentPath, key, exportFile)
 
-                    bufferOutput.append(f"[white]    {Profile.foundFileMessage} regitry at [yellow]{outputFilePath}[/yellow]")
+                    bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}\{}}[/yellow]".format(
+                        Profile.foundFileMessage,
+                        self.hkeyStr,
+                        self.componentPathsMid,
+                        componentStr)
+                    )
                 except FileNotFoundError:
                     bufferOutput.append(fr"[red]    registry path: {self.hkey}\{self.componentPathsMid} doesn't exist.[/red]")
                 except PermissionError:
@@ -1073,7 +1086,7 @@ class RegCategory(FileCategory): # {{{
                     bufferOutput.append(f"[red]    Error exporting registry: {str(e)}[/red]")
 
 
-            bufferOutput.append(fr"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} registry at [green bold]{self.hkey}\{componentStr}[/green bold].[/white]")
+            bufferOutput.append(fr"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} {len(self.componentPathStrs)} matched registry paths at [green bold]{self.parentPaths}[/green bold].[/white]")
             Profile.profileDict[self.profileName].backupCount += len(self.componentPathStrs)
             Profile.totalBackupCount += len(self.componentPathStrs)
 
