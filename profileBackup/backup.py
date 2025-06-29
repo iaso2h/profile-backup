@@ -10,7 +10,7 @@ from typing import Callable, Optional, Tuple, Iterator, cast
 from pathlib import Path
 
 print = util.print
-
+WINDOWS_ANCHOR_START_PAT = re.compile(r"^[a-zA-Z]:\\")
 
 
 class Profile(): # {{{
@@ -587,44 +587,20 @@ class FileCategory(Profile): # {{{
         """
         Performs the backup operation for this registry category.
 
-        Exports Windows registry keys and values to .reg files based on the configured
-        paths and filter patterns. Creates the necessary directory structure and
-        handles both recursive and non-recursive registry key backups.
+        Exports all registry keys and values for this category that match the filter criteria.
+        The exported content is formatted for .reg file compatibility and appended to the
+        provided buffer.
 
         Args:
-            bufferOutput (list[str]): List to collect output messages during the backup operation.
+            bufferOutput (list[str]): Buffer to store the exported registry content
 
         Returns:
-            list[str]: Updated list of output messages with backup results and statistics.
+            list[str]: Updated buffer containing the original content plus the exported
+                      registry entries for this category
 
         Note:
-            - This method respects the global DRYRUN setting.
-            - It updates both category-level and profile-level backup statistics.
-            - Registry entries are exported to .reg files with proper formatting.
-            - For each registry path, it creates a corresponding destination file with
-              appropriate directory structure.
-            - The method handles registry access errors gracefully.
-        """
-        """
-        Performs the backup operation for this file category.
-
-        This is the main method that orchestrates the entire backup process for a file category.
-        It processes each source path, determines version information, creates destination paths,
-        applies filters, copies files, and handles synchronization if enabled. It also tracks
-        and reports backup statistics.
-
-        Args:
-            bufferOutput (list[str]): List to collect output messages during the backup operation.
-
-        Returns:
-            list[str]: Updated list of output messages with backup results and statistics.
-
-        Note:
-            - This method respects the global DRYRUN and COPYSYNC settings.
-            - It updates both category-level and profile-level backup statistics.
-            - For each source path, it creates a corresponding destination path with
-              appropriate directory structure.
-            - In sync mode, it identifies files in destination that don't exist in source.
+            This method handles opening the root registry key, calling recursiveExport
+            to process all subkeys, and properly formatting the output.
         """
         # Alter global silent report for current backup session
         config.SILENTMODE = self.silentReport
@@ -749,6 +725,7 @@ class RegCategory(FileCategory): # {{{
         enabled: bool,
         recursiveCopy: bool,
         silentReport: bool,
+        stripePathValue: bool,
         parentPaths: str,
         filterType: str,
         filterPattern: str | Callable,
@@ -765,11 +742,13 @@ class RegCategory(FileCategory): # {{{
         if not self.enabled:
             return
 
-        self.recursiveCopy = recursiveCopy
-        self.silentReport  = silentReport
-        self.filterType    = filterType
-        self.filterPattern = filterPattern
-        self.parentPaths   = parentPaths
+        self.recursiveCopy   = recursiveCopy
+        self.silentReport    = silentReport
+        self.stripePathValue = stripePathValue
+        self.filterType      = filterType
+        self.filterPattern   = filterPattern
+        self.parentPaths     = parentPaths
+
 
     def __str__(self):
         return f"{self.profileName} {self.categoryName}"
@@ -807,6 +786,17 @@ class RegCategory(FileCategory): # {{{
         if not isinstance(val, bool):
             raise ValueError(f"bool is expected from the silentReport parameter for category {self.categoryName} under profile {self.profileName}.")
         self._silentReport = val
+    # }}}
+
+    # Validation of stripePathValue {{{
+    @property
+    def stripePathValue(self):
+        return self._stripePathValue
+    @stripePathValue.setter
+    def stripePathValue(self, val):
+        if not isinstance(val, bool):
+            raise ValueError(f"bool is expected from the stripePathValue parameter for category {self.categoryName} under profile {self.profileName}.")
+        self._stripePathValue = val
     # }}}
 
     # Validation of parentPaths {{{
@@ -867,7 +857,6 @@ class RegCategory(FileCategory): # {{{
         self._parentPaths = val
     # }}}
 
-
     # Validation of filterType {{{
     @property
     def filterType(self):
@@ -905,6 +894,7 @@ class RegCategory(FileCategory): # {{{
 
         Args:
             fullPath (str): Full registry key path to check against filter patterns.
+            isSubKey (bool): Whether the path is a subkey (True) or a value (False).
 
         Returns:
             bool: True if the key should be skipped, False if it should be processed.
@@ -912,6 +902,7 @@ class RegCategory(FileCategory): # {{{
         Note:
             - For "exclude" filterType: Returns True if any pattern matches (skip matched keys)
             - For "include" filterType: Returns True if no pattern matches (skip unmatched keys)
+            - For values (isSubKey=False) with "include" filterType: Always includes them
         """
         if self.filterType == "exclude":
             for p in self.filterPattern:
@@ -931,7 +922,7 @@ class RegCategory(FileCategory): # {{{
     # }}}
 
     @staticmethod
-    def formatRegValue(value, valueType) -> str: # {{{
+    def formatRegValue(value, valueType) -> Tuple[str, Optional[str]]: # {{{
         """
         Formats a registry value according to its type for .reg file export.
 
@@ -957,15 +948,22 @@ class RegCategory(FileCategory): # {{{
         """
         match valueType:
             case winreg.REG_SZ:
-                return '"{}"'.format(
+                valStripped = None
+                val = '"{}"'.format(
                     value.replace('\\', '\\\\').replace('"', '\\"')
                 )
+                if not WINDOWS_ANCHOR_START_PAT.search(value):
+                    valStripped = val
+
+                return val, valStripped
             case winreg.REG_DWORD:
-                return f"dword:{value:08x}"
+                val = f"dword:{value:08x}"
+                return val, val
             case winreg.REG_BINARY:
                 # Format as comma-separated hex bytes with leading zeros
                 hexBytes = [f"{byte:02x}" for byte in value]
-                return f"hex:{','.join(hexBytes)}"
+                val = f"hex:{','.join(hexBytes)}"
+                return val, val
             case winreg.REG_MULTI_SZ:
                 # Format as hex(7) type with comma-separated bytes including null terminators
                 bytesList = []
@@ -974,20 +972,26 @@ class RegCategory(FileCategory): # {{{
                     bytesList.append(0)  # null terminator
                 bytesList.append(0)  # final null terminator
                 hexStr = ','.join(f"{b:02x}" for b in bytesList)
-                return f"hex(7):{hexStr}"
+                val = f"hex(7):{hexStr}"
+                return val, val
             case winreg.REG_EXPAND_SZ:
                 hexStr = ','.join(f"{ord(c):02x}" for c in value + "\0")
-                return f"hex(2):{hexStr}"
+                val = f"hex(2):{hexStr}"
+                return val, val
             case _:
-                return f'"{value}"'  # Fallback for other types # }}}
+                val = f'"{value}"'
+                return val, val
+
+    # }}}
 
 
     def recursiveExport(
-        self,
-        currentComponentPath:str,
-        key:winreg.HKEYType,
-        regContent: list[str]
-    ): # {{{
+            self,
+            currentComponentPath:str,
+            key:winreg.HKEYType,
+            regContent: list[str],
+            regContentStriped: list[str]
+            ) -> Tuple[list[str], list[str]]: # {{{
         """
         Recursively exports registry keys and values to a .reg file.
 
@@ -1008,6 +1012,7 @@ class RegCategory(FileCategory): # {{{
 
         # Write key header
         regContent.append(f"[{self.hkeyStr}\\{currentComponentPath}]")
+        regContentStriped.append(f"[{self.hkeyStr}\\{currentComponentPath}]")
 
         # Export values
         try:
@@ -1018,13 +1023,17 @@ class RegCategory(FileCategory): # {{{
                     if self.shouldSkipKey(f"{currentComponentPath}\\{name}", False):
                         continue
 
-                    formattedValue = self.formatRegValue(value, valueType)
+                    formattedValue, formattedValueStriped = self.formatRegValue(value, valueType)
 
                     # Write to file
                     if name:
                         regContent.append(f'"{name}"={formattedValue}')
+                        if formattedValueStriped:
+                            regContentStriped.append(f'"{name}"={formattedValue}')
                     else:  # Default value
                         regContent.append(f'@={formattedValue}')
+                        if formattedValueStriped:
+                            regContentStriped.append(f'@={formattedValue}')
                     i += 1
                 except OSError:
                     break
@@ -1032,6 +1041,7 @@ class RegCategory(FileCategory): # {{{
             pass
 
         regContent.append("")  # Extra newline between keys
+        regContentStriped.append("")  # Extra newline between keys
 
         # Recursively export subkeys
         try:
@@ -1043,14 +1053,19 @@ class RegCategory(FileCategory): # {{{
 
                     if not self.shouldSkipKey(fullSubpath, True):
                         with winreg.OpenKey(key, subkeyName) as subkey:
-                            regContent = self.recursiveExport(fullSubpath, subkey, regContent)
+                            regContent, regContentStriped = self.recursiveExport(
+                                fullSubpath,
+                                subkey,
+                                regContent,
+                                regContentStriped
+                            )
                     j += 1
                 except OSError:
                     break
         except WindowsError:
             pass
 
-        return regContent
+        return regContent, regContentStriped
     # }}}
 
 
@@ -1062,20 +1077,37 @@ class RegCategory(FileCategory): # {{{
                 self.categoryName,
                 componentStr + ".reg"
             )
+            outputFileStrippedPath = Path(
+                config.DESTPATH, # type: ignore
+                self.profileName,
+                self.categoryName,
+                componentStr + "_stripped" + ".reg"
+            )
             regContent = []
+            regContentStriped = []
             try:
                 if not config.DRYRUN:
                     os.makedirs(outputFilePath.parent, exist_ok=True)
                     with open(outputFilePath, 'w', encoding='utf-16') as exportFile:
                         # Write REG file header
                         regContent.append("Windows Registry Editor Version 5.00\n")
+                        regContentStriped.append("Windows Registry Editor Version 5.00\n")
 
                         # Start export from root key
                         parentComponentPath = self.componentPathsMid + "\\" + componentStr
                         with winreg.OpenKey(self.hkey, parentComponentPath) as key:
-                            regContent = self.recursiveExport(parentComponentPath, key, regContent)
+                            regContent, regContentStriped = self.recursiveExport(
+                                parentComponentPath,
+                                key,
+                                regContent,
+                                regContentStriped
+                            )
 
                         exportFile.write('\n'.join(regContent))
+                    if self.stripePathValue:
+                        with open(outputFileStrippedPath, 'w', encoding='utf-16') as exportFile:
+                            exportFile.write('\n'.join(regContentStriped))
+
 
                     bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}\{}[/yellow]".format(
                         Profile.foundFileMessage,

@@ -11,22 +11,57 @@ from pathlib import Path
 print = util.print
 
 def findRemovableDrive() -> Tuple[list[str], list[str]]:
-    # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
+    """
+    Identifies all removable drives connected to the system.
+    
+    Uses psutil to detect USB/removable drives and returns both raw and formatted
+    versions of the drive paths.
+    
+    Returns:
+        Tuple[list[str], list[str]]: A tuple containing:
+            - List of formatted drive paths (with ANSI color codes)
+            - List of raw drive paths
+            
+    Note:
+        Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
+    """
     removableDriveRaw = [i.mountpoint for i in psutil.disk_partitions() if "removable" in i.opts]
     removableDriveRich = list(map(lambda i: "[blue]" + i, removableDriveRaw))
     return removableDriveRich, removableDriveRaw
 
 def findAllDrives() -> list[str]:
+    """
+    Lists all NTFS-formatted drives on the system.
+    
+    Uses psutil to detect all disk partitions and filters for NTFS file systems.
+    
+    Returns:
+        list[str]: List of drive letters (e.g., ['C', 'D', 'E'])
+        
+    Note:
+        Only returns the first character of each device path (the drive letter).
+    """
     import psutil
     drps = psutil.disk_partitions()
     return list(map(lambda i: i[:1], [dp.device for dp in drps if dp.fstype == 'NTFS']))
 
 def keyboardInterruptExit() -> None:
+    """
+    Handles keyboard interrupt (Ctrl+C) events.
+    
+    Prints a formatted error message and exits the program with status code 1.
+    """
     print("[red]Interrupt by user[/red]")
     raise SystemExit(1)
 
 
 def abortExit() -> None:
+    """
+    Handles user-initiated abort operations.
+    
+    Prints a formatted error message and exits the program with status code 1.
+    Typically triggered when the user selects to abort an operation.
+    """
     print("[red]Abort by user[/red]")
     raise SystemExit(1)
 

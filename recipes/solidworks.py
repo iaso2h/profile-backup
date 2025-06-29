@@ -52,6 +52,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
+            "stripePathValue": True,
             "parentPaths": r"HKEY_CURRENT_USER\Software\SolidWorks\SOLIDWORKS \d+",
             "filterType": "include",
             "filterPattern": [

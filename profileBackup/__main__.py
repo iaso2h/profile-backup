@@ -1,7 +1,7 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Back up software profiles on Windows
-# Version: 0.1.26
+# Version: 0.1.27
 # Last Modified: 2025-06-29
 from pathlib import Path
 import sys
