@@ -8,13 +8,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Language Configs",
-            "versionFind": lambda _: winreg.QueryValueEx(
-                winreg.OpenKey(
-                    winreg.HKEY_LOCAL_MACHINE,
-                    "SOFTWARE\\SolidWorks\\IM"
-                    ),
-                "IMSchedulerVersion"
-                )[0][:4],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
@@ -29,13 +22,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Data",
-            "versionFind": lambda _: winreg.QueryValueEx(
-                    winreg.OpenKey(
-                        winreg.HKEY_LOCAL_MACHINE,
-                        "SOFTWARE\\SolidWorks\\IM"
-                        ),
-                    "IMSchedulerVersion"
-                    )[0][:4],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,

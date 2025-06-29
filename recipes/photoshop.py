@@ -10,7 +10,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Main",
-            "versionFind": lambda parentSrcPath: parentSrcPath.parts[6][-4:],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,

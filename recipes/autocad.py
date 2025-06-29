@@ -10,7 +10,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Plot",
-            "versionFind": lambda parentSrcPath: parentSrcPath.parts[6][-4:],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
@@ -41,7 +40,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "YSTool",
-            "versionFind": "Generic",
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
@@ -52,7 +50,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Tangent",
-            "versionFind": lambda parentSrcPath: parentSrcPath.parts[2][5:],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
@@ -63,7 +60,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Asset",
-            "versionFind": "Generic",
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,

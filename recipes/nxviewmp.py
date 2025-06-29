@@ -10,7 +10,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Main",
-            "versionFind": "Generic",
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,

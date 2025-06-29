@@ -10,7 +10,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "Workspace",
-            "versionFind": lambda parentSrcPath: parentSrcPath.parts[7][:4],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
@@ -22,7 +21,6 @@ Profile(
         {
             "type": "file",
             "categoryName": "User Settings",
-            "versionFind": lambda parentSrcPath: parentSrcPath.parts[4][-4:],
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,

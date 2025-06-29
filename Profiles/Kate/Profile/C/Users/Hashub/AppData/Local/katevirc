@@ -1,0 +1,17 @@
+[Kate Vi Input Mode Settings]
+Command Mode Mapping Keys=
+Command Mode Mappings=
+Command Mode Mappings Recursion=
+Insert Mode Mapping Keys=
+Insert Mode Mappings=
+Insert Mode Mappings Recursion=
+Macro Completions=0
+Macro Contents=\\0
+Macro Registers=q
+Map Leader=\\
+Normal Mode Mapping Keys=L,Y,H
+Normal Mode Mappings=$,yy,^
+Normal Mode Mappings Recursion=false,false,false
+Visual Mode Mapping Keys=
+Visual Mode Mappings=
+Visual Mode Mappings Recursion=

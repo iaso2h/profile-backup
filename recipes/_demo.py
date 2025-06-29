@@ -12,7 +12,6 @@ Profile(
             "categoryName": "Main",
             # 1. function with `parentSrcPath` as parameter
             # 2. string
-            "versionFind": lambda parentSrcPath: parentSrcPath.parts[7][:4],
             "enabled": False,
             "recursiveCopy": True,
             "silentReport": False,

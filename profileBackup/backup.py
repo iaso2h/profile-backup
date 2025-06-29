@@ -148,7 +148,6 @@ class FileCategory(Profile): # {{{
         recursiveCopy (bool): Whether to recursively copy subdirectories.
         silentReport (bool): Whether to suppress detailed reporting.
         parentSrcPaths (list[Path]): List of source directory paths to back up.
-        versionFind (str|Callable): Version string or function to determine version.
         filterType (str): Either "include" or "exclude" to define filter behavior.
         filterPattern (list|Callable): Patterns or function to filter files for backup.
         backupCount (int): Number of files backed up in this category.
@@ -162,7 +161,6 @@ class FileCategory(Profile): # {{{
         self,
         profileName: str,
         categoryName: str,
-        versionFind: str | Callable,
         enabled: bool,
         recursiveCopy: bool,
         silentReport: bool,
@@ -182,7 +180,6 @@ class FileCategory(Profile): # {{{
         self.recursiveCopy  = recursiveCopy
         self.silentReport   = silentReport
         self.parentSrcPaths = parentSrcPaths
-        self.versionFind    = versionFind
         self.filterType     = filterType
         self.filterPattern  = filterPattern
 
@@ -283,20 +280,6 @@ class FileCategory(Profile): # {{{
                     self._parentSrcPaths = [srcPath]
         else:
             raise ValueError(f"Path object, Path glob generator or string is expected from the parentSrcPath parameter for category {self.categoryName} under profile {self.profileName}.")
-    # }}}
-
-    # Validation of versionFind {{{
-    @property
-    def versionFind(self):
-        return self._versionFind
-    @versionFind.setter
-    def versionFind(self, val):
-        if not isinstance(val, Callable) and not isinstance(val, str):
-            raise ValueError(f"string or function is expected from the versionFind parameter for category {self.categoryName} under profile {self.profileName}.")
-
-        self._versionFind = val
-        if self._versionFind == "":
-            self._versionFind = "Generic"
     # }}}
 
     # Validation of filterType {{{
@@ -610,17 +593,6 @@ class FileCategory(Profile): # {{{
         bufferOutput.append(f"  {util.getTimeStamp()}[white]Checking up [green bold]{self.profileName} {self.categoryName}[/green bold][/white]...")
         for parentSrcPath in self.parentSrcPaths:
 
-            # Get version string
-            if isinstance(self.versionFind, Callable):
-                try:
-                    self.versionFind = self.versionFind(parentSrcPath)
-                    if self.versionFind == "":
-                        self.versionFind = "Generic"
-                except Exception as e:
-                    self.versionFind = "Generic"
-                    print(e)
-                    print('[red]  Version string use "Generic" instead\n[/red]')
-
             bufferOutput.append(f"    {util.getTimeStamp()}[white]Checking up files for [green bold]{self.profileName} {self.categoryName}[/green bold] inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
 
             # Get parent destination path
@@ -629,7 +601,6 @@ class FileCategory(Profile): # {{{
                 config.DESTPATH, # type: ignore
                 self.profileName,
                 self.categoryName,
-                self.versionFind,
                 parentSrcPath.anchor[:1],
                 parentSrcRelAnchorPath
             )
@@ -668,9 +639,9 @@ class FileCategory(Profile): # {{{
 
             # Report count for the current parent source directory
             if currentParentSrcCount > 0:
-                bufferOutput.append(f"    {util.getTimeStamp()}[white]{Profile.foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+                bufferOutput.append(f"    {util.getTimeStamp()}[white]{Profile.foundFileMessage} [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
             else:
-                bufferOutput.append(f"    {util.getTimeStamp()}[white]Skipped [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {self.versionFind}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
+                bufferOutput.append(f"    {util.getTimeStamp()}[white]Skipped [purple bold]{currentParentSrcCount}[/purple bold] files of [blue bold]{util.humanReadableSize(currentParentSrcSize)}[/blue bold] for [green bold]{self.profileName} {self.categoryName} {parentSrcPath}[/green bold] files inside folder: [yellow]{parentSrcPath}[/yellow][/white]")
                 for lineIdx, line in enumerate(bufferOutput[::-1]):
                     if "Checking up" in line:
                         bufferOutput[-1 - lineIdx] = line.replace("Checking up", "Skipped")
@@ -1109,6 +1080,7 @@ class RegCategory(FileCategory): # {{{
                             exportFile.write('\n'.join(regContentStriped))
 
 
+                    # Statistics update for current component
                     bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}\{}[/yellow]".format(
                         Profile.foundFileMessage,
                         self.hkeyStr,
@@ -1117,15 +1089,26 @@ class RegCategory(FileCategory): # {{{
                     )
 
 
-                bufferOutput.append(fr"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} {len(self.componentPathStrs)} matched registry paths at [green bold]{self.parentPaths}[/green bold].[/white]")
-                Profile.profileDict[self.profileName].backupCount += len(self.componentPathStrs)
-                Profile.totalBackupCount += len(self.componentPathStrs)
             except FileNotFoundError:
                 bufferOutput.append(fr"[red]    registry path: {self.hkey}\{self.componentPathsMid} doesn't exist.[/red]")
             except PermissionError:
                 bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
             except Exception as e:
                 bufferOutput.append(f"[red]    Error exporting registry: {str(e)}[/red]")
+
+        # Statistics update for all found components match the `self.parentPaths` pattern
+        bufferOutput.append(
+            r"  {}[white]{} [purple bold]{}[/purple bold] for {} {} registry sets matched: [yellow]{}[/yellow].[/white]".format(
+                util.getTimeStamp(),
+                Profile.foundFileMessage,
+                len(self.componentPathStrs),
+                self.profileName,
+                self.categoryName,
+                self.parentPaths
+            )
+        )
+        Profile.profileDict[self.profileName].backupCount += len(self.componentPathStrs)
+        Profile.totalBackupCount += len(self.componentPathStrs)
 
         return bufferOutput
 # }}}

@@ -24,7 +24,6 @@ class TestBackup:
                             "parentSrcPath": parentSrcPath,
                             # 1. function with `parentSrcPath` as parameter
                             # 2. string
-                            "versionFind": "",
                             # 1. string(either `"exclude` or `"include`)
                             "filterType": "include",
                             # 1. function with `parentSrcPath` as parameter, return boolean
@@ -199,7 +198,6 @@ class TestBackup:
     def test_full_sync(self): # {{{
         parentSrcPath = Path(projectDir, "profileBackup", "tests", "test_backup_src_files")
         dstName = "test_backup_dst_full_sync_files"
-        versionStr = "unnamed"
         config.profileConfigs.append(
             backup.FileCategory(
                 {
@@ -213,7 +211,6 @@ class TestBackup:
                             "parentSrcPath": parentSrcPath,
                             # 1. function with `parentSrcPath` as parameter
                             # 2. string
-                            "versionFind": versionStr,
                             # 1. string(either `"exclude` or `"include`)
                             "filterType": "include",
                             # 1. function with `parentSrcPath` as parameter, return boolean
@@ -245,7 +242,7 @@ class TestBackup:
                 s.backup()
 
 
-        assert sorted(backup.FileCategory.syncFilesToDelete[dstName][versionStr]) == sorted([
+        assert sorted(backup.FileCategory.syncFilesToDelete[dstName]) == sorted([
             str(Path(config.DESTPATH, "api", "bar", "test1.txt")),
             str(Path(config.DESTPATH, "api", "bar", "empty_dir")) + os.path.sep,
             str(Path(config.DESTPATH, "api", "redist", "foo")) + os.path.sep,
