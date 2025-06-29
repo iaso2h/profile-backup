@@ -703,8 +703,7 @@ class RegCategory(FileCategory): # {{{
     ):
         self.hkey = cast(winreg.HKEYType, None)
         self.hkeyStr: str = ""
-        self.componentPathsMid: str = ""
-        self.componentPathStrs: list[str] = []
+        self.keyGlobPaths: list[str] = []
         # UGLY:
         # self.hkey: Optional[winreg.HKEYType] = None
         self.profileName  = profileName
@@ -784,45 +783,70 @@ class RegCategory(FileCategory): # {{{
         if val[0] == "\\":
             raise ValueError(f"the registry parent path must not start with a backslash for category {self.categoryName} under profile {self.profileName}.")
 
-        # Get path components
-        componentPaths = val.split("\\")
-        componentPathsValid = [
-            part for part in componentPaths if not re.fullmatch(r"^[a-zA-Z]\W*$", part)  # Exclude regex patterns like \s*, \d+
+        self.keyGlobPaths = []
+        self.keyGlobNames = []
+        # Get key components
+        keyComponent = val.split("\\")
+        keyComponentInvalidIndex = [
+            idx for idx, component in enumerate(keyComponent) if util.regexSpecialCharPat.fullmatch(component)  # Exclude regex patterns like \s*, \d+
         ]
-        self.hkeyStr = componentPathsValid[0]
-        self.componentPathsMid = "\\".join(componentPathsValid[1:-1])
-        fullPathPatFistStr = "\\".join(componentPathsValid[0:-1]) + "\\"
-        fullPathPatStr = re.escape(fullPathPatFistStr) + val.replace(fullPathPatFistStr, "")
-        fullPathPat = re.compile(fullPathPatStr)
-        if self.hkeyStr not in ("HKEY_CLASSES_ROOT", "HKEY_CURRENT_USER", "HKEY_LOCAL_MACHINE", "HKEY_USERS", "HKEY_CURRENT_CONFIG"):
-            raise ValueError(f"invalid registry hkey for category {self.categoryName} under profile {self.profileName}.")
-        else:
-            self.hkey = getattr(winreg, self.hkeyStr)
-        try:
-            with winreg.OpenKey(self.hkey, self.componentPathsMid) as _:
-                pass
-        except FileNotFoundError:
-            self._enable = False
-            print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
 
-        # Glob as many paths that match the last component of the parent path as possible
-        self.componentPathStrs = []
-        with winreg.OpenKey(self.hkey, self.componentPathsMid) as key:
+        # Get HKEY
+        self.hkeyStr = keyComponent[0]
+        try:
+            self.hkey = getattr(winreg, self.hkeyStr)
+        except AttributeError:
+            raise ValueError(f'invalid registry hkey "{self.hkeyStr}" for keyPathPat.')
+
+        # Get path glob pattern
+        if len(keyComponentInvalidIndex) > 1:
+            raise ValueError(f"number of regex specical characters cannot exceed 1 from the registry parent path for category {self.categoryName} under profile {self.profileName}.")
+        elif len(keyComponentInvalidIndex) == 0:
+            # Doen't contain any regex sepcial characters, return the full path pattern
+            self.keyGlobPaths = ["\\".join(keyComponent[1:])]
+        else:
+            keyGlobPatternMid = "\\".join(keyComponent[1:keyComponentInvalidIndex[0] - 1])
+            # Test if the middle part of the path pattern is valid
+            try:
+                keyGlobStart = winreg.OpenKey(self.hkey, keyGlobPatternMid)
+            except FileNotFoundError:
+                self._enable = False
+                print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
+                return
+
+            keyGlobPatternHead = "\\".join(keyComponent[0:keyComponentInvalidIndex[0] - 1])
+            keyGlobPatternTail = "\\" + "\\".join(keyComponent[keyComponentInvalidIndex[0] + 1 :]) if keyComponentInvalidIndex[0] != len(keyComponent) - 1 else ""
+            keyGlobPatternStr = "{}\\\\{}".format(
+                re.escape(keyGlobPatternHead),
+                "\\".join(keyComponent[keyComponentInvalidIndex[0] - 1: keyComponentInvalidIndex[0] + 1]),
+            )
+            keyGlobPattern = re.compile(keyGlobPatternStr)
+
+            # Glob as many paths that match the glob pattern
             i = 0
             while True:
                 try:
-                    subkey = winreg.EnumKey(key, i)
-                    fullPathStr = fr"{self.hkeyStr}\{self.componentPathsMid}\{subkey}"
-                    # Treat subkeys as values here to make parent subkeys always pass skip check if `self.filterType` is "include"
-                    if not self.shouldSkipKey(fullPathStr, False) and fullPathPat.search(fullPathStr):
-                        self.componentPathStrs.append(subkey)
+                    subkeyName = winreg.EnumKey(keyGlobStart, i)
+                    globPathHead = f"{keyGlobPatternHead}\\{subkeyName}"
+                    if keyGlobPattern.search(globPathHead):
+                        self.keyGlobPaths.append("{}\\{}{}".format(
+                            keyGlobPatternMid,
+                            subkeyName,
+                            keyGlobPatternTail
+                            )
+                        )
+                        self.keyGlobNames.append(subkeyName)
 
                     i += 1
                 except OSError:
                     break
-        if not self.componentPathStrs:
-            self._enable = False
-            print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
+            keyGlobStart.Close()
+
+
+            if not self.keyGlobPaths:
+                self._enable = False
+                print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
+                return
 
 
         self._parentPaths = val
@@ -958,7 +982,7 @@ class RegCategory(FileCategory): # {{{
 
     def recursiveExport(
             self,
-            currentComponentPath:str,
+            currentSubkeyPath:str,
             key:winreg.HKEYType,
             regContent: list[str],
             regContentStriped: list[str]
@@ -970,7 +994,7 @@ class RegCategory(FileCategory): # {{{
         all values and subkeys that match the filter criteria to the specified file.
 
         Args:
-            currentComponentPath (str): Current registry path being processed.
+            currentSubkeyPath (str): Current registry path being processed.
             key (winreg.HKEYType): Windows registry key handle for the current path.
             exportFile (_io.TextIOWrapper): Open file handle for writing .reg content.
 
@@ -982,8 +1006,8 @@ class RegCategory(FileCategory): # {{{
         """
 
         # Write key header
-        regContent.append(f"[{self.hkeyStr}\\{currentComponentPath}]")
-        regContentStriped.append(f"[{self.hkeyStr}\\{currentComponentPath}]")
+        regContent.append(f"[{self.hkeyStr}\\{currentSubkeyPath}]")
+        regContentStriped.append(f"[{self.hkeyStr}\\{currentSubkeyPath}]")
 
         # Export values
         try:
@@ -991,7 +1015,7 @@ class RegCategory(FileCategory): # {{{
             while True:
                 try:
                     name, value, valueType = winreg.EnumValue(key, i)
-                    if self.shouldSkipKey(f"{currentComponentPath}\\{name}", False):
+                    if self.shouldSkipKey(f"{currentSubkeyPath}\\{name}", False):
                         continue
 
                     formattedValue, formattedValueStriped = self.formatRegValue(value, valueType)
@@ -1021,7 +1045,7 @@ class RegCategory(FileCategory): # {{{
                 while True:
                     try:
                         subkeyName = winreg.EnumKey(key, j)
-                        fullSubpath = f"{currentComponentPath}\\{subkeyName}"
+                        fullSubpath = f"{currentSubkeyPath}\\{subkeyName}"
 
                         if not self.shouldSkipKey(fullSubpath, True):
                             with winreg.OpenKey(key, subkeyName) as subkey:
@@ -1042,18 +1066,18 @@ class RegCategory(FileCategory): # {{{
 
 
     def backup(self, bufferOutput:list[str]) -> list[str]:
-        for componentStr in self.componentPathStrs:
+        for keyGlobName, keyGlobPath in zip(self.keyGlobNames, self.keyGlobPaths):
             outputFilePath = Path(
                 config.DESTPATH, # type: ignore
                 self.profileName,
                 self.categoryName,
-                componentStr + ".reg"
+                keyGlobName + ".reg"
             )
             outputFileStrippedPath = Path(
                 config.DESTPATH, # type: ignore
                 self.profileName,
                 self.categoryName,
-                componentStr + "_stripped" + ".reg"
+                keyGlobName + "_stripped" + ".reg"
             )
             regContent = []
             regContentStriped = []
@@ -1065,11 +1089,10 @@ class RegCategory(FileCategory): # {{{
                         regContent.append("Windows Registry Editor Version 5.00\n")
                         regContentStriped.append("Windows Registry Editor Version 5.00\n")
 
-                        # Start export from root key
-                        parentComponentPath = self.componentPathsMid + "\\" + componentStr
-                        with winreg.OpenKey(self.hkey, parentComponentPath) as key:
+                        # Start export from the first sub key
+                        with winreg.OpenKey(self.hkey, keyGlobPath) as key:
                             regContent, regContentStriped = self.recursiveExport(
-                                parentComponentPath,
+                                keyGlobPath,
                                 key,
                                 regContent,
                                 regContentStriped
@@ -1082,34 +1105,31 @@ class RegCategory(FileCategory): # {{{
 
 
                     # Statistics update for current component
-                    bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}\{}[/yellow]".format(
+                    bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}[/yellow]".format(
                         Profile.foundFileMessage,
                         self.hkeyStr,
-                        self.componentPathsMid,
-                        componentStr)
+                        keyGlobPath)
                     )
 
 
             except FileNotFoundError:
-                bufferOutput.append(fr"[red]    registry path: {self.hkey}\{self.componentPathsMid} doesn't exist.[/red]")
+                bufferOutput.append(fr"[red]    registry path: {self.hkeyStr}\{keyGlobPath} doesn't exist.[/red]")
             except PermissionError:
                 bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
-            except Exception as e:
-                bufferOutput.append(f"[red]    Error exporting registry: {str(e)}[/red]")
 
         # Statistics update for all found components match the `self.parentPaths` pattern
         bufferOutput.append(
-            r"  {}[white]{} [purple bold]{}[/purple bold] for {} {} registry sets matched: [yellow]{}[/yellow].[/white]".format(
+            r"  {}[white]{} [purple bold]{}[/purple bold] for [green bold]{} {}[/green bold] registry sets matched: [yellow]{}[/yellow].[/white]".format(
                 util.getTimeStamp(),
                 Profile.foundFileMessage,
-                len(self.componentPathStrs),
+                len(self.keyGlobPaths),
                 self.profileName,
                 self.categoryName,
                 self.parentPaths
             )
         )
-        Profile.profileDict[self.profileName].backupCount += len(self.componentPathStrs)
-        Profile.totalBackupCount += len(self.componentPathStrs)
+        Profile.profileDict[self.profileName].backupCount += len(self.keyGlobPaths)
+        Profile.totalBackupCount += len(self.keyGlobPaths)
 
         return bufferOutput
 # }}}

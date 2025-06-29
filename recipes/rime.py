@@ -1,11 +1,11 @@
-import os
+import util
 from backup import Profile
 from pathlib import Path
-appDataPath = Path(os.getenv('APPDATA')).parent
+rimeUserFolder, enabledChk = util.regQueryData(r"HKEY_CURRENT_USER\Software\Rime\Weasel", "RimeUserDir")
 
 Profile(
     profileName="Rime",
-    enabled=True,
+    enabled=enabledChk,
     categories=[
         {
             "type": "file",
@@ -13,7 +13,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": Path(appDataPath, "Roaming/Rime"),
+            "parentSrcPaths": Path(rimeUserFolder),
             "filterType": "exclude",
             "filterPattern": [
                 "build",

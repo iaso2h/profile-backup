@@ -1,19 +1,19 @@
-import os
+import util
 from backup import Profile
 from pathlib import Path
-appDataPath = Path(os.getenv('APPDATA')).parent
+installPathStr, enabledChk = util.regQueryData(r"HKEY_CURRENT_USER\Software\Vivaldi", "DestinationFolder")
 
 Profile(
     profileName="Vivaldi",
-    enabled=True,
+    enabled=enabledChk,
     categories=[
         {
             "type": "file",
             "categoryName": "Profile",
-            "enabled": True,
+            "enabled": enabledChk,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": Path(appDataPath, "Local/Vivaldi/User Data/Default"),
+            "parentSrcPaths": Path(installPathStr, "User Data/Default"),
             "filterType": "include",
             "filterPattern": [
                 "Preferences",

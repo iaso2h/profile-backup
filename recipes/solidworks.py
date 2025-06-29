@@ -1,41 +1,32 @@
-import winreg
+import util
+from pathlib import Path
 from backup import Profile
+installPathStr, enabledChk = util.regQueryData(r"HKEY_LOCAL_MACHINE\SOFTWARE\SolidWorks\SOLIDWORKS \d+\Setup", "SolidWorks Folder")
 
 Profile(
     profileName="SOLIDWORKS",
-    enabled=True,
+    enabled=enabledChk,
     categories=[
         {
             "type": "file",
-            "categoryName": "Language Configs",
-            "enabled": True,
+            "categoryName": "Program Files",
+            "enabled": enabledChk,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": "D:/**/SOLIDWORKS Corp/SOLIDWORKS/lang/*",
+            "parentSrcPaths": Path(installPathStr),
             "filterType": "include",
             "filterPattern": [
-                "calloutformat.txt",
-                "calloutformat_2.txt",
-                "calloutformat_3.txt",
-            ],
-        },
-        {
-            "type": "file",
-            "categoryName": "Data",
-            "enabled": True,
-            "recursiveCopy": True,
-            "silentReport": False,
-            "parentSrcPaths": "D:/**/SOLIDWORKS Corp/SOLIDWORKS/data",
-            "filterType": "include",
-            "filterPattern": [
-                "ttfontratiomap.txt",
-                "drawfontmap.txt",
+                "lang/*/calloutformat.txt",
+                "lang/*/calloutformat_2.txt",
+                "lang/*/calloutformat_3.txt",
+                "data/ttfontratiomap.txt",
+                "data/drawfontmap.txt",
             ],
         },
         {
             "type": "registry",
             "categoryName": "Generic Settings",
-            "enabled": True,
+            "enabled": enabledChk,
             "recursiveCopy": True,
             "silentReport": False,
             "stripePathValue": True,
