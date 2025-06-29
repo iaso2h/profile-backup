@@ -2,14 +2,12 @@ import shutil
 import util
 import config
 
-import _io
 import os
 import winreg
 import re
 from types import GeneratorType
 from typing import Callable, Optional, Tuple, Iterator, cast
 from pathlib import Path
-from datetime import datetime
 
 print = util.print
 
@@ -929,7 +927,7 @@ class RegCategory(FileCategory): # {{{
             else:
                  # For values, always include them
                 return False
-            
+
     # }}}
 
     @staticmethod
@@ -988,7 +986,7 @@ class RegCategory(FileCategory): # {{{
         self,
         currentComponentPath:str,
         key:winreg.HKEYType,
-        exportFile: _io.TextIOWrapper,
+        regContent: list[str]
     ): # {{{
         """
         Recursively exports registry keys and values to a .reg file.
@@ -1009,7 +1007,7 @@ class RegCategory(FileCategory): # {{{
         """
 
         # Write key header
-        exportFile.write(f"[{self.hkeyStr}\\{currentComponentPath}]\n")
+        regContent.append(f"[{self.hkeyStr}\\{currentComponentPath}]")
 
         # Export values
         try:
@@ -1024,16 +1022,16 @@ class RegCategory(FileCategory): # {{{
 
                     # Write to file
                     if name:
-                        exportFile.write(f'"{name}"={formattedValue}\n')
+                        regContent.append(f'"{name}"={formattedValue}')
                     else:  # Default value
-                        exportFile.write(f'@={formattedValue}\n')
+                        regContent.append(f'@={formattedValue}')
                     i += 1
                 except OSError:
                     break
         except WindowsError:
             pass
 
-        exportFile.write("\n")  # Extra newline between keys
+        regContent.append("")  # Extra newline between keys
 
         # Recursively export subkeys
         try:
@@ -1045,12 +1043,16 @@ class RegCategory(FileCategory): # {{{
 
                     if not self.shouldSkipKey(fullSubpath, True):
                         with winreg.OpenKey(key, subkeyName) as subkey:
-                            self.recursiveExport(fullSubpath, subkey, exportFile)
+                            regContent = self.recursiveExport(fullSubpath, subkey, regContent)
                     j += 1
                 except OSError:
                     break
         except WindowsError:
-            pass # }}}
+            pass
+
+        return regContent
+    # }}}
+
 
     def backup(self, bufferOutput:list[str]) -> list[str]:
         for componentStr in self.componentPathStrs:
@@ -1060,35 +1062,38 @@ class RegCategory(FileCategory): # {{{
                 self.categoryName,
                 componentStr + ".reg"
             )
-            if not config.DRYRUN:
-                try:
+            regContent = []
+            try:
+                if not config.DRYRUN:
                     os.makedirs(outputFilePath.parent, exist_ok=True)
                     with open(outputFilePath, 'w', encoding='utf-16') as exportFile:
                         # Write REG file header
-                        exportFile.write("Windows Registry Editor Version 5.00\n\n")
+                        regContent.append("Windows Registry Editor Version 5.00\n")
 
                         # Start export from root key
                         parentComponentPath = self.componentPathsMid + "\\" + componentStr
                         with winreg.OpenKey(self.hkey, parentComponentPath) as key:
-                            self.recursiveExport(parentComponentPath, key, exportFile)
+                            regContent = self.recursiveExport(parentComponentPath, key, regContent)
 
-                    bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}\{}}[/yellow]".format(
+                        exportFile.write('\n'.join(regContent))
+
+                    bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}\{}[/yellow]".format(
                         Profile.foundFileMessage,
                         self.hkeyStr,
                         self.componentPathsMid,
                         componentStr)
                     )
-                except FileNotFoundError:
-                    bufferOutput.append(fr"[red]    registry path: {self.hkey}\{self.componentPathsMid} doesn't exist.[/red]")
-                except PermissionError:
-                    bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
-                except Exception as e:
-                    bufferOutput.append(f"[red]    Error exporting registry: {str(e)}[/red]")
 
 
-            bufferOutput.append(fr"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} {len(self.componentPathStrs)} matched registry paths at [green bold]{self.parentPaths}[/green bold].[/white]")
-            Profile.profileDict[self.profileName].backupCount += len(self.componentPathStrs)
-            Profile.totalBackupCount += len(self.componentPathStrs)
+                bufferOutput.append(fr"  {util.getTimeStamp()}[white]{Profile.foundFileMessage} {len(self.componentPathStrs)} matched registry paths at [green bold]{self.parentPaths}[/green bold].[/white]")
+                Profile.profileDict[self.profileName].backupCount += len(self.componentPathStrs)
+                Profile.totalBackupCount += len(self.componentPathStrs)
+            except FileNotFoundError:
+                bufferOutput.append(fr"[red]    registry path: {self.hkey}\{self.componentPathsMid} doesn't exist.[/red]")
+            except PermissionError:
+                bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
+            except Exception as e:
+                bufferOutput.append(f"[red]    Error exporting registry: {str(e)}[/red]")
 
         return bufferOutput
 # }}}
