@@ -1015,26 +1015,27 @@ class RegCategory(FileCategory): # {{{
         regContentStriped.append("")  # Extra newline between keys
 
         # Recursively export subkeys
-        try:
-            j = 0
-            while True:
-                try:
-                    subkeyName = winreg.EnumKey(key, j)
-                    fullSubpath = f"{currentComponentPath}\\{subkeyName}"
+        if self.recursiveCopy:
+            try:
+                j = 0
+                while True:
+                    try:
+                        subkeyName = winreg.EnumKey(key, j)
+                        fullSubpath = f"{currentComponentPath}\\{subkeyName}"
 
-                    if not self.shouldSkipKey(fullSubpath, True):
-                        with winreg.OpenKey(key, subkeyName) as subkey:
-                            regContent, regContentStriped = self.recursiveExport(
-                                fullSubpath,
-                                subkey,
-                                regContent,
-                                regContentStriped
-                            )
-                    j += 1
-                except OSError:
-                    break
-        except WindowsError:
-            pass
+                        if not self.shouldSkipKey(fullSubpath, True):
+                            with winreg.OpenKey(key, subkeyName) as subkey:
+                                regContent, regContentStriped = self.recursiveExport(
+                                    fullSubpath,
+                                    subkey,
+                                    regContent,
+                                    regContentStriped
+                                )
+                        j += 1
+                    except OSError:
+                        break
+            except WindowsError:
+                pass
 
         return regContent, regContentStriped
     # }}}
