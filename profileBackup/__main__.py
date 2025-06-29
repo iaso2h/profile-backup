@@ -1,13 +1,18 @@
 # File: profileBakup
 # Author: iaso2h
 # Description: Back up software profiles on Windows
-# Version: 0.1.24
+# Version: 0.1.25
 # Last Modified: 2025-06-29
 from pathlib import Path
 import sys
 import argparse
 import pytest
 
+sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+
+import recipes
+import backup
 import cli
 
 

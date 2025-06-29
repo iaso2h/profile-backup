@@ -13,8 +13,8 @@ print = util.print
 def findRemovableDrive() -> Tuple[list[str], list[str]]:
     # Credit: https://stackoverflow.com/questions/12266211/python-windows-list-only-usb-removable-drives
     removableDriveRaw = [i.mountpoint for i in psutil.disk_partitions() if "removable" in i.opts]
-    removableDriveRich = list(map(lambda i: "[blue]" + i + "[/blue]", removableDriveRaw))
-    return removableDriveRaw, removableDriveRich
+    removableDriveRich = list(map(lambda i: "[blue]" + i, removableDriveRaw))
+    return removableDriveRich, removableDriveRaw
 
 def findAllDrives() -> list[str]:
     import psutil
@@ -209,7 +209,7 @@ def program() -> None:
 
     # Select destination path
     dstPathsRich, dstPathsRaw = findRemovableDrive()
-    dstPathsRich.append(f"[blue]Current Working Directory([yellow]{config.CWD}\\\\[/yellow][blue])[/blue]") # len()-2 index
+    dstPathsRich.append(f"[blue]Current Working Directory([yellow]{config.CWD}\\\\[/yellow])[/blue]") # len()-2 index
     dstPathsRich.append("[blue]Custom Path[/blue]") # len()-1 index
     alldrives  = findAllDrives()
     ans = len(dstPathsRich) - 2 # Default value destination
