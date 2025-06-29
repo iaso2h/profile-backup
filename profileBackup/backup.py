@@ -423,11 +423,11 @@ class FileCategory(Profile): # {{{
         # Initialization for the first function call
         if not topParentSrcPath:
             topParentSrcPath = parentSrcPath
-        # Recording
+
+        # Statistic recording
         if self.profileName not in type(self).relPathsTopParentSrc:
             type(self).relPathsTopParentSrc[self.profileName] = {}
-        if parentSrcPath not in type(self).relPathsTopParentSrc[self.profileName]:
-            type(self).relPathsTopParentSrc[self.profileName][parentSrcPath] = []
+        type(self).relPathsTopParentSrc[self.profileName][parentSrcPath] = []
 
         try:
             for srcPath in parentSrcPath.iterdir():
@@ -542,11 +542,7 @@ class FileCategory(Profile): # {{{
         if not topParentDstPath:
             topParentDstPath = parentDstPath
 
-        if self.profileName not in type(self).syncFilesToDelete:
-            type(self).syncFilesToDelete[self.profileName] = {}
-        if topParentSrcPath not in type(self).syncFilesToDelete[self.profileName]:
-            type(self).syncFilesToDelete[self.profileName][topParentSrcPath] = []
-        syncFilesToDeleteRelCurrentParentDst = type(self).syncFilesToDelete[self.profileName][topParentSrcPath]
+        syncFilesToDeleteRelCurrentParentDst = type(self).syncFilesToDelete[self.profileName][topParentDstPath]
 
         for dstPath in parentDstPath.iterdir():
             if dstPath.is_dir():
@@ -631,6 +627,11 @@ class FileCategory(Profile): # {{{
             relPathsTopParentSrc = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
             # Mark down files that doesn't exist in destination directory for the current parent source directory
             if config.COPYSYNC:
+                # Statistic recording
+                if self.profileName not in type(self).syncFilesToDelete:
+                    type(self).syncFilesToDelete[self.profileName] = {}
+                type(self).syncFilesToDelete[self.profileName][parentDstPath] = []
+
                 self.iterSync(
                     relPathsTopParentSrc=relPathsTopParentSrc,
                     parentDstPath=parentDstPath,
