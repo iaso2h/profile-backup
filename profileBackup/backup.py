@@ -11,6 +11,7 @@ import config
 
 print = util.print
 WINDOWS_ANCHOR_START_PAT = re.compile(r"^[a-zA-Z]:\\")
+WINDOWS_REG_HEADER = r"Windows Registry Editor Version 5.00\n"
 
 
 class Profile(): # {{{
@@ -1042,13 +1043,20 @@ class RegCategory(FileCategory): # {{{
         """
 
         # Write key header
-        self.regContent.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
-        self.regContentRefined.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
-        self.regContentStripped.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
+        currentSubkeyHeader = f"\n[{self.rootKeyStr}\\{currentSubkeyPath}]"
 
         # Export values
         try:
             i = 0
+            # - Check if the current key has any valid value.
+            # - These flags will be changed right before the very first valid
+            # value is written(technically buffered).
+            # - Moreover, they are used to control the adding of current subkey
+            # header, thus avoiding empty headers in the final exported .reg
+            # files
+            dataWriteUnderCurrentKeyChk = False
+            dataRefinedWriteUnderCurrentKeyChk = False
+            dataStrippedWriteUnderCurrentKeyChk = False
             while True:
                 try:
                     valName, valData, valueType = winreg.EnumValue(key, i)
@@ -1063,17 +1071,26 @@ class RegCategory(FileCategory): # {{{
                     else:
                         regValDataLine = f'@={formattedValue}'
 
-                    if not self.regContentWriteChk:
-                        self.regContentWriteChk = True
+                    if not dataWriteUnderCurrentKeyChk:
+                        self.regContent.append(currentSubkeyHeader)
+                        dataWriteUnderCurrentKeyChk = True
+                        if not self.regContentWriteChk:
+                            self.regContentWriteChk = True
                     self.regContent.append(regValDataLine)
 
                     if formattedValueStriped == "":
-                        if not self.regContentStrippedWriteChk:
-                            self.regContentStrippedWriteChk = True
+                        if not dataStrippedWriteUnderCurrentKeyChk:
+                            self.regContentStripped.append(currentSubkeyHeader)
+                            dataStrippedWriteUnderCurrentKeyChk = True
+                            if not self.regContentStrippedWriteChk:
+                                self.regContentStrippedWriteChk = True
                         self.regContentStripped.append(regValDataLine)
                     else:
-                        if not self.regContentRefinedWriteChk:
-                            self.regContentRefinedWriteChk = True
+                        if not dataRefinedWriteUnderCurrentKeyChk:
+                            self.regContentRefined.append(currentSubkeyHeader)
+                            dataRefinedWriteUnderCurrentKeyChk = True
+                            if not self.regContentRefinedWriteChk:
+                                self.regContentRefinedWriteChk = True
                         self.regContentRefined.append(regValDataLine)
 
                     i += 1 # Enter next iteration to get next sibling value
@@ -1081,10 +1098,6 @@ class RegCategory(FileCategory): # {{{
                     break
         except WindowsError:
             pass
-
-        self.regContent.append("")  # Extra newline between keys
-        self.regContentRefined.append("")  # Extra newline between keys
-        self.regContentStripped.append("")  # Extra newline between keys
 
         # Recursively export subkeys
         if self.recursiveCopy:
@@ -1154,28 +1167,29 @@ class RegCategory(FileCategory): # {{{
                 if not config.DRYRUN:
                     os.makedirs(outputFilePath.parent, exist_ok=True)
                     with open(outputFilePath, 'w', encoding='utf-16') as exportRegFile:
-                        # Write REG file header
-                        self.regContent.append("Windows Registry Editor Version 5.00\n")
-                        self.regContentRefined.append("Windows Registry Editor Version 5.00\n")
-                        self.regContentStripped.append("Windows Registry Editor Version 5.00\n")
-
                         # Start export from the first sub key
                         with winreg.OpenKey(self.rootKey, keyRelPath) as key:
                             self.recursiveExport(keyRelPath, key)
 
                         # Write buffer content into .reg file
                         if self.regContentWriteChk:
-                            exportRegFile.write('\n'.join(self.regContent))
+                            self.regContent.insert(0, WINDOWS_REG_HEADER)
+                            joindContent = '\n'.join(self.regContent)
+                            exportRegFile.write(joindContent)
                         else:
                             print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
 
                     # Write buffer content into refined and stripped .reg files
                     if self.regContentRefinedWriteChk:
                         with open(outputFileRefinedPath, 'w', encoding='utf-16') as exportRegRefinedFile:
-                            exportRegRefinedFile.write('\n'.join(self.regContentRefined))
+                            self.regContentRefined.insert(0, WINDOWS_REG_HEADER)
+                            joindContentRefined = '\n'.join(self.regContentRefined)
+                            exportRegRefinedFile.write(joindContentRefined)
                     if self.regContentStrippedWriteChk:
                         with open(outputFileStrippedPath, 'w', encoding='utf-16') as exportRegStrippedFile:
-                            exportRegStrippedFile.write('\n'.join(self.regContentStripped))
+                            self.regContentStripped.insert(0, WINDOWS_REG_HEADER)
+                            joindContentStripped = '\n'.join(self.regContentStripped)
+                            exportRegStrippedFile.write(joindContentStripped)
 
                     # Statistics update for current component
                     bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}[/yellow]".format(
