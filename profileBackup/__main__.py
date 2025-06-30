@@ -40,22 +40,14 @@ def main() -> int:
     Returns:
         int: Exit code (0 for success, non-zero for errors)
     """
-    try:
-        args = parse_args()
+    args = parse_args()
 
-        if args.debug:
-            import pytest
-            return pytest.main(["-vv"])
+    if args.debug:
+        import pytest
+        return pytest.main(["-vv"])
 
-        cli.program()
-        return 0
-
-    except KeyboardInterrupt:
-        print("\nOperation cancelled by user", file=sys.stderr)
-        return 1
-    except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
-        return 1
+    cli.program()
+    return 0
 
 
 if __name__ == "__main__":

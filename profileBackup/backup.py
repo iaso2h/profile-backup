@@ -11,7 +11,8 @@ import config
 
 print = util.print
 WINDOWS_ANCHOR_START_PAT = re.compile(r"^[a-zA-Z]:\\")
-WINDOWS_REG_HEADER = r"Windows Registry Editor Version 5.00\n"
+WINDOWS_REG_HEADER = "Windows Registry Editor Version 5.00\n"
+REG_ENCODING = "utf-16"
 
 
 class Profile(): # {{{
@@ -806,6 +807,7 @@ class RegCategory(FileCategory): # {{{
         filterType: str,
         filterPattern: str | Callable,
         keyPathNamingConvention: Optional[Callable] = None,
+        regEncoding: str = REG_ENCODING
     ):
         """
         Initialize a new RegCategory instance for registry backup.
@@ -854,6 +856,7 @@ class RegCategory(FileCategory): # {{{
         self.filterPattern   = filterPattern
         self.parentPaths     = parentPaths
         self.keyPathNamingConvention = keyPathNamingConvention
+        self.regEncoding = regEncoding
 
 
     def __str__(self):
@@ -965,6 +968,18 @@ class RegCategory(FileCategory): # {{{
             raise ValueError(f"function value is expected as the parentPathsNamingConvention parameter for category {self.categoryName} under profile {self.profileName}.")
 
         self._keyPathNamingConvention = val
+    # }}}
+
+    # Validation of regEncoding {{{
+    @property
+    def regEncoding(self) -> str:
+        return self._regEncoding
+    @regEncoding.setter
+    def regEncoding(self, val):
+        if not isinstance(val, str):
+            raise ValueError(f"str value is expected as the regEncoding parameter for category {self.categoryName} under profile {self.profileName}.")
+
+        self._regEncoding = val
     # }}}
 
     def shouldSkipKey(self, fullPath: str, isSubKey:bool) -> bool: # {{{
@@ -1240,58 +1255,58 @@ class RegCategory(FileCategory): # {{{
                 self.categoryName,
                 regName + "_Stripped" + ".reg"
             )
-            try:
-                if not config.DRYRUN:
-                    os.makedirs(outputFilePath.parent, exist_ok=True)
-                    with open(outputFilePath, 'w', encoding='utf-16') as exportRegFile:
-                        # Start export from the first sub key
+            if not config.DRYRUN:
+                os.makedirs(outputFilePath.parent, exist_ok=True)
+                with open(outputFilePath, 'w', encoding=self.regEncoding) as exportRegFile:
+                    # Start export from the first sub key
+                    try:
                         with winreg.OpenKey(self.rootKey, keyRelPath) as key:
                             self.recursiveExport(keyRelPath, key)
+                    except FileNotFoundError:
+                        bufferOutput.append(fr"[red]    registry path: {self.rootKeyStr}\{keyRelPath} doesn't exist.[/red]")
+                    except PermissionError:
+                        bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
+                    except Exception as e:
+                        raise e
 
-                        # Write buffer content into .reg file
-                        if self.regContentWriteChk:
-                            self.regContent.insert(0, WINDOWS_REG_HEADER)
-                            joindContent = '\n'.join(self.regContent)
-                            exportRegFile.write(joindContent)
+                    # Write buffer content into .reg file
+                    if self.regContentWriteChk:
+                        self.regContent.insert(0, WINDOWS_REG_HEADER)
+                        joindContent = '\n'.join(self.regContent)
+                        exportRegFile.write(joindContent)
 
-                            # Reset buffer content
-                            self.regContent = []
-                            self.regContentWriteChk = False
-                        else:
-                            print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
+                        # Reset buffer content
+                        self.regContent = []
+                        self.regContentWriteChk = False
+                    else:
+                        print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
 
-                    # Write buffer content into refined and stripped .reg files
-                    if self.regContentRefinedWriteChk:
-                        with open(outputFileRefinedPath, 'w', encoding='utf-16') as exportRegRefinedFile:
-                            self.regContentRefined.insert(0, WINDOWS_REG_HEADER)
-                            joindContentRefined = '\n'.join(self.regContentRefined)
-                            exportRegRefinedFile.write(joindContentRefined)
+                # Write buffer content into refined and stripped .reg files
+                if self.regContentRefinedWriteChk:
+                    with open(outputFileRefinedPath, 'w', encoding=self.regEncoding) as exportRegRefinedFile:
+                        self.regContentRefined.insert(0, WINDOWS_REG_HEADER)
+                        joindContentRefined = '\n'.join(self.regContentRefined)
+                        exportRegRefinedFile.write(joindContentRefined)
 
-                            # Reset buffer content
-                            self.regContentRefined = []
-                            self.regContentRefinedWriteChk = False
-                    if self.regContentStrippedWriteChk:
-                        with open(outputFileStrippedPath, 'w', encoding='utf-16') as exportRegStrippedFile:
-                            self.regContentStripped.insert(0, WINDOWS_REG_HEADER)
-                            joindContentStripped = '\n'.join(self.regContentStripped)
-                            exportRegStrippedFile.write(joindContentStripped)
+                        # Reset buffer content
+                        self.regContentRefined = []
+                        self.regContentRefinedWriteChk = False
+                if self.regContentStrippedWriteChk:
+                    with open(outputFileStrippedPath, 'w', encoding=self.regEncoding) as exportRegStrippedFile:
+                        self.regContentStripped.insert(0, WINDOWS_REG_HEADER)
+                        joindContentStripped = '\n'.join(self.regContentStripped)
+                        exportRegStrippedFile.write(joindContentStripped)
 
-                            # Reset buffer content
-                            self.regContentStripped = []
-                            self.regContentStrippedWriteChk = False
+                        # Reset buffer content
+                        self.regContentStripped = []
+                        self.regContentStrippedWriteChk = False
 
-                    # Statistics update for current component
-                    bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}[/yellow]".format(
-                        Profile.foundFileMessage,
-                        self.rootKeyStr,
-                        keyRelPath)
-                    )
-
-
-            except FileNotFoundError:
-                bufferOutput.append(fr"[red]    registry path: {self.rootKeyStr}\{keyRelPath} doesn't exist.[/red]")
-            except PermissionError:
-                bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
+                # Statistics update for current component
+                bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}[/yellow]".format(
+                    Profile.foundFileMessage,
+                    self.rootKeyStr,
+                    keyRelPath)
+                )
 
         # Statistics update for all found components match the `self.parentPaths` pattern
         bufferOutput.append(

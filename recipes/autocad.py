@@ -335,7 +335,6 @@ Profile(
             "silentReport": False,
             "stripePathValue": True,
             "parentPaths": r"HKEY_CURRENT_USER/Software/Autodesk/AutoCAD/R[0-9.]+/.*",
-            "keyPathNamingConvention": keyPathNamingConvention,
             "filterType": "exclude",
             "filterPattern": [
                 r"\\LastLaunchedLanguage",
@@ -349,6 +348,7 @@ Profile(
                 r"\\MiniDump$",
                 r"\\*UILOCALE$",
             ],
+            "keyPathNamingConvention": keyPathNamingConvention,
         },
     ],
 )
