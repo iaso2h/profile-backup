@@ -10,7 +10,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import cli
+from . import cli, __version__
 import recipes
 
 
@@ -28,7 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "-v", "--version",
         action="version",
-        version="%(prog)s 0.1.32"
+        version=f"{__version__}"
     )
     return parser.parse_args()
 

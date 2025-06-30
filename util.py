@@ -137,7 +137,7 @@ def getGlobPattern(
     keyComponentRegexIndex: list[int],
     keyParent: winreg.HKEYType,
     keyRelRootStr: str,
-    componentIdxInit: int = 1,
+    componentIdx: int = 1,
 ) -> list[str]:
     """
     Recursively searches Windows registry keys matching given patterns.
@@ -155,7 +155,7 @@ def getGlobPattern(
             This should be an open registry key handle.
         keyRelRootStr (str): Relative path string of the parent key, used for building
             complete paths during recursion.
-        componentIdxInit (int, optional): Starting index in keyComponents to begin matching.
+        componentIdx (int, optional): Starting index in keyComponents to begin matching.
             Defaults to 1 to skip the root key.
 
     Returns:
@@ -179,65 +179,57 @@ def getGlobPattern(
         - Regular expression components are matched using re.search()
         - The function automatically handles registry key enumeration
         - Supports both shallow and deep pattern matching
-        - Thread-safe as long as the registry handles are not shared
     """
     subkeyNames: list[str] = []
-    for componentIdx, component in enumerate(keyComponents):
-        if componentIdx < componentIdxInit:
-            continue
+    component = keyComponents[componentIdx]
 
-        keyIdx = 0
+    if componentIdx in keyComponentRegexIndex:
+        componentPat = re.compile(component)
 
-        if componentIdx in keyComponentRegexIndex:
-            componentPat = re.compile(component)
+    keyIdx = 0
+    while True:
+        try:
+            subkeyName = winreg.EnumKey(keyParent, keyIdx)
 
-        while True:
-            try:
-                subkeyName = winreg.EnumKey(keyParent, keyIdx)
+            if (
+                componentIdx not in keyComponentRegexIndex
+                and component == subkeyName
+            ) or (
+                componentIdx in keyComponentRegexIndex
+                and componentPat.search(subkeyName) # pyright: ignore [reportPossiblyUnboundVariable]
+            ):
+                # Collect matching subkey name. Deal with them until no
+                # more subkeys are found in current registry key level
+                subkeyNames.append(subkeyName)
 
-                if (
-                    componentIdx not in keyComponentRegexIndex
-                    and component == subkeyName
-                ) or (
-                    componentIdx in keyComponentRegexIndex
-                    and componentPat.search(subkeyName) # pyright: ignore [reportPossiblyUnboundVariable]
-                ):
-                    # Collect matching subkey name. Deal with them until no
-                    # more subkeys are found in current registry key level
-                    subkeyNames.append(subkeyName)
+                keyIdx += 1 # Enter next iteration to glob other subkeys that might match the pattern
+            else:
+                keyIdx += 1 # Enter next iteration
+        except OSError:
+            # No match found
+            if len(subkeyNames) == 0:
+                return subkeyNames
 
-                    keyIdx += 1 # Enter next iteration to glob other subkeys that might match the pattern
-                else:
-                    keyIdx += 1 # Enter next iteration
-            except OSError:
-                # No match found
-                if len(subkeyNames) == 0:
-                    return subkeyNames
+            if componentIdx == len(keyComponents) - 1:
+                # Deepest level reached, return the key names
+                return subkeyNames
+            else:
+                # Glob deeper level, and compose the relative key paths by
+                # combining subkey names at current level with the ones
+                # from deeper level
+                flatKeyRelPaths = []
+                for subkeyName in subkeyNames:
+                    with winreg.OpenKey(keyParent, subkeyName) as subKeyParent:
+                        subkeyNamesDeeper = getGlobPattern(
+                            keyComponents,
+                            keyComponentRegexIndex,
+                            subKeyParent,
+                            f"{keyRelRootStr}\\{subkeyName}",
+                            componentIdx + 1
+                        )
+                    flatKeyRelPaths.extend([subkeyName + "\\" + keyRelPathDeeper for keyRelPathDeeper in subkeyNamesDeeper])
 
-                if componentIdx == len(keyComponents) - 1:
-                    # Deepest level reached, return the key names
-                    return subkeyNames
-                else:
-                    # Glob deeper level, and compose the relative key paths by
-                    # combining subkey names at current level with the ones
-                    # from deeper level
-                    flatKeyRelPaths = []
-                    for subkeyName in subkeyNames:
-                        with winreg.OpenKey(keyParent, subkeyName) as subKeyParent:
-                            subkeyNamesDeeper = getGlobPattern(
-                                keyComponents,
-                                keyComponentRegexIndex,
-                                subKeyParent,
-                                f"{keyRelRootStr}\\{subkeyName}",
-                                componentIdx + 1
-                            )
-                        flatKeyRelPaths.extend([subkeyName + "\\" + keyRelPathDeeper for keyRelPathDeeper in subkeyNamesDeeper])
-
-                    return flatKeyRelPaths
-
-    raise ValueError("Failed to find the key path pattern.")
-    # Fallback value after iterating all components
-    # return ""
+                return flatKeyRelPaths
 
 
 def regGlobKeyRelPaths(keyPathPat) -> Tuple[list[str], Optional[str]]:
@@ -274,9 +266,7 @@ def regGlobKeyRelPaths(keyPathPat) -> Tuple[list[str], Optional[str]]:
         - Input pattern uses forward slashes (/) as separators
         - Output paths use Windows-style backslashes (\\) as separators
         - The function automatically detects regex syntax in pattern components
-        - For non-regex patterns, performs a direct key lookup for efficiency
         - Returns empty list and None if no matches are found
-        - Thread-safe as it creates new registry handles for each call
     """
     if not isinstance(keyPathPat, str):
         raise ValueError("string value is expected from key path pattern.")
