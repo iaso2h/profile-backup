@@ -263,6 +263,7 @@ def regGlobKeyRelPaths(keyPathPat) -> Tuple[list[str], Optional[str]]:
         >>> # Might return (["Software\\Microsoft\\Settings", "Software\\Adobe\\Settings"], "HKEY_CURRENT_USER")
 
     Note:
+        - learn about strucure of Windows registry -> https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry
         - Input pattern uses forward slashes (/) as separators
         - Output paths use Windows-style backslashes (\\) as separators
         - The function automatically detects regex syntax in pattern components
@@ -319,6 +320,8 @@ def regQueryData(keyPathPat: str, valueName: str) -> Tuple[str, bool]:
 
     Returns:
         Tuple[str, bool]: The queried value data and a success flag (True if found)
+
+    Note: learn about strucure of Windows registry -> https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry
     """
     valData = ""
     succeedChk = False

@@ -212,7 +212,7 @@ Profile(
         },
         {
             "type": "registry",
-            "categoryName": "Settings",
+            "categoryName": "Generic Settings",
             "enabled": enabledChk,
             "recursiveCopy": True,
             "silentReport": False,

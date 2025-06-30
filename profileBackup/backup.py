@@ -750,6 +750,8 @@ class RegCategory(FileCategory): # {{{
         hkey (winreg.HKEYType): Windows registry key handle.
         componentMidPathStr (str): Middle part of the registry path.
         componentPathStrs (list[str]): List of registry paths that match the pattern.
+
+    Note: learn about strucure of Windows registry -> https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry
     """
     def __init__(
         self,
@@ -1048,11 +1050,11 @@ class RegCategory(FileCategory): # {{{
                 try:
                     valName, valData, valueType = winreg.EnumValue(key, i)
                     if self.shouldSkipKey(f"{currentSubkeyPath}\\{valName}", False):
+                        i += 1 # Enter next iteration to get next sibling value
                         continue
 
                     formattedValue, formattedValueStriped = self.formatRegValue(valData, valueType)
 
-                    # Write to file
                     if valName:
                         self.regContent.append(f'"{valName}"={formattedValue}')
                         if formattedValueStriped:
@@ -1061,7 +1063,8 @@ class RegCategory(FileCategory): # {{{
                         self.regContent.append(f'@={formattedValue}')
                         if formattedValueStriped:
                             self.regContentRefined.append(f'@={formattedValue}')
-                    i += 1
+
+                    i += 1 # Enter next iteration to get next sibling value
                 except OSError:
                     break
         except WindowsError:
@@ -1082,7 +1085,10 @@ class RegCategory(FileCategory): # {{{
                         if not self.shouldSkipKey(fullSubpath, True):
                             with winreg.OpenKey(key, subkeyName) as subkey:
                                 self.recursiveExport(fullSubpath, subkey)
-                        j += 1
+                        else:
+                            pass # Skip this subkey
+
+                        j += 1 # Enter next iteration to get next sibling key
                     except OSError:
                         break
             except WindowsError:
