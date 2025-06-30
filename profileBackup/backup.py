@@ -800,8 +800,11 @@ class RegCategory(FileCategory): # {{{
             return
 
         self.regContent = []
+        self.regContentWriteChk = False
         self.regContentRefined = []
+        self.regContentRefinedWriteChk = False
         self.regContentStripped = []
+        self.regContentStrippedWriteChk = False
         self.recursiveCopy   = recursiveCopy
         self.silentReport    = silentReport
         self.stripePathValue = stripePathValue
@@ -951,7 +954,7 @@ class RegCategory(FileCategory): # {{{
     # }}}
 
     @staticmethod
-    def formatRegValue(value, valueType) -> Tuple[str, Optional[str]]: # {{{
+    def formatRegValue(value, valueType) -> Tuple[str, str]: # {{{
         """
         Formats a registry value according to its type for .reg file export.
 
@@ -982,14 +985,13 @@ class RegCategory(FileCategory): # {{{
         """
         match valueType:
             case winreg.REG_SZ:
-                valStripped = None
                 val = '"{}"'.format(
                     value.replace('\\', '\\\\').replace('"', '\\"')
                 )
                 if not WINDOWS_ANCHOR_START_PAT.search(value):
-                    valStripped = val
-
-                return val, valStripped
+                    return val, val
+                else:
+                    return val, ""
             case winreg.REG_DWORD:
                 val = f"dword:{value:08x}"
                 return val, val
@@ -1042,6 +1044,7 @@ class RegCategory(FileCategory): # {{{
         # Write key header
         self.regContent.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
         self.regContentRefined.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
+        self.regContentStripped.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
 
         # Export values
         try:
@@ -1056,13 +1059,22 @@ class RegCategory(FileCategory): # {{{
                     formattedValue, formattedValueStriped = self.formatRegValue(valData, valueType)
 
                     if valName:
-                        self.regContent.append(f'"{valName}"={formattedValue}')
-                        if formattedValueStriped:
-                            self.regContentRefined.append(f'"{valName}"={formattedValue}')
-                    else:  # Default value
-                        self.regContent.append(f'@={formattedValue}')
-                        if formattedValueStriped:
-                            self.regContentRefined.append(f'@={formattedValue}')
+                        regValDataLine = f'"{valName}"={formattedValue}'
+                    else:
+                        regValDataLine = f'@={formattedValue}'
+
+                    if not self.regContentWriteChk:
+                        self.regContentWriteChk = True
+                    self.regContent.append(regValDataLine)
+
+                    if formattedValueStriped == "":
+                        if not self.regContentStrippedWriteChk:
+                            self.regContentStrippedWriteChk = True
+                        self.regContentStripped.append(regValDataLine)
+                    else:
+                        if not self.regContentRefinedWriteChk:
+                            self.regContentRefinedWriteChk = True
+                        self.regContentRefined.append(regValDataLine)
 
                     i += 1 # Enter next iteration to get next sibling value
                 except OSError:
@@ -1072,6 +1084,7 @@ class RegCategory(FileCategory): # {{{
 
         self.regContent.append("")  # Extra newline between keys
         self.regContentRefined.append("")  # Extra newline between keys
+        self.regContentStripped.append("")  # Extra newline between keys
 
         # Recursively export subkeys
         if self.recursiveCopy:
@@ -1125,29 +1138,44 @@ class RegCategory(FileCategory): # {{{
                 self.categoryName,
                 regName + ".reg"
             )
-            outputFileStrippedPath = Path(
+            outputFileRefinedPath = Path(
                 config.DESTPATH, # type: ignore
                 self.profileName,
                 self.categoryName,
                 regName + "_refined" + ".reg"
             )
+            outputFileStrippedPath = Path(
+                config.DESTPATH, # type: ignore
+                self.profileName,
+                self.categoryName,
+                regName + "_stripped" + ".reg"
+            )
             try:
                 if not config.DRYRUN:
                     os.makedirs(outputFilePath.parent, exist_ok=True)
-                    with open(outputFilePath, 'w', encoding='utf-16') as exportFile:
+                    with open(outputFilePath, 'w', encoding='utf-16') as exportRegFile:
                         # Write REG file header
                         self.regContent.append("Windows Registry Editor Version 5.00\n")
                         self.regContentRefined.append("Windows Registry Editor Version 5.00\n")
+                        self.regContentStripped.append("Windows Registry Editor Version 5.00\n")
 
                         # Start export from the first sub key
                         with winreg.OpenKey(self.rootKey, keyRelPath) as key:
                             self.recursiveExport(keyRelPath, key)
 
-                        exportFile.write('\n'.join(self.regContent))
-                    if self.stripePathValue:
-                        with open(outputFileStrippedPath, 'w', encoding='utf-16') as exportFile:
-                            exportFile.write('\n'.join(self.regContentRefined))
+                        # Write buffer content into .reg file
+                        if self.regContentWriteChk:
+                            exportRegFile.write('\n'.join(self.regContent))
+                        else:
+                            print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
 
+                    # Write buffer content into refined and stripped .reg files
+                    if self.regContentRefinedWriteChk:
+                        with open(outputFileRefinedPath, 'w', encoding='utf-16') as exportRegRefinedFile:
+                            exportRegRefinedFile.write('\n'.join(self.regContentRefined))
+                    if self.regContentStrippedWriteChk:
+                        with open(outputFileStrippedPath, 'w', encoding='utf-16') as exportRegStrippedFile:
+                            exportRegStrippedFile.write('\n'.join(self.regContentStripped))
 
                     # Statistics update for current component
                     bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}[/yellow]".format(
