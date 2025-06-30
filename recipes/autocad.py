@@ -4,7 +4,7 @@ from pathlib import Path
 import util
 from profileBackup.backup import Profile
 
-versionDict = [ # {{{
+versionDict = [  # {{{
     {
         "releaseYear": 2025,
         "internalRNumber": "R25.0",
@@ -124,15 +124,132 @@ versionDict = [ # {{{
         "internalRNumber": "R1.0",
         "note": "The very first release.",
     },
-] # }}}
-def internalRNumberToYear(internalRNumber): # {{{
+]  # }}}
+
+
+localeDicts = [  # {{{
+    {
+        "localeId": "409",
+        "abbreviation": "ENU",
+        "languageName": "English",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "407",
+        "abbreviation": "DEU",
+        "languageName": "German",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "040C",
+        "abbreviation": "FRA",
+        "languageName": "French",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "410",
+        "abbreviation": "ITA",
+        "languageName": "Italian",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "040A",
+        "abbreviation": "ESP",
+        "languageName": "Spanish",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "415",
+        "abbreviation": "PLK",
+        "languageName": "Polish",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "040E",
+        "abbreviation": "HUN",
+        "languageName": "Hungarian",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "405",
+        "abbreviation": "CSY",
+        "languageName": "Czech",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "419",
+        "abbreviation": "RUS",
+        "languageName": "Rusian",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "416",
+        "abbreviation": "PTB",
+        "languageName": "Brazilian Portuguese",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "804",
+        "abbreviation": "CHS",
+        "languageName": "Simplified Chinese",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "404",
+        "abbreviation": "CHT",
+        "languageName": "Traditional Chinese",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "412",
+        "abbreviation": "KOR",
+        "languageName": "Korean",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+    {
+        "localeId": "411",
+        "abbreviation": "JPN",
+        "languageName": "Japanese",
+        "sourceUrl": "https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/List-of-Local-Language-Code-for-Autodesk-Products.html",
+    },
+]
+# }}}
+
+
+def internalRNumberToYear(internalRNumber) -> str:  # {{{
     for versionInfo in versionDict:
         if versionInfo["internalRNumber"] == internalRNumber:
-            return versionInfo["releaseYear"]
+            return str(versionInfo["releaseYear"])
     return ""
+
+
 # }}}
-appDataPath = Path(os.getenv("APPDATA")).parent # type: ignore
-installPathStr, enabledChk = util.regQueryData(r"HKEY_LOCAL_MACHINE/SOFTWARE/SolidWorks/SOLIDWORKS \d+/Setup", "SolidWorks Folder")
+def internalLanuageCodeToName(localeId) -> str:  # {{{
+    for localeInfo in localeDicts:
+        if localeInfo["localeId"] == localeId:
+            return "AutoCAD_{}".format(localeInfo["abbreviation"])
+    return ""
+
+
+# }}}
+
+appDataPath = Path(os.getenv("APPDATA")).parent  # type: ignore
+installPathStr, enabledChk = util.regQueryData(
+    r"HKEY_LOCAL_MACHINE/SOFTWARE/SolidWorks/SOLIDWORKS \d+/Setup", "SolidWorks Folder"
+)
+
+
+def keyPathNamingConvention(keyRelPath):
+    keyComponents = keyRelPath.split("\\")
+    localId = keyComponents[-1][keyComponents[-1].index(":") + 1 :]
+    KeyCompoentTail = "{}_{}".format(
+        internalRNumberToYear(keyComponents[-2]),
+        internalLanuageCodeToName(localId),
+    )
+
+    return KeyCompoentTail
+
+
 Profile(
     profileName="AutoCAD",
     enabled=True,
@@ -217,7 +334,8 @@ Profile(
             "recursiveCopy": True,
             "silentReport": False,
             "stripePathValue": True,
-            "parentPaths": r"HKEY_CURRENT_USER/Software/Autodesk/AutoCAD/R[0-9.]+",
+            "parentPaths": r"HKEY_CURRENT_USER/Software/Autodesk/AutoCAD/R[0-9.]+/.*",
+            "keyPathNamingConvention": keyPathNamingConvention,
             "filterType": "exclude",
             "filterPattern": [
                 r"\\LastLaunchedLanguage",
