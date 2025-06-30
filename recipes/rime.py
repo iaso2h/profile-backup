@@ -1,7 +1,7 @@
 import util
 from backup import Profile
 from pathlib import Path
-rimeUserFolder, enabledChk = util.regQueryData(r"HKEY_CURRENT_USER\Software\Rime\Weasel", "RimeUserDir")
+rimeUserFolder, enabledChk = util.regQueryData(r"HKEY_CURRENT_USER/Software/Rime/Weasel", "RimeUserDir")
 
 Profile(
     profileName="Rime",

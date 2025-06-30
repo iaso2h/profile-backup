@@ -1,7 +1,7 @@
 import util
 from backup import Profile
 from pathlib import Path
-installPathStr, enabledChk = util.regQueryData(r"HKEY_CURRENT_USER\Software\Vivaldi", "DestinationFolder")
+installPathStr, enabledChk = util.regQueryData(r"HKEY_CURRENT_USER/Software/Vivaldi", "DestinationFolder")
 
 Profile(
     profileName="Vivaldi",

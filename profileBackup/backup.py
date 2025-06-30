@@ -44,14 +44,51 @@ class Profile(): # {{{
         Initialize a new Profile instance.
 
         Creates a new backup profile with specified name, categories, and enabled status.
-        The profile is automatically registered in the global profileDict.
+        The profile is automatically registered in the global profileDict if enabled.
+        Initializes tracking statistics for backup operations and sets up category instances
+        based on the provided configuration.
 
         Args:
             profileName (str): Unique name identifying this profile.
             categories (list): List of dictionaries defining file or registry categories.
-                Each dictionary must contain a "type" key with value "file" or "registry"
-                and other parameters specific to the category type.
+                Each dictionary must contain:
+                - "type" key with value "file" or "registry"
+                - For file categories:
+                    * categoryName (str): Name of the category
+                    * enabled (bool): Whether the category is active
+                    * recursiveCopy (bool): Whether to copy subdirectories
+                    * silentReport (bool): Whether to suppress detailed reporting
+                    * parentSrcPaths (str|Path|list): Source paths to back up
+                    * filterType (str): "include" or "exclude"
+                    * filterPattern (list|Callable): Patterns or function for filtering
+                - For registry categories:
+                    * categoryName (str): Name of the category
+                    * enabled (bool): Whether the category is active
+                    * recursiveCopy (bool): Whether to copy subkeys
+                    * silentReport (bool): Whether to suppress detailed reporting
+                    * stripePathValue (bool): Whether to create stripped versions
+                    * parentPaths (str): Registry paths to back up
+                    * filterType (str): "include" or "exclude"
+                    * filterPattern (list): Regex patterns for filtering
             enabled (bool): Whether this profile should be active for backup operations.
+
+        Note:
+            - Initializes ticked status as True by default
+            - Sets initial backup count and size to 0
+            - Validates all input parameters through property setters
+            - Automatically registers enabled profiles in profileDict
+            - Creates appropriate category instances based on type
+            - Handles both file and registry category configurations
+            - Performs type checking and validation for all parameters
+            - Supports both file system and registry backup configurations
+            - Maintains a global registry of all enabled profiles
+            - Establishes parent-child relationships between profiles and categories
+            - Provides foundation for the backup operation workflow
+            - Ensures consistent initialization of all profile attributes
+            - Supports dynamic category creation based on configuration type
+            - Maintains separation between file and registry backup logic
+            - Implements proper error handling for invalid configurations
+            - Supports flexible backup source specification (paths, globs, etc.)
         """
         # Default value
         self.ticked = True
@@ -125,6 +162,16 @@ class Profile(): # {{{
 
         Sets the message to "Backing up" during actual backup operations or "Found" during dry runs.
         This affects all status messages displayed during the backup process.
+
+        Note:
+            - Checks config.DRYRUN to determine the appropriate message
+            - Used to maintain consistent messaging across all backup operations
+            - Called before starting backup operations to ensure correct messaging
+            - Affects all instances of Profile and its subclasses
+            - Provides user-friendly feedback about the current operation mode
+            - Centralizes message configuration for consistent user experience
+            - Supports both actual backup and simulation (dry run) modes
+            - Changes are applied globally to all profile instances
         """
         cls.foundFileMessage = "Backing up" if not config.DRYRUN else "Found"
 # }}}
@@ -168,6 +215,39 @@ class FileCategory(Profile): # {{{
         filterType: str,
         filterPattern: str | Callable,
     ):
+        """
+        Initialize a new FileCategory instance for file backup.
+
+        Creates a file backup category with specified configuration parameters.
+        Sets up source paths and filter patterns for file backup operations.
+
+        Args:
+            profileName (str): Name of the parent profile this category belongs to.
+            categoryName (str): Name identifying this specific category.
+            enabled (bool): Whether this category is active for backup.
+            recursiveCopy (bool): Whether to recursively copy subdirectories.
+            silentReport (bool): Whether to suppress detailed reporting.
+            parentSrcPaths (str|Path|list[Path]|Iterator[Path]|map): Source paths to back up.
+                Can be a single path, list of paths, or path generator.
+            filterType (str): Either "include" or "exclude" to define filter behavior.
+            filterPattern (str|Callable): Patterns or function for filtering files.
+
+        Note:
+            - Initializes backup statistics counters
+            - Validates all input parameters through property setters
+            - Handles various source path formats (str, Path, list, generator)
+            - Supports glob patterns in source paths for flexible file selection
+            - Automatically disables category if source paths are not found
+            - Maintains proper path handling across different operating systems
+            - Implements file system operations with proper error handling
+            - Supports both pattern-based and function-based file filtering
+            - Tracks relative paths for sync operations
+            - Handles permission errors gracefully
+            - Supports both recursive and non-recursive directory copying
+            - Maintains consistent file path formatting
+            - Provides flexible file selection through filter patterns
+            - Implements proper path validation and normalization
+        """
         self.backupCount = 0
         self.backupSize  = 0
 
@@ -339,7 +419,21 @@ class FileCategory(Profile): # {{{
             Tuple[int, int, list[str]]: A tuple containing:
                 - count: Number of files backed up (0 or 1)
                 - size: Size in bytes of backed up file (0 if not backed up)
-                - bufferOutput: Updated list of output messages
+                - bufferOutput: Updated list of output messages with copy operation details
+
+        Note:
+            - Respects COPYOVERWRITE setting for existing files
+            - Maintains file metadata using shutil.copy2
+            - Creates destination directories if they don't exist
+            - Handles permission errors gracefully (PermissionError)
+            - Updates relative path tracking for sync operations
+            - Calculates relative paths for consistent directory structure
+            - Respects DRYRUN configuration to prevent actual file copying
+            - Provides detailed size information in human-readable format
+            - Tracks file modification times for change detection
+            - Maintains color-coded output messages for different states
+            - Supports both new file creation and existing file updates
+            - Updates relPathsTopParentSrc for sync operations tracking
         """
         relPathTopParentSrcList = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
 
@@ -411,11 +505,26 @@ class FileCategory(Profile): # {{{
             Tuple[int, int, list[str]]: A tuple containing:
                 - countAccumulated: Total number of files backed up
                 - sizeAccumulated: Total size in bytes of backed up files
-                - bufferOutput: Updated list of output messages
+                - bufferOutput: Updated list of output messages with copy operation details
 
         Note:
-            The method respects the recursiveCopy setting and applies filterType/filterPattern
-            rules to determine which files and directories to process.
+            - Respects the recursiveCopy setting to determine whether to process subdirectories
+            - Applies filterType/filterPattern rules to determine which files and directories to process
+            - Handles both list-based and callable filter patterns
+            - Tracks statistics for each directory and accumulates them
+            - Handles permission errors gracefully by skipping inaccessible directories
+            - Initializes tracking data structures for sync operations
+            - Maintains a hierarchical structure for tracking copied files
+            - Supports two filtering modes: include (whitelist) and exclude (blacklist)
+            - Processes directories first, then individual files
+            - Delegates actual file copying to the copyFile method
+            - Accumulates statistics from all subdirectories for comprehensive reporting
+            - Optimizes performance by checking directory-level filters before processing contents
+            - Supports both pattern-based filtering (using lists) and function-based filtering (using callables)
+            - Preserves relative path relationships between source and destination
+            - Handles edge cases like empty directories and permission-restricted content
+            - Updates global tracking structures for synchronization operations
+            - Maintains consistent path handling across different operating systems
         """
         countAccumulated = 0
         sizeAccumulated = 0
@@ -533,6 +642,9 @@ class FileCategory(Profile): # {{{
               syncFilesToDelete for later removal.
             - Empty directories in destination are also marked for removal.
             - This method only identifies files to delete; actual deletion happens elsewhere.
+            - The method is called when COPYSYNC configuration is enabled.
+            - Maintains a hierarchical structure of files to delete organized by profile and destination path.
+            - Skips processing if the destination directory doesn't exist.
         """
         # Abort when parent destination directory doesn't exist
         if not parentDstPath.exists():
@@ -564,22 +676,33 @@ class FileCategory(Profile): # {{{
 
     def backup(self, bufferOutput:list[str]) -> list[str]: # {{{
         """
-        Performs the backup operation for this registry category.
+        Performs the backup operation for this file category.
 
-        Exports all registry keys and values for this category that match the filter criteria.
-        The exported content is formatted for .reg file compatibility and appended to the
-        provided buffer.
+        This method processes all configured source paths, copying files that match
+        the filter criteria to their corresponding destination paths. It handles
+        directory creation, file filtering, and tracks backup statistics.
 
         Args:
-            bufferOutput (list[str]): Buffer to store the exported registry content
+            bufferOutput (list[str]): List to collect output messages during operation.
 
         Returns:
-            list[str]: Updated buffer containing the original content plus the exported
-                      registry entries for this category
+            list[str]: Updated list of output messages with backup operation details.
 
         Note:
-            This method handles opening the root registry key, calling recursiveExport
-            to process all subkeys, and properly formatting the output.
+            - Sets the global silent report mode based on category configuration
+            - Processes each parent source path separately
+            - Applies filter patterns to determine which files to back up
+            - Calls iterCopy to handle the actual file copying process
+            - Sets up sync operations when COPYSYNC is enabled
+            - Updates backup statistics at category, profile, and global levels
+            - Provides detailed reporting of backup operations
+            - Handles file access errors gracefully
+            - Respects DRYRUN configuration to prevent actual file operations
+            - Maintains hierarchical statistics at category, profile, and global levels
+            - Creates appropriate destination directory structure
+            - Tracks relative paths for sync operations
+            - Provides timestamped and color-coded output messages
+            - Supports both include and exclude filtering mechanisms
         """
         # Alter global silent report for current backup session
         config.SILENTMODE = self.silentReport
@@ -683,7 +806,7 @@ class RegCategory(FileCategory): # {{{
         enabled (bool): Whether this category is active for backup.
         recursiveCopy (bool): Whether to recursively back up registry subkeys.
         silentReport (bool): Whether to suppress detailed reporting.
-        parentPaths (str): Registry path to back up (e.g., "HKEY_CURRENT_USER\\Software\\...").
+        parentPaths (str): Registry path to back up (e.g., "HKEY_CURRENT_USER/Software/...").
         filterType (str): Either "include" or "exclude" to define filter behavior.
         filterPattern (list[re.Pattern]): List of compiled regex patterns to filter registry keys.
         hkey (winreg.HKEYType): Windows registry key handle.
@@ -702,9 +825,40 @@ class RegCategory(FileCategory): # {{{
         filterType: str,
         filterPattern: str | Callable,
     ):
-        self.hkey = cast(winreg.HKEYType, None)
-        self.hkeyStr: str = ""
-        self.keyGlobPaths: list[str] = []
+        """
+        Initialize a new RegCategory instance for registry backup.
+
+        Creates a registry backup category with specified configuration parameters.
+        Sets up registry key paths and handles based on the provided parent paths.
+
+        Args:
+            profileName (str): Name of the parent profile this category belongs to.
+            categoryName (str): Name identifying this specific category.
+            enabled (bool): Whether this category is active for backup.
+            recursiveCopy (bool): Whether to recursively back up registry subkeys.
+            silentReport (bool): Whether to suppress detailed reporting.
+            stripePathValue (bool): Whether to create stripped versions of registry values.
+            parentPaths (str): Registry path to back up (e.g., "HKEY_CURRENT_USER/Software/...").
+            filterType (str): Either "include" or "exclude" to define filter behavior.
+            filterPattern (str|Callable): Patterns for filtering registry keys.
+
+        Note:
+            - Initializes registry key handles and paths
+            - Compiles regex patterns for efficient filtering
+            - Validates all input parameters through property setters
+            - Handles registry path globbing to find matching keys
+            - Supports both HKEY_CURRENT_USER and HKEY_LOCAL_MACHINE hives
+            - Automatically disables the category if registry paths are not found
+            - Inherits core functionality from FileCategory but overrides key methods
+            - Maintains proper registry path formatting and structure
+            - Implements specialized registry backup functionality
+            - Supports pattern-based filtering of registry keys and values
+            - Handles registry-specific operations like key enumeration and value formatting
+            - Provides both standard and stripped versions of registry exports
+        """
+        self.rootKey = cast(winreg.HKEYType, None)
+        self.rootKeyStr: Optional[str] = None
+        self.keyRelPaths: list[str] = []
         # UGLY:
         # self.hkey: Optional[winreg.HKEYType] = None
         self.profileName  = profileName
@@ -777,79 +931,18 @@ class RegCategory(FileCategory): # {{{
     @parentPaths.setter
     def parentPaths(self, val):
         # Validate path pattern
-        if not isinstance(val, str):
-            raise ValueError(f"string value is expected from the registry parent path for category {self.categoryName} under profile {self.profileName}.")
-        if "/" in val:
-            raise ValueError(fr'"/" character is not allowed in the registry parent path for category {self.categoryName} under profile {self.profileName}.')
-        if val[0] == "\\":
-            raise ValueError(f"the registry parent path must not start with a backslash for category {self.categoryName} under profile {self.profileName}.")
-
-        self.keyGlobPaths = []
-        self.keyGlobNames = []
-        # Get key components
-        keyComponent = val.split("\\")
-        keyComponentInvalidIndex = [
-            idx for idx, component in enumerate(keyComponent) if util.regexSpecialCharPat.fullmatch(component)  # Exclude regex patterns like \s*, \d+
-        ]
-
-        # Get HKEY
-        self.hkeyStr = keyComponent[0]
         try:
-            self.hkey = getattr(winreg, self.hkeyStr)
-        except AttributeError:
-            raise ValueError(f'invalid registry hkey "{self.hkeyStr}" for keyPathPat.')
+            self.keyRelPaths, self.rootKeyStr = util.regGlobKeyRelPaths(val)
+        except Exception as e:
+            # Re-raise the exception with additional time information
+            raise type(e)(f"errors occured when parsing recipe for category {self.categoryName} under profile {self.profileName}.")
 
-        # Get path glob pattern
-        if len(keyComponentInvalidIndex) > 1:
-            raise ValueError(f"number of regex specical characters cannot exceed 1 from the registry parent path for category {self.categoryName} under profile {self.profileName}.")
-        elif len(keyComponentInvalidIndex) == 0:
-            # Doen't contain any regex sepcial characters, return the full path pattern
-            self.keyGlobPaths = ["\\".join(keyComponent[1:])]
-        else:
-            keyGlobPatternMid = "\\".join(keyComponent[1:keyComponentInvalidIndex[0] - 1])
-            # Test if the middle part of the path pattern is valid
-            try:
-                keyGlobStart = winreg.OpenKey(self.hkey, keyGlobPatternMid)
-            except FileNotFoundError:
-                self._enable = False
-                print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
-                return
+        if not self.keyRelPaths:
+            self._enable = False
+            print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
+            return
 
-            keyGlobPatternHead = "\\".join(keyComponent[0:keyComponentInvalidIndex[0] - 1])
-            keyGlobPatternTail = "\\" + "\\".join(keyComponent[keyComponentInvalidIndex[0] + 1 :]) if keyComponentInvalidIndex[0] != len(keyComponent) - 1 else ""
-            keyGlobPatternStr = "{}\\\\{}".format(
-                re.escape(keyGlobPatternHead),
-                "\\".join(keyComponent[keyComponentInvalidIndex[0] - 1: keyComponentInvalidIndex[0] + 1]),
-            )
-            keyGlobPattern = re.compile(keyGlobPatternStr)
-
-            # Glob as many paths that match the glob pattern
-            i = 0
-            while True:
-                try:
-                    subkeyName = winreg.EnumKey(keyGlobStart, i)
-                    globPathHead = f"{keyGlobPatternHead}\\{subkeyName}"
-                    if keyGlobPattern.search(globPathHead):
-                        self.keyGlobPaths.append("{}\\{}{}".format(
-                            keyGlobPatternMid,
-                            subkeyName,
-                            keyGlobPatternTail
-                            )
-                        )
-                        self.keyGlobNames.append(subkeyName)
-
-                    i += 1
-                except OSError:
-                    break
-            keyGlobStart.Close()
-
-
-            if not self.keyGlobPaths:
-                self._enable = False
-                print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
-                return
-
-
+        self.rootKey = getattr(winreg, self.rootKeyStr)
         self._parentPaths = val
     # }}}
 
@@ -886,7 +979,9 @@ class RegCategory(FileCategory): # {{{
         Determines if a registry key should be skipped based on filter patterns.
 
         Applies the configured filter patterns to the registry key path to decide
-        whether it should be included or excluded from the backup.
+        whether it should be included or excluded from the backup. The behavior
+        differs based on the filterType setting and whether the item is a subkey
+        or value.
 
         Args:
             fullPath (str): Full registry key path to check against filter patterns.
@@ -896,9 +991,25 @@ class RegCategory(FileCategory): # {{{
             bool: True if the key should be skipped, False if it should be processed.
 
         Note:
-            - For "exclude" filterType: Returns True if any pattern matches (skip matched keys)
-            - For "include" filterType: Returns True if no pattern matches (skip unmatched keys)
-            - For values (isSubKey=False) with "include" filterType: Always includes them
+            - For "exclude" filterType:
+                * Returns True if any pattern matches (skip matched keys)
+                * Returns False if no patterns match (keep unmatched keys)
+            - For "include" filterType:
+                * For subkeys: Returns True if no pattern matches (skip unmatched keys)
+                * For values: Always returns False (include all values under matched keys)
+            - Uses compiled regex patterns for efficient matching
+            - Patterns are applied to the full registry key path
+            - Handles different behavior for subkeys vs values
+            - Optimizes performance by using pre-compiled regex patterns
+            - Implements logical filtering based on filterType configuration
+            - Supports complex pattern matching for registry paths
+            - Maintains consistent behavior with file filtering mechanisms
+            - Provides special handling for registry values under matched keys
+            - Ensures proper path comparison for hierarchical registry structure
+            - Respects parent-child relationships in registry hierarchy
+            - Implements early return logic for performance optimization
+            - Handles edge cases like empty patterns or special registry paths
+            - Maintains consistent behavior across different registry hives
         """
         if self.filterType == "exclude":
             for p in self.filterPattern:
@@ -923,24 +1034,43 @@ class RegCategory(FileCategory): # {{{
         Formats a registry value according to its type for .reg file export.
 
         Converts registry values of different types (string, DWORD, binary, etc.)
-        into the proper string format required for Windows .reg files.
+        into the proper string format required for Windows .reg files. For string
+        values, also provides a stripped version without file paths when possible.
 
         Args:
             value: The registry value to format (can be various types).
             valueType: The Windows registry value type constant (from winreg module).
 
         Returns:
-            str: Formatted string representation of the registry value suitable for .reg files.
+            Tuple[str, Optional[str]]: A tuple containing:
+                - str: Formatted string representation of the registry value
+                - Optional[str]: Stripped version (without file paths) for string values,
+                  or None if stripping is not applicable
 
         Note:
             Handles common registry types including:
-            - REG_SZ (strings)
-            - REG_DWORD (32-bit integers)
-            - REG_BINARY (binary data)
-            - REG_MULTI_SZ (multiple strings)
-            - REG_EXPAND_SZ (expandable strings)
-
-            For unsupported types, falls back to string representation.
+            - REG_SZ (strings): Returns both original and stripped versions
+            - REG_DWORD (32-bit integers): Returns same value for both tuple elements
+            - REG_BINARY (binary data): Returns same value for both tuple elements
+            - REG_MULTI_SZ (multiple strings): Returns same value for both tuple elements
+            - REG_EXPAND_SZ (expandable strings): Returns same value for both tuple elements
+            
+            For string values (REG_SZ), the stripped version removes Windows file paths
+            if present. For other types, both tuple elements contain the same value.
+            
+            Additional features:
+            - Properly escapes special characters in string values
+            - Formats DWORD values as 8-digit hexadecimal with dword: prefix
+            - Formats binary data as comma-separated hex bytes with hex: prefix
+            - Handles multi-string values with proper null terminators
+            - Formats expandable strings with hex(2): prefix
+            - Detects Windows file paths using regex pattern matching
+            - Maintains compatibility with Windows Registry Editor format
+            - Handles edge cases like empty strings and special characters
+            - Provides consistent formatting across all registry value types
+            - Implements proper escaping for backslashes and quotes in strings
+            - Supports both default and named registry values
+            - Preserves data type information in the exported format
         """
         match valueType:
             case winreg.REG_SZ:
@@ -981,34 +1111,55 @@ class RegCategory(FileCategory): # {{{
     # }}}
 
 
-    def recursiveExport(
+    def recursiveExport( # {{{
             self,
             currentSubkeyPath:str,
             key:winreg.HKEYType,
             regContent: list[str],
             regContentStriped: list[str]
-            ) -> Tuple[list[str], list[str]]: # {{{
+            ) -> Tuple[list[str], list[str]]:
         """
-        Recursively exports registry keys and values to a .reg file.
+        Recursively exports registry keys and values to .reg file format.
 
-        This method traverses the registry tree starting from a given key, exporting
-        all values and subkeys that match the filter criteria to the specified file.
+        This method traverses the registry tree starting from a given key, collecting
+        all values and subkeys that match the filter criteria into two separate content
+        lists - one for regular content and one for content with stripped file paths.
 
         Args:
             currentSubkeyPath (str): Current registry path being processed.
             key (winreg.HKEYType): Windows registry key handle for the current path.
-            exportFile (_io.TextIOWrapper): Open file handle for writing .reg content.
+            regContent (list[str]): List collecting regular .reg file content.
+            regContentStriped (list[str]): List collecting .reg content with stripped paths.
+
+        Returns:
+            Tuple[list[str], list[str]]: A tuple containing:
+                - regContent: Updated list of regular .reg file content
+                - regContentStriped: Updated list of .reg content with stripped paths
 
         Note:
             - Applies shouldSkipKey filtering to determine which keys and values to export
             - Formats registry values according to their types using formatRegValue
-            - Handles registry access errors gracefully
+            - Handles registry access errors gracefully (WindowsError, OSError)
             - Creates properly formatted .reg file entries with appropriate headers
+            - Maintains proper .reg file structure with newlines between sections
+            - Recursively processes subkeys when recursiveCopy is enabled
+            - Supports both default and named registry values
+            - Handles all common registry value types (REG_SZ, REG_DWORD, etc.)
+            - Maintains proper escaping of special characters in registry paths
+            - Preserves registry value data types in export format
+            - Implements depth-first traversal of registry tree
+            - Optimizes performance by filtering at key level before processing values
+            - Creates both standard and stripped versions of registry content
+            - Handles access permission issues for protected registry keys
+            - Maintains consistent formatting for Windows Registry Editor compatibility
+            - Supports both HKEY_CURRENT_USER and HKEY_LOCAL_MACHINE hives
+            - Processes registry values before subkeys for consistent output
+            - Adds appropriate newlines for .reg file readability
         """
 
         # Write key header
-        regContent.append(f"[{self.hkeyStr}\\{currentSubkeyPath}]")
-        regContentStriped.append(f"[{self.hkeyStr}\\{currentSubkeyPath}]")
+        regContent.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
+        regContentStriped.append(f"[{self.rootKeyStr}\\{currentSubkeyPath}]")
 
         # Export values
         try:
@@ -1067,18 +1218,52 @@ class RegCategory(FileCategory): # {{{
 
 
     def backup(self, bufferOutput:list[str]) -> list[str]:
-        for keyGlobName, keyGlobPath in zip(self.keyGlobNames, self.keyGlobPaths):
+        """
+        Performs the backup operation for this registry category.
+
+        This method exports registry keys and values to .reg files based on the configured
+        paths and filter patterns. It creates both standard and stripped (without file paths)
+        versions of the registry files when stripePathValue is enabled.
+
+        Args:
+            bufferOutput (list[str]): List to collect output messages during operation.
+
+        Returns:
+            list[str]: Updated list of output messages with registry backup information.
+
+        Note:
+            - Creates .reg files in the destination directory structure
+            - Handles registry access errors gracefully (FileNotFoundError, PermissionError)
+            - Updates backup statistics for the profile and overall totals
+            - Requires appropriate permissions to access registry keys
+            - Processes each registry key path in keyRelPaths separately
+            - Creates stripped versions of registry files when stripePathValue is True
+            - Uses UTF-16 encoding for .reg files as required by Windows Registry Editor
+            - Respects DRYRUN configuration to prevent actual file creation during dry runs
+            - Provides detailed reporting of registry backup operations
+            - Formats registry values according to their specific types (REG_SZ, REG_DWORD, etc.)
+            - Maintains proper Windows Registry Editor file format with version header
+            - Applies filter patterns to determine which keys and values to include
+            - Supports recursive export of registry subkeys based on recursiveCopy setting
+            - Creates parent directories for output files as needed
+            - Tracks backup statistics at both profile and global levels
+            - Provides color-coded and timestamped output messages
+            - Handles both HKEY_CURRENT_USER and HKEY_LOCAL_MACHINE registry hives
+            - Generates properly formatted registry paths with appropriate escaping
+        """
+        for keyRelPath in self.keyRelPaths:
+            regName = keyRelPath.replace('\\', '_')
             outputFilePath = Path(
                 config.DESTPATH, # type: ignore
                 self.profileName,
                 self.categoryName,
-                keyGlobName + ".reg"
+                regName + ".reg"
             )
             outputFileStrippedPath = Path(
                 config.DESTPATH, # type: ignore
                 self.profileName,
                 self.categoryName,
-                keyGlobName + "_stripped" + ".reg"
+                regName + "_stripped" + ".reg"
             )
             regContent = []
             regContentStriped = []
@@ -1091,9 +1276,9 @@ class RegCategory(FileCategory): # {{{
                         regContentStriped.append("Windows Registry Editor Version 5.00\n")
 
                         # Start export from the first sub key
-                        with winreg.OpenKey(self.hkey, keyGlobPath) as key:
+                        with winreg.OpenKey(self.rootKey, keyRelPath) as key:
                             regContent, regContentStriped = self.recursiveExport(
-                                keyGlobPath,
+                                keyRelPath,
                                 key,
                                 regContent,
                                 regContentStriped
@@ -1108,13 +1293,13 @@ class RegCategory(FileCategory): # {{{
                     # Statistics update for current component
                     bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}[/yellow]".format(
                         Profile.foundFileMessage,
-                        self.hkeyStr,
-                        keyGlobPath)
+                        self.rootKeyStr,
+                        keyRelPath)
                     )
 
 
             except FileNotFoundError:
-                bufferOutput.append(fr"[red]    registry path: {self.hkeyStr}\{keyGlobPath} doesn't exist.[/red]")
+                bufferOutput.append(fr"[red]    registry path: {self.rootKeyStr}\{keyRelPath} doesn't exist.[/red]")
             except PermissionError:
                 bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
 
@@ -1123,14 +1308,14 @@ class RegCategory(FileCategory): # {{{
             r"  {}[white]{} [purple bold]{}[/purple bold] for [green bold]{} {}[/green bold] registry sets matched: [yellow]{}[/yellow].[/white]".format(
                 util.getTimeStamp(),
                 Profile.foundFileMessage,
-                len(self.keyGlobPaths),
+                len(self.keyRelPaths),
                 self.profileName,
                 self.categoryName,
                 self.parentPaths
             )
         )
-        Profile.profileDict[self.profileName].backupCount += len(self.keyGlobPaths)
-        Profile.totalBackupCount += len(self.keyGlobPaths)
+        Profile.profileDict[self.profileName].backupCount += len(self.keyRelPaths)
+        Profile.totalBackupCount += len(self.keyRelPaths)
 
         return bufferOutput
 # }}}

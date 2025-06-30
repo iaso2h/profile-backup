@@ -6,22 +6,12 @@ Back up profiles from all kind of profiles. The location of these profiles somew
     * WPS
     * Foxit
     * Windows themes
-    * Anytext Searcher
     * Adobe series?
     * CAXA
     * FreeCAD
-    * ~~Kate~~
     * OBS studio
     * Obsidian
-    * ~~PixPin~~
     * AutoHotkey
-    * ~~Wezterm~~
-    * ~~MPV~~
-    * ~~XnViewMP~~
-    * ~~Rime~~
-    * ~~Powershell~~
-    * ~~PowerToys~~
-    * ~~StartAllBack~~
 
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~

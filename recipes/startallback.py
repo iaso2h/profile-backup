@@ -11,7 +11,7 @@ Profile(
             "recursiveCopy": False,
             "silentReport": False,
             "stripePathValue": True,
-            "parentPaths": r"HKEY_CURRENT_USER\Software\StartIsBack",
+            "parentPaths": r"HKEY_CURRENT_USER/Software/StartIsBack",
             "filterType": "include",
             "filterPattern": [
                 r".*",

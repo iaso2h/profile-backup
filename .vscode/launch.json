@@ -10,6 +10,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/profileBackup",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Run Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
         }
     ]
 }

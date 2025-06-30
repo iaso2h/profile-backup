@@ -21,5 +21,17 @@ Profile(
                 "katevirc",
             ]
         },
+        {
+            "type": "file",
+            "categoryName": "Shortcuts",
+            "enabled": True,
+            "recursiveCopy": True,
+            "silentReport": False,
+            "parentSrcPaths": Path(appDataPath, "Local/kxmlgui5/kate"),
+            "filterType": "include",
+            "filterPattern": [
+                "kateui.rc",
+            ]
+        },
     ]
 )
