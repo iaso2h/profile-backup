@@ -1253,6 +1253,10 @@ class RegCategory(FileCategory): # {{{
                             self.regContent.insert(0, WINDOWS_REG_HEADER)
                             joindContent = '\n'.join(self.regContent)
                             exportRegFile.write(joindContent)
+
+                            # Reset buffer content
+                            self.regContent = []
+                            self.regContentWriteChk = False
                         else:
                             print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
 
@@ -1262,11 +1266,19 @@ class RegCategory(FileCategory): # {{{
                             self.regContentRefined.insert(0, WINDOWS_REG_HEADER)
                             joindContentRefined = '\n'.join(self.regContentRefined)
                             exportRegRefinedFile.write(joindContentRefined)
+
+                            # Reset buffer content
+                            self.regContentRefined = []
+                            self.regContentRefinedWriteChk = False
                     if self.regContentStrippedWriteChk:
                         with open(outputFileStrippedPath, 'w', encoding='utf-16') as exportRegStrippedFile:
                             self.regContentStripped.insert(0, WINDOWS_REG_HEADER)
                             joindContentStripped = '\n'.join(self.regContentStripped)
                             exportRegStrippedFile.write(joindContentStripped)
+
+                            # Reset buffer content
+                            self.regContentStripped = []
+                            self.regContentStrippedWriteChk = False
 
                     # Statistics update for current component
                     bufferOutput.append(r"[white]    {} regitry at: [yellow]{}\{}[/yellow]".format(
