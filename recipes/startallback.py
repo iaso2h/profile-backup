@@ -1,4 +1,4 @@
-from backup import Profile
+from profileBackup.backup import Profile
 
 Profile(
     profileName="StartAllBack",

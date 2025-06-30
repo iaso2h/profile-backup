@@ -1,6 +1,6 @@
 import util
 from pathlib import Path
-from backup import Profile
+from profileBackup.backup import Profile
 
 Profile(
     profileName="Foxit PDF Editor",

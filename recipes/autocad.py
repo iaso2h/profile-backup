@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import util
-from backup import Profile
+from profileBackup.backup import Profile
 
 versionDict = [ # {{{
     {
@@ -212,7 +212,7 @@ Profile(
         },
         {
             "type": "registry",
-            "categoryName": "settings",
+            "categoryName": "Settings",
             "enabled": enabledChk,
             "recursiveCopy": True,
             "silentReport": False,
@@ -220,15 +220,16 @@ Profile(
             "parentPaths": r"HKEY_CURRENT_USER/Software/Autodesk/AutoCAD/R[0-9.]+",
             "filterType": "exclude",
             "filterPattern": [
-                "\\3DGS Configuration$",
-                "\\Applications$",
-                "\\AssemblyMap$",
-                "\\AutodeskApps$",
-                "\\DwgConvert$",
-                "\\DwgConvert$",
-                "\\Loaded$",
-                "\\MiniDump$",
-                "\\*UILOCALE$",
+                r"\\LastLaunchedLanguage",
+                r"\\3DGS Configuration$",
+                r"\\Applications$",
+                r"\\AssemblyMap$",
+                r"\\AutodeskApps$",
+                r"\\DwgConvert$",
+                r"\\DwgConvert$",
+                r"\\Loaded$",
+                r"\\MiniDump$",
+                r"\\*UILOCALE$",
             ],
         },
     ],

@@ -8,7 +8,7 @@
             "name": "Release",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/profileBackup",
+            "module": "profileBackup",
             "console": "integratedTerminal"
         },
         {

@@ -14,7 +14,7 @@ mock_config.EXPORTLOG = False
 sys.modules['config'] = mock_config
 
 # Now import the function to test
-from profileBackup.util import regGlobKeyRelPaths
+from util import regGlobKeyRelPaths
 
 @pytest.mark.parametrize("key_pattern, expected_paths, expected_root", [
     (

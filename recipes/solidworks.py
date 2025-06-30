@@ -1,6 +1,6 @@
 import util
 from pathlib import Path
-from backup import Profile
+from profileBackup.backup import Profile
 installPathStr, enabledChk = util.regQueryData(r"HKEY_LOCAL_MACHINE/SOFTWARE/SolidWorks/SOLIDWORKS \d+/Setup", "SolidWorks Folder")
 
 filterPatternDict = {

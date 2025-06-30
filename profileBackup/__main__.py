@@ -1,28 +1,62 @@
-# File: profileBakup
-# Author: iaso2h
-# Description: Back up software profiles on Windows
-# Version: 0.1.32
-# Last Modified: 2025-06-30
-from pathlib import Path
-import sys
+#!/usr/bin/env python3
+"""
+Profile Backup Tool
+
+A utility for backing up software profiles on Windows systems.
+Supports various applications and provides both sync and update modes.
+"""
+
 import argparse
-import pytest
+import sys
+from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
-sys.path.insert(0, str(Path(__file__).parent.resolve()))
-
+from . import cli
 import recipes
-import cli
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse and return command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Backup software profiles on Windows",
+        epilog="Run without arguments to start in interactive mode."
+    )
+    parser.add_argument(
+        "-d", "--debug",
+        action="store_true",
+        help="Run tests in debug mode"
+    )
+    parser.add_argument(
+        "-v", "--version",
+        action="version",
+        version="%(prog)s 0.1.32"
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    """
+    Main entry point for the profile backup tool.
+
+    Returns:
+        int: Exit code (0 for success, non-zero for errors)
+    """
+    try:
+        args = parse_args()
+
+        if args.debug:
+            import pytest
+            return pytest.main(["-vv"])
+
+        cli.program()
+        return 0
+
+    except KeyboardInterrupt:
+        print("\nOperation cancelled by user", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
-    if len(sys.argv) >= 2:
-        argParser = argparse.ArgumentParser()
-        argParser.add_argument("-d", "--debug", action="store_true")
-        args = argParser.parse_args()
-        if args.debug:
-            # from pathlib import Path
-            # print(Path(Path(Path("__file__").resolve().parent), "profileBackup", "tests", "test_backup_dst_files"))
-            pytest.main(["-vv"])
-    else:
-        cli.program()
+    sys.exit(main())

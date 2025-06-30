@@ -25,12 +25,20 @@ Back up profiles from all kind of profiles. The location of these profiles somew
 * Edit file by condition or by platform
 * dotfiles support
 # How to use
-## 1. Install dependencies
-Recommend installing all dependencies via conda
+## 1. Install dependencies and activate conda environment
 ```shell
 conda env create -f environment.yml
+conda activate profileBackup
 ```
 ## 2. Run the app in terminal
 ```shell
-python profileBackup
+python -m profileBackup
+```
+## 3. Test and Debug：
+```shell
+python -m profileBackup --debug
+```
+## 4. Update dependencies：
+```shell
+conda env update -f environment.yml
 ```

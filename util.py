@@ -1,5 +1,3 @@
-import config
-
 import re
 import winreg
 import logging
@@ -7,6 +5,8 @@ import datetime
 from typing import Optional, Tuple
 from logging.handlers import RotatingFileHandler
 from rich.console import Console
+
+import config
 console = Console()
 richTextPat = re.compile(r"\[/?[a-zA-Z ]+]")
 

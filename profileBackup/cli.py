@@ -1,12 +1,12 @@
-import config
-import backup
-import util
-
 import psutil
 import os
 import beaupy
 from typing import Tuple
 from pathlib import Path
+
+from . import backup
+import config
+import util
 
 print = util.print
 
