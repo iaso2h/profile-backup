@@ -11,8 +11,8 @@ import config
 
 print = util.print
 WINDOWS_ANCHOR_START_PAT = re.compile(r"^[a-zA-Z]:\\")
-WINDOWS_REG_HEADER = "Windows Registry Editor Version 5.00\n"
-REG_ENCODING = "utf-16"
+WINDOWS_REG_HEADER = "Windows Registry Editor Version 5.00"
+WINDOWS_REG_ENCODING = "utf-16"
 
 
 class Profile(): # {{{
@@ -807,7 +807,6 @@ class RegCategory(FileCategory): # {{{
         filterType: str,
         filterPattern: str | Callable,
         keyPathNamingConvention: Optional[Callable] = None,
-        regEncoding: str = REG_ENCODING
     ):
         """
         Initialize a new RegCategory instance for registry backup.
@@ -856,7 +855,6 @@ class RegCategory(FileCategory): # {{{
         self.filterPattern   = filterPattern
         self.parentPaths     = parentPaths
         self.keyPathNamingConvention = keyPathNamingConvention
-        self.regEncoding = regEncoding
 
 
     def __str__(self):
@@ -970,17 +968,7 @@ class RegCategory(FileCategory): # {{{
         self._keyPathNamingConvention = val
     # }}}
 
-    # Validation of regEncoding {{{
-    @property
-    def regEncoding(self) -> str:
-        return self._regEncoding
-    @regEncoding.setter
-    def regEncoding(self, val):
-        if not isinstance(val, str):
-            raise ValueError(f"str value is expected as the regEncoding parameter for category {self.categoryName} under profile {self.profileName}.")
 
-        self._regEncoding = val
-    # }}}
 
     def shouldSkipKey(self, fullPath: str, isSubKey:bool) -> bool: # {{{
         """
@@ -1122,7 +1110,7 @@ class RegCategory(FileCategory): # {{{
             - Maintains consistent formatting for Windows Registry Editor compatibility
         """
 
-        # Write key header
+        # Compose key header for later use
         currentSubkeyHeader = f"\n[{self.rootKeyStr}\\{currentSubkeyPath}]"
 
         # Export values
@@ -1257,7 +1245,7 @@ class RegCategory(FileCategory): # {{{
             )
             if not config.DRYRUN:
                 os.makedirs(outputFilePath.parent, exist_ok=True)
-                with open(outputFilePath, 'w', encoding=self.regEncoding) as exportRegFile:
+                with open(outputFilePath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegFile:
                     # Start export from the first sub key
                     try:
                         with winreg.OpenKey(self.rootKey, keyRelPath) as key:
@@ -1283,7 +1271,7 @@ class RegCategory(FileCategory): # {{{
 
                 # Write buffer content into refined and stripped .reg files
                 if self.regContentRefinedWriteChk:
-                    with open(outputFileRefinedPath, 'w', encoding=self.regEncoding) as exportRegRefinedFile:
+                    with open(outputFileRefinedPath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegRefinedFile:
                         self.regContentRefined.insert(0, WINDOWS_REG_HEADER)
                         joindContentRefined = '\n'.join(self.regContentRefined)
                         exportRegRefinedFile.write(joindContentRefined)
@@ -1292,7 +1280,7 @@ class RegCategory(FileCategory): # {{{
                         self.regContentRefined = []
                         self.regContentRefinedWriteChk = False
                 if self.regContentStrippedWriteChk:
-                    with open(outputFileStrippedPath, 'w', encoding=self.regEncoding) as exportRegStrippedFile:
+                    with open(outputFileStrippedPath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegStrippedFile:
                         self.regContentStripped.insert(0, WINDOWS_REG_HEADER)
                         joindContentStripped = '\n'.join(self.regContentStripped)
                         exportRegStrippedFile.write(joindContentStripped)
