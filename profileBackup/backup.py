@@ -2,6 +2,7 @@ import os
 import winreg
 import shutil
 import re
+import math
 from types import GeneratorType
 from typing import Callable, Optional, Tuple, Iterator, cast
 from pathlib import Path
@@ -843,11 +844,15 @@ class RegCategory(FileCategory): # {{{
             return
 
         self.regContent = []
-        self.regContentWriteChk = False
+        # if `config.REMOVE_EMPTY_HEADER` is set to False, then there is no
+        # need to check whether the registry content has been written or not
+        # because a header is always written to the file at each subkey level
+        # therefore they are initialized to True
+        self.regContentWriteChk = not config.REMOVE_EMPTY_HEADER
         self.regContentRefined = []
-        self.regContentRefinedWriteChk = False
+        self.regContentRefinedWriteChk = not config.REMOVE_EMPTY_HEADER
         self.regContentStripped = []
-        self.regContentStrippedWriteChk = False
+        self.regContentStrippedWriteChk = not config.REMOVE_EMPTY_HEADER
         self.recursiveCopy   = recursiveCopy
         self.silentReport    = silentReport
         self.stripePathValue = stripePathValue
@@ -996,7 +1001,7 @@ class RegCategory(FileCategory): # {{{
     # }}}
 
     @staticmethod
-    def formatRegValue(value, valueType) -> Tuple[str, str]: # {{{
+    def formatRegValue(valName:str, dataVal, dataType) -> Tuple[str, str]: # {{{
         """
         Formats a registry value according to its type for .reg file export.
 
@@ -1028,40 +1033,137 @@ class RegCategory(FileCategory): # {{{
             contain the same value. The method properly escapes special characters and
             formats values according to Windows Registry Editor requirements.
         """
-        match valueType:
-            case winreg.REG_SZ:
-                val = '"{}"'.format(
-                    value.replace('\\', '\\\\').replace('"', '\\"')
-                )
-                if not WINDOWS_ANCHOR_START_PAT.search(value):
-                    return val, val
+        def formatHex(byteStrs: list[str], trailingZeroCount: int) -> str:
+            match dataType:
+                case winreg.REG_MULTI_SZ:
+                    trailingZeroCount = 4
+                    hexPrefix = "hex(7):"
+                case winreg.REG_EXPAND_SZ:
+                    trailingZeroCount = 2
+                    hexPrefix = "hex(2):"
+                case _:
+                    trailingZeroCount = 0
+                    hexPrefix = "hex:"
+            firstLinePlacehoulderLength = len(f'"{valName}"={hexPrefix},\\')
+            firstLineStringToFillCount = (81 - firstLinePlacehoulderLength) // 3
+            starndardLineStringToFillCount = 25
+
+            # Initialize the first line
+            dataValFormated = hexPrefix
+            # Concatenate the hex strings to fill up the first line
+            dataValFormated += ",".join(byteStrs[:firstLineStringToFillCount])
+            # In case the first line is also the last line, no need to add a trailing comma
+            if firstLineStringToFillCount >= len(byteStrs):
+                pass
+            else:
+                dataValFormated += ",\\\n"
+
+            # Concatenate the rest
+            lastLineLength = 0
+            for idx in range(firstLineStringToFillCount, len(byteStrs), starndardLineStringToFillCount):
+                if idx + starndardLineStringToFillCount > len(byteStrs):
+                    lastLine = "  " + ",".join(byteStrs[idx:idx+starndardLineStringToFillCount])
+                    if trailingZeroCount > 0:
+                        lastLine += ","
+                    dataValFormated += lastLine
+                    lastLineLength = len(lastLine)
+                elif idx + starndardLineStringToFillCount == len(byteStrs):
+                    lastLine = "  " + ",".join(byteStrs[idx:idx+starndardLineStringToFillCount])
+                    if trailingZeroCount > 0:
+                        lastLine += ",\\\n"
+                    dataValFormated += lastLine
+                    lastLineLength = 0 # Useless, but for readability
                 else:
-                    return val, ""
+                    dataValFormated += "  " + ",".join(byteStrs[idx:idx+starndardLineStringToFillCount]) + ",\\\n"
+
+
+            # # Add trailing strings
+            # if lastLineLength == 68:
+            #     dataValFormated += "00,00,00,00"
+            # elif lastLineLength == 70:
+            #     dataValFormated += "00,00,00\\\n,00"
+            # elif lastLineLength == 72:
+            #     dataValFormated += "00,00\\\n,00,00"
+            # elif lastLineLength == 74:
+            #     dataValFormated += "00,\\\n00,00,00"
+            # elif lastLineLength == 0:
+            #     dataValFormated += "  00,00,00,00"
+            # else:
+            #     dataValFormated += "00,00,00,00"
+            if trailingZeroCount > 0:
+                diff = (76 - lastLineLength) // 2
+                if trailingZeroCount >= diff:
+                    head = ",".join(["00" for i in range(diff)])
+                    tail = ",".join(["00" for i in range(trailingZeroCount - diff)])
+                    mid = ",\\\n  " if diff != trailingZeroCount else ""
+                    trailingStr = head + mid + tail
+                else:
+                    leadingSpace = "  " if lastLineLength == 0 else ""
+                    trailingStr = leadingSpace + ",".join(["00" for i in range(trailingZeroCount)])
+
+                dataValFormated = dataValFormated + trailingStr
+
+            return dataValFormated
+
+
+        match dataType:
+            case winreg.REG_SZ:
+                if dataVal is None:
+                    dataValFormated = '""'
+                else:
+                    dataValFormated = '"{}"'.format(
+                        dataVal.replace('\\', '\\\\').replace('"', '\\"')
+                    )
+                    if not WINDOWS_ANCHOR_START_PAT.search(dataVal):
+                        return dataValFormated, dataValFormated
+                    else:
+                        return dataValFormated, ""
             case winreg.REG_DWORD:
-                val = f"dword:{value:08x}"
-                return val, val
+                if dataVal is None:
+                    dataValFormated = 'dword:00000000'
+                else:
+                    dataValFormated = f"dword:{dataVal:08x}"
+                    return dataValFormated, dataValFormated
             case winreg.REG_BINARY:
                 # Format as comma-separated hex bytes with leading zeros
-                hexBytes = [f"{byte:02x}" for byte in value]
-                val = f"hex:{','.join(hexBytes)}"
-                return val, val
+                if dataVal is None:
+                    dataValFormated = "hex:"
+                else:
+                    byteStrs = [f"{byte:02x}" for byte in dataVal]
+                    dataValFormated = formatHex(byteStrs, 0)
+                return dataValFormated, dataValFormated
             case winreg.REG_MULTI_SZ:
-                # Format as hex(7) type with comma-separated bytes including null terminators
-                bytesList = []
-                for s in value:
-                    bytesList.extend([ord(c) for c in s])
-                    bytesList.append(0)  # null terminator
-                bytesList.append(0)  # final null terminator
-                hexStr = ','.join(f"{b:02x}" for b in bytesList)
-                val = f"hex(7):{hexStr}"
-                return val, val
+                if dataVal is None:
+                    dataValFormated = "hex(7):00,00"
+                else:
+                    # For REG_MULTI_SZ values (hex(7) type)
+                    byteStrs = []
+                    for s in dataVal:
+                        # Encode each character as UTF-16LE (2 bytes)
+                        for c in s:
+                            utf16Bytes = c.encode('utf-16le')
+                            byteStrs.extend(f"{byte:02x}" for byte in utf16Bytes)
+                    dataValFormated = formatHex(byteStrs, 4)
+                return dataValFormated, dataValFormated
             case winreg.REG_EXPAND_SZ:
-                hexStr = ','.join(f"{ord(c):02x}" for c in value + "\0")
-                val = f"hex(2):{hexStr}"
-                return val, val
+                if dataVal is None:
+                    dataValFormated = "hex(2):"
+                else:
+                    # TODO: strip the content if the dataVal contain path related strings
+                    utf16Bytes = dataVal.encode('utf-16le')
+                    byteStrs = []
+                    for i in range(0, len(utf16Bytes), 2):
+                        byteStrs.append(f"{utf16Bytes[i]:02x}")
+                        byteStrs.append(f"{utf16Bytes[i+1]:02x}")
+                    dataValFormated = formatHex(byteStrs, 2)
+
+                return dataValFormated, dataValFormated
             case _:
-                val = f'"{value}"'
-                return val, val
+                if dataVal is None:
+                    dataValFormated = 'hex(0):'
+                else:
+                    dataValFormated = f'"{dataVal}"'
+                return dataValFormated, dataValFormated
 
     # }}}
 
@@ -1093,6 +1195,10 @@ class RegCategory(FileCategory): # {{{
 
         # Compose key header for later use
         currentSubkeyHeader = f"\n[{self.rootKeyStr}\\{currentSubkeyPath}]"
+        if not config.REMOVE_EMPTY_HEADER:
+            self.regContent.append(currentSubkeyHeader)
+            self.regContentStripped.append(currentSubkeyHeader)
+            self.regContentRefined.append(currentSubkeyHeader)
 
         # Export values
         try:
@@ -1113,7 +1219,7 @@ class RegCategory(FileCategory): # {{{
                         i += 1 # Enter next iteration to get next sibling value
                         continue
 
-                    formattedValue, formattedValueStriped = self.formatRegValue(valData, valueType)
+                    formattedValue, formattedValueStriped = self.formatRegValue(valName, valData, valueType)
 
                     if valName:
                         regValDataLine = f'"{valName}"={formattedValue}'
@@ -1121,7 +1227,8 @@ class RegCategory(FileCategory): # {{{
                         regValDataLine = f'@={formattedValue}'
 
                     if not dataWriteUnderCurrentKeyChk:
-                        self.regContent.append(currentSubkeyHeader)
+                        if config.REMOVE_EMPTY_HEADER:
+                            self.regContent.append(currentSubkeyHeader)
                         dataWriteUnderCurrentKeyChk = True
                         if not self.regContentWriteChk:
                             self.regContentWriteChk = True
@@ -1129,14 +1236,16 @@ class RegCategory(FileCategory): # {{{
 
                     if formattedValueStriped == "":
                         if not dataStrippedWriteUnderCurrentKeyChk:
-                            self.regContentStripped.append(currentSubkeyHeader)
+                            if config.REMOVE_EMPTY_HEADER:
+                                self.regContentStripped.append(currentSubkeyHeader)
                             dataStrippedWriteUnderCurrentKeyChk = True
                             if not self.regContentStrippedWriteChk:
                                 self.regContentStrippedWriteChk = True
                         self.regContentStripped.append(regValDataLine)
                     else:
                         if not dataRefinedWriteUnderCurrentKeyChk:
-                            self.regContentRefined.append(currentSubkeyHeader)
+                            if config.REMOVE_EMPTY_HEADER:
+                                self.regContentRefined.append(currentSubkeyHeader)
                             dataRefinedWriteUnderCurrentKeyChk = True
                             if not self.regContentRefinedWriteChk:
                                 self.regContentRefinedWriteChk = True
@@ -1205,6 +1314,7 @@ class RegCategory(FileCategory): # {{{
                     raise type(e)(f"errors occured when applying naming convention for keyname category {self.categoryName} under profile {self.profileName}.")
             else:
                 regName = keyRelPath.replace('\\', '_')
+            regName = WINDOWS_INVALID_PATH_CHARS.sub('_', regName)  # Replace invalid characters with '_'
 
             outputFilePath = Path(
                 config.DESTPATH, # type: ignore
@@ -1226,35 +1336,40 @@ class RegCategory(FileCategory): # {{{
             )
             if not config.DRYRUN:
                 os.makedirs(outputFilePath.parent, exist_ok=True)
-                with open(outputFilePath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegFile:
-                    # Start export from the first sub key
-                    try:
-                        with winreg.OpenKey(self.rootKey, keyRelPath) as key:
-                            self.recursiveExport(keyRelPath, key)
-                    except FileNotFoundError:
-                        bufferOutput.append(fr"[red]    registry path: {self.rootKeyStr}\{keyRelPath} doesn't exist.[/red]")
-                    except PermissionError:
-                        bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
-                    except Exception as e:
-                        raise e
-
+                try:
+                    with winreg.OpenKey(self.rootKey, keyRelPath) as key:
+                        self.recursiveExport(keyRelPath, key)
+                except FileNotFoundError:
+                    bufferOutput.append(fr"[red]    registry path: {self.rootKeyStr}\{keyRelPath} doesn't exist.[/red]")
+                except PermissionError:
+                    bufferOutput.append("[red]    permission denied. make sure to run the script as Administrator.[/red]")
+                except Exception as e:
+                    raise e
+                if self.regContentWriteChk:
+                    with open(outputFilePath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegFile:
                     # Write buffer content into .reg file
-                    if self.regContentWriteChk:
                         self.regContent.insert(0, WINDOWS_REG_HEADER)
                         joindContent = '\n'.join(self.regContent)
+                        # No special meaning. Just add two more line breaks if
+                        # you seek to algin with the exported format from
+                        # Windows Registry Editor.
+                        if not config.REMOVE_EMPTY_HEADER:
+                            joindContent += "\n\n"
                         exportRegFile.write(joindContent)
 
                         # Reset buffer content
                         self.regContent = []
                         self.regContentWriteChk = False
-                    else:
-                        print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
+                else:
+                    print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
 
                 # Write buffer content into refined and stripped .reg files
                 if self.regContentRefinedWriteChk:
                     with open(outputFileRefinedPath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegRefinedFile:
                         self.regContentRefined.insert(0, WINDOWS_REG_HEADER)
                         joindContentRefined = '\n'.join(self.regContentRefined)
+                        if not config.REMOVE_EMPTY_HEADER:
+                            joindContentRefined += "\n\n"
                         exportRegRefinedFile.write(joindContentRefined)
 
                         # Reset buffer content
@@ -1264,6 +1379,8 @@ class RegCategory(FileCategory): # {{{
                     with open(outputFileStrippedPath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegStrippedFile:
                         self.regContentStripped.insert(0, WINDOWS_REG_HEADER)
                         joindContentStripped = '\n'.join(self.regContentStripped)
+                        if not config.REMOVE_EMPTY_HEADER:
+                            joindContentStripped += "\n\n"
                         exportRegStrippedFile.write(joindContentStripped)
 
                         # Reset buffer content
