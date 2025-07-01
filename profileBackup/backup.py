@@ -969,33 +969,18 @@ class RegCategory(FileCategory): # {{{
     # }}}
 
 
-
-    def shouldSkipKey(self, fullPath: str, isSubKey:bool) -> bool: # {{{
+    def shouldSkipKey(self, fullPath: str) -> bool: # {{{
         """
         Determines if a registry key should be skipped based on filter patterns.
 
         Applies the configured filter patterns to the registry key path to decide
-        whether it should be included or excluded from the backup. The behavior
-        differs based on the filterType setting and whether the item is a subkey
-        or value. This method is crucial for implementing selective registry backup.
+        whether it should be included or excluded from the backup.
 
         Args:
             fullPath (str): Full registry key path to check against filter patterns.
-            isSubKey (bool): Whether the path is a subkey (True) or a value (False).
 
         Returns:
             bool: True if the key should be skipped, False if it should be processed.
-
-        Note:
-            - For "exclude" filterType:
-                * Returns True if any pattern matches (skip matched keys)
-                * Returns False if no patterns match (keep unmatched keys)
-            - For "include" filterType:
-                * For subkeys: Returns True if no pattern matches (skip unmatched keys)
-                * For values: Always returns False (include all values under matched keys)
-            - Uses regular expression matching for flexible pattern matching
-            - Treats subkeys and values differently to optimize backup operations
-            - Enables fine-grained control over which registry items are backed up
         """
         if self.filterType == "exclude":
             for p in self.filterPattern:
@@ -1003,14 +988,10 @@ class RegCategory(FileCategory): # {{{
                     return True
             return False
         else:
-            if isSubKey:
-                for p in self.filterPattern:
-                    if re.search(p, fullPath):
-                        return False
-                return True
-            else:
-                 # For values, always include them
-                return False
+            for p in self.filterPattern:
+                if re.search(p, fullPath):
+                    return False
+            return True
 
     # }}}
 
@@ -1128,7 +1109,7 @@ class RegCategory(FileCategory): # {{{
             while True:
                 try:
                     valName, valData, valueType = winreg.EnumValue(key, i)
-                    if self.shouldSkipKey(f"{currentSubkeyPath}\\{valName}", False):
+                    if self.shouldSkipKey(f"{currentSubkeyPath}\\{valName}"):
                         i += 1 # Enter next iteration to get next sibling value
                         continue
 
@@ -1176,7 +1157,7 @@ class RegCategory(FileCategory): # {{{
                         subkeyName = winreg.EnumKey(key, j)
                         fullSubpath = f"{currentSubkeyPath}\\{subkeyName}"
 
-                        if not self.shouldSkipKey(fullSubpath, True):
+                        if not self.shouldSkipKey(fullSubpath):
                             with winreg.OpenKey(key, subkeyName) as subkey:
                                 self.recursiveExport(fullSubpath, subkey)
                         else:
@@ -1221,7 +1202,7 @@ class RegCategory(FileCategory): # {{{
                 try:
                     regName = self.keyPathNamingConvention(keyRelPath)
                 except Exception as e:
-                    raise type(e)(f"errors occured when applying naming convention for category {self.categoryName} under profile {self.profileName}.")
+                    raise type(e)(f"errors occured when applying naming convention for keyname category {self.categoryName} under profile {self.profileName}.")
             else:
                 regName = keyRelPath.replace('\\', '_')
 
