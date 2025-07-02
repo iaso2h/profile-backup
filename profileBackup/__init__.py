@@ -6,5 +6,5 @@ This package provides functionality to backup and restore application settings
 and configuration files across different Windows installations.
 """
 
-__version__ = "0.1.43"
+__version__ = "0.1.44"
 __author__ = "iaso2h"

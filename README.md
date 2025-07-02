@@ -24,6 +24,8 @@ Back up profiles from all kind of profiles. The location of these profiles somew
 * Linux support
 * Edit file by condition or by platform
 * dotfiles support
+# Setbacks
+* Registry backup isn't test on 32-bit Windows.
 # How to use
 ## 1. Install dependencies and activate conda environment
 ```shell

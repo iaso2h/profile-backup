@@ -8,7 +8,6 @@ from rich.console import Console
 
 import config
 console = Console()
-richTextPat = re.compile(r"\[/?[a-zA-Z ]+]")
 
 # Logging set up
 handler = RotatingFileHandler(
@@ -79,6 +78,8 @@ def print(*args, skipChk: bool = True, **kwargs) -> None:
         - Automatically skips messages containing 'skip' (when skipChk=True) or 'permission error'
         - Logs all messages to file when EXPORTLOG is True (with rich text formatting removed)
     """
+    richTextPat = re.compile(r"\[/?[a-zA-Z ]+]")
+
     if not config.SILENTMODE:
         if len(args) == 1 and isinstance(args[0], str):
             if (skipChk and "skip" in args[0].lower()) or "permission error" in args[0]:
@@ -112,7 +113,7 @@ def containsRegexSyntax(s):
         This function may return false positives for strings containing regex
         metacharacters that aren't actually used as regex (e.g. literal dots).
     """
-    regexMetacharacters = r".^$*+?{}[]\|()-"  # List of common regex metacharacters
+    regexMetacharacters = r"^$*+?{}[]\|()-"  # List of common regex metacharacters
 
     try:
         re.compile(s)

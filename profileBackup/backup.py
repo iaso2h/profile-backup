@@ -11,10 +11,102 @@ import util
 import config
 
 print = util.print
+# reference: https://learn.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables
+WINDOWS_PATH_ENV_VAR = {
+    "User-Specific": {
+        "%USERPROFILE%": {
+            "description": "The root directory of the current user's profile.",
+            "default_path": "C:\\Users\\<username>",
+        },
+        "%APPDATA%": {
+            "description": "The directory where applications store data that can roam with the user's profile.",
+            "default_path": "C:\\Users\\<username>\\AppData\\Roaming",
+        },
+        "%LOCALAPPDATA%": {
+            "description": "The directory where applications store data that is specific to the local machine and does not roam.",
+            "default_path": "C:\\Users\\<username>\\AppData\\Local",
+        },
+        "%HOMEPATH%": {
+            "description": "The path from the root of the user's home drive to their profile directory.",
+            "default_path": "\\Users\\<username>",
+        },
+        "%TEMP%": {
+            "description": "The directory for storing temporary files for the current user.",
+            "default_path": "C:\\Users\\<username>\\AppData\\Local\\Temp",
+        },
+        "%TMP%": {
+            "description": "The directory for storing temporary files for the current user.",
+            "default_path": "C:\\Users\\<username>\\AppData\\Local\\Temp",
+        },
+        "%HOMEDRIVE%": {
+            "description": "The drive letter where the user's profile is located.",
+            "default_path": "C:",
+        },
+    },
+    "System-Wide": {
+        "%ALLUSERSPROFILE%": {
+            "description": "The directory for application data that is shared among all users. It is functionally the same as %PROGRAMDATA%.",
+            "default_path": "C:\\ProgramData",
+        },
+        "%PROGRAMDATA%": {
+            "description": "The primary directory for application data that is not user-specific.",
+            "default_path": "C:\\ProgramData",
+        },
+        "%PUBLIC%": {
+            "description": "A directory for files that are accessible to all users of the computer.",
+            "default_path": "C:\\Users\\Public",
+        },
+        "%SYSTEMDRIVE%": {
+            "description": "The drive containing the Windows operating system installation.",
+            "default_path": "C:",
+        },
+        "%SYSTEMROOT%": {
+            "description": "The directory where the Windows operating system files are located. %WINDIR% is a legacy equivalent.",
+            "default_path": "C:\\Windows",
+        },
+        "%WINDIR%": {
+            "description": "The directory where the Windows operating system files are located.",
+            "default_path": "C:\\Windows",
+        },
+        "%PROGRAMFILES%": {
+            "description": "The directory where 64-bit applications are typically installed on a 64-bit system, or all applications on a 32-bit system.",
+            "default_path": "C:\\Program Files",
+        },
+        "%PROGRAMFILES(X86)%": {
+            "description": "On a 64-bit system, this is the directory where 32-bit applications are typically installed.",
+            "default_path": "C:\\Program Files (x86)",
+        },
+        "%COMMONPROGRAMFILES%": {
+            "description": "A directory for files shared by multiple applications.",
+            "default_path": "C:\\Program Files\\Common Files",
+        },
+        "%COMMONPROGRAMFILES(X86)%": {
+            "description": "On a 64-bit system, this is the directory for 32-bit files shared by multiple applications.",
+            "default_path": "C:\\Program Files (x86)\\Common Files",
+        },
+    },
+}
 WINDOWS_ANCHOR_START_PAT = re.compile(r"^[a-zA-Z]:\\")
 WINDOWS_REG_HEADER = "Windows Registry Editor Version 5.00"
+WINDOWS_INVALID_PATH_CHARS = re.compile(r'[<>:\"/\\|?*]')
 WINDOWS_REG_ENCODING = "utf-16"
 
+collapseEnvDict = {**WINDOWS_PATH_ENV_VAR["User-Specific"], **WINDOWS_PATH_ENV_VAR["System-Wide"]}
+def containEnvVar(path: str) -> bool:
+    """
+    Check if a path contains a Windows environment variable.
+
+    Args:
+        path (str): The path string to check for environment variables.
+
+    Returns:
+        bool: True if the path contains any Windows environment variable, False otherwise.
+
+    Note:
+        - Checks against both User-Specific and System-Wide environment variables
+        - Comparison is case-insensitive
+    """
+    return any(path.upper() == envVar or path.upper() in envVar for envVar in collapseEnvDict)
 
 class Profile(): # {{{
     """
@@ -78,21 +170,10 @@ class Profile(): # {{{
             enabled (bool): Whether this profile should be active for backup operations.
 
         Note:
-            - Initializes ticked status as True by default
-            - Sets initial backup count and size to 0
-            - Validates all input parameters through property setters
-            - Automatically registers enabled profiles in profileDict
             - Creates appropriate category instances based on type
             - Handles both file and registry category configurations
             - Performs type checking and validation for all parameters
-            - Supports both file system and registry backup configurations
-            - Maintains a global registry of all enabled profiles
             - Establishes parent-child relationships between profiles and categories
-            - Provides foundation for the backup operation workflow
-            - Ensures consistent initialization of all profile attributes
-            - Supports dynamic category creation based on configuration type
-            - Maintains separation between file and registry backup logic
-            - Implements proper error handling for invalid configurations
             - Supports flexible backup source specification (paths, globs, etc.)
         """
         # Default value
@@ -165,17 +246,16 @@ class Profile(): # {{{
         """
         Updates the foundFileMessage class attribute based on the current dry run mode.
 
-        Sets the message to "Backing up" during actual backup operations or "Found" during dry runs.
-        This affects all status messages displayed during the backup process and ensures consistent
-        messaging throughout the application based on the current operation mode.
+        This class method updates the message displayed during backup operations based on whether
+        the system is in dry run mode or actual backup mode. When in dry run mode, files are
+        reported as "Found"; when performing actual backups, they are reported as "Backing up".
+        This ensures consistent and accurate status reporting throughout the backup process.
 
         Note:
             - Checks config.DRYRUN to determine the appropriate message
             - Used to maintain consistent messaging across all backup operations
             - Called before starting backup operations to ensure correct messaging
-            - Affects all instances of Profile and its subclasses
-            - Supports both actual backup and simulation (dry run) modes
-            - Changes are applied globally to all profile instances
+            - Helps distinguish between dry run and actual backup operations
         """
         cls.foundFileMessage = "Backing up" if not config.DRYRUN else "Found"
 # }}}
@@ -399,7 +479,9 @@ class FileCategory(Profile): # {{{
         This method handles the actual file copying operation, maintaining file metadata
         (like modification times), creating destination directories as needed, and
         tracking backup statistics. It respects dry run mode and only copies files
-        that are new or modified based on configuration settings.
+        that are new or modified based on configuration settings. The method also
+        records relative paths for synchronization operations and provides detailed
+        status messages with color coding.
 
         Args:
             srcPath (Path): Source file path to be backed up.
@@ -414,12 +496,11 @@ class FileCategory(Profile): # {{{
                 - bufferOutput: Updated list of output messages with copy operation details
 
         Note:
-            - Handles permission errors gracefully with appropriate error messages
-            - Creates destination directories automatically when needed
-            - Preserves file metadata using shutil.copy2
             - Respects COPYOVERWRITE setting to determine whether to overwrite existing files
             - Tracks relative paths for later synchronization operations
-            - Provides colored console output for different file statuses
+            - Updates class-level tracking of relative paths for sync operations
+            - Skips unchanged files when appropriate based on modification times
+            - Maintains consistent messaging based on dry run mode
         """
         relPathTopParentSrcList = type(self).relPathsTopParentSrc[self.profileName][parentSrcPath]
 
@@ -474,10 +555,11 @@ class FileCategory(Profile): # {{{
         """
         Recursively iterates through a source directory to copy files based on filter rules.
 
-        This method walks through a source directory, applying filter patterns to determine
-        which files and subdirectories to back up. It handles both recursive and non-recursive
-        copying modes, and supports both include and exclude filtering using either pattern
-        lists or callable filters.
+        This method performs a depth-first traversal of the source directory structure,
+        applying configured filter patterns to determine which files and subdirectories
+        to include in the backup. It supports both recursive and non-recursive copying modes,
+        and can use either pattern-based or callable-based filtering mechanisms. The method
+        maintains accurate statistics and provides detailed progress reporting.
 
         Args:
             parentSrcPath (Path): Source directory path to iterate through.
@@ -498,9 +580,8 @@ class FileCategory(Profile): # {{{
             - Applies filtering logic based on filterType (include/exclude)
             - Supports both pattern-based and callable-based filtering
             - Maintains relative path relationships between source and destination
-            - Handles permission errors gracefully with appropriate error messages
             - Accumulates statistics for reporting purposes
-            - Recursively processes subdirectories when recursiveCopy is enabled
+            - Preserves directory structure in destination
         """
         countAccumulated = 0
         sizeAccumulated = 0
@@ -599,11 +680,11 @@ class FileCategory(Profile): # {{{
         """
         Identifies files in destination that don't exist in source for synchronization.
 
-        This method recursively walks through the destination directory, comparing files
-        against the source directory listing. It marks files and empty directories that
-        exist in the destination but not in the source for potential deletion during
-        sync operations. This ensures that the destination directory becomes an exact
-        mirror of the source directory when synchronization is completed.
+        This method performs a recursive traversal of the destination directory structure,
+        comparing each file against the list of files known to exist in the source directory.
+        Files and empty directories found in the destination but not in the source are marked
+        for potential deletion during synchronization operations. This ensures that after
+        synchronization, the destination directory becomes an exact mirror of the source.
 
         Args:
             relPathsTopParentSrc (list[str]): List of relative paths that exist in the
@@ -621,9 +702,6 @@ class FileCategory(Profile): # {{{
             - This method only identifies files to delete; actual deletion happens elsewhere.
             - The method is called when COPYSYNC configuration is enabled.
             - Maintains a hierarchical structure of files to delete organized by profile and destination path.
-            - Skips processing if the destination directory doesn't exist.
-            - Performs a depth-first traversal of the destination directory structure
-            - Efficiently handles large directory structures through recursive processing
         """
         # Abort when parent destination directory doesn't exist
         if not parentDstPath.exists():
@@ -657,10 +735,17 @@ class FileCategory(Profile): # {{{
         """
         Performs the backup operation for this file category.
 
-        This method processes all configured source paths, copying files that match
-        the filter criteria to their corresponding destination paths. It handles
-        directory creation, file filtering, and tracks backup statistics. The method
-        also manages synchronization between source and destination when COPYSYNC is enabled.
+        This method orchestrates the entire backup process for a file category, including:
+        - Setting up the reporting environment
+        - Processing each configured source paths
+        - Applying filter patterns to select files
+        - Managing file copying operations
+        - Tracking backup statistics
+        - Handling synchronization marking
+        - Generating detailed progress reports
+
+        The method respects various configuration settings (DRYRUN, COPYSYNC, etc.) and
+        maintains consistent reporting across different operation modes.
 
         Args:
             bufferOutput (list[str]): List to collect output messages during operation.
@@ -669,15 +754,12 @@ class FileCategory(Profile): # {{{
             list[str]: Updated list of output messages with backup operation details.
 
         Note:
-            - Sets the global silent report mode based on category configuration
             - Processes each parent source path separately
             - Applies filter patterns to determine which files to back up
             - Constructs appropriate destination paths preserving source structure
             - Updates statistics at category, profile, and global levels
-            - Provides detailed progress reporting with color-coded messages
             - Handles synchronization marking when COPYSYNC is enabled
-            - Adapts output messages based on whether files were found or skipped
-            - Maintains consistent messaging based on dry run mode
+            - Supports both recursive and non-recursive backup operations
         """
         # Alter global silent report for current backup session
         config.SILENTMODE = self.silentReport
@@ -829,7 +911,7 @@ class RegCategory(FileCategory): # {{{
         Note:
             - Handles registry path globbing to find matching keys
             - Maintains proper registry path formatting and structure
-            - Supports pattern-based filtering of registry keys and values
+            - Supports pattern-based filtering of registry sub-keys and values
             - Provides both standard and stripped versions of registry exports
         """
         self.rootKey = cast(winreg.HKEYType, None)
@@ -860,7 +942,6 @@ class RegCategory(FileCategory): # {{{
         self.filterPattern   = filterPattern
         self.parentPaths     = parentPaths
         self.keyPathNamingConvention = keyPathNamingConvention
-
 
     def __str__(self):
         return f"{self.profileName} {self.categoryName}"
@@ -973,7 +1054,6 @@ class RegCategory(FileCategory): # {{{
         self._keyPathNamingConvention = val
     # }}}
 
-
     def shouldSkipKey(self, fullPath: str) -> bool: # {{{
         """
         Determines if a registry key should be skipped based on filter patterns.
@@ -1005,14 +1085,17 @@ class RegCategory(FileCategory): # {{{
         """
         Formats a registry value according to its type for .reg file export.
 
-        Converts registry values of different types (string, DWORD, binary, etc.)
-        into the proper string format required for Windows .reg files. For string
-        values, also provides a stripped version without file paths when possible,
-        which is useful for creating portable registry exports.
+        This static method handles the complex task of converting registry values of
+        various types into the proper string format required for Windows .reg files.
+        It supports all common registry value types and provides special handling for
+        string values to create portable registry exports by stripping file paths.
+        The method follows Windows Registry Editor formatting conventions, including
+        proper escaping, hex formatting, and line wrapping for large values.
 
         Args:
-            value: The registry value to format (can be various types).
-            valueType: The Windows registry value type constant (from winreg module).
+            valName (str): The name of the registry value.
+            dataVal: The registry value data to format (can be various types).
+            dataType: The Windows registry value type constant (from winreg module).
 
         Returns:
             Tuple[str, str]: A tuple containing:
@@ -1027,57 +1110,66 @@ class RegCategory(FileCategory): # {{{
             - REG_BINARY (binary data): Returns hex-formatted representation
             - REG_MULTI_SZ (multiple strings): Returns hex(7)-formatted representation
             - REG_EXPAND_SZ (expandable strings): Returns hex(2)-formatted representation
+            - REG_QWORD (64-bit integers): Returns hex(b)-formatted representation
 
-            For string values (REG_SZ), the stripped version removes Windows file paths
-            if present, returning an empty string. For other types, both tuple elements
-            contain the same value. The method properly escapes special characters and
-            formats values according to Windows Registry Editor requirements.
+            For string values (REG_SZ and REG_EXPAND_SZ), the stripped version removes 
+            Windows file paths if present, returning an empty string. For other types, 
+            both tuple elements contain the same value. The method properly escapes 
+            special characters and formats values according to Windows Registry Editor 
+            requirements, including proper line wrapping for large binary values.
         """
-        def formatHex(byteStrs: list[str], trailingZeroCount: int) -> str:
+        def formatHex(byteStrs: list[str], strLength: int = 1) -> str:
             match dataType:
                 case winreg.REG_MULTI_SZ:
-                    trailingZeroCount = 4
+                    trailingZeroCount = 4 - (strLength - 1) * 2
                     hexPrefix = "hex(7):"
                 case winreg.REG_EXPAND_SZ:
                     trailingZeroCount = 2
                     hexPrefix = "hex(2):"
+                case winreg.REG_QWORD:
+                    trailingZeroCount = 0
+                    hexPrefix = "hex(b):"
                 case _:
                     trailingZeroCount = 0
                     hexPrefix = "hex:"
-            firstLinePlacehoulderLength = len(f'"{valName}"={hexPrefix},\\')
-            firstLineStringToFillCount = (81 - firstLinePlacehoulderLength) // 3
-            starndardLineStringToFillCount = 25
+            WRAP_COUNT = 81
+            BYTES_PERLINE = 25
+            firstLineBytes = len(f'"{valName}"={hexPrefix},\\')
+            if firstLineBytes < 79:
+                firstLineBytesToFill = (WRAP_COUNT - firstLineBytes) // 3
+            else:
+                firstLineBytesToFill = 1
 
             # Initialize the first line
             dataValFormated = hexPrefix
             # Concatenate the hex strings to fill up the first line
-            dataValFormated += ",".join(byteStrs[:firstLineStringToFillCount])
+            dataValFormated += ",".join(byteStrs[:firstLineBytesToFill])
             # In case the first line is also the last line, no need to add a trailing comma
-            if firstLineStringToFillCount >= len(byteStrs):
+            if firstLineBytesToFill >= len(byteStrs):
                 pass
             else:
                 dataValFormated += ",\\\n"
 
             # Concatenate the rest
             lastLineLength = 0
-            for idx in range(firstLineStringToFillCount, len(byteStrs), starndardLineStringToFillCount):
-                if idx + starndardLineStringToFillCount > len(byteStrs):
-                    lastLine = "  " + ",".join(byteStrs[idx:idx+starndardLineStringToFillCount])
+            for idx in range(firstLineBytesToFill, len(byteStrs), BYTES_PERLINE):
+                if idx + BYTES_PERLINE > len(byteStrs):
+                    lastLine = "  " + ",".join(byteStrs[idx:idx+BYTES_PERLINE])
                     if trailingZeroCount > 0:
                         lastLine += ","
                     dataValFormated += lastLine
                     lastLineLength = len(lastLine)
-                elif idx + starndardLineStringToFillCount == len(byteStrs):
-                    lastLine = "  " + ",".join(byteStrs[idx:idx+starndardLineStringToFillCount])
+                elif idx + BYTES_PERLINE == len(byteStrs):
+                    lastLine = "  " + ",".join(byteStrs[idx:idx+BYTES_PERLINE])
                     if trailingZeroCount > 0:
                         lastLine += ",\\\n"
                     dataValFormated += lastLine
                     lastLineLength = 0 # Useless, but for readability
                 else:
-                    dataValFormated += "  " + ",".join(byteStrs[idx:idx+starndardLineStringToFillCount]) + ",\\\n"
+                    dataValFormated += "  " + ",".join(byteStrs[idx:idx+BYTES_PERLINE]) + ",\\\n"
 
-
-            # # Add trailing strings
+            # Add trailing strings
+            # Example
             # if lastLineLength == 68:
             #     dataValFormated += "00,00,00,00"
             # elif lastLineLength == 70:
@@ -1091,71 +1183,121 @@ class RegCategory(FileCategory): # {{{
             # else:
             #     dataValFormated += "00,00,00,00"
             if trailingZeroCount > 0:
-                diff = (76 - lastLineLength) // 2
+                diff = (77 - lastLineLength) // 3
                 if trailingZeroCount >= diff:
-                    head = ",".join(["00" for i in range(diff)])
-                    tail = ",".join(["00" for i in range(trailingZeroCount - diff)])
-                    mid = ",\\\n  " if diff != trailingZeroCount else ""
-                    trailingStr = head + mid + tail
+                    lastLineBreakChk = False
+                    trailingStr = ""
+                    for idx in range(trailingZeroCount):
+                        # When to add line break
+                        if lastLineLength == 77 and not lastLineBreakChk:
+                            lastLineBreakChk = True
+                            trailingStr += "\\\n  "
+
+                        if idx != trailingZeroCount - 1:
+                            trailingStr += "00,"
+                        else:
+                            trailingStr += "00"
+
+                        if not lastLineBreakChk:
+                            lastLineLength += 3
                 else:
-                    leadingSpace = "  " if lastLineLength == 0 else ""
-                    trailingStr = leadingSpace + ",".join(["00" for i in range(trailingZeroCount)])
+                    # Deal with the case where the rist line might be the last line
+                    if firstLineBytesToFill >= len(byteStrs):
+                        trailingStr = "," + ",".join(["00" for _ in range(trailingZeroCount)])
+                    else:
+                        leadingSpace = "  " if lastLineLength == 0 else ""
+                        trailingStr = leadingSpace + ",".join(["00" for _ in range(trailingZeroCount)])
 
                 dataValFormated = dataValFormated + trailingStr
 
             return dataValFormated
 
-
         match dataType:
             case winreg.REG_SZ:
                 if dataVal is None:
                     dataValFormated = '""'
+                    dataValStripped = dataValFormated
                 else:
                     dataValFormated = '"{}"'.format(
-                        dataVal.replace('\\', '\\\\').replace('"', '\\"')
+                        dataVal.replace("\\", "\\\\").replace('"', '\\"')
                     )
-                    if not WINDOWS_ANCHOR_START_PAT.search(dataVal):
-                        return dataValFormated, dataValFormated
+                    if WINDOWS_ANCHOR_START_PAT.search(dataVal) or containEnvVar(
+                        dataVal
+                    ):
+                        dataValStripped = ""
                     else:
-                        return dataValFormated, ""
+                        dataValStripped = dataValFormated
+
+                return dataValFormated, dataValStripped
             case winreg.REG_DWORD:
                 if dataVal is None:
                     dataValFormated = 'dword:00000000'
                 else:
                     dataValFormated = f"dword:{dataVal:08x}"
-                    return dataValFormated, dataValFormated
+
+                return dataValFormated, dataValFormated
             case winreg.REG_BINARY:
                 # Format as comma-separated hex bytes with leading zeros
                 if dataVal is None:
                     dataValFormated = "hex:"
                 else:
-                    byteStrs = [f"{byte:02x}" for byte in dataVal]
-                    dataValFormated = formatHex(byteStrs, 0)
+                    hexByteStrs = [f"{byte:02x}" for byte in dataVal]
+                    dataValFormated = formatHex(hexByteStrs)
+
                 return dataValFormated, dataValFormated
             case winreg.REG_MULTI_SZ:
                 if dataVal is None:
                     dataValFormated = "hex(7):00,00"
                 else:
                     # For REG_MULTI_SZ values (hex(7) type)
-                    byteStrs = []
+                    hexByteStrs = []
                     for s in dataVal:
                         # Encode each character as UTF-16LE (2 bytes)
                         for c in s:
                             utf16Bytes = c.encode('utf-16le')
-                            byteStrs.extend(f"{byte:02x}" for byte in utf16Bytes)
-                    dataValFormated = formatHex(byteStrs, 4)
+                            hexByteStrs.extend(f"{byte:02x}" for byte in utf16Bytes)
+                        if len(dataVal) > 1:
+                             # Add trailing zeros for each string to represent the end of the string list
+                            hexByteStrs.append("00")
+                            hexByteStrs.append("00")
+                    dataValFormated = formatHex(hexByteStrs, len(dataVal))
+
                 return dataValFormated, dataValFormated
             case winreg.REG_EXPAND_SZ:
                 if dataVal is None:
                     dataValFormated = "hex(2):"
+                    dataValStripped = dataValFormated
+                elif dataVal == "":
+                    dataValFormated = "hex(2):00,00"
+                    dataValStripped = dataValFormated
                 else:
-                    # TODO: strip the content if the dataVal contain path related strings
                     utf16Bytes = dataVal.encode('utf-16le')
-                    byteStrs = []
+                    hexByteStrs = []
                     for i in range(0, len(utf16Bytes), 2):
-                        byteStrs.append(f"{utf16Bytes[i]:02x}")
-                        byteStrs.append(f"{utf16Bytes[i+1]:02x}")
-                    dataValFormated = formatHex(byteStrs, 2)
+                        hexByteStrs.append(f"{utf16Bytes[i]:02x}")
+                        hexByteStrs.append(f"{utf16Bytes[i+1]:02x}")
+                    dataValFormated = formatHex(hexByteStrs)
+
+                    # Get data value stripped
+                    if "\\" in str(dataVal):
+                        pathComponents = str(dataVal).split('\\\\')
+                        if containEnvVar(pathComponents[0]) or WINDOWS_ANCHOR_START_PAT.search(dataVal):
+                            dataValStripped = ""
+                        else:
+                            dataValStripped = dataValFormated
+                    else:
+                        dataValStripped = dataValFormated
+
+                return dataValFormated, dataValStripped
+            case winreg.REG_QWORD:
+                if dataVal is None:
+                    dataValFormated = "hex(b):00,00,00,00,00,00,00,00"  # Default zero value
+                else:
+                    # Convert QWORD to 8-byte little-endian representation
+                    qwordBytes = dataVal.to_bytes(8, byteorder='little', signed=False)
+                    hexByteStrs = [f"{byte:02x}" for byte in qwordBytes]
+
+                    dataValFormated = formatHex(hexByteStrs)
 
                 return dataValFormated, dataValFormated
             case _:
@@ -1163,20 +1305,24 @@ class RegCategory(FileCategory): # {{{
                     dataValFormated = 'hex(0):'
                 else:
                     dataValFormated = f'"{dataVal}"'
+
                 return dataValFormated, dataValFormated
-
     # }}}
-
 
     def recursiveExport(self, currentSubkeyPath:str, key:winreg.HKEYType) -> None: # {{{
         """
         Recursively exports registry keys and values to .reg file format.
 
-        This method traverses the registry tree starting from a given key, collecting
-        all values and subkeys that match the filter criteria into three separate content
-        lists - one for regular content, one for refined content, and one for content
-        with stripped file paths. This allows for creating different versions of registry
-        exports with varying levels of portability.
+        This method performs a depth-first traversal of the Windows registry tree,
+        starting from a specified key. It collects all values and subkeys that match
+        the configured filter criteria and formats them into three separate content
+        collections with varying levels of detail and portability:
+        - Standard: Complete registry content with all keys and values
+        - Refined: Registry content with empty keys removed
+        - Stripped: Registry content with file paths removed for portability
+
+        The method handles proper formatting of registry values according to their
+        types and ensures the output follows Windows Registry Editor requirements.
 
         Args:
             currentSubkeyPath (str): Current registry path being processed.
@@ -1191,6 +1337,7 @@ class RegCategory(FileCategory): # {{{
                 * Refined: Registry content without empty keys
                 * Stripped: Registry content with file paths removed
             - Maintains consistent formatting for Windows Registry Editor compatibility
+            - Maintains proper registry path hierarchy in exported content
         """
 
         # Compose key header for later use
@@ -1222,6 +1369,10 @@ class RegCategory(FileCategory): # {{{
                     formattedValue, formattedValueStriped = self.formatRegValue(valName, valData, valueType)
 
                     if valName:
+                        if '"' in valName or "\\" in valName:
+                            # escape the special characters in the value name
+                            valName = valName.replace('\\', '\\\\')
+                            valName = valName.replace('"', '\\"')
                         regValDataLine = f'"{valName}"={formattedValue}'
                     else:
                         regValDataLine = f'@={formattedValue}'
@@ -1234,7 +1385,7 @@ class RegCategory(FileCategory): # {{{
                             self.regContentWriteChk = True
                     self.regContent.append(regValDataLine)
 
-                    if formattedValueStriped == "":
+                    if valData is not None and formattedValueStriped == "":
                         if not dataStrippedWriteUnderCurrentKeyChk:
                             if config.REMOVE_EMPTY_HEADER:
                                 self.regContentStripped.append(currentSubkeyHeader)
@@ -1279,16 +1430,17 @@ class RegCategory(FileCategory): # {{{
                 pass
     # }}}
 
-
+    # TODO: tests: HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID
+    # TODO: tests: HKEY_LOCAL_MACHINE\SOFTWARE\Classes
     def backup(self, bufferOutput:list[str]) -> list[str]:
         """
         Performs the backup operation for this registry category.
 
-        This method exports registry keys and values to .reg files based on the configured
-        paths and filter patterns. It creates multiple versions of the registry files:
-        standard, refined (without empty keys), and stripped (without file paths) when
-        stripePathValue is enabled. All files are created with proper Windows Registry
-        Editor formatting and encoding.
+        This method orchestrates the registry backup process by exporting registry keys
+        and values to .reg files. It processes each configured registry path, applying
+        filters and creating multiple versions of the registry files with different
+        levels of content refinement. The method handles proper Windows Registry Editor
+        formatting, character encoding, and maintains backup statistics.
 
         Args:
             bufferOutput (list[str]): List to collect output messages during operation.
@@ -1305,6 +1457,11 @@ class RegCategory(FileCategory): # {{{
             - Uses UTF-16 encoding for .reg files as required by Windows Registry Editor
             - Applies filter patterns to determine which keys and values to include
             - Tracks backup statistics at both profile and global levels
+            - Supports custom naming conventions for output files
+            - Manages buffer content for different export versions
+            - Ensures proper file encoding for Windows compatibility
+            - Updates profile and global backup statistics
+            - Supports dry run mode for testing purposes
         """
         for keyRelPath in self.keyRelPaths:
             if self.keyPathNamingConvention:
@@ -1335,6 +1492,7 @@ class RegCategory(FileCategory): # {{{
                 regName + "_Stripped" + ".reg"
             )
             if not config.DRYRUN:
+                # Get registry content buffered
                 os.makedirs(outputFilePath.parent, exist_ok=True)
                 try:
                     with winreg.OpenKey(self.rootKey, keyRelPath) as key:
@@ -1346,20 +1504,23 @@ class RegCategory(FileCategory): # {{{
                 except Exception as e:
                     raise e
                 if self.regContentWriteChk:
-                    with open(outputFilePath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegFile:
-                    # Write buffer content into .reg file
-                        self.regContent.insert(0, WINDOWS_REG_HEADER)
-                        joindContent = '\n'.join(self.regContent)
-                        # No special meaning. Just add two more line breaks if
-                        # you seek to algin with the exported format from
-                        # Windows Registry Editor.
-                        if not config.REMOVE_EMPTY_HEADER:
-                            joindContent += "\n\n"
-                        exportRegFile.write(joindContent)
+                    try:
+                        with open(outputFilePath, 'w', encoding=WINDOWS_REG_ENCODING) as exportRegFile:
+                            # Write buffer content into .reg file
+                            self.regContent.insert(0, WINDOWS_REG_HEADER)
+                            joindContent = '\n'.join(self.regContent)
+                            # No special meaning. Just add two more line breaks if
+                            # you seek to algin with the exported format from
+                            # Windows Registry Editor.
+                            if not config.REMOVE_EMPTY_HEADER:
+                                joindContent += "\n\n"
+                            exportRegFile.write(joindContent)
 
-                        # Reset buffer content
-                        self.regContent = []
-                        self.regContentWriteChk = False
+                            # Reset buffer content
+                            self.regContent = []
+                            self.regContentWriteChk = False
+                    except IOError:
+                        bufferOutput.append(fr"[red]    error writing to file: {outputFilePath}[/red]")
                 else:
                     print(fr"[yellow]    no valid keys being saved at: {self.rootKeyStr}\{keyRelPath}.[/yellow]")
 
