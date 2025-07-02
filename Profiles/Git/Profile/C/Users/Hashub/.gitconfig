@@ -23,13 +23,28 @@
     hunk-header-line-number-style = "#067a00"
     hunk-header-style = file line-number syntax
 [merge]
-    conflictstyle = diff3
+conflictstyle=diff3
+tool=ultracompare
 
 [diff]
-    colorMoved = default
+colorMoved=default
+tool=ultracompare
 [http]
 	sslbackend = schannel
 [https]
     proxy = https://127.0.0.1:7890
 [credential "https://gitee.com"]
 	provider = generic
+[mergetool "ultracompare"]
+keepBackup=false
+trustExitCode=false
+prompt=false
+cmd="\"D:\\Program Files\\UltraCompare\\uc.exe\" -gitm "$LOCAL" "$REMOTE" "$BASE" "$MERGED" -title1 "LOCAL" -title2 "REMOTE""
+[UC]
+defdiffmerge=yes
+defdiff=yes
+[difftool "ultracompare"]
+keepBackup=false
+trustExitCode=false
+prompt=false
+cmd="\"D:\\Program Files\\UltraCompare\\uc.exe\" -gitdt "$LOCAL" "$REMOTE" "$BASE" "$MERGED" -title1 "LOCAL" -title2 "REMOTE""

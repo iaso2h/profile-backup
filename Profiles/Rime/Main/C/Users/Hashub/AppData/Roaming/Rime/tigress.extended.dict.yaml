@@ -142,9 +142,10 @@ encoder:
 谂	sj	20000
 
 
+#--------粤语---------
 係	jt	50
 冇	nm	200
-
+㗎	sd	50
 
 #----------三简多重----------#
 不说话	css	1000
@@ -190,7 +191,7 @@ encoder:
 南庄	nmxg	400
 西樵	vxeu
 北海	avke	1000
-
+厚礼蟹	xfxt	50
 
 #---------粤语---------
 係咪	jtdp	1000
@@ -225,6 +226,9 @@ encoder:
 唔使	dwjf
 唔通	dwkt
 唔单止	dhsi
+唔喐	dwdn
+咪喐	dpdn
+咪走	dppz
 论尽	sjci
 千祈	lqft
 一係	fiht
@@ -394,3 +398,6 @@ encoder:
 人哋	jrdg	400
 有冇有	nnnv	400
 返到	xryp
+吔粉	deph	50
+吔屎	decp	50
+餸饭	qhqx

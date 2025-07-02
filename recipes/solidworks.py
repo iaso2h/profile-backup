@@ -90,7 +90,7 @@ Profile(
             "stripePathValue": True,
             "parentPaths": r"HKEY_CURRENT_USER/Software/SolidWorks/SOLIDWORKS \d+",
             "filterType": "include",
-            "filterPattern": filterPatternCollapsed
+            "filterPattern": [".*"]
         },
         {
             "type": "registry",
