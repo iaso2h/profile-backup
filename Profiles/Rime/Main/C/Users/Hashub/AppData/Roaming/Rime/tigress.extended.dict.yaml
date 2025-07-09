@@ -167,6 +167,7 @@ encoder:
 
 #彳亍	p	100
 #虎码输入法
+
 #秃码输入法
 
 
@@ -174,26 +175,50 @@ encoder:
 #若想加些简词，二码，三码即可出字，需加上编码
 #若想调整词序，再后面加个tab，再加词频即可
 
-搞快点	uhyd	400
-钣金	zxzj	400
-折弯补偿	uztj
-折弯扣除	uzut
-开开	ff	400
-达索	munw
+
+
 睡大街	qmpg
 拔网线	umif
 长相思	peqh
 口决	dkwn	50
 一路顺风	fpoo	1310
 机加工	esug
+好果子	bqhi	400
+厚礼蟹	xfxt	50
+出图	smrh	500
+瞳孔地震	qhgt	500
+引体	bgje	500
+离店	zbxy	500
+搞快点	uhyd	400
+开开	ff	400
+续住	inji	40
+握持	ucug	350
+近距离	tpzb	500
+群星荟萃	boll
+#---------机械---------
+钣金	zxzj	400
+折弯补偿	uztj
+折弯扣除	uzut
+达索	munw
+释放槽	tlef	500
+倒圆	jyrd	50
+焊件	cojq
+样条曲线	ehyi
+形位公差	fjhg
+形状公差	fmhg
+位置公差	jyhg
+公差与配合	hgfj
+标准图集	ewru	500
 
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu
 北海	avke	1000
-厚礼蟹	xfxt	50
-
 #---------粤语---------
+蚊鸡	cvrx
+发瘟	srao	100
+发瘟閪	saav
+发癫	sran	50
 係咪	jtdp	1000
 人哋	hdge
 呢度	dcxl

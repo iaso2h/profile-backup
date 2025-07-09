@@ -1,0 +1,143 @@
+__build_info:
+  rime_version: 1.5.3
+  timestamps:
+    default: 1750619309
+    default.custom: 1751828530
+    easy_english.custom: 0
+    easy_english.schema: 1751828538
+engine:
+  filters:
+    - simplifier
+    - uniquifier
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - echo_translator
+    - punct_translator
+    - script_translator
+    - table_translator
+menu:
+  page_size: 5
+punctuator:
+  full_shape:
+    " ": {commit: "　"}
+    "!": {commit: "！"}
+    "\"": {pair: ["“", "”"]}
+    "#": ["＃", "⌘"]
+    "$": ["￥", "$", "€", "£", "¥", "¢", "¤"]
+    "%": ["％", "°", "℃"]
+    "&": "＆"
+    "'": {pair: ["‘", "’"]}
+    "(": "（"
+    ")": "）"
+    "*": ["＊", "·", "・", "×", "※", "❂"]
+    "+": "＋"
+    ",": {commit: "，"}
+    "-": "－"
+    .: {commit: "。"}
+    "/": ["／", "÷"]
+    ":": {commit: "："}
+    ";": {commit: "；"}
+    "<": ["《", "〈", "«", "‹"]
+    "=": "＝"
+    ">": ["》", "〉", "»", "›"]
+    "?": {commit: "？"}
+    "@": ["＠", "☯"]
+    "[": ["「", "【", "〔", "［"]
+    "\\": ["、", "＼"]
+    "]": ["」", "】", "〕", "］"]
+    "^": {commit: "……"}
+    _: "——"
+    "`": "｀"
+    "{": ["『", "〖", "｛"]
+    "|": ["·", "｜", "§", "¦"]
+    "}": ["』", "〗", "｝"]
+    "~": "～"
+  half_shape:
+    "!": {commit: "！"}
+    "\"": {pair: ["“", "”"]}
+    "#": "#"
+    "$": ["￥", "$", "€", "£", "¥", "¢", "¤"]
+    "%": ["%", "％", "°", "℃"]
+    "&": "&"
+    "'": {pair: ["‘", "’"]}
+    "(": "（"
+    ")": "）"
+    "*": ["*", "＊", "·", "・", "×", "※", "❂"]
+    "+": "+"
+    ",": {commit: "，"}
+    "-": "-"
+    .: {commit: "。"}
+    "/": ["、", "/", "／", "÷"]
+    ":": {commit: "："}
+    ";": {commit: "；"}
+    "<": ["《", "〈", "«", "‹"]
+    "=": "="
+    ">": ["》", "〉", "»", "›"]
+    "?": {commit: "？"}
+    "@": "@"
+    "[": ["「", "【", "〔", "［"]
+    "\\": ["、", "\\", "＼"]
+    "]": ["」", "】", "〕", "］"]
+    "^": {commit: "……"}
+    _: "——"
+    "`": "`"
+    "{": ["『", "〖", "｛"]
+    "|": ["·", "|", "｜", "§", "¦"]
+    "}": ["』", "〗", "｝"]
+    "~": ["~", "～"]
+  import_preset: default
+recognizer:
+  import_preset: default
+  patterns:
+    email: "^[A-Za-z][-_.0-9A-Za-z]*@.*$"
+    uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
+    url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$|^[a-z]+[.].+$"
+schema:
+  description: ""
+  name: "英语词库"
+  schema_id: easy_english
+  version: 0.18
+speller:
+  alphabet: "/`\\ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.?'_:"
+  delimiter: ";"
+switches:
+  - name: ascii_mode
+    reset: 0
+  - name: full_shape
+    reset: 0
+  - name: simplification
+    reset: 0
+  - name: ascii_punct
+    reset: 0
+  - name: extended_charset
+    reset: 1
+  - name: ascii_mode
+    reset: 0
+    states: ["中文", "英文"]
+  - name: _hide_candidate
+    reset: 0
+  - name: _hide_key_hint
+    reset: 1
+translator:
+  db_class: tabledb
+  dictionary: easy_english
+  enable_completion: true
+  enable_encoder: true
+  enable_sentence: true
+  enable_user_dict: true
+  encode_commit_history: false
+  user_dict: easy_english
