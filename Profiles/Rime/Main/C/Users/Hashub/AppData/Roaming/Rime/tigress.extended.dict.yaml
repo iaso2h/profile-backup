@@ -194,7 +194,21 @@ encoder:
 续住	inji	40
 握持	ucug	350
 近距离	tpzb	500
+热身运动	uzbb	500
 群星荟萃	boll
+朋友圈	vnqh	500
+快题	hnow
+多机位	leji
+钓鱼佬	zwjq
+扩展格式	ucep
+没绷住	kiji
+我没绷住	tkij
+懒狗	hxmg
+乘于	xafn
+除于	tjfn	150
+喊口号	dddf	500
+遭老罪	fqyr
+饿死鬼	qgag	500
 #---------机械---------
 钣金	zxzj	400
 折弯补偿	uztj
@@ -209,7 +223,7 @@ encoder:
 位置公差	jyhg
 公差与配合	hgfj
 标准图集	ewru	500
-
+参数化	kpvb
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu
