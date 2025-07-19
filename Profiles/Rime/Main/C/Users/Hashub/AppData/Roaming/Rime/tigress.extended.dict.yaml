@@ -140,6 +140,7 @@ encoder:
 #----------二简多重----------#
 甲	sj	10000
 谂	sj	20000
+遮	xl	5000
 
 
 #--------粤语---------
@@ -209,7 +210,12 @@ encoder:
 喊口号	dddf	500
 遭老罪	fqyr
 饿死鬼	qgag	500
+时日不多	oocl
+双力臂	rscd
+街健	pgjb
 #---------机械---------
+#Reference: https://zhuanlan.zhihu.com/p/455301324
+
 钣金	zxzj	400
 折弯补偿	uztj
 折弯扣除	uzut
@@ -224,6 +230,60 @@ encoder:
 公差与配合	hgfj
 标准图集	ewru	500
 参数化	kpvb
+方通	lfkt	500
+预加工	isug
+模膛	elvs	50
+型腔	flve	5
+型槽	flef	5
+有限元	ntmp	50
+啮合	dljd	5
+预加工	isug
+延展性	tcls	500
+可锻性	zzhl
+塑模	hsel
+铸模	zael
+表面光洁度	abmx
+热疲劳	ualw	5
+化铁炉	jzcm	500
+锻坯	zugc
+机械制造	eeqq
+塑性加工	hhsu
+拉拔	uiun	5
+深冲	kwwd	5
+深压	kwxg	5
+锤砧	zlmy
+砧座	myxj
+拔长	unpc
+顶锻	awzu
+镦粗	zgpf
+落锻	lkzu
+锤模锻	zezu
+终锻	hwzu
+高温计	gksn	5
+压力机	xseo
+液压机	kxeo
+汽机	vqeo
+压力焊	xsco
+熔焊	cwco	50
+助溶剂	fkwp	5
+铜焊	zmco
+低碳钢	jmzm
+高碳	ggmv
+高碳钢	gmzm
+均热	gnuk	5
+骤冷	nqwj	5
+轴销	ydzy	5
+环链	nczy
+拓扑学	uukw	5
+导向杆	vtee	500
+齿间距	lapn
+齿根	lcei
+齿隙	lcty
+预荷载	ilnp
+刻度盘	kxia
+蜗轮	cdjj
+楔入	eaju
+
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu
@@ -440,3 +500,4 @@ encoder:
 吔粉	deph	50
 吔屎	decp	50
 餸饭	qhqx
+湿滞	kokl	50
