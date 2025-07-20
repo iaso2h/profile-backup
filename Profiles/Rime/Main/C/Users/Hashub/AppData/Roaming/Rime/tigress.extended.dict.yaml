@@ -213,8 +213,8 @@ encoder:
 时日不多	oocl
 双力臂	rscd
 街健	pgjb
+改键	vhzb	5
 #---------机械---------
-#Reference: https://zhuanlan.zhihu.com/p/455301324
 
 钣金	zxzj	400
 折弯补偿	uztj
@@ -231,6 +231,10 @@ encoder:
 标准图集	ewru	500
 参数化	kpvb
 方通	lfkt	500
+套料	mppj
+光洁度	mkxl
+粗糙度	ppxl	5
+#Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
 型腔	flve	5
