@@ -2,6 +2,7 @@ import re
 import winreg
 import logging
 import datetime
+import ctypes
 from typing import Optional, Tuple
 from logging.handlers import RotatingFileHandler
 from rich.console import Console
@@ -343,3 +344,44 @@ def regQueryData(keyPathPat: str, valueName: str) -> Tuple[str, bool]:
         succeedChk = True
 
     return valData, succeedChk
+
+
+def getConsoleLines():
+    """
+    Gets the number of available lines in the Windows console window.
+
+    Uses Windows API through ctypes to retrieve console screen buffer information.
+    Calculates available lines by subtracting the window top from bottom position
+    and reducing by 5 lines for margins.
+
+    Returns:
+        int: Number of available console lines. Returns 40 if unable to get console info,
+            or 5 if calculated lines is <= 0.
+    """
+    # Define the necessary Windows API structures and functions
+    class CONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
+        _fields_ = [
+            ("dwSize", ctypes.wintypes._COORD),              # type: ignore
+            ("dwCursorPosition", ctypes.wintypes._COORD),    # type: ignore
+            ("wAttributes", ctypes.wintypes.WORD),           # type: ignore
+            ("srWindow", ctypes.wintypes.SMALL_RECT),        # type: ignore
+            ("dwMaximumWindowSize", ctypes.wintypes._COORD), # type: ignore
+        ]
+
+    # Get the handle to the console screen buffer
+    h_console = ctypes.windll.kernel32.GetStdHandle(-11)  # STD_OUTPUT_HANDLE
+
+    # Create an instance of CONSOLE_SCREEN_BUFFER_INFO
+    csbi = CONSOLE_SCREEN_BUFFER_INFO()
+
+    # Call GetConsoleScreenBufferInfo
+    if ctypes.windll.kernel32.GetConsoleScreenBufferInfo(h_console, ctypes.byref(csbi)):
+        # Calculate the number of lines available
+        linesCnt = csbi.srWindow.Bottom - csbi.srWindow.Top + 1
+        linesCnt = linesCnt - 5
+    else:
+        linesCnt = 40
+
+    if linesCnt <= 0:
+        linesCnt = 5
+    return linesCnt

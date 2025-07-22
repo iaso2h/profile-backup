@@ -15,10 +15,23 @@ import recipes
 
 
 def parse_args() -> argparse.Namespace:
+    """
+    Parse command line arguments for the profile backup utility.
+
+    Returns:
+        argparse.Namespace: Parsed command line arguments containing:
+            - debug (bool): Flag to enable debug mode
+            - version (str): Displays version information when invoked
+
+    The function sets up argument parsing with:
+        - Optional debug flag (-d/--debug)
+        - Version display (-v/--version)
+        - Interactive mode as default behavior
+    """
     """Parse and return command line arguments."""
     parser = argparse.ArgumentParser(
         description="Backup software profiles on Windows",
-        epilog="Run without arguments to start in interactive mode."
+        epilog="Run without arguments to start in interactive mode.",
     )
     parser.add_argument(
         "-d", "--debug",

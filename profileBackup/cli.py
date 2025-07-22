@@ -265,6 +265,8 @@ def program() -> None: # {{{
             tick_character = '■',
             ticked_indices = list(range(len(profileNamePoll))),
             minimal_count  = 1,
+            pagination = True,
+            page_size=util.getConsoleLines(),
         )
 
     except (KeyboardInterrupt, beaupy.Abort) as e:
