@@ -2,15 +2,11 @@
 Back up profiles from all kind of profiles. The location of these profiles somewhat resemble dotfiles on Linux but they are tend to be scattered at different locations, hence I wrote this app to tackle the chaos. Right now it's built on Windows only and targetting softwares on Windows.
 # Roadmap
 * Recipe TODO :
-    * Vivaldi broswer preferences and highlighted note data
     * WPS
-    * Foxit
-    * Windows themes
     * Adobe series?
     * CAXA
     * FreeCAD
-    * OBS studio
-    * Obsidian
+    * OBS Studio
     * AutoHotkey
 
 * ~~Recursive copy~~
