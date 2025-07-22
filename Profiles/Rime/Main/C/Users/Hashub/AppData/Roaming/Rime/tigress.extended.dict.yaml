@@ -156,6 +156,7 @@ encoder:
 
 攞	uyi
 嚿	dlu	400
+嚟	dxp	5
 有冇有	nnn
 係冇係	jnj
 係唔係	jdj	400
@@ -214,6 +215,7 @@ encoder:
 双力臂	rscd
 街健	pgjb
 改键	vhzb	5
+盲道	fqho	5
 #---------机械---------
 
 钣金	zxzj	400
@@ -234,6 +236,8 @@ encoder:
 套料	mppj
 光洁度	mkxl
 粗糙度	ppxl	5
+开料	flpj
+算料	rqpj
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
@@ -505,3 +509,5 @@ encoder:
 吔屎	decp	50
 餸饭	qhqx
 湿滞	kokl	50
+唔係啩	djdg
+嚟唔切	ddrp	15
