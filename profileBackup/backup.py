@@ -620,27 +620,33 @@ class FileCategory(Profile): # {{{
                 if srcPath.is_dir():
                     if self.recursiveCopy:
                         # Check whether the directory is in the filter pattern list
-                        srcPathInsideFilterChk = False
+                        skipChk = False
                         if isinstance(self.filterPattern, list):
                             if self.filterType == "exclude":
                                 for p in filterAllPaths:
                                     if p.is_dir() and srcPath == p:
-                                        srcPathInsideFilterChk = True
+                                        skipChk = True
                                         break
                             elif self.filterType == "include":
+
+                                srcPathDirInsideFilterChk = False
                                 for p in filterAllPaths:
-                                    if p.is_dir() and srcPath != p:
-                                        srcPathInsideFilterChk = True
+                                    if p.is_dir() and srcPath == p:
+                                        srcPathDirInsideFilterChk = True
+                                        skipChk = False
                                         break
+                                
+                                if not srcPathDirInsideFilterChk:
+                                    skipChk = True
                         else:
                             if self.filterType == "exclude" and self.filterPattern(srcPath):
-                                srcPathInsideFilterChk = True
+                                skipChk = True
                                 break
                             elif self.filterType == "include" and not self.filterPattern(srcPath):
-                                srcPathInsideFilterChk = True
+                                skipChk = True
                                 break
 
-                        if srcPathInsideFilterChk:
+                        if skipChk:
                             continue
 
                         count, size, bufferOutput = self.iterCopy(
