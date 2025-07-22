@@ -2,7 +2,6 @@ import os
 import winreg
 import shutil
 import re
-import math
 from types import GeneratorType
 from typing import Callable, Optional, Tuple, Iterator, cast
 from pathlib import Path
@@ -12,7 +11,7 @@ import config
 
 print = util.print
 # reference: https://learn.microsoft.com/en-us/windows/deployment/usmt/usmt-recognized-environment-variables
-WINDOWS_PATH_ENV_VAR = {
+WINDOWS_PATH_ENV_VAR = { # {{{
     "User-Specific": {
         "%USERPROFILE%": {
             "description": "The root directory of the current user's profile.",
@@ -85,14 +84,15 @@ WINDOWS_PATH_ENV_VAR = {
             "default_path": "C:\\Program Files (x86)\\Common Files",
         },
     },
-}
+} # }}}
 WINDOWS_ANCHOR_START_PAT = re.compile(r"^[a-zA-Z]:\\")
 WINDOWS_REG_HEADER = "Windows Registry Editor Version 5.00"
 WINDOWS_INVALID_PATH_CHARS = re.compile(r'[<>:\"/\\|?*]')
 WINDOWS_REG_ENCODING = "utf-16"
 
+
 collapseEnvDict = {**WINDOWS_PATH_ENV_VAR["User-Specific"], **WINDOWS_PATH_ENV_VAR["System-Wide"]}
-def containEnvVar(path: str) -> bool:
+def containEnvVar(path: str) -> bool:  # {{{
     """
     Check if a path contains a Windows environment variable.
 
@@ -103,10 +103,31 @@ def containEnvVar(path: str) -> bool:
         bool: True if the path contains any Windows environment variable, False otherwise.
 
     Note:
-        - Checks against both User-Specific and System-Wide environment variables
-        - Comparison is case-insensitive
+        - Empty path returns False.
+        - Requires even number of '%' characters to be valid.
+        - Case-insensitive comparison against known environment variables.
     """
-    return any(path.upper() == envVar or path.upper() in envVar for envVar in collapseEnvDict)
+    if path == "":
+        return False
+
+    percentCharCount = path.count("%")
+    if percentCharCount == 0:
+        return False
+    elif percentCharCount % 2 == 1:
+        return False
+
+    for component in path.split("%"):
+        if component == "":
+            continue
+
+        for envVar in collapseEnvDict:
+            if component.upper() == envVar.upper() or component.upper() in envVar:
+                return True
+
+    return False
+
+
+# }}}
 
 class Profile(): # {{{
     """
@@ -238,7 +259,7 @@ class Profile(): # {{{
                 self._categories.append(RegCategory(profileName=self.profileName, **categoryArgs))
             else:
                 # raise error for invalid category type
-                raise ValueError(f"Invalid category type {categoryArgs["type"]} for category {categoryArgs["categoryName"]} under Profile {self.profileName}.")
+                raise ValueError(f'Invalid category type {categoryArgs["type"]} for category {categoryArgs["categoryName"]} under Profile {self.profileName}.')
     # }}}
 
     @classmethod
@@ -259,7 +280,6 @@ class Profile(): # {{{
         """
         cls.foundFileMessage = "Backing up" if not config.DRYRUN else "Found"
 # }}}
-
 
 class FileCategory(Profile): # {{{
     """
@@ -848,7 +868,6 @@ class FileCategory(Profile): # {{{
 
 # }}}
 
-
 class RegCategory(FileCategory): # {{{
     """
     A category for backing up Windows registry keys and values.
@@ -1112,10 +1131,10 @@ class RegCategory(FileCategory): # {{{
             - REG_EXPAND_SZ (expandable strings): Returns hex(2)-formatted representation
             - REG_QWORD (64-bit integers): Returns hex(b)-formatted representation
 
-            For string values (REG_SZ and REG_EXPAND_SZ), the stripped version removes 
-            Windows file paths if present, returning an empty string. For other types, 
-            both tuple elements contain the same value. The method properly escapes 
-            special characters and formats values according to Windows Registry Editor 
+            For string values (REG_SZ and REG_EXPAND_SZ), the stripped version removes
+            Windows file paths if present, returning an empty string. For other types,
+            both tuple elements contain the same value. The method properly escapes
+            special characters and formats values according to Windows Registry Editor
             requirements, including proper line wrapping for large binary values.
         """
         def formatHex(byteStrs: list[str], strLength: int = 1) -> str:
@@ -1221,9 +1240,7 @@ class RegCategory(FileCategory): # {{{
                     dataValFormated = '"{}"'.format(
                         dataVal.replace("\\", "\\\\").replace('"', '\\"')
                     )
-                    if WINDOWS_ANCHOR_START_PAT.search(dataVal) or containEnvVar(
-                        dataVal
-                    ):
+                    if WINDOWS_ANCHOR_START_PAT.search(dataVal) or containEnvVar(dataVal):
                         dataValStripped = ""
                     else:
                         dataValStripped = dataValFormated
@@ -1281,7 +1298,7 @@ class RegCategory(FileCategory): # {{{
                     # Get data value stripped
                     if "\\" in str(dataVal):
                         pathComponents = str(dataVal).split('\\\\')
-                        if containEnvVar(pathComponents[0]) or WINDOWS_ANCHOR_START_PAT.search(dataVal):
+                        if WINDOWS_ANCHOR_START_PAT.search(dataVal) or containEnvVar(pathComponents[0]):
                             dataValStripped = ""
                         else:
                             dataValStripped = dataValFormated
