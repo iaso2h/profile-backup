@@ -54,9 +54,6 @@ Tab Double Click New Document=true
 Tab Middle Click Close Document=true
 Tabbar Tab Limit=0
 
-[KDE]
-widgetStyle=windows11
-
 [KTextEditor Document]
 Allow End of Line Detection=true
 Auto Detect Indent=true
@@ -188,6 +185,8 @@ RunPrefix=
 SetEditor=false
 
 [MainWindow]
+1280x800 screen: Height=611
+1280x800 screen: Width=864
 1280x800 screen: Window-Maximized=true
 2560x1440 screen: Height=1368
 2560x1440 screen: Width=1278
@@ -200,10 +199,33 @@ Width 2560=1132
 
 [Shortcuts]
 hamburgerBar=none
+kate_mdi_focus_toolview_diagnostics=none
+kate_mdi_focus_toolview_kate_plugin_katesearch=none
+kate_mdi_focus_toolview_kate_private_plugin_katefiletreeplugin=none
+kate_mdi_focus_toolview_kate_private_plugin_katekonsoleplugin=none
+kate_mdi_focus_toolview_kateproject=none
+kate_mdi_focus_toolview_kateprojectgit=none
+kate_mdi_focus_toolview_kateprojectinfo=none
+kate_mdi_focus_toolview_lspclient_symbol_outline=none
 kate_mdi_focus_toolview_output=none
 kate_mdi_hide_toolviews=none
+kate_mdi_show_toolview_button_diagnostics=none
+kate_mdi_show_toolview_button_kate_plugin_katesearch=none
+kate_mdi_show_toolview_button_kate_private_plugin_katefiletreeplugin=none
+kate_mdi_show_toolview_button_kate_private_plugin_katekonsoleplugin=none
+kate_mdi_show_toolview_button_kateproject=none
+kate_mdi_show_toolview_button_kateprojectgit=none
+kate_mdi_show_toolview_button_kateprojectinfo=none
+kate_mdi_show_toolview_button_lspclient_symbol_outline=none
 kate_mdi_show_toolview_button_output=none
+kate_mdi_toolview_diagnostics=none
+kate_mdi_toolview_kate_plugin_katesearch=none
+kate_mdi_toolview_kate_private_plugin_katefiletreeplugin=none
 kate_mdi_toolview_kate_private_plugin_katekonsoleplugin=Ctrl+`
+kate_mdi_toolview_kateproject=none
+kate_mdi_toolview_kateprojectgit=none
+kate_mdi_toolview_kateprojectinfo=none
+kate_mdi_toolview_lspclient_symbol_outline=none
 kate_mdi_toolview_output=none
 mainToolBar=none
 
@@ -222,7 +244,7 @@ viewShade=77,109,150
 AllowedServerCommandLines=D:/Anaconda3/Scripts/pylsp.exe --check-parent-process
 AutoHover=true
 AutoImport=true
-BlockedServerCommandLines=
+BlockedServerCommandLines=d:/anaconda3/Scripts/pylsp.exe --check-parent-process
 CompletionDocumentation=true
 CompletionParens=true
 Diagnostics=true

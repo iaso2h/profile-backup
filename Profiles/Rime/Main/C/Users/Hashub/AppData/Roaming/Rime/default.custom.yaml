@@ -2,7 +2,7 @@ customization:
   distribution_code_name: Weasel
   distribution_version: 0.17.4
   generator: "Rime::SwitcherSettings"
-  modified_time: "Fri Jun 27 13:41:45 2025"
+  modified_time: "Mon Jul 21 19:51:13 2025"
   rime_version: 1.13.1
 key_binder:
   bindings:
@@ -24,7 +24,6 @@ patch:
     Shift_L: commit_code
     Shift_R: commit_code
   schema_list:
-    - {schema: easy_english}
     - {schema: tigress}
   "switcher/hotkeys":
     - "Control+grave"

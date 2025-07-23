@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Sheet Metal/成型工具.md",
+                "file": "Sketch/Dimension.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "成型工具"
+              "title": "Dimension"
             }
           }
         ]
@@ -152,13 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "名字符号标识.md",
+                "file": "Sketch/Dimension.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 名字符号标识"
+              "title": "Outline of Dimension"
             }
           },
           {
@@ -192,11 +192,11 @@
             }
           }
         ],
-        "currentTab": 6
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 301.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -210,16 +210,30 @@
       "obsidian-local-images-plus:Local Images Plus  0.16.3\r\nLocalize attachments (plugin folder)": false
     }
   },
-  "active": "495a2db64c7131a2",
+  "active": "0f2bc5df3c6624e2",
   "lastOpenFiles": [
+    "src/0e51ef66583a9ea396c6ab1efe2b22a9_MD5.jpeg",
+    "src/Pasted image 20250724005338.png",
+    "src/1f0021c66c9813770e57e371eb813623_MD5.jpeg",
+    "src/Pasted image 20250724005153.png",
+    "Sketch/Convert Reference.md",
+    "Sketch/Dimension.md",
+    "Sketch/Edit Plane.md",
+    "Sketch/Inser derived Sketch.md",
+    "Sketch/Pierce Constrain.md",
+    "Sketch/Segment.md",
+    "Sketch/Trim.md",
+    "Sketch/Line.md",
+    "Nesting/List.md",
+    "Sheet Metal/成型工具.md",
+    "Nesting",
+    "Untitled.md",
     "Sheet Metal/Untitled.md",
     "Comparison With Creo.md",
     "Plane.md",
     "File Based Visual Configurations.md",
     "Pasting and Re-positioning entities.md",
     "src/Pasted image 20250615153850.png",
-    "Sketch/Segment.md",
-    "Sketch/Edit Plane.md",
     "AutoCAD Plot.md",
     "Plug-ins List.md",
     "钣金/通用折弯半径.md",
@@ -233,18 +247,10 @@
     "src/Pasted image 20250601234152.png",
     "src/Pasted image 20250601233812.png",
     "Customization.md",
-    "Import .stp Files.md",
-    "Note on Commands.md",
-    "Featrue Tree Naming Indication.md",
-    "Features/Loft.md",
     "Features",
     "src/2025-05-14_14-49-28.gif",
     "src/Pasted image 20250514141128.png",
     "src/Pasted image 20250411094628.png",
-    "src/Pasted image 20250411094335.png",
-    "src/Pasted image 20250411094442.png",
-    "src/Pasted image 20250411094057.png",
-    "Welcome.md",
     "src",
     "新建文件夹",
     "新快捷方式.lnk"

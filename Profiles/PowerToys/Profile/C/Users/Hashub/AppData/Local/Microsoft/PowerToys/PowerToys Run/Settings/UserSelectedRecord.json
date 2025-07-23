@@ -80,21 +80,21 @@
       "PluginID": "791FC278BA414111B8D1886DFE447410"
     },
     "Obsidian : Application": {
-      "SelectedCount": 2,
-      "LastSelected": "2025-07-21T16:37:06.139707Z",
-      "IconPath": "C:\\Users\\Hashub\\Desktop\\Obsidian.lnk",
+      "SelectedCount": 3,
+      "LastSelected": "2025-07-23T16:49:41.2946347Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Obsidian.lnk",
       "Title": "Obsidian",
-      "Search": "ob",
+      "Search": "obsid",
       "Score": 0,
       "SubTitle": "Application",
       "PluginID": "791FC278BA414111B8D1886DFE447410"
     },
     "Registry Editor : Application": {
-      "SelectedCount": 38,
-      "LastSelected": "2025-07-22T01:26:52.7276811Z",
+      "SelectedCount": 42,
+      "LastSelected": "2025-07-22T19:09:01.2331051Z",
       "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Registry Editor.lnk",
       "Title": "Registry Editor",
-      "Search": "regi",
+      "Search": "re",
       "Score": 0,
       "SubTitle": "Application",
       "PluginID": "791FC278BA414111B8D1886DFE447410"
@@ -230,11 +230,91 @@
       "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
     },
     "Windows Defender Firewall with Advanced Security : Application": {
-      "SelectedCount": 2,
-      "LastSelected": "2025-07-22T04:42:43.3674671Z",
+      "SelectedCount": 5,
+      "LastSelected": "2025-07-22T15:29:35.36743Z",
       "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\Windows Defender Firewall with Advanced Security.lnk",
       "Title": "Windows Defender Firewall with Advanced Security",
-      "Search": "fir",
+      "Search": "fire",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "SOLIDWORKS 2024 : Application": {
+      "SelectedCount": 5,
+      "LastSelected": "2025-07-23T15:49:18.7545062Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\SOLIDWORKS 2024\\SOLIDWORKS 2024.lnk",
+      "Title": "SOLIDWORKS 2024",
+      "Search": "solidworks",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "\u767E\u5EA6\u7F51\u76D8 : Application": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-07-22T16:06:56.6916138Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\\u767E\u5EA6\u7F51\u76D8\\\u767E\u5EA6\u7F51\u76D8.lnk",
+      "Title": "\u767E\u5EA6\u7F51\u76D8",
+      "Search": "b",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Creo Parametric 12.4.0.0.lnk : Search: C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PTC\\Creo Parametric 12.4.0.0.lnk": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-07-22T08:53:09.8209117Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PTC\\Creo Parametric 12.4.0.0.lnk",
+      "Title": "Creo Parametric 12.4.0.0.lnk",
+      "Search": "creo p",
+      "Score": 0,
+      "SubTitle": "Search: C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PTC\\Creo Parametric 12.4.0.0.lnk",
+      "PluginID": "2140FC9819AD43A3A616E2735815C27C"
+    },
+    "eDrawings 2024 x64 Edition : Application": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-07-22T13:13:03.3378589Z",
+      "IconPath": "C:\\Users\\Hashub\\Desktop\\SW\\eDrawings 2024 x64 Edition.lnk",
+      "Title": "eDrawings 2024 x64 Edition",
+      "Search": "edraw",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Creo Parametric 12.4.0.0 : Application": {
+      "SelectedCount": 15,
+      "LastSelected": "2025-07-23T17:58:22.3794075Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PTC\\Creo Parametric 12.4.0.0.lnk",
+      "Title": "Creo Parametric 12.4.0.0",
+      "Search": "c",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Rhino 8 : Application": {
+      "SelectedCount": 18,
+      "LastSelected": "2025-07-22T15:59:35.822796Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Rhino 8\\Rhino 8.lnk",
+      "Title": "Rhino 8",
+      "Search": "ri",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "Obsidian.exe : Application": {
+      "SelectedCount": 2,
+      "LastSelected": "2025-07-23T12:05:31.7751873Z",
+      "IconPath": "C:\\Users\\Hashub\\Desktop\\Obsidian.exe.lnk",
+      "Title": "Obsidian.exe",
+      "Search": "obsi",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "PixPin : Application": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-07-23T16:51:15.6322844Z",
+      "IconPath": "C:\\Users\\Hashub\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\PixPin\\PixPin.lnk",
+      "Title": "PixPin",
+      "Search": "pix",
       "Score": 0,
       "SubTitle": "Application",
       "PluginID": "791FC278BA414111B8D1886DFE447410"

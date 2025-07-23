@@ -1,6 +1,42 @@
 {
   "recentFiles": [
     {
+      "basename": "Dimension",
+      "path": "Sketch/Dimension.md"
+    },
+    {
+      "basename": "Convert Reference",
+      "path": "Sketch/Convert Reference.md"
+    },
+    {
+      "basename": "Edit Plane",
+      "path": "Sketch/Edit Plane.md"
+    },
+    {
+      "basename": "Inser derived Sketch",
+      "path": "Sketch/Inser derived Sketch.md"
+    },
+    {
+      "basename": "Pierce Constrain",
+      "path": "Sketch/Pierce Constrain.md"
+    },
+    {
+      "basename": "Segment",
+      "path": "Sketch/Segment.md"
+    },
+    {
+      "basename": "Trim",
+      "path": "Sketch/Trim.md"
+    },
+    {
+      "basename": "Line",
+      "path": "Sketch/Line.md"
+    },
+    {
+      "basename": "List",
+      "path": "Nesting/List.md"
+    },
+    {
       "basename": "成型工具",
       "path": "Sheet Metal/成型工具.md"
     },

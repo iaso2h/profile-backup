@@ -11,7 +11,7 @@ config.font = wezterm.font_with_fallback {
 }
 config.initial_cols = 105
 config.initial_rows = 35
-config.font_size = 12.0
+config.font_size = 11.0
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
     config.default_prog = { 'C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' }
 else
