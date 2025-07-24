@@ -240,9 +240,9 @@
       "PluginID": "791FC278BA414111B8D1886DFE447410"
     },
     "SOLIDWORKS 2024 : Application": {
-      "SelectedCount": 5,
-      "LastSelected": "2025-07-23T15:49:18.7545062Z",
-      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\SOLIDWORKS 2024\\SOLIDWORKS 2024.lnk",
+      "SelectedCount": 6,
+      "LastSelected": "2025-07-24T02:04:46.1673899Z",
+      "IconPath": "C:\\Users\\Hashub\\Desktop\\SW\\SOLIDWORKS 2024.lnk",
       "Title": "SOLIDWORKS 2024",
       "Search": "solidworks",
       "Score": 0,
@@ -280,11 +280,11 @@
       "PluginID": "791FC278BA414111B8D1886DFE447410"
     },
     "Creo Parametric 12.4.0.0 : Application": {
-      "SelectedCount": 15,
-      "LastSelected": "2025-07-23T17:58:22.3794075Z",
+      "SelectedCount": 17,
+      "LastSelected": "2025-07-24T02:53:09.9517785Z",
       "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PTC\\Creo Parametric 12.4.0.0.lnk",
       "Title": "Creo Parametric 12.4.0.0",
-      "Search": "c",
+      "Search": "creo",
       "Score": 0,
       "SubTitle": "Application",
       "PluginID": "791FC278BA414111B8D1886DFE447410"
@@ -318,6 +318,26 @@
       "Score": 0,
       "SubTitle": "Application",
       "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "mpv.exe : Run command": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-07-24T03:05:47.9417139Z",
+      "IconPath": "C:\\ProgramData\\chocolatey\\lib\\mpvio.install\\tools\\mpv.exe",
+      "Title": "mpv.exe",
+      "Search": "mpv",
+      "Score": 0,
+      "SubTitle": "Run command",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
+    },
+    "https://mpv/ : Open in default browser": {
+      "SelectedCount": 1,
+      "LastSelected": "2025-07-24T03:06:18.4095042Z",
+      "IconPath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "Title": "https://mpv/",
+      "Search": "mpv",
+      "Score": 0,
+      "SubTitle": "Open in default browser",
+      "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
     }
   }
 }

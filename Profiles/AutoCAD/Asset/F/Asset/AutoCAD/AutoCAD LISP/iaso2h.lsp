@@ -24,7 +24,7 @@
     (if (eq (load "layerDirector.lsp" nil) nil) 
       (progn 
         (princ "iaso2h: 无法找到图层定向文件\n")
-        (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n") 
+        (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n")
         (setq *searchIncluded* nil)
       )
     )
@@ -35,12 +35,17 @@
 
 ;; General Alias
 (defun c:a () (command "._matchprop") (princ))
-(defun c:ae () (command "._arc" "c") (princ))
+(defun c:ac () (command "._layoff") (princ))
+(defun c:aa () (command "._layon") (princ))
+(defun c:fr () (command "._layfrz" "c") (princ))
+(defun c:ta () (command "._laythw" "c") (princ))
+(defun c:fx () (command "._laylck" "c") (princ))
+(defun c:df () (command "._layulk" "c") (princ))
 (defun c:bl () (command "._setbylayer") (princ))
 (defun c:ch () (command "._chamfer") (princ))
 (defun c:dwg () (command "._dwg-purge") (princ))
 (defun c:loo () (command "._layerp") (princ))
-(defun c:lm () (command "._laymch") (princ))
+(defun c:lm () (command "._laymcur") (princ))
 (defun c:r () (command "._rotate") (princ))
 (defun c:re () (command "._rectang") (princ))
 (defun c:rg () (command "._regen") (princ))
@@ -70,14 +75,24 @@
   )
 )
 
-(princ "iaso2h: 通用命令缩写加载完毕\n")
+(princ "iaso2h: 通用命令缩写加载完毕.\n")
 
-
-(autoload "dimTangentAdapt" '("dimTangentToggle" "dimTangentAdapt"))
 
 (if *searchIncluded* 
-  (load "autoload.lsp")
-  (load "util.lsp")
+  (progn 
+    (load "autoload.lsp")
+    (load "util.lsp")
+    (load "layerClose.lsp")
+    (load "layerCloseOthers.lsp")
+    (load "layerFreeze.lsp")
+    (load "layerFreezeOthers.lsp")
+    (defun c:ac () (c:layerCloseSelected))
+    (defun c:ae () (c:layerCloseOthers))
+    (defun c:fr () (c:layerFreezeSelected))
+    (defun c:fe () (c:layerFreezeOthers))
+    (princ "iaso2h: 插件命令加载完毕.\n")
+  )
+  (princ "iaso2h: 搜索路径没有设置正确.\n")
 )
 
 (princ)

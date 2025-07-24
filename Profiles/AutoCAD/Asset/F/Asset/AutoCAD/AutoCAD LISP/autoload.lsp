@@ -70,6 +70,7 @@
 (autoload "attr2Text" '("attr2Text" "attr2TextAll"))
 
   ;; Dimension
+(autoload "dimTangentAdapt" '("dimTangentToggle" "dimTangentAdapt"))
 (autoload "dimTangent" '("dimTangent"))
 (autoload "dimContinuePlus" '("dimContinuePlus"))
 (autoload "dimSpacePlus" '("dimSpacePlus" "dimSpacePlusView"))

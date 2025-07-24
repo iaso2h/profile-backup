@@ -479,6 +479,18 @@
     {
       "Query": "c",
       "ExecutedDateTime": "2025-07-24T01:58:22.3794232+08:00"
+    },
+    {
+      "Query": "solidworks",
+      "ExecutedDateTime": "2025-07-24T10:04:46.1676672+08:00"
+    },
+    {
+      "Query": "creo",
+      "ExecutedDateTime": "2025-07-24T10:53:09.9517854+08:00"
+    },
+    {
+      "Query": "mpv",
+      "ExecutedDateTime": "2025-07-24T11:06:18.4095117+08:00"
     }
   ]
 }
