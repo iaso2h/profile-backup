@@ -240,9 +240,9 @@
       "PluginID": "791FC278BA414111B8D1886DFE447410"
     },
     "SOLIDWORKS 2024 : Application": {
-      "SelectedCount": 6,
-      "LastSelected": "2025-07-24T02:04:46.1673899Z",
-      "IconPath": "C:\\Users\\Hashub\\Desktop\\SW\\SOLIDWORKS 2024.lnk",
+      "SelectedCount": 10,
+      "LastSelected": "2025-07-26T05:18:41.8435192Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\SOLIDWORKS 2024\\SOLIDWORKS 2024.lnk",
       "Title": "SOLIDWORKS 2024",
       "Search": "solidworks",
       "Score": 0,
@@ -280,11 +280,11 @@
       "PluginID": "791FC278BA414111B8D1886DFE447410"
     },
     "Creo Parametric 12.4.0.0 : Application": {
-      "SelectedCount": 17,
-      "LastSelected": "2025-07-24T02:53:09.9517785Z",
+      "SelectedCount": 23,
+      "LastSelected": "2025-07-26T05:05:32.1389094Z",
       "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\PTC\\Creo Parametric 12.4.0.0.lnk",
       "Title": "Creo Parametric 12.4.0.0",
-      "Search": "creo",
+      "Search": "c",
       "Score": 0,
       "SubTitle": "Application",
       "PluginID": "791FC278BA414111B8D1886DFE447410"
@@ -338,6 +338,16 @@
       "Score": 0,
       "SubTitle": "Open in default browser",
       "PluginID": "03276A39D4E9417C8FFD200B0EE5E871"
+    },
+    "AutoCAD 2024 - \u7B80\u4F53\u4E2D\u6587 (Simplified Chinese) : Application": {
+      "SelectedCount": 3,
+      "LastSelected": "2025-07-24T14:53:50.1068839Z",
+      "IconPath": "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\AutoCAD 2024 - \u7B80\u4F53\u4E2D\u6587 (Simplified Chinese)\\AutoCAD 2024 - \u7B80\u4F53\u4E2D\u6587 (Simplified Chinese).lnk",
+      "Title": "AutoCAD 2024 - \u7B80\u4F53\u4E2D\u6587 (Simplified Chinese)",
+      "Search": "autocad",
+      "Score": 0,
+      "SubTitle": "Application",
+      "PluginID": "791FC278BA414111B8D1886DFE447410"
     }
   }
 }
