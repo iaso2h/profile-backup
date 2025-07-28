@@ -13,7 +13,7 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": Path("C:/Users/Public/Documents"),
+            "parentSrcPaths": Path.home(),
             "filterType": "include",
             "filterPattern": ["config.pro"]
         },

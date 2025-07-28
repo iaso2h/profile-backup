@@ -31,7 +31,7 @@ display_coord_sys_tags no
 sketcher_highlight_intersecting yes
 sketcher_highlight_junctions yes
 sketcher_highlight_overlapping yes
-display_planes NO
+display_planes YES
 bell no
 selection_prioritize_quilts yes
 default_boundary_refs_strong yes

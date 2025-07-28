@@ -227,7 +227,7 @@ def internalRNumberToYear(internalRNumber) -> str:  # {{{
 def internalLanuageCodeToName(localeId) -> str:  # {{{
     for localeInfo in localeDicts:
         if localeInfo["localeId"] == localeId:
-            return "AutoCAD_{}".format(localeInfo["abbreviation"])
+            return "Inventor_{}".format(localeInfo["abbreviation"])
     return ""
 
 
@@ -235,7 +235,7 @@ def internalLanuageCodeToName(localeId) -> str:  # {{{
 
 appDataPath = Path(os.getenv("APPDATA")).parent  # type: ignore
 installPathStr, enabledChk = util.regQueryData(
-    r"HKEY_LOCAL_MACHINE/SOFTWARE/Autodesk/AutoCAD/R[0-9.]+/ACAD-[0-9]+:[0-9]+", "AcadLocation"
+    r"Computer/HKEY_LOCAL_MACHINE/SOFTWARE/Autodesk/Inventor/RegistryVersion[0-9.]+", "InstallLocation"
 )
 
 
@@ -251,107 +251,30 @@ def keyPathNamingConvention(keyRelPath):
 
 
 Profile(
-    profileName="AutoCAD",
+    profileName="Inventor",
     enabled=True,
     categories=[
         {
             "type": "file",
-            "categoryName": "Plot",
+            "categoryName": "Preferences",
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": appDataPath.glob("Roaming/Autodesk/AutoCAD*/*/*"),
+            "parentSrcPaths": appDataPath.glob("Local/Autodesk/Inventor */Preferences"),
             "filterType": "include",
-            "filterPattern": lambda srcPath: srcPath.name.lower()
-            not in [
-                "acad.ctb",
-                "acad.stb",
-                "autodesk-color.stb",
-                "autodesk-mono.stb",
-                "dwf virtual pens.ctb",
-                "fill patterns.ctb",
-                "grayscale.ctb",
-                "monochrome.ctb",
-                "monochrome.stb",
-                "screening 100%.ctb",
-                "screening 25%.ctb",
-                "screening 50%.ctb",
-                "screening 75%.ctb",
-            ]
-            and (
-                srcPath.name.lower()
-                in [
-                    "0___hq.pc3",
-                    "acad.cuix",
-                    "acadm.cuix",
-                    "profile.aws",
-                    "fixedprofile.aws",
-                ]
-                or srcPath.suffix == ".ctb"
-                or srcPath.suffix == ".stb"
-            ),
-        },
-        {
-            "type": "file",
-            "categoryName": "YSTool",
-            "enabled": True,
-            "recursiveCopy": True,
-            "silentReport": False,
-            "parentSrcPaths": "C:/ProgramData/IvySoft/YSTool/Freedom",
-            "filterType": "include",
-            "filterPattern": lambda _: True,
-        },
-        {
-            "type": "file",
-            "categoryName": "Tangent",
-            "enabled": True,
-            "recursiveCopy": True,
-            "silentReport": False,
-            "parentSrcPaths": "D:/Program Files/Tangent/TArchT20*",
-            "filterType": "include",
-            "filterPattern": [
-                "SYS/*.lay",
-                "SYS/tangent.cuix",
-                "sys20x64/*.dwt",
-                "sys24x64/*.dwt",
-                "sys24x64/Tch.tmn",
-            ],
-        },
-        {
-            "type": "file",
-            "categoryName": "Asset",
-            "enabled": True,
-            "recursiveCopy": True,
-            "silentReport": False,
-            "parentSrcPaths": "F:/Asset/AutoCAD",
-            "filterType": "include",
-            "filterPattern": lambda _: True,
+            "filterPattern": lambda _: True
         },
         {
             "type": "registry",
-            "categoryName": "Generic Settings",
+            "categoryName": "Settings",
             "enabled": enabledChk,
             "recursiveCopy": True,
             "silentReport": False,
             "stripePathValue": True,
-            "parentPaths": r"HKEY_CURRENT_USER/Software/Autodesk/AutoCAD/R[0-9.]+/.+",
-            "filterType": "exclude",
+            "parentPaths": r"HKEY_CURRENT_USER/Software/Autodesk/Inventor/RegistryVersion[0-9.]+",
+            "filterType": "include",
             "filterPattern": [
-                r"\\LastLaunchedLanguage",
-                r"\\3DGS Configuration$",
-                r"\\CONSTRAINT$",
-                r"\\Applications$",
-                r"\\AssemblyMap$",
-                r"\\AutodeskApps$",
-                r"\\DwgConvert$",
-                r"\\DwgConvert$",
-                r"\\Loaded$",
-                r"\\MiniDump$",
-                r"\\Recent File List$",
-                r"\\WebMobile$",
-                r"\\*UILOCALE$",
-                r"\\*LastTemplate$",
-                r"\\*LogFilePath$",
+                "*"
             ],
             "keyPathNamingConvention": keyPathNamingConvention,
         },
