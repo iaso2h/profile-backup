@@ -73,3 +73,4 @@ sketcher_disp_dimensions yes
 default_ang_dec_places 2
 default_dec_places 2
 menu_translation yes
+system_colors_file D:\Program Files\PTC\Creo 12.4.0.0\Common Files\text\syscol.scl

@@ -239,12 +239,12 @@ installPathStr, enabledChk = util.regQueryData(
 )
 
 
-def keyPathNamingConvention(keyRelPath):
+def getReleaseVersion(keyRelPath):
     keyComponents = keyRelPath.split("\\")
-    localId = keyComponents[-1][keyComponents[-1].index(":") + 1 :]
+    releaseVersion = keyComponents[-1][keyComponents[-1].index(":") + 1 :]
     KeyCompoentTail = "{}_{}".format(
         internalRNumberToYear(keyComponents[-2]),
-        internalLanuageCodeToName(localId),
+        internalLanuageCodeToName(releaseVersion),
     )
 
     return KeyCompoentTail
@@ -353,7 +353,7 @@ Profile(
                 r"\\*LastTemplate$",
                 r"\\*LogFilePath$",
             ],
-            "keyPathNamingConvention": keyPathNamingConvention,
+            "keyPathNamingConvention": getReleaseVersion,
         },
     ],
 )
