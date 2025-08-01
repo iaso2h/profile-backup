@@ -297,9 +297,12 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": appDataPath.glob("Local/Autodesk/Inventor */Preferences"),
+            "parentSrcPaths": appDataPath.glob("Roaming/Autodesk/Inventor *"),
             "filterType": "include",
-            "filterPattern": lambda _: True
+            "filterPattern": [
+                "InventorCustomization.xml",
+                "UserApplicationOptions.xml",
+            ]
         },
         {
             "type": "registry",

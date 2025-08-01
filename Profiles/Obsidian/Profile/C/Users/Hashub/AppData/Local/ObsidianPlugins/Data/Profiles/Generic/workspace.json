@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "c9c2ae03e9c64600",
+        "id": "024a4b78b4330d54",
         "type": "tabs",
         "children": [
           {
-            "id": "b5261acc8ca5db94",
+            "id": "3a0f29514550de26",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Sketch/Dimension.md",
+                "file": "Creo/Flexible Modeling/Move.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Dimension"
+              "title": "Move"
             }
           }
         ]
@@ -152,13 +152,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Sketch/Dimension.md",
+                "file": "Creo/Flexible Modeling/Move.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Dimension"
+              "title": "Outline of Move"
             }
           },
           {
@@ -192,11 +192,11 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
-    "width": 301.5
+    "width": 292.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -207,50 +207,54 @@
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
       "table-editor-obsidian:Advanced Tables Toolbar": false,
-      "obsidian-local-images-plus:Local Images Plus  0.16.3\r\nLocalize attachments (plugin folder)": false
+      "obsidian-trash-explorer:Open trash explorer": false,
+      "copilot:Open Copilot Chat": false
     }
   },
-  "active": "0f2bc5df3c6624e2",
+  "active": "3a0f29514550de26",
   "lastOpenFiles": [
+    "copilot-custom-prompts/Emojify.md",
+    "copilot-conversations/On_{activeNote},_insert_url_links_for_the_Software_Name_column.@20250731_121157.md",
+    "copilot-custom-prompts/Translate to Chinese.md",
+    "copilot-custom-prompts/Summarize.md",
+    "copilot-custom-prompts/Simplify.md",
+    "copilot-custom-prompts/Rewrite as tweet thread.md",
+    "copilot-custom-prompts/Rewrite as tweet.md",
+    "copilot-custom-prompts/Remove URLs.md",
+    "copilot-custom-prompts/Make shorter.md",
+    "copilot-custom-prompts/Make longer.md",
+    "copilot-custom-prompts/Generate table of contents.md",
+    "copilot-custom-prompts/Generate glossary.md",
+    "copilot-custom-prompts/Fix grammar and spelling.md",
+    "copilot-custom-prompts/Explain like I am 5.md",
+    "Resource.md",
+    "copilot-conversations",
+    "copilot-custom-prompts",
+    "Creo/Comparison with SolidWorks.md",
+    "SolidWorks/Features/Loft.md",
+    "SolidWorks/Features/Filler and Chamfer.md",
+    "SolidWorks/Features/Extrude.md",
+    "SolidWorks/Pasting and Re-positioning entities.md",
+    "SolidWorks/Selection.md",
+    "SolidWorks/Installation.md",
+    "SolidWorks/Customization.md",
+    "SolidWorks/File Based Visual Configurations.md",
+    "SolidWorks/Configurations.md",
+    "SolidWorks/AutoCAD Plot.md",
+    "Inventor",
+    "src/Pasted image 20250731100501.png",
+    "src/Pasted image 20250731100428.png",
+    "src/Pasted image 20250731100248.png",
     "src/0e51ef66583a9ea396c6ab1efe2b22a9_MD5.jpeg",
     "src/Pasted image 20250724005338.png",
     "src/1f0021c66c9813770e57e371eb813623_MD5.jpeg",
     "src/Pasted image 20250724005153.png",
-    "Sketch/Convert Reference.md",
-    "Sketch/Dimension.md",
-    "Sketch/Edit Plane.md",
-    "Sketch/Inser derived Sketch.md",
-    "Sketch/Pierce Constrain.md",
-    "Sketch/Segment.md",
-    "Sketch/Trim.md",
-    "Sketch/Line.md",
-    "Nesting/List.md",
-    "Sheet Metal/成型工具.md",
     "Nesting",
-    "Untitled.md",
-    "Sheet Metal/Untitled.md",
-    "Comparison With Creo.md",
-    "Plane.md",
-    "File Based Visual Configurations.md",
-    "Pasting and Re-positioning entities.md",
     "src/Pasted image 20250615153850.png",
-    "AutoCAD Plot.md",
-    "Plug-ins List.md",
-    "钣金/通用折弯半径.md",
-    "Installation.md",
     "钣金",
-    "Features/Filler and Chamfer.md",
-    "Features/Sweep.md",
-    "Features/Split.md",
     "src/Pasted image 20250603004913.png",
-    "Features/Object based features.md",
     "src/Pasted image 20250601234152.png",
-    "src/Pasted image 20250601233812.png",
-    "Customization.md",
     "Features",
-    "src/2025-05-14_14-49-28.gif",
-    "src/Pasted image 20250514141128.png",
-    "src/Pasted image 20250411094628.png",
     "src",
     "新建文件夹",
     "新快捷方式.lnk"

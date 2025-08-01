@@ -6,7 +6,7 @@ import util
 
 appDataPath = Path(os.getenv("APPDATA")).parent  # type: ignore
 
-commonFilesPathStr, enabledChk = util.regQueryData(r"HKEY_LOCAL_MACHINE/SOFTWARE/PTC/PTC Creo Parametric/[0-9.]+", "InstallDir")
+commonFilesPathStr, enabledChk = util.regQueryData(r"HKEY_LOCAL_MACHINE/SOFTWARE/PTC/PTC Creo Common Files/[0-9.]+", "InstallDir")
 
 
 Profile(
@@ -29,10 +29,10 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": Path(commonFilesPathStr, "text"),
-            "filterType": "include",
+            "parentSrcPaths": Path(commonFilesPathStr, "iaso2h"),
+            "filterType": "exclude",
             "filterPattern": [
-                "syscol.scl"
+                "Library"
             ]
         },
         {

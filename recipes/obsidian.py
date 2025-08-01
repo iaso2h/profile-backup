@@ -14,8 +14,11 @@ Profile(
             "recursiveCopy": True,
             "silentReport": False,
             "parentSrcPaths": Path(appDataPath, "Local/ObsidianPlugins/Data/Profiles"),
-            "filterType": "include",
-            "filterPattern": lambda _: True
+            "filterType": "exclude",
+            "filterPattern": [
+                "**/copilot/data.json"
+                "**/recent-files-obsidian/data.json"
+            ]
         },
     ]
 )

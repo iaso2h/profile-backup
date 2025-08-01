@@ -1,17 +1,75 @@
-﻿drawing_setup_file $PRO_DIRECTORY\text\prodetail.dtl
-format_setup_file $PRO_DIRECTORY\text\prodetail.dtl
-pro_unit_length unit_mm
-pro_unit_mass unit_kilogram
-template_designasm $PRO_DIRECTORY\templates\inlbs_asm_design_abs.asm
+﻿pro_unit_length UNIT_MM
+pro_unit_mass UNIT_KILOGRAM
+
+!system colors
+system_colors_file $PRO_DIRECTORY\iaso2h\text\system_colors\syscol.scl
+
+!Default Path
+pro_format_dir $PRO_DIRECTORY\iaso2h\formats
+pro_symbol_dir $PRO_DIRECTORY\iaso2h\symbol
+start_model_dir $PRO_DIRECTORY\iaso2h\templates
+
+!Drawing & format setup files
+!drawing_setup_file $PRO_DIRECTORY\config\drawing.dtl
+!format_setup_file $PRO_DIRECTORY\config\format.dtl
+	
+!Template models directory
 template_new_ecadasm $PRO_DIRECTORY\templates\inlbs_ecad_asm_abs.asm
-template_drawing $PRO_DIRECTORY\templates\c_drawing.drw
-template_sheetmetalpart $PRO_DIRECTORY\templates\inlbs_part_sheetmetal_abs.prt
-template_solidpart $PRO_DIRECTORY\templates\inlbs_part_solid_abs.prt
 template_boardpart $PRO_DIRECTORY\templates\inlbs_ecad_board_abs.prt
+template_drawing $PRO_DIRECTORY\templates\c_drawing.drw
+template_designasm $PRO_DIRECTORY\iaso2h\templates\start_asm.asm
+template_sheetmetalpart $PRO_DIRECTORY\iaso2h\templates\start_sheet.prt
+template_solidpart $PRO_DIRECTORY\iaso2h\templates\start_part.prt
+template_harnesspart $PRO_DIRECTORY\iaso2h\templates\start_part.prt
+template_flat_harness $PRO_DIRECTORY\iaso2h\templates\mmks_flat_harness.asm
+template_mfgnc $PRO_DIRECTORY\iaso2h\templates\mmks_mfg_nc.asm
+template_mfgmold $PRO_DIRECTORY\iaso2h\templates\mmks_mfg_mold.asm
+
+!trail_dir D:\ptc\temp\Creotemp8.0
+!train_file_path D:\ptc\temp\Creotemp8.0
+!pro_group_dir $PRO_DIRECTORY\iaso2h\group
+pro_note_dir $PRO_DIRECTORY\iaso2h\notes
+!pro_library_dir $PRO_DIRECTORY\iaso2h\library
+pro_material_dir $PRO_DIRECTORY\iaso2h\text\materials-library
+pro_table_dir $PRO_DIRECTORY\iaso2h\text\table
+!mdl_tree_cfg_file $PRO_DIRECTORY\iaso2h\config\tree.cfg
+!pro_catalog_dir $PRO_DIRECTORY\iaso2h\library
+!pro_pip_lnstk_dir $PRO_DIRECTORY\iaso2h\linestock
+pro_plot_config_dir $PRO_DIRECTORY\iaso2h\text\plot_config
+
+
+
+search_path_file $CREO_COMMON_FILES\ifx\parts\prolibrary\search.pro
+
+!Layer Setup
+intf2d_out_dxf_mapping_file $PRO_DIRECTORY\iaso2h\intf_configs\dxf_export.pro
+def_layer LAYER_DATUM               DATUM
+def_layer LAYER_AXIS                AXIS
+def_layer LAYER_CSYS                CSYS
+def_layer LAYER_POINT               POINT
+def_layer LAYER_CURVE               CURVE
+def_layer LAYER_QUILT               QUILT
+def_layer layer_surface 	    SURFS
+def_layer layer_hole_feat 	    HOLES
+def_layer layer_draft_feat 	    DRAFTS
+def_layer layer_round_feat 	    ROUNDS
+def_layer layer_chamfer_feat 	    CHAMFER
+def_layer layer_cosm_sketch 	    COSMETICS
+def_layer layer_copy_geom_feat 	    COPY_GEOM
+def_layer layer_skeleton_model      skeleton
+def_layer layer_detail_item 	    DETAILS
+def_layer layer_draft_dim 	    DRAFT_DIMS
+def_layer layer_refdim 		    REF_DIMS
+def_layer layer_gtol 		    GTOLS
+def_layer layer_symbol 		    SYMBOLS
+def_layer layer_note 		    NOTES
+def_layer layer_dwg_table 	    TABLES
+def_layer layer_draft_geom 	    DRAFT_GEOM
+
+
 todays_date_note_format %Mmm-%dd-%yy
 tolerance_standard iso
 weld_ui_standard iso
-search_path_file $CREO_COMMON_FILES\ifx\parts\prolibrary\search.pro
 max_animation_time 0.7
 update_old_appearance ALWAYS
 visible_annotations_scope ACTIVE MODEL ONLY
@@ -73,4 +131,3 @@ sketcher_disp_dimensions yes
 default_ang_dec_places 2
 default_dec_places 2
 menu_translation yes
-system_colors_file D:\Program Files\PTC\Creo 12.4.0.0\Common Files\text\syscol.scl
