@@ -5,7 +5,6 @@ Back up profiles from all kind of profiles. The location of these profiles somew
     * WPS
     * Adobe series?
     * CAXA
-    * FreeCAD
     * OBS Studio
     * AutoHotkey
 

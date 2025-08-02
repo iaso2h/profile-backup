@@ -1,0 +1,80 @@
+﻿ND_RelParSet_K01 = {
+
+Name = PA66
+
+PARAMETERS =
+{
+  Name = PTC_MATERIAL_DESCRIPTION
+  Type = String
+  Default = '俗称尼龙66，学名聚酰胺，有较高抗冲击性和强度，密度1.13-1.15g/cm^3
+主要用于齿轮、电动工具外壳、电器配件等。易吸收水分，加工前要干燥。'
+  Access = Full
+},
+{
+  Name = TEMPERATURE
+  Type = Real
+  Default = 0.000000e+00 C
+  Access = Full
+},
+{
+  Name = PTC_INITIAL_BEND_Y_FACTOR
+  Type = Real
+  Default = 5.000000e-01
+  Access = Full
+},
+{
+  Name = PTC_BEND_TABLE
+  Type = String
+  Default = ''
+  Access = Full
+},
+{
+  Name = PTC_MATERIAL_TYPE
+  Type = Integer
+  Default = 9
+  Access = Locked
+},
+{
+  Name = PTC_FAILURE_CRITERION_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_FATIGUE_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_MATERIAL_SUB_TYPE
+  Type = String
+  Default = 'LINEAR'
+  Access = Locked
+},
+{
+  Name = PTC_MASS_DENSITY
+  Type = Real
+  Default = 1.140000e+00 g/cm^3
+  Access = Full
+},
+{
+  Name = PTC_XHATCH_FILE
+  Type = String
+  Default = 'PC'
+  Access = Full
+},
+{
+  Name = PTC_YOUNG_MODULUS
+  Type = Real
+  Default = 8.300000e+00 GPa
+  Access = Full
+},
+{
+  Name = PTC_POISSON_RATIO
+  Type = Real
+  Default = 2.800000e-01
+  Access = Full
+}
+
+}

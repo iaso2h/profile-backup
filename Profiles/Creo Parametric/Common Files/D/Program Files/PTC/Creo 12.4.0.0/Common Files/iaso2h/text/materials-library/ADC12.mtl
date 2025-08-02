@@ -1,0 +1,62 @@
+﻿ND_RelParSet_K01 = {
+
+Name = ADC12
+
+PARAMETERS =
+{
+  Name = PTC_MATERIAL_DESCRIPTION
+  Type = String
+  Default = '最常用的日本牌号压铸铝合金，相当于国标YL113，
+广泛应用于各种发动机缸体、水泵壳体、化油器、变速箱壳体等'
+  Access = Full
+},
+{
+  Name = TEMPERATURE
+  Type = Real
+  Default = 0.000000e+00 F
+  Access = Full
+},
+{
+  Name = PTC_INITIAL_BEND_Y_FACTOR
+  Type = Real
+  Default = 5.000000e-01
+  Access = Full
+},
+{
+  Name = PTC_BEND_TABLE
+  Type = Real
+  Default = 0.000000e+00
+  Access = Full
+},
+{
+  Name = PTC_MATERIAL_TYPE
+  Type = Integer
+  Default = 9
+  Access = Locked
+},
+{
+  Name = PTC_FAILURE_CRITERION_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_FATIGUE_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_MATERIAL_SUB_TYPE
+  Type = String
+  Default = 'LINEAR'
+  Access = Locked
+},
+{
+  Name = PTC_MASS_DENSITY
+  Type = Real
+  Default = 2.640000e+00 g/cm^3
+  Access = Full
+}
+
+}

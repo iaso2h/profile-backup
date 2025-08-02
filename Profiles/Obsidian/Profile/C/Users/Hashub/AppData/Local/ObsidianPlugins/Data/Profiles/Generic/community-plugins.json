@@ -11,5 +11,10 @@
   "file-explorer-note-count",
   "note-refactor-obsidian",
   "remember-cursor-position",
-  "typewriter-mode"
+  "typewriter-mode",
+  "obsidian-trash-explorer",
+  "settings-search",
+  "harper",
+  "obsidian-core-search-assistant-plugin",
+  "copilot"
 ]

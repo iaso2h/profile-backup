@@ -235,6 +235,7 @@
   <Action name="help_about_app" shortcut=""/>
   <Action name="help_about_kde" shortcut=""/>
   <Action name="help_donate" shortcut=""/>
+  <Action name="options_configure_keybinding" shortcut="Ctrl+Alt+K"/>
  </ActionProperties>
 </gui>
 <!-- kate: space-indent on; indent-width 2; replace-tabs on; -->
