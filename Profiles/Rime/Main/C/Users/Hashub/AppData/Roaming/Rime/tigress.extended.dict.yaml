@@ -222,6 +222,11 @@ encoder:
 等宽	rgwl
 农忙假	whjc
 扒走	uhpz	50
+套走	mppz	5
+药死	ligv	5
+戴冠	npwm	5
+修改器	jvdd	50
+推版	uuax
 #---------机械---------
 
 钣金	zxzj	400
@@ -250,6 +255,8 @@ encoder:
 夹具	hhqh	5
 拆图	utrh
 冶具	wkqh	5
+选型	qpfl	500
+基准面	zwbm
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
@@ -303,7 +310,8 @@ encoder:
 刻度盘	kxia
 蜗轮	cdjj
 楔入	eaju
-
+击腹	umve	5
+真男人	nqjr	50
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu
