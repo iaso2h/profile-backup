@@ -218,7 +218,7 @@
   <Action name="file_close_orphaned" shortcut=""/>
   <Action name="file_close" shortcut="Ctrl+W; "/>
   <Action name="file_close_other" shortcut="Ctrl+Alt+W"/>
-  <Action name="file_close_all" shortcut=""/>
+  <Action name="file_close_all" shortcut="Ctrl+Alt+Shift+W"/>
   <Action name="reopen_latest_closed_document" shortcut=""/>
   <Action name="file_quit" shortcut=""/>
   <Action name="options_configure_toolbars" shortcut=""/>

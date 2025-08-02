@@ -185,8 +185,8 @@ RunPrefix=
 SetEditor=false
 
 [MainWindow]
-1280x800 screen: Height=734
-1280x800 screen: Width=1266
+1280x800 screen: Height=560
+1280x800 screen: Width=1006
 1280x800 screen: Window-Maximized=true
 1463x914 screen: Window-Maximized=true
 2560x1440 screen: Height=1368

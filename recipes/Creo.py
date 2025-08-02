@@ -43,7 +43,10 @@ Profile(
             "silentReport": False,
             "parentSrcPaths": Path(appDataPath, "Roaming/PTC/ProENGINEER/Wildfire/.wf/.Settings"),
             "filterType": "include",
-            "filterPattern": ["creo_parametric_customization.ui"]
+            "filterPattern": [
+                "creo_parametric_customization.ui",
+                "mapkeys.pro"
+                ]
         },
     ]
 )

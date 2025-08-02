@@ -16,8 +16,8 @@ Profile(
             "parentSrcPaths": Path(appDataPath, "Local/ObsidianPlugins/Data/Profiles"),
             "filterType": "exclude",
             "filterPattern": [
-                "**/copilot/data.json"
-                "**/recent-files-obsidian/data.json"
+                "Generic/plugins/copilot/data.json",
+                "Generic/plugins/recent-files-obsidian/data.json"
             ]
         },
     ]
