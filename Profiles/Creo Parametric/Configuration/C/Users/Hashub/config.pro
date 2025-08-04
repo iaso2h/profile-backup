@@ -84,8 +84,14 @@ show_sketch_dims_in_feature YES
 sketcher_undo_reorient_view YES
 spin_with_silhouettes YES
 use_inverted_mousewheel_zoom yes
+display_axes yes
+display_axis_tags no
 display_coord_sys yes
 display_coord_sys_tags no
+display_planes yes
+display_plane_tags no
+display_points yes
+display_point_tags no
 sketcher_highlight_intersecting yes
 sketcher_highlight_junctions yes
 sketcher_highlight_overlapping yes
@@ -131,3 +137,6 @@ sketcher_disp_dimensions yes
 default_ang_dec_places 2
 default_dec_places 2
 menu_translation yes
+enable_2x_traj_multi_loops yes
+foreground_curves yes
+shade_with curves
