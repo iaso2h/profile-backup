@@ -227,6 +227,11 @@ encoder:
 戴冠	npwm	5
 修改器	jvdd	50
 推版	uuax
+击腹	umve	5
+真男人	nqjr	50
+笑嘻了	rdrl	500
+下横线	feip
+修饰键	jqzb
 #---------机械---------
 
 钣金	zxzj	400
@@ -256,10 +261,9 @@ encoder:
 拆图	utrh
 冶具	wkqh	5
 选型	qpfl	500
-<<<<<<< HEAD
 基准面	zwbm
-=======
->>>>>>> branch 'main' of https://github.com/iaso2h/profile-backup.git
+成图	arhw
+图元	rhmp	5
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
@@ -313,8 +317,6 @@ encoder:
 刻度盘	kxia
 蜗轮	cdjj
 楔入	eaju
-击腹	umve	5
-真男人	nqjr	50
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu
