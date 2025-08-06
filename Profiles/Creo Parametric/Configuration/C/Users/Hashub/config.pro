@@ -1,7 +1,15 @@
 ﻿pro_unit_length UNIT_MM
 pro_unit_mass UNIT_KILOGRAM
 
+!Fonts
+!default_ui_font 微软雅黑
+!menu_font 微软雅黑
+!model_tree_font 微软雅黑
+!popuphelp_font 微软雅黑
+pro_font_dir C:\Windows\Fonts
+
 !system colors
+
 system_colors_file $PRO_DIRECTORY\iaso2h\text\system_colors\syscol.scl
 
 !Default Path
@@ -10,8 +18,8 @@ pro_symbol_dir $PRO_DIRECTORY\iaso2h\symbol
 start_model_dir $PRO_DIRECTORY\iaso2h\templates
 
 !Drawing & format setup files
-!drawing_setup_file $PRO_DIRECTORY\config\drawing.dtl
-!format_setup_file $PRO_DIRECTORY\config\format.dtl
+drawing_setup_file $PRO_DIRECTORY\iaso2h\text\drawing.dtl
+format_setup_file $PRO_DIRECTORY\iaso2h\text\format.dtl
 	
 !Template models directory
 template_new_ecadasm $PRO_DIRECTORY\templates\inlbs_ecad_asm_abs.asm
@@ -84,6 +92,7 @@ show_sketch_dims_in_feature YES
 sketcher_undo_reorient_view YES
 spin_with_silhouettes YES
 use_inverted_mousewheel_zoom yes
+spin_center_display yes
 display_axes yes
 display_axis_tags no
 display_coord_sys yes
@@ -140,3 +149,4 @@ menu_translation yes
 enable_2x_traj_multi_loops yes
 foreground_curves yes
 shade_with curves
+enable_insep_asm_operations yes

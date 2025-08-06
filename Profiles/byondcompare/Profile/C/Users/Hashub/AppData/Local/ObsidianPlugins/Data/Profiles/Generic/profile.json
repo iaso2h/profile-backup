@@ -1,0 +1,12 @@
+{
+  "name": "Generic",
+  "autoSync": true,
+  "appearance": true,
+  "app": true,
+  "bookmarks": true,
+  "communityPlugins": true,
+  "corePlugins": true,
+  "graph": true,
+  "hotkeys": true,
+  "modifiedAt": "2025-07-31T04:18:34.317Z"
+}

@@ -1,0 +1,262 @@
+{
+  "main": {
+    "id": "26feafcb6f9d1661",
+    "type": "split",
+    "children": [
+      {
+        "id": "024a4b78b4330d54",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3a0f29514550de26",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Creo/Flexible Modeling/Move.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Move"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "909568a943bf2f47",
+    "type": "split",
+    "children": [
+      {
+        "id": "da77e81badea77d8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b2280ce6d170d6ef",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "108ea707850ae725",
+            "type": "leaf",
+            "state": {
+              "type": "recent-files",
+              "state": {},
+              "icon": "clock",
+              "title": "Recent Files"
+            }
+          },
+          {
+            "id": "2dd25807d483849e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "fd4702fa4e02d052",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "def514afe3346dce",
+    "type": "split",
+    "children": [
+      {
+        "id": "7eda64b348d0f061",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "37b396e271b1329d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "名字符号标识.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 名字符号标识"
+            }
+          },
+          {
+            "id": "7c87afb981381838",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "名字符号标识.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from 名字符号标识"
+            }
+          },
+          {
+            "id": "de601bc1652fa235",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "0f2bc5df3c6624e2",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Creo/Flexible Modeling/Move.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Move"
+            }
+          },
+          {
+            "id": "a5701106b1f47fc3",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          },
+          {
+            "id": "832284c2481fc7f4",
+            "type": "leaf",
+            "state": {
+              "type": "quiet-outline",
+              "state": {},
+              "icon": "lines-of-text",
+              "title": "Quiet Outline"
+            }
+          },
+          {
+            "id": "495a2db64c7131a2",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {},
+              "icon": "spreadsheet",
+              "title": "Advanced Tables"
+            }
+          }
+        ],
+        "currentTab": 6
+      }
+    ],
+    "direction": "horizontal",
+    "width": 292.5
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "obsidian-trash-explorer:Open trash explorer": false,
+      "copilot:Open Copilot Chat": false
+    }
+  },
+  "active": "3a0f29514550de26",
+  "lastOpenFiles": [
+    "copilot-custom-prompts/Emojify.md",
+    "copilot-conversations/On_{activeNote},_insert_url_links_for_the_Software_Name_column.@20250731_121157.md",
+    "copilot-custom-prompts/Translate to Chinese.md",
+    "copilot-custom-prompts/Summarize.md",
+    "copilot-custom-prompts/Simplify.md",
+    "copilot-custom-prompts/Rewrite as tweet thread.md",
+    "copilot-custom-prompts/Rewrite as tweet.md",
+    "copilot-custom-prompts/Remove URLs.md",
+    "copilot-custom-prompts/Make shorter.md",
+    "copilot-custom-prompts/Make longer.md",
+    "copilot-custom-prompts/Generate table of contents.md",
+    "copilot-custom-prompts/Generate glossary.md",
+    "copilot-custom-prompts/Fix grammar and spelling.md",
+    "copilot-custom-prompts/Explain like I am 5.md",
+    "Resource.md",
+    "copilot-conversations",
+    "copilot-custom-prompts",
+    "Creo/Comparison with SolidWorks.md",
+    "SolidWorks/Features/Loft.md",
+    "SolidWorks/Features/Filler and Chamfer.md",
+    "SolidWorks/Features/Extrude.md",
+    "SolidWorks/Pasting and Re-positioning entities.md",
+    "SolidWorks/Selection.md",
+    "SolidWorks/Installation.md",
+    "SolidWorks/Customization.md",
+    "SolidWorks/File Based Visual Configurations.md",
+    "SolidWorks/Configurations.md",
+    "SolidWorks/AutoCAD Plot.md",
+    "Inventor",
+    "src/Pasted image 20250731100501.png",
+    "src/Pasted image 20250731100428.png",
+    "src/Pasted image 20250731100248.png",
+    "src/0e51ef66583a9ea396c6ab1efe2b22a9_MD5.jpeg",
+    "src/Pasted image 20250724005338.png",
+    "src/1f0021c66c9813770e57e371eb813623_MD5.jpeg",
+    "src/Pasted image 20250724005153.png",
+    "Nesting",
+    "src/Pasted image 20250615153850.png",
+    "钣金",
+    "src/Pasted image 20250603004913.png",
+    "src/Pasted image 20250601234152.png",
+    "Features",
+    "src",
+    "新建文件夹",
+    "新快捷方式.lnk"
+  ]
+}
