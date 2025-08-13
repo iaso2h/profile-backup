@@ -9,6 +9,7 @@
 (princ (strcat "CWD: " cur_dir "\n"))
 (setq *searchIncluded* T)
 
+; Detect tangent environment
 (if (eq (substr (getvar "cprofile") 1 7) "TArch20") 
   (progn 
     (if (eq (load "aliasTangent.lsp" nil) nil) 
@@ -32,6 +33,12 @@
   )
 )
 
+; 
+(if (wcmatch (getvar "PRODUCT") "AutoCAD*")
+  (setq *autoCADLoaded* T)
+  (setq *autoCADLoaded* nil)
+)
+
 
 ;; General Alias
 (defun c:a () (command "._matchprop") (princ))
@@ -48,6 +55,8 @@
 (defun c:dwg () (command "._dwg-purge") (princ))
 (defun c:loo () (command "._layerp") (princ))
 (defun c:lm () (command "._laymcur") (princ))
+(defun c:mm () (command "._rectang") (princ))
+(defun c:mc () (command "._polygon" "4" pause "i" pause) (princ))
 (defun c:r () (command "._rotate") (princ))
 (defun c:re () (command "._rectang") (princ))
 (defun c:rg () (command "._regen") (princ))
