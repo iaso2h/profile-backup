@@ -233,6 +233,8 @@ encoder:
 下横线	feip
 修饰键	jqzb
 回南天	rnfm	5
+#---------电子---------
+电阻率	otzi
 #---------机械---------
 钣金	zxzj	400
 折弯补偿	uztj
@@ -259,6 +261,7 @@ encoder:
 包材	nven
 夹具	hhqh	5
 拆图	utrh
+检具	ejqh	50
 冶具	wkqh	5
 选型	qpfl	500
 基准面	zwbm
@@ -267,6 +270,8 @@ encoder:
 工程图	uxrh	5
 撞机	uieo	500
 操机	udeo	500
+拔模	unel
+
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
