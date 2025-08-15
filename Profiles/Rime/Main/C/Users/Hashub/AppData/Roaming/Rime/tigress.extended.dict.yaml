@@ -141,7 +141,7 @@ encoder:
 甲	sj	10000
 谂	sj	20000
 遮	xl	5000
-
+啦	du	5000
 
 #--------粤语---------
 係	jt	50
@@ -232,8 +232,8 @@ encoder:
 笑嘻了	rdrl	500
 下横线	feip
 修饰键	jqzb
+回南天	rnfm	5
 #---------机械---------
-
 钣金	zxzj	400
 折弯补偿	uztj
 折弯扣除	uzut
@@ -264,6 +264,9 @@ encoder:
 基准面	zwbm
 成图	arrh	500
 图元	rhmp	5
+工程图	uxrh	5
+撞机	uieo	500
+操机	udeo	500
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
