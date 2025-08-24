@@ -286,6 +286,7 @@ Profile(
                     "acadm.cuix",
                     "profile.aws",
                     "fixedprofile.aws",
+                    "VLIDE.DSK",
                 ]
                 or srcPath.suffix == ".ctb"
                 or srcPath.suffix == ".stb"
