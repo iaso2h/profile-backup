@@ -2,6 +2,10 @@
 (autoload "otto" '("otto"))
 (autoload "ottoPlot" '("ottoPlotNameUpdate" "ottoPlotRatioUpdate"))
 
+;; File
+(autoload "fileOpenContainingFolder" '("fileOpenContainingFolder"))
+(autoload "fileExportSelected" '("fileExportSelected"))
+
   ;; Debug
 (autoload "whatIs" '("whatIs"))
 (autoload "whatIsInside" '("whatIsInside"))
@@ -14,6 +18,8 @@
 (if (not *tchLoaded*) 
   (autoload "selectSimilar" '("ss"))
 )
+(autoload "selectDim" '("selectDim" "sed"))
+(autoload "selectChain" '("selectChain" "sec"))
 
   ;; Alignment & Space
 (if (not *tchLoaded*) 
@@ -41,7 +47,9 @@
           '("blockBreakMove" "blockBreakInplace" "blockBreakInplaceSelection")
 )
 (autoload "blockAddObj" '("blockAddObj"))
-(autoload "blockCreateInplace" '("blockCreateInplace" "blockCreateInplaceByBlock"))
+(autoload "blockCreateInplace" 
+          '("blockCreateInplace" "blockCreateInplaceByBlock")
+)
 (autoload "blockDel" '("blockDel"))
 (autoload "blockRebase" '("blockRebase"))
 (autoload "blockNameRandom" '("blockNameRandom"))
@@ -56,8 +64,16 @@
 
 
   ;; PolyLine
-(autoload "doubleOffset" '("doubleOffset"))
-
+(if *autoCADLoaded* 
+  (autoload "doubleOffset" '("doubleOffset"))
+)
+(autoload "plineOffset" '("plineOffset"))
+(autoload "plineLengthen" '("plineLengthen"))
+(autoload "plineConvert" '("plineConvert" "2`"))
+(autoload "plineContinue" '("plineContinue" "`c"))
+(autoload "plineSubtract" '("plineSubtract" "`s"))
+(autoload "plineUnion" '("plineUnion" "`a"))
+(autoload "plineHeal" '("plineHeal" "`h"))
 
   ;; Font & Text
 (autoload "fontGBSwap" '("fontGBSwap"))
@@ -66,6 +82,7 @@
 (autoload "fontSwap" '("fontSwap"))
 (autoload "textCopySwap" '("textCopy" "textSwap"))
 (autoload "textMerge" '("textMerge"))
+(autoload "text2Mtext" '("text2Mtext"))
 (autoload "textAlign" '("textAlign"))
 (autoload "attr2Text" '("attr2Text" "attr2TextAll"))
 
@@ -77,7 +94,6 @@
 (autoload "dimSWFix" '("dimSWFix"))
 (autoload "dimSelectOverrided" '("dimSelectOverrided"))
 (autoload "dimSelectPrecision" '("dimSelectPrecision"))
-(autoload "dimNative" '("dimNative"))
 (autoload "dimByBlock" '("dimByBlock"))
 (autoload "dimRemoveFontOverride" '("dimRemoveFontOverride"))
 

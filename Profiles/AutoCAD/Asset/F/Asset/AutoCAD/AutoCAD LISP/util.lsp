@@ -5,20 +5,20 @@
   (command "undo" "be")
 
   (if (not (tblsearch "layer" "xline")) 
-    (command "-layer" "n" "xline" "p" "n" "xline" "d" "ËæÖÂä©Á∫øÂõæÂ±ÇÔºå‰∏çÂèØÊâìÂç∞ÔºÅ" "xline" "c" "41" 
+    (command "-layer" "n" "xline" "p" "n" "xline" "d" "∏®÷˙œﬂÕº≤„£¨≤ªø…¥Ú”°£°" "xline" "c" "41" 
              "xline" ""
     )
   )
-  (if 
-    (and (null savedEntLast) 
-         (setq savedEntLast (entlast))
-    )
-    (progn 
-      (setq vlaObj (vlax-ename->vla-object savedEntLast))
-      (vla-put-color vlaObj 256)
-      (vlax-put-property vlaObj 'Layer "xline")
-    )
-  )
+;;   (if 
+;;     (and (null savedEntLast) 
+;;          (setq savedEntLast (entlast))
+;;     )
+;;     (progn 
+;;       (setq vlaObj (vlax-ename->vla-object savedEntLast))
+;;       (vla-put-color vlaObj 256)
+;;       (vlax-put-property vlaObj 'Layer "xline")
+;;     )
+;;   )
   (if savedEntLast 
     (progn 
       (while (setq tmp (entnext savedEntLast)) 
@@ -45,7 +45,7 @@
 ;;                                                            ;;
 ;;  Returns a string with all MText formatting codes removed. ;;
 ;;------------------------------------------------------------;;
-;;  Author: Lee Mac, Copyright ¬© 2011 - www.lee-mac.com       ;;
+;;  Author: Lee Mac, Copyright Å0Ñ8 2011 - www.lee-mac.com       ;;
 ;;------------------------------------------------------------;;
 ;;  Arguments:                                                ;;
 ;;  str - String to Process                                   ;;

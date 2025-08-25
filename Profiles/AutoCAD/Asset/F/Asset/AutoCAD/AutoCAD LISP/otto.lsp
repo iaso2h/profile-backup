@@ -1,7 +1,7 @@
 (defun c:otto (/ ans) 
   (princ "\n")
   (initget "S R N")
-  (setq ans (getkword "閫夋嫨鍔熻兘[瑙勮寖鍖朣oldiWorks鍑哄浘(S)/鎵撳嵃鍥炬姣斾緥璋冩暣(R)/鎵撳嵃鍥炬鏇存柊鍚嶇О(N)]<S>锛歕n"))
+  (setq ans (getkword "选择功能[规范化SoldiWorks出图(S)/打印图框比例调整(R)/打印图框更新名称(N)]<S>：\n"))
   (cond 
     ((= ans "S")
      (progn 

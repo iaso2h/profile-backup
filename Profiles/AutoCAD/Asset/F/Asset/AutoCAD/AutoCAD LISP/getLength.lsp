@@ -22,7 +22,7 @@
       (setq textLocation (getpoint "\n插入文字: "))
       ; (vla-sendcommand activeDoc
       (setq savedEntLast (entlast))
-      (command "_text" "j" "mc" textLocation 25 0 textContent)
+      (command "_text" "j" "ml" textLocation 25 0 textContent)
       (if *searchIncluded* 
         (progn 
           (load "util.lsp")

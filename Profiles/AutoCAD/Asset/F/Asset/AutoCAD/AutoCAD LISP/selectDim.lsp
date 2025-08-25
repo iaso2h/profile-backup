@@ -1,0 +1,19 @@
+(defun c:sed()
+  (c:selectDim)
+)
+
+(defun c:selectDim (/ ans ss) 
+  (princ "\n")
+  (defun *error* (msg) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "函数已取消"))) 
+      (princ (strcat "Error: " msg "\n"))
+    )
+    (princ)
+  )
+
+  (if (setq ss (ssget "_:L" '((0 . "*DIMENSION")))) 
+    (sssetfirst nil ss)
+  )
+
+  (princ)
+)

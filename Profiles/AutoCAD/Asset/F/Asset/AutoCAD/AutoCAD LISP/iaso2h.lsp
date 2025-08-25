@@ -9,13 +9,12 @@
 (princ (strcat "CWD: " cur_dir "\n"))
 (setq *searchIncluded* T)
 
-; Detect tangent environment
 (if (eq (substr (getvar "cprofile") 1 7) "TArch20") 
   (progn 
     (if (eq (load "aliasTangent.lsp" nil) nil) 
       (progn 
-        (princ "iaso2h: æ— æ³•æ‰¾åˆ°å¤©æ­£T20ç¼©å†™å‘½ä»¤æ–‡ä»¶\n")
-        (princ "iaso2h: è‡ªå®šä¹‰.lspæ–‡ä»¶ä¸åœ¨æœç´¢è·¯å¾„ä¸Š\n")
+        (princ "iaso2h: ÎŞ·¨ÕÒµ½ÌìÕıT20ËõĞ´ÃüÁîÎÄ¼ş\n")
+        (princ "iaso2h: ×Ô¶¨Òå.lspÎÄ¼ş²»ÔÚËÑË÷Â·¾¶ÉÏ\n")
         (setq *searchIncluded* nil)
       )
     )
@@ -24,26 +23,32 @@
   (progn 
     (if (eq (load "layerDirector.lsp" nil) nil) 
       (progn 
-        (princ "iaso2h: æ— æ³•æ‰¾åˆ°å›¾å±‚å®šå‘æ–‡ä»¶\n")
-        (princ "iaso2h: è‡ªå®šä¹‰.lspæ–‡ä»¶ä¸åœ¨æœç´¢è·¯å¾„ä¸Š\n")
+        (princ "iaso2h: ÎŞ·¨ÕÒµ½Í¼²ã¶¨ÏòÎÄ¼ş\n")
+        (princ "iaso2h: ×Ô¶¨Òå.lspÎÄ¼ş²»ÔÚËÑË÷Â·¾¶ÉÏ\n")
         (setq *searchIncluded* nil)
       )
     )
     (setq *tchLoaded* nil)
   )
 )
-
 ; 
-(if (wcmatch (getvar "PRODUCT") "AutoCAD*")
+(if (wcmatch (getvar "PRODUCT") "AutoCAD*") 
   (setq *autoCADLoaded* T)
-  (setq *autoCADLoaded* nil)
+  (progn 
+    ; (setvar "FONTALT" "C:\\Program Files\\ZWSOFT\\ZWCAD 2024\\fonts\\HZTXT.SHX")
+    (setq *autoCADLoaded* nil)
+  )
 )
 
-
 ;; General Alias
+(defun c:` () (command "._pline") (princ))
 (defun c:a () (command "._matchprop") (princ))
 (defun c:aa () (command "._arc" "c") (princ))
 (defun c:a3 () (command "._arc" pause "e" pause "d") (princ))
+(defun c:c2 () (command "._circle" "2p") (princ))
+(defun c:c2t () (command "._circle" "2p" "tan" pause "tan") (princ))
+(defun c:c3 () (command "._circle" "3p") (princ))
+(defun c:c3t () (command "._circle" "3p" "tan" pause "tan" pause "tan") (princ))
 (defun c:q () (command "._layoff") (princ))
 (defun c:qa () (command "._layon") (princ))
 (defun c:fr () (command "._layfrz" "c") (princ))
@@ -54,24 +59,44 @@
 (defun c:ch () (command "._chamfer") (princ))
 (defun c:dwg () (command "._dwg-purge") (princ))
 (defun c:loo () (command "._layerp") (princ))
-(defun c:lm () (command "._laymcur") (princ))
-(defun c:mm () (command "._rectang") (princ))
-(defun c:mc () (command "._polygon" "4" pause "i" pause) (princ))
+(defun c:lm () (command "._laymch") (princ))
+(defun c:cc () (command "._laymcur") (princ))
+(defun c:ca () (command "._copym") (princ))
 (defun c:r () (command "._rotate") (princ))
 (defun c:re () (command "._rectang") (princ))
+(defun c:j () (command "._join") (princ))
+(defun c:jl () (command "._joinl") (princ))
+(defun c:mc () (command "._polygon" "4" pause "c") (princ))
+(defun c:reg () (command "._regenall") (princ))
 (defun c:rg () (command "._regen") (princ))
-(defun c:set () (command "._fastsel") (princ))
+(defun c:tre () (command "._extrim") (princ))
 (defun c:w () (command "._move") (princ))
 (defun c:wt () (command "._syswindows" "V") (princ))
 (defun c:wtv () (command "._syswindows" "V") (princ))
 (defun c:wth () (command "._syswindows" "H") (princ))
 (defun c:f () (command "._fillet" "u") (princ))
 (defun c:ff () (command "._fillet" "R" "0") (command "._fillet" "u") (princ))
-(defun c:wv () (ai_tiledvp 2 "_V") (princ))
-(defun c:wvv () (ai_tiledvp 2 "_V") (princ))
-(defun c:wvh () (ai_tiledvp 2 "_H") (princ))
-(defun c:sv () (ai_tiledvp 1 nil) (princ))
-(defun c:xx () (command "._burst") (princ))
+
+; Viewport
+(if *autoCADLoaded* 
+  (progn 
+    (defun c:wv () (ai_tiledvp 2 "_V") (princ))
+    (defun c:wvv () (ai_tiledvp 2 "_V") (princ))
+    (defun c:wvh () (ai_tiledvp 2 "_H") (princ))
+  )
+  (progn 
+    (defun c:wv () (command "_-VPORTS" "_2" "_V") (princ))
+    (defun c:wvv () (command "_-VPORTS" "_2" "_V") (princ))
+    (defun c:wvh () (command "_-VPORTS" "_2" "_H") (princ))
+  )
+)
+
+(defun c:sv () (command "_-VPORTS" "SI") (princ))
+(defun c:xx () (vl-cmdf "._burst") (princ))
+(princ "iaso2h: Í¨ÓÃÃüÁîËõĞ´¼ÓÔØÍê±Ï.\n")
+
+; ----------------------------------------------
+
 (if *searchIncluded* 
   (defun c:xl (/ savedEntLast) 
     (setq savedEntLast (entlast))
@@ -86,9 +111,6 @@
   )
 )
 
-(princ "iaso2h: é€šç”¨å‘½ä»¤ç¼©å†™åŠ è½½å®Œæ¯•.\n")
-
-
 (if *searchIncluded* 
   (progn 
     (load "autoload.lsp")
@@ -101,11 +123,10 @@
     (defun c:qe () (c:layerCloseOthers))
     (defun c:fr () (c:layerFreezeSelected))
     (defun c:fe () (c:layerFreezeOthers))
-    (princ "iaso2h: æ’ä»¶å‘½ä»¤åŠ è½½å®Œæ¯•.\n")
+    (princ "iaso2h: ²å¼şÃüÁî¼ÓÔØÍê±Ï.\n")
   )
-  (princ "iaso2h: æœç´¢è·¯å¾„æ²¡æœ‰è®¾ç½®æ­£ç¡®.\n")
+  (princ "iaso2h: ËÑË÷Â·¾¶Ã»ÓĞÉèÖÃÕıÈ·.\n")
 )
-
 (princ)
 
-;; vim:set fileenconding=utf-8
+  ;; vim:set fileenconding=utf-8
