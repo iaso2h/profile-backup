@@ -1,5 +1,5 @@
 
-;å­—ä½“æ›´æ¢ç¨‹åº
+;×ÖÌå¸ü»»³ÌĞò
 ;================================================================
 (defun c:fontSwap (/ $fontlist$ $sydzt$ addlist av:changefontsdcl dclid desetpopx-0 desetpopx-1 fname getpop key setcusfontstype setpop1-0 setpop1-1 setpop2-0 setpop2-1)
   (defun av:changefontsdcl (fname / dcls fn)
@@ -10,72 +10,72 @@
 				"    children_alignment = left ;"
 				"    children_fixed_width = true ;"
 				"    key = \"k00\" ;"
-				"    label = \"ã€Aç»´åˆ¶é€ ã€‘å­—ä½“ä¹±ç æ•´ä½“è§£å†³æ–¹æ¡ˆ\" ;"
+				"    label = \"¡¾AÎ¬ÖÆÔì¡¿×ÖÌåÂÒÂëÕûÌå½â¾ö·½°¸\" ;"
 				"    :row {"
 				"        :button {"
 				"            key = \"11\" ;"
-				"            label = \"1.ç©ºå­—å¡«å……(&K)\" ;"
+				"            label = \"1.¿Õ×ÖÌî³ä(&K)\" ;"
 				"        }"
 				"        :text {"
-				"            label = \"ç©ºç¼ºå­—ä½“å¡«å……ä¸ºæ–¹æ­£ä¸ä»¿å®‹å­—å‹\" ;"
+				"            label = \"¿ÕÈ±×ÖÌåÌî³äÎª·½ÕıÓë·ÂËÎ×ÖĞÍ\" ;"
 				"        }"
 				"    }"
 				"    :row {"
 				"        :button {"
 				"            key = \"12\" ;"
-				"            label = \"2.å¤åˆå­—å‹(&F)\" ;"
+				"            label = \"2.¸´ºÏ×ÖĞÍ(&F)\" ;"
 				"        }"
 				"        :text {"
-				"            label = \"æ–¹æ­£å­—å‹ä¸ç²—ä½“å­—å‹æŒ‰éœ€åŠ è½½\" ;"
+				"            label = \"·½Õı×ÖĞÍÓë´ÖÌå×ÖĞÍ°´Ğè¼ÓÔØ\" ;"
 				"        }"
 				"    }"
 				"    :row {"
 				"        :button {"
 				"            key = \"13\" ;"
-				"            label = \"3.æ–¹æ­£å­—å‹(&Z)\" ;"
+				"            label = \"3.·½Õı×ÖĞÍ(&Z)\" ;"
 				"        }"
 				"        :text {"
-				"            label = \"å…¨éƒ¨å­—å‹è°ƒæ•´ä¸ºtssdengä¸tssdchn\" ;"
+				"            label = \"È«²¿×ÖĞÍµ÷ÕûÎªtssdengÓëtssdchn\" ;"
 				"        }"
 				"    }"
 				"    :row {"
 				"        :button {"
 				"            key = \"14\" ;"
-				"            label = \"4.å›½æ ‡å­—å‹(&G)\" ;"
+				"            label = \"4.¹ú±ê×ÖĞÍ(&G)\" ;"
 				"        }"
 				"        :text {"
-				"            label = \"å…¨éƒ¨å­—å‹è°ƒæ•´ä¸ºgbenorä¸gbcbig\" ;"
+				"            label = \"È«²¿×ÖĞÍµ÷ÕûÎªgbenorÓëgbcbig\" ;"
 				"        }"
 				"    }"
 				"    :row {"
 				"        :button {"
 				"            key = \"15\" ;"
-				"            label = \"5.ä»¿å®‹å­—å‹(&S)\" ;"
+				"            label = \"5.·ÂËÎ×ÖĞÍ(&S)\" ;"
 				"        }"
 				"        :text {"
-				"            label = \"å…¨éƒ¨å­—å‹è°ƒæ•´ä¸ºä»¿å®‹å­—ä½“\" ;"
+				"            label = \"È«²¿×ÖĞÍµ÷ÕûÎª·ÂËÎ×ÖÌå\" ;"
 				"        }"
 				"    }"
 				"    :row {"
 				"        :button {"
 				"            key = \"16\" ;"
-				"            label = \"6.å±€éƒ¨ç”Ÿæˆ(&R)\" ;"
+				"            label = \"6.¾Ö²¿Éú³É(&R)\" ;"
 				"        }"
 				"        :text {"
-				"            label = \"è§£å†³å­—ä½“è°ƒæ•´åæ— æ³•åˆ·æ–°çš„é—®é¢˜\" ;"
+				"            label = \"½â¾ö×ÖÌåµ÷ÕûºóÎŞ·¨Ë¢ĞÂµÄÎÊÌâ\" ;"
 				"        }"
 				"    }"
 				"    spacer;"
 				"    :boxed_column {"
 				"        fixed_width = true ;"
-				"        label = \"-7.è‡ªå®šä¹‰å­—å‹\" ;"
+				"        label = \"-7.×Ô¶¨Òå×ÖĞÍ\" ;"
 				"        :row {"
 				"            :column {"
 				"                :row {"
 				"                    :text {"
 				"                        fixed_width = true ;"
 				"                        key = \"pop1-t\" ;"
-				"                        label = \"å­—ä½“1:\" ;"
+				"                        label = \"×ÖÌå1:\" ;"
 				"                        width = 12 ;"
 				"                    }"
 				"                    :popup_list {"
@@ -88,7 +88,7 @@
 				"                    :text {"
 				"                        fixed_width = true ;"
 				"                        key = \"pop2-t\" ;"
-				"                        label = \"å­—ä½“2:\" ;"
+				"                        label = \"×ÖÌå2:\" ;"
 				"                        width = 12 ;"
 				"                    }"
 				"                    :popup_list {"
@@ -104,11 +104,11 @@
 				"                spacer;"
 				"                :toggle {"
 				"                    key = \"sydzt\" ;"
-				"                    label = \"ä½¿ç”¨å¤§å­—ä½“\" ;"
+				"                    label = \"Ê¹ÓÃ´ó×ÖÌå\" ;"
 				"                }"
 				"                :button {"
 				"                    key = \"ok\" ;"
-				"                    label = \"ä¿®æ”¹\" ;"
+				"                    label = \"ĞŞ¸Ä\" ;"
 				"                }"
 				"            }"
 				"        }"
@@ -116,7 +116,7 @@
 				"    :button {"
 				"        is_cancel = true ;"
 				"        is_enabled = false ;"
-				"        label = \"æç¤ºï¼šæ–¹æ­£å­—å‹ä¸å›½æ ‡å­—å‹ï¼Œå›¾å½¢ç¼©æ”¾æœ€ä¸ºé¡ºæ»‘ï¼\" ;"
+				"        label = \"ÌáÊ¾£º·½Õı×ÖĞÍÓë¹ú±ê×ÖĞÍ£¬Í¼ĞÎËõ·Å×îÎªË³»¬£¡\" ;"
 				"    }"
 				"    spacer;"
 				"}"
@@ -131,12 +131,12 @@
     )
   )
 	
-	;AutoCAD-86 bigfont 1.0å¤§å­—ä½“
-	;AutoCAD-86 unifont 1.0å¸¸è§„å­—ä½“
-	;AutoCAD-86 shapes 1.0å½¢æ–‡ä»¶
-	;å–å¾—ç‰¹å®šç±»å‹å­—ä½“åˆ—è¡¨
+	;AutoCAD-86 bigfont 1.0´ó×ÖÌå
+	;AutoCAD-86 unifont 1.0³£¹æ×ÖÌå
+	;AutoCAD-86 shapes 1.0ĞÎÎÄ¼ş
+	;È¡µÃÌØ¶¨ÀàĞÍ×ÖÌåÁĞ±í
 	(defun $fontlist$ (txt / $fonttype$ delsame dir1 dirlist fontlist fonts getfontlist)
-		;åˆ¤æ–­å­—ä½“ç±»å‹
+		;ÅĞ¶Ï×ÖÌåÀàĞÍ
 		(defun $fonttype$ (fn txt / cnt dv fh fonttype inp)
 			(setq cnt 22 dv  "")
 			(if	(setq fh (open fn "r"))
@@ -155,7 +155,7 @@
 			)
 			fonttype
 		)
-		;å¾—åˆ°æ–‡ä»¶å¤¹å†…å¯¹åº”å­—å‹åˆ—è¡¨
+		;µÃµ½ÎÄ¼ş¼ĞÄÚ¶ÔÓ¦×ÖĞÍÁĞ±í
 		(defun getfontlist(dir txt / files fontlist)
 			(setq files (vl-directory-files dir "*.shx"))
 			(setq fontlist
@@ -167,24 +167,24 @@
 				)
 			)
 		)
-		;æ¶ˆé™¤åˆ—è¡¨å†…é‡å¤å†…å®¹
+		;Ïû³ıÁĞ±íÄÚÖØ¸´ÄÚÈİ
 		(defun delsame(biao)
 			(if biao
 				(setq biao (cons (car biao) (delsame (vl-remove (car biao) (cdr biao)))))
 			)
 			biao
 		)
-		;æŸ¥è¯¢å¤šä¸ªæ–‡ä»¶å¤¹å†…å­—ä½“åˆ—è¡¨
+		;²éÑ¯¶à¸öÎÄ¼ş¼ĞÄÚ×ÖÌåÁĞ±í
 		(and *fstl_dir* (setq dir1 (findfile (strcat *fstl_dir* "\\support"))))
 		(setq dirlist (list dir1 (findfile "fonts")))
 		(foreach dir dirlist
 			(setq fonts (getfontlist dir txt))
 			(setq fontlist (append fontlist fonts))
 		)
-		(setq fontlist (delsame fontlist));åˆ—è¡¨å»é‡
-		;(setq fontlist (acad_strlsort fontlist));åˆ—è¡¨æ’åº
+		(setq fontlist (delsame fontlist));ÁĞ±íÈ¥ÖØ
+		;(setq fontlist (acad_strlsort fontlist));ÁĞ±íÅÅĞò
 	)
-	;å¯¹è¯æ¡†æ§ä»¶å¡«å……
+	;¶Ô»°¿ò¿Ø¼şÌî³ä
   (defun AddList (key lst)
     (IF	(AND key lst)
       (PROGN
@@ -200,37 +200,37 @@
     )
     lst
   )
-	;å†™å…¥åˆ—è¡¨çš„ç®€ä¾¿å†™æ³•
+	;Ğ´ÈëÁĞ±íµÄ¼ò±ãĞ´·¨
 	;(defun setpop(fonts)
 	;	(start_list "pop1")
 	;	(mapcar 'add_list fonts)
 	;	(end_list)
 	;)
-	;è®¾ç½®æŒ‰é’®ç±»å‹
+	;ÉèÖÃ°´Å¥ÀàĞÍ
 	(defun setpop1-1(/ shx shx1 shx2)
-		(setq shx1 ($fontlist$ "*unifont*"));å¸¸è§„å­—å½¢
-		(setq shx2 ($fontlist$ "*shapes*"));å½¢å­—å½¢
+		(setq shx1 ($fontlist$ "*unifont*"));³£¹æ×ÖĞÎ
+		(setq shx2 ($fontlist$ "*shapes*"));ĞÎ×ÖĞÎ
 		(setq shx (acad_strlsort(append shx1 shx2)))
 		(mode_tile "pop1" 0)
 		(AddList "pop1" shx)
-		(set_tile "pop1-t" "SHXå­—ä½“(X):")
+		(set_tile "pop1-t" "SHX×ÖÌå(X):")
 		shx
 	)
 	(defun setpop2-1(/ bigs)
-		(setq bigs ($fontlist$ "*bigfont*"));å¤§å­—å½¢
+		(setq bigs ($fontlist$ "*bigfont*"));´ó×ÖĞÎ
 		(mode_tile "pop2" 0)
 		(AddList "pop2" bigs)
-		(set_tile "pop2-t" "å¤§å­—ä½“(B):")
+		(set_tile "pop2-t" "´ó×ÖÌå(B):")
 		bigs
 	)
 	(defun setpop1-0(/ ttfs)
-		(set_tile "pop1-t" "å­—ä½“å(F):")
-		(setq ttfs (list "å¾®è½¯é›…é»‘" "ä»¿å®‹" "é»‘ä½“" "æ¥·ä½“" "å®‹ä½“" "æ–°å®‹ä½“"))
+		(set_tile "pop1-t" "×ÖÌåÃû(F):")
+		(setq ttfs (list "Î¢ÈíÑÅºÚ" "·ÂËÎ" "ºÚÌå" "¿¬Ìå" "ËÎÌå" "ĞÂËÎÌå"))
 		(AddList "pop1" ttfs)
 		ttfs
 	)
 	(defun setpop2-0()
-		(set_tile "pop2-t" "å­—ä½“æ ·å¼(Y):")
+		(set_tile "pop2-t" "×ÖÌåÑùÊ½(Y):")
 		(mode_tile "pop2" 1)
 		(AddList "pop2" nil)
 	)
@@ -240,13 +240,13 @@
     (setq pick (get_tile "sydzt"))
     (if(= pick "1")(desetpopx-1)(desetpopx-0))
   )
-	;å–å¾—åˆ—è¡¨å­—ä½“
+	;È¡µÃÁĞ±í×ÖÌå
 	(defun getpop(pop fontlist / font pick)
 		(setq pick (atoi(get_tile pop)))
     (if fontlist (setq font (nth pick fontlist)))
     font
 	)
-	;è®¾ç½®è‡ªå®šä¹‰å­—å½¢æ ·å¼
+	;ÉèÖÃ×Ô¶¨Òå×ÖĞÎÑùÊ½
 	(defun setcusfontstype(/ pop1-0 pop1-1 pop2-1 sydzt)
 		(setq pop1-1 (getpop "pop1" unis))
 		(setq pop1-0 (getpop "pop1" ttfs))
@@ -258,7 +258,7 @@
 			(t nil)
 		)
 	)
-	;å¼€å§‹å¥”è·‘
+	;¿ªÊ¼±¼ÅÜ
 	(vl-load-com)
   (setvar "cmdecho" 0)
 	;(setq *acad* (vlax-get-acad-object))
@@ -278,15 +278,15 @@
 	(action_tile "16" "(c:regenlocal)(done_dialog 0)")
 	(action_tile "sydzt" "($sydzt$)")
 	(action_tile "ok" "(setcusfontstype)(done_dialog 1)")
-	(desetpopx-0);é»˜è®¤ä¸ä½¿ç”¨å¤§å­—ä½“æ—¶çš„æ˜¾ç¤ºæ ·å¼
+	(desetpopx-0);Ä¬ÈÏ²»Ê¹ÓÃ´ó×ÖÌåÊ±µÄÏÔÊ¾ÑùÊ½
 	(setq key (start_dialog))
 	(unload_dialog dclid)
 	(cond
-		((= key 11) (av:0totc "tssdeng" "tssdchn" "ä»¿å®‹"))
+		((= key 11) (av:0totc "tssdeng" "tssdchn" "·ÂËÎ"))
 		((= key 12) (av:fontstofh "tssdeng" "tssdchn"))
 		((= key 13) (av:fontstoshx "tssdeng" "tssdchn"))
 		((= key 14) (av:fontstoshx "gbenor.shx" "gbcbig.shx"))
-		((= key 15) (av:fontstottf "ä»¿å®‹"))
+		((= key 15) (av:fontstottf "·ÂËÎ"))
 		((= key 1) nil)
 		(t (setq key nil))
 	)
@@ -321,14 +321,14 @@
 		(vla-getfont x 'a 'b 'c 'd 'e)
 		(setq xn (vla-get-name x))
 		(cond
-			((wcmatch xn "*ä»¿å®‹*") (av:tottf x "ä»¿å®‹"))
-			((wcmatch xn "*å®‹ä½“*") (av:tottf x "å®‹ä½“"))
-			((wcmatch xn "*é»‘ä½“*") (av:tottf x "é»‘ä½“"))
-			((wcmatch xn "*æ¥·ä½“*") (av:tottf x "æ¥·ä½“"))
+			((wcmatch xn "*·ÂËÎ*") (av:tottf x "·ÂËÎ"))
+			((wcmatch xn "*ËÎÌå*") (av:tottf x "ËÎÌå"))
+			((wcmatch xn "*ºÚÌå*") (av:tottf x "ºÚÌå"))
+			((wcmatch xn "*¿¬Ìå*") (av:tottf x "¿¬Ìå"))
 			(t (av:toshx x "tssdeng.shx" "tssdchn.shx"))
 		)
   )
-	(princ (strcat "\n>>>å­—å‹æ›¿æ¢ä¸ºshxå­—ä½“å’Œä»¿å®‹å­—ä½“"))
+	(princ (strcat "\n>>>×ÖĞÍÌæ»»Îªshx×ÖÌåºÍ·ÂËÎ×ÖÌå"))
 )
 (defun c:fontstofz()
 	(setvar "cmdecho" 0)
@@ -349,11 +349,11 @@
 		(av:toshx x shxx shxb)
 		;(princ (entmod(entget(tblobjname "style" (vla-get-name x)))))
   )
-	(princ (strcat "\n>>>å­—å‹æ›¿æ¢ä¸º" shxx "ã€" shxb))
+	(princ (strcat "\n>>>×ÖĞÍÌæ»»Îª" shxx "¡¢" shxb))
 )
 (defun c:fontstofs()
 	(setvar "cmdecho" 0)
-	(av:fontstottf "ä»¿å®‹")
+	(av:fontstottf "·ÂËÎ")
 	(repeat *n-regen* (vla-regen *doc* 0))
   (setvar "cmdecho" 1)
   (princ)
@@ -363,7 +363,7 @@
 		(vla-getfont x 'a 'b 'c 'd 'e)
 		(av:tottf x ttf)
   )
-	(princ (strcat "\n>>>å­—å‹æ›¿æ¢ä¸º" ttf))
+	(princ (strcat "\n>>>×ÖĞÍÌæ»»Îª" ttf))
 )
 (defun av:0totc	(shxx shxb ttf / big err shx)
 	(vlax-for x	(vla-get-TextStyles *doc*)
@@ -395,14 +395,14 @@
 			)
 		)
 	)
-	(princ(strcat "\n>>>ç©ºå­—å‹åˆ†åˆ«æ›¿æ¢ä¸º" shxx "ã€" shxb "ã€" ttf))
+	(princ(strcat "\n>>>¿Õ×ÖĞÍ·Ö±ğÌæ»»Îª" shxx "¡¢" shxb "¡¢" ttf))
 )
 
 ;================================================================
 
-;å±€éƒ¨åˆ·æ–°é‡ç”Ÿæˆ
+;¾Ö²¿Ë¢ĞÂÖØÉú³É
 (defun c:r()
-	(princ "-->å±€éƒ¨é‡ç”Ÿæˆ\n")
+	(princ "-->¾Ö²¿ÖØÉú³É\n")
 	(c:regenlocal)
 )
 (defun c:regenlocal (/ $screen atio ce ch ch2 diftime hh hh2 immtime p1 p2 re1 re2 ss)
@@ -425,14 +425,14 @@
 								 ((> diftime 0.2)(setq oldimmtime immtime)(re1))
 								 (t (setq oldimmtime immtime)(re2))
 							 )
-					 ;(princ ">>>å±€éƒ¨é‡ç”Ÿæˆ")
+					 ;(princ ">>>¾Ö²¿ÖØÉú³É")
 				 )
-		(princ "å±å¹•åŒºåŸŸå†…æ— å†…å®¹ï¼")
+		(princ "ÆÁÄ»ÇøÓòÄÚÎŞÄÚÈİ£¡")
 	)
 	(setvar "cmdecho" 1)
 	(princ)
 )
-;å­—ä½“è‡ªåŠ¨æ›´æ¢ç¨‹åº
+;×ÖÌå×Ô¶¯¸ü»»³ÌĞò
 (defun ChangeFonts (/ file path)
 	(setvar "cmdecho" 0)
 	(if(null(and
@@ -443,7 +443,7 @@
 						;(if (vl-cmdf "netload" file) t (progn(command-s "netload" file)t))
 					))
 		(progn
-			(av:0totc "tssdeng" "tssdchn" "ä»¿å®‹")
+			(av:0totc "tssdeng" "tssdchn" "·ÂËÎ")
 			(repeat *n-regen* (vla-regen *doc* 0))
 		)
 	)

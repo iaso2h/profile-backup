@@ -2,7 +2,7 @@
                              ans tmp
                             ) 
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
@@ -53,29 +53,29 @@
 
   (while t 
     (if (null ans) 
-      (setq ans "0ä½å°æ•°")
+      (setq ans "0Î»Ğ¡Êı")
     )
-    (initget "0ä½å°æ•° 1ä½å°æ•° 2ä½ä»¥åŠ2ä½ä»¥ä¸Šå°æ•°")
-    (if (setq tmp (getkword (strcat "é€‰æ‹©æ ‡æ³¨ç²¾ç¡®åº¦[0ä½å°æ•°/1ä½å°æ•°/2ä½ä»¥åŠ2ä½ä»¥ä¸Šå°æ•°] <" ans ">: \n"))) 
+    (initget "0Î»Ğ¡Êı 1Î»Ğ¡Êı 2Î»ÒÔ¼°2Î»ÒÔÉÏĞ¡Êı")
+    (if (setq tmp (getkword (strcat "Ñ¡Ôñ±ê×¢¾«È·¶È[0Î»Ğ¡Êı/1Î»Ğ¡Êı/2Î»ÒÔ¼°2Î»ÒÔÉÏĞ¡Êı] <" ans ">: \n"))) 
       (setq ans tmp)
     )
     (cond 
-      ((= ans "0ä½å°æ•°")
+      ((= ans "0Î»Ğ¡Êı")
        (if ss0 
          (sssetfirst nil ss0)
-         (prompt "æç¤ºï¼šæ²¡æœ‰ç²¾ç¡®åº¦ä¸º0ä½å°æ•°çš„æ ‡æ³¨\n")
+         (prompt "ÌáÊ¾£ºÃ»ÓĞ¾«È·¶ÈÎª0Î»Ğ¡ÊıµÄ±ê×¢\n")
        )
       )
-      ((= ans "1ä½å°æ•°")
+      ((= ans "1Î»Ğ¡Êı")
        (if ss1 
          (sssetfirst nil ss1)
-         (prompt "æç¤ºï¼šæ²¡æœ‰ç²¾ç¡®åº¦ä¸º1ä½å°æ•°çš„æ ‡æ³¨ \n")
+         (prompt "ÌáÊ¾£ºÃ»ÓĞ¾«È·¶ÈÎª1Î»Ğ¡ÊıµÄ±ê×¢ \n")
        )
       )
       (t
        (if ss2 
          (sssetfirst nil ss2)
-         (prompt "æç¤ºï¼šæ²¡æœ‰ç²¾ç¡®åº¦ä¸º2ä½ä»¥åŠ2ä½å°æ•°ä»¥ä¸Šçš„æ ‡æ³¨ \n")
+         (prompt "ÌáÊ¾£ºÃ»ÓĞ¾«È·¶ÈÎª2Î»ÒÔ¼°2Î»Ğ¡ÊıÒÔÉÏµÄ±ê×¢ \n")
        )
       )
     )

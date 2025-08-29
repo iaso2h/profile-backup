@@ -4,7 +4,7 @@
                      ) 
   (vl-load-com)
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
       (princ)
     )

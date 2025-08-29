@@ -8,7 +8,7 @@
   (setvar 'cmdecho 0)
   (princ "\n")
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
@@ -25,7 +25,7 @@
   (if 
     (and 
       (setq ss (ssget "_:L"))
-      (setq insertPoint (getpoint "è¯·æŒ‡å®šæ’å…¥ç‚¹ï¼š\n"))
+      (setq insertPoint (getpoint "ÇëÖ¸¶¨²åÈëµã£º\n"))
     )
     (progn 
       (command "undo" "be")
@@ -84,7 +84,7 @@
     (load "attr2Text.lsp")
   (princ "\n")
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)

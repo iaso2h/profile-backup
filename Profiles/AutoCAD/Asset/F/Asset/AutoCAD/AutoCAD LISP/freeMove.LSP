@@ -1,8 +1,8 @@
-;;;==================={ 自由移动V1.0 BY wowan1314 }================================;;;
-;;;功能：实现MOVE的过程中镜像、旋转、放大、缩小、对齐、改基点、改转角、记忆移动。  ;;;
-;;;                特别鸣谢: G版 不死猫 xshrimp                                    ;;;
-;;;特别说明：左键点取位置,右键退出,F3开关捕捉,F8开关正交,距离可直接输入无需按键    ;;;
-;;;          量取Z的意思是：复制距离可由屏幕两点来确认，方便后面空格来默认距离     ;;;
+;;;==================={ �����ƶ�V1.0 BY wowan1314 }================================;;;
+;;;���ܣ�ʵ��MOVE�Ĺ����о�����ת���Ŵ���С�����롢�Ļ��㡢��ת�ǡ������ƶ���  ;;;
+;;;                �ر���л: G�� ����è xshrimp                                    ;;;
+;;;�ر�˵���������ȡλ��,�Ҽ��˳�,F3���ز�׽,F8��������,�����ֱ���������谴��    ;;;
+;;;          ��ȡZ����˼�ǣ����ƾ��������Ļ������ȷ�ϣ��������ո���Ĭ�Ͼ���     ;;;
 ;;;================================================================================;;;
 (DEFUN C:freeMove (/	    SS	   PT	  SIZE	 OLDOS	BB     PT1    NEARPT
 	     G2	    H	   D	  LST	 PTX	PTY    PTT1   PTT2
@@ -27,7 +27,7 @@
     (prinC)
   )
   (IF (SETQ SS0 (SSGET ":L"))
-    (SETQ PT0 (getpoint "\n选择复制基点:"))
+    (SETQ PT0 (getpoint "\nѡ���ƻ���:"))
   )
   (IF (AND SS0 PT0)
     (PROGN
@@ -43,8 +43,8 @@
       (setvar "osmode" 0)
       (setvar "cmdecho" 0)
       (setvar "nomutt" 0)
-      (setq zhuyi1 "\n点取位置或\n[转90度(A)/左右翻(D)/上下翻(S)/对齐(F)/改转角(R)/改基点(T)/大1倍(+)/小一倍(-)/量取(Z)/默认<"
-	    zhuyi2 "mm>(空格)]<退出>"
+      (setq zhuyi1 "\n��ȡλ�û�\n[ת90��(A)/���ҷ�(D)/���·�(S)/����(F)/��ת��(R)/�Ļ���(T)/��1��(+)/Сһ��(-)/��ȡ(Z)/Ĭ��<"
+	    zhuyi2 "mm>(�ո�)]<�˳�>"
       )
       (command "_.undo" "be")
       (IF *JULI1*
@@ -82,7 +82,7 @@
 		      (setq
 			nearpt (osnap PT1 "_ENDP,_MID,_INT,NEA")
 		      )
-		 )			; 取得的捕捉点,端点，中点，交点,最近点.
+		 )			; ȡ�õĲ�׽��,�˵㣬�е㣬����,�����.
 	       (PROGN
 		 (setq g2 nearpt)
 		 (setq h   (/ (getvar "viewsize")
@@ -173,17 +173,17 @@
 	    )
 	    ((member BB '((2 70) (2 102)))
 	     (REDRAW)
-	     ;;对齐
+	     ;;����
 	     (setvar "osmode" oldos)
 	     (initget 1)
-	     (IF (SETQ APT1 (getpoint "\n选择第一个源点:"))
+	     (IF (SETQ APT1 (getpoint "\nѡ���һ��Դ��:"))
 	       (PROGN
 		 (COMMAND "align" SS "" APT1)
-		 (princ "\n选择第一个目标点:")
+		 (princ "\nѡ���һ��Ŀ���:")
 		 (COMMAND pause)
-		 (princ "\n选择第二个源点:")
+		 (princ "\nѡ��ڶ���Դ��:")
 		 (COMMAND pause)
-		 (princ "\n选择第二个目标点:")
+		 (princ "\nѡ��ڶ���Ŀ���:")
 		 (COMMAND pause)
 		 (COMMAND "" "N")
 		 (REDRAW)
@@ -241,7 +241,7 @@
 	     (redraw)
 	     (setq
 	       juli (getdist
-		      (strcat "\n输入复制距离<" (rtos juli 2) ">:")
+		      (strcat "\n���븴�ƾ���<" (rtos juli 2) ">:")
 		    )
 	     )
 	     (setq pt1 (polar PT0 (ANGLE PT0 PT1) JULI))
@@ -259,7 +259,7 @@
 	    ((member BB '((2 116) (2 84)))
 	     (setvar "osmode" oldos)
 	     (redRaw)
-	     (IF (setq pt (getpoint "\n请选择新基点:"))
+	     (IF (setq pt (getpoint "\n��ѡ���»���:"))
 	       (PRINC (strcat zhuyi1 (rtos juli 2) zhuyi2))
 	       (exit)
 	     )
@@ -270,25 +270,25 @@
 	    )
 	    ((equal BB '(2 6))
 	     (if (= f3 NIL)
-	       (progn (setq f3 T) (prompt "\n<对象捕捉 开>"))
-	       (progn (setq f3 NIL) (prompt "\n<对象捕捉 关>"))
+	       (progn (setq f3 T) (prompt "\n<����׽ ��>"))
+	       (progn (setq f3 NIL) (prompt "\n<����׽ ��>"))
 	     )
 	     (redraw)
 	    )
 	    ((equal BB '(2 15))
 	     (if (= f8 0)
-	       (progn (setq f8 1) (prompt "\n<正交 开>"))
-	       (progn (setq f8 0) (prompt "\n<正交 关>"))
+	       (progn (setq f8 1) (prompt "\n<���� ��>"))
+	       (progn (setq f8 0) (prompt "\n<���� ��>"))
 	     )
 	     (setvar "orthomode" f8)
 	     (redraw)
 	    )
 	  )
 	)
-	;;END 内WHILE
+	;;END ��WHILE
 
       )
-      ;;END 外WHILE
+      ;;END ��WHILE
     )					;END progn
   )
   ;;end if
@@ -296,12 +296,12 @@
 )
 
 ;;;==================================================================
-;;gxl-Sel-ReDrawSel 重画选择集中的对象，Sel 为选择集或图元名 mode 为方式码
-;;;重画选择集中的对象，mode 为方式码，
-;;;方式码 1 在屏幕重画该选择集对象
-;;;方式码 2 隐藏该选择集对象
-;;;方式码 3 “醒目显示”该选择集对象
-;;;方式码 4 取消“醒目显示”该选择集对象--------BY G版
+;;gxl-Sel-ReDrawSel �ػ�ѡ���еĶ���Sel Ϊѡ�񼯻�ͼԪ�� mode Ϊ��ʽ��
+;;;�ػ�ѡ���еĶ���mode Ϊ��ʽ�룬
+;;;��ʽ�� 1 ����Ļ�ػ���ѡ�񼯶���
+;;;��ʽ�� 2 ���ظ�ѡ�񼯶���
+;;;��ʽ�� 3 ����Ŀ��ʾ����ѡ�񼯶���
+;;;��ʽ�� 4 ȡ������Ŀ��ʾ����ѡ�񼯶���--------BY G��
 ;;;==================================================================
 (defun gxl-Sel-ReDrawSel (Sel mode / m n)
   (if sel

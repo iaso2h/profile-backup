@@ -1,4 +1,4 @@
-;;澶╂鍛戒护
+;;天正命令
 (defun c:2w () (command "._tswall") (princ))
 (defun c:ca () (command "._tplustext") (princ))
 (defun c:cl () (command "._tlengthsum") (princ))
@@ -15,8 +15,8 @@
 (defun c:wa () (command "._tgwall") (princ))
 (defun c:wc () (command "._tgcolumn") (princ))
 
-;;澶╂椤哄簭璋冩崲
+;;天正顺序调换
 (defun c:so () (command "._tseoutline") (princ))
 (defun c:ssf () (command "._tupdspace") (princ))
-(princ "iaso2h: 澶╂T20鍛戒护缂╁啓鍔犺浇瀹屾瘯\n")
+(princ "iaso2h: 天正T20命令缩写加载完毕\n")
 (princ)

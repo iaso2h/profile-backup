@@ -2,7 +2,7 @@
   (vl-load-com)
   (princ "\n")
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊýÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
@@ -30,7 +30,7 @@
         (setq i (1+ i))
       )
       (command "undo" "e")
-      (if (> cnt 0) (princ (strcat (rtos cnt 2 0) "\nä¸ªæ ‡å‡†å°ºå¯¸çš„è¦†ç›–æ–‡å­—å·²ç»è¢«æ¸…é™¤\n\n")))
+      (if (> cnt 0) (princ (strcat (rtos cnt 2 0) "\n¸ö±ê×¼³ß´çµÄ¸²¸ÇÎÄ×ÖÒÑ¾­±»Çå³ý\n\n")))
     )
   )
 

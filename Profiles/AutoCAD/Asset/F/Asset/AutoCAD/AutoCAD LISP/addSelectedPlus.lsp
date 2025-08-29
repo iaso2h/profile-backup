@@ -1,32 +1,22 @@
-; File: addSeelctedPlus.lsp
-; Author: iaso2h
-; Description: å¢å¼ºç‰ˆæ·»åŠ é€‰æ‹©, æ”¯æŒT20V10
-; Version: 0.1.1
-; Last Modified: 2024-11-04
-
-(defun c:addSelectedPlus (/ ss eName eType vlaObj savedLastEnt) 
+(defun c:addSelectedPlus (/ ss ent eType vlaObj savedLastEnt) 
   (vl-load-com)
   (princ "\n")
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
   )
 
-  (if 
-    (not 
-      (setq ss (ssget "_I"))
-    )
-    (vl-catch-all-error-p 
-      (setq ss (vl-catch-all-apply 'ssget (list "_:S+.")))
-    )
+  (if (setq ss (ssget "_:S+." )) 
+    (setq ent (ssname ss 0))
+    (setq ent (car (entsel)))
   )
-  (if ss 
+  (if ent 
     (progn 
-      (setq eName (ssname ss 0))
-      (setq eType (cdr (assoc 0 (entget eName))))
-      (setq vlaObj (vlax-ename->vla-object eName))
+      (setq ent (ssname ss 0))
+      (setq eType (cdr (assoc 0 (entget ent))))
+      (setq vlaObj (vlax-ename->vla-object ent))
       (cond 
         ((and 
            (= eType "LINE")
@@ -98,15 +88,15 @@
         )
 
         ;; Tangent {{{
-        ;; çº¿å›¾æ¡ˆ
+        ;; ÏßÍ¼°¸
         ((= eType "TCH_PATH_ARRAY")
          (iterCopyProperty "._TLinePattern" vlaObj (list))
         )
-        ;; ç”¨åœ°çº¢çº¿
+        ;; ÓÃµØºìÏß
         ((= eType "TCH_AREAREDLINE")
          (iterCopyProperty "._DrawRedLine" vlaObj (list))
         )
-        ;; åæ ‡æ ‡æ³¨
+        ;; ×ø±ê±ê×¢
         ((= eType "TCH_COORD")
          (iterCopyProperty 
            "._TCOORD"
@@ -119,7 +109,7 @@
            )
          )
         )
-        ;; å›¾åæ ‡æ³¨
+        ;; Í¼Ãû±ê×¢
         ((= eType "TCH_DRAWINGNAME")
          (iterCopyProperty 
            "._TGMAPNAME"
@@ -130,7 +120,7 @@
            )
          )
         )
-        ;; äº‘çº¿
+        ;; ÔÆÏß
         ((= eType "TCH_MODI")
          (iterCopyProperty 
            "._TGREVCLOUD"
@@ -142,7 +132,7 @@
            )
          )
         )
-        ;; è¿ç»­æ ‡æ³¨
+        ;; Á¬Ğø±ê×¢
         ((= eType "TCH_DIMENSION") (command "._TDimMP"))
         ((= eType "TCH_DIMENSION2")
          (iterCopyProperty 
@@ -155,7 +145,7 @@
            )
          )
         )
-        ;; æ ‡é«˜æ ‡æ³¨
+        ;; ±ê¸ß±ê×¢
         ((= eType "TCH_ELEVATION")
          (iterCopyProperty 
            "._TMELEV"
@@ -167,7 +157,7 @@
            )
          )
         )
-        ;; å¤©æ­£å•è¡Œæ–‡å­—
+        ;; ÌìÕıµ¥ĞĞÎÄ×Ö
         ((= eType "TCH_TEXT")
          (iterCopyProperty 
            "._TTEXT"
@@ -182,7 +172,7 @@
            )
          )
         )
-        ;; å¤©æ­£å¤šè¡Œæ–‡å­—
+        ;; ÌìÕı¶àĞĞÎÄ×Ö
         ((= eType "TCH_MTEXT")
          (iterCopyProperty 
            "._TTEXT"
@@ -197,7 +187,7 @@
            )
          )
         )
-        ;; å¼•å‡ºæ ‡æ³¨
+        ;; Òı³ö±ê×¢
         ((= eType "TCH_MULTILEADER")
          (iterCopyProperty 
            "._TGLEADER"
@@ -207,11 +197,11 @@
            )
          )
         )
-        ;; é—¨çª—
+        ;; ÃÅ´°
         ((= eType "TCH_OPENING") (command "._TOPENING"))
-        ;; é—¨çª—è£…é¥°å¥—
+        ;; ÃÅ´°×°ÊÎÌ×
         ((= eType "TCH_OPENINGSLOT") (command "._TOpeningSlot"))
-        ;; ç®­å¤´å¼•æ³¨
+        ;; ¼ıÍ·Òı×¢
         ((= eType "TCH_ARROW")
          (iterCopyProperty 
            "._TGLEADER"
@@ -221,10 +211,10 @@
            )
          )
         )
-        ;; åŠå¾„æ ‡æ³¨ã€ç›´å¾„æ ‡æ³¨
+        ;; °ë¾¶±ê×¢¡¢Ö±¾¶±ê×¢
         ((= eType "TCH_RADIUSDIM")
          (progn 
-           (if (= (vlax-get-property vlaObj 'RadiusType) "åŠå¾„") 
+           (if (= (vlax-get-property vlaObj 'RadiusType) "°ë¾¶") 
              (command "._TDIMRAD")
              (command "._TDIMDIA")
            )
@@ -235,10 +225,10 @@
            (copyProperty vlaObj 'ScaleFactors (entlast)) ; Buggy
          )
         )
-        ;; æŸ±
+        ;; Öù
         ((= eType "TCH_COLUMN")
          (progn 
-           (if (= (vlax-get-property vlaObj 'StruSectionShapeText) "çŸ©å½¢") 
+           (if (= (vlax-get-property vlaObj 'StruSectionShapeText) "¾ØĞÎ") 
              (progn 
                (command "._TGCOLUMN")
                (while (= 1 (getvar "cmdactive")) 
@@ -260,7 +250,7 @@
                )
              )
              (progn 
-               (if (= (vlax-get-property vlaObj 'Type) "æ„é€ æŸ±") 
+               (if (= (vlax-get-property vlaObj 'Type) "¹¹ÔìÖù") 
                  (command "._TFORTICOLU")
                  (command "._TPOLYCOLU")
                )
@@ -288,7 +278,7 @@
            )
          )
         )
-        ;; å¢™
+        ;; Ç½
         ((= eType "TCH_WALL")
          (progn 
            (iterCopyProperty 
@@ -320,11 +310,11 @@
            )
          )
         )
-        ;; ç»ç’ƒå¹•å¢™
+        ;; ²£Á§Ä»Ç½
         ((= eType "TCH_CURTAIN_WALL") (command "._TConvertCurtain"))
-        ;; å¢™ä½“åˆ‡å‰²
+        ;; Ç½ÌåÇĞ¸î
         ((= eType "TCH_KATANA") (command "._TKATANA"))
-        ;; å¢™ä½“é€ å‹
+        ;; Ç½ÌåÔìĞÍ
         ((= eType "TCH_WALL_PATCH")
          (progn 
            (iterCopyProperty 
@@ -345,7 +335,7 @@
            )
          )
         )
-        ;; è½¬è§’çª—
+        ;; ×ª½Ç´°
         ((= eType "TCH_CORNER_WINDOW")
          (progn 
            (iterCopyProperty 
@@ -377,7 +367,7 @@
            )
          )
         )
-        ;; æˆ¿é—´
+        ;; ·¿¼ä
         ((= eType "TCH_SPACE")
          (progn 
            (iterCopyProperty 
@@ -405,7 +395,7 @@
          )
         )
 
-        ;; é˜²ç«åˆ†åŒº
+        ;; ·À»ğ·ÖÇø
         ((= eType "TCH_FIREZONE")
          (progn 
            (iterCopyProperty 
@@ -430,7 +420,7 @@
            )
          )
         )
-        ;; ç–æ•£è·¯å¾„
+        ;; ÊèÉ¢Â·¾¶
         ((= eType "TCH_EVACPATH")
          (progn 
            (iterCopyProperty 
@@ -444,9 +434,9 @@
            )
          )
         )
-        ;; æ¥¼å±‚æ¡†
+        ;; Â¥²ã¿ò
         ((= eType "TCH_FLOORRECT") (command "._TFLOOR")) ;; TODO:
-        ;; ä»»æ„å¡é¡¶
+        ;; ÈÎÒâÆÂ¶¥
         ((= eType "TCH_SLOPEROOF")
          (progn 
            (command "._TSLOPEROOF")
@@ -459,9 +449,9 @@
          )
          (command "._TSLOPEROOF")
         )
-        ;; è€è™çª—
+        ;; ÀÏ»¢´°
         ((= eType "TCH_DORMER") (command "._TDORMER")) ;; Buggy
-        ;; å¯¹ç§°è½´
+        ;; ¶Ô³ÆÖá
         ((= eType "TCH_SYMMETRY")
          (progn 
            (command "._TGSYMMETRICAL")
@@ -473,7 +463,7 @@
            (copyProperty vlaObj 'Elevation savedLastEnt)
          )
         )
-        ;; åšæ³•æ ‡æ³¨
+        ;; ×ö·¨±ê×¢
         ((= eType "TCH_COMPOSING")
          (progn 
            (command "._TGCOMPOSING")
@@ -485,7 +475,7 @@
            (copyProperty vlaObj 'Elevation savedLastEnt)
          )
         )
-        ;; è½´ç½‘æ ‡æ³¨
+        ;; ÖáÍø±ê×¢
         ((= eType "TCH_AXIS_LABEL") ; TODO: Distinguish multiple axes and single axis
          (progn 
            (iterCopyProperty 
@@ -498,7 +488,7 @@
            )
          )
         ) ; TODO:
-        ;; ç´¢å¼•å›¾å
+        ;; Ë÷ÒıÍ¼Ãû
         ((= eType "TCH_DRAWINGINDEX")
          (progn 
            (iterCopyProperty 
@@ -511,7 +501,7 @@
            )
          )
         )
-        ;; æŒ‡å‘ç´¢å¼•
+        ;; Ö¸ÏòË÷Òı
         ((= eType "TCH_INDEXPOINTER")
          (progn 
            (iterCopyProperty 
@@ -527,9 +517,9 @@
          )
          (command "._TINDEXPTR")
         ) ; TODO: Distinguish multiple axes and single
-        ;; å‰–åˆ‡ç´¢å¼•
+        ;; ÆÊÇĞË÷Òı
         ;; ((= eType "TCH_INDEXPOINTER") (command "._TINDEXPTR"))
-        ;; æŒ‡åŒ—é’ˆ
+        ;; Ö¸±±Õë
         ((= eType "TCH_NORTHTHUMB")
          (progn 
            (command "._TNORTHTHUMB")
@@ -541,7 +531,7 @@
            (copyProperty vlaObj 'Elevation savedLastEnt)
          )
         )
-        ;; å†…è§†ç¬¦å·
+        ;; ÄÚÊÓ·ûºÅ
         ((= eType "TCH_TDBINSIGHT")
          (progn 
            (iterCopyProperty 
@@ -554,7 +544,7 @@
            )
          )
         )
-        ;; åˆ‡å‰²çº¿
+        ;; ÇĞ¸îÏß
         ((= eType "TCH_CUT")
          (progn 
            (command "._TGSYMBCUT")
@@ -566,7 +556,7 @@
            (copyProperty vlaObj 'Elevation savedLastEnt)
          )
         )
-        ;; å‰–é¢å‰–åˆ‡
+        ;; ÆÊÃæÆÊÇĞ
         ((= eType "TCH_SYMB_SECTION")
          (progn 
            (iterCopyProperty 
@@ -579,7 +569,7 @@
            )
          )
         )
-        ;; å¤©æ­£è¡¨æ ¼
+        ;; ÌìÕı±í¸ñ
         ((= eType "TCH_SHEET")
          (progn 
            (iterCopyProperty 
@@ -620,7 +610,7 @@
            )
          )
         )
-        ;; å°é˜¶
+        ;; Ì¨½×
         ((= eType "TCH_STEP")
          (progn 
            (command "._TSTEP")
@@ -632,7 +622,7 @@
            (copyProperty vlaObj 'Elevation savedLastEnt)
          )
         )
-        ;; ç›´çº¿æ¥¼æ¢¯
+        ;; Ö±ÏßÂ¥Ìİ
         ((= eType "TCH_LINESTAIR")
          (progn 
            (iterCopyProperty 
@@ -642,7 +632,7 @@
            )
          )
         )
-        ;; åŒè·‘æ¥¼æ¢¯
+        ;; Ë«ÅÜÂ¥Ìİ
         ((= eType "TCH_RECTSTAIR")
          (progn 
            (iterCopyProperty 
@@ -666,7 +656,7 @@
            )
          )
         )
-        ;; åœ†å¼§æ¥¼æ¢¯
+        ;; Ô²»¡Â¥Ìİ
         ((= eType "TCH_ARCSTAIR")
          (progn 
            (iterCopyProperty 
@@ -682,7 +672,7 @@
            )
          )
         )
-        ;; å¤šè·‘æ¥¼æ¢¯
+        ;; ¶àÅÜÂ¥Ìİ
         ((= eType "TCH_MULTISTAIR")
          (progn 
            (iterCopyProperty 
@@ -706,7 +696,7 @@
            )
          )
         )
-        ;; åŒåˆ†å¹³è¡Œæ¥¼æ¢¯
+        ;; Ë«·ÖÆ½ĞĞÂ¥Ìİ
         ((= eType "TCH_PARALLELSTAIR")
          (progn 
            (iterCopyProperty 
@@ -730,7 +720,7 @@
            )
          )
         )
-        ;; åŒåˆ†è½¬è§’æ¥¼æ¢¯
+        ;; Ë«·Ö×ª½ÇÂ¥Ìİ
         ((= eType "TCH_CORNERSTAIR")
          (progn 
            (iterCopyProperty 
@@ -751,7 +741,7 @@
            )
          )
         )
-        ;; åŒåˆ†ä¸‰è·‘æ¥¼æ¢¯
+        ;; Ë«·ÖÈıÅÜÂ¥Ìİ
         ((= eType "TCH_DOUBLEMULSTAIR")
          (progn 
            (iterCopyProperty 
@@ -772,7 +762,7 @@
            )
          )
         )
-        ;; äº¤å‰æ¥¼æ¢¯
+        ;; ½»²æÂ¥Ìİ
         ((= eType "TCH_SCISSORSSTAIR")
          (progn 
            (iterCopyProperty 
@@ -796,7 +786,7 @@
            )
          )
         )
-        ;; å‰ªåˆ€æ¢¯
+        ;; ¼ôµ¶Ìİ
         ((= eType "TCH_CROSSSTAIR")
          (progn 
            (iterCopyProperty 
@@ -820,7 +810,7 @@
            )
          )
         )
-        ;; ä¸‰è§’æ¥¼æ¢¯
+        ;; Èı½ÇÂ¥Ìİ
         ((= eType "TCH_TRIANGLESTAIR")
          (progn 
            (iterCopyProperty 
@@ -844,7 +834,7 @@
            )
          )
         )
-        ;; è½¬è§’æ¥¼æ¢¯
+        ;; ×ª½ÇÂ¥Ìİ
         ((= eType "TCH_RECTCORNERSTAIR")
          (progn 
            (iterCopyProperty 
@@ -868,7 +858,7 @@
            )
          )
         )
-        ;; æ‰¶æ‰‹
+        ;; ·öÊÖ
         ((= eType "TCH_HANDRAIL")
          (progn 
            (command "._THANDRAIL")
@@ -880,7 +870,7 @@
            (copyProperty vlaObj 'Shape savedLastEnt)
          )
         )
-        ;; å¡é“
+        ;; ÆÂµÀ
         ((= eType "TCH_ASCENT")
          (progn 
            (command "._TASCENT")
@@ -891,7 +881,7 @@
            (copyPropertyGeneric vlaObj (entlast))
          )
         )
-        ;; é˜³å°
+        ;; ÑôÌ¨
         ((= eType "TCH_BALCONY")
          (progn 
            (iterCopyProperty 
@@ -904,7 +894,7 @@
            )
          )
         )
-        ;; å¹³æ¿
+        ;; Æ½°å
         ((= eType "TCH_SLAB")
          (progn 
            (command "._TSLAB")
@@ -915,7 +905,7 @@
            (copyPropertyGeneric vlaObj (entlast))
          )
         )
-        ;; æ•£æ°´
+        ;; É¢Ë®
         ((= eType "TCH_APRON")
          (progn 
            (command "._TOUTLNA")
@@ -926,7 +916,7 @@
            (copyPropertyGeneric vlaObj (entlast))
          )
         )
-        ;; ä¸‰ç»´ç½‘æ¶
+        ;; ÈıÎ¬Íø¼Ü
         ((= eType "TCH_NETSHELF")
          (progn 
            (command ".TNETSHELF")
@@ -937,7 +927,7 @@
            (copyPropertyGeneric vlaObj (entlast))
          )
         )
-        ;; å›¾å—
+        ;; Í¼¿é
         ((= eType "TCH_TCH_BLOCK_INSERT")
          (progn 
            (iterCopyProperty 

@@ -1,7 +1,7 @@
 (defun c:dimByBlock (/ ss ent obj) 
   (princ "\n")
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
@@ -28,7 +28,7 @@
       (sssetfirst nil ss)
       (princ 
         (strcat (rtos (sslength ss) 2 0) 
-                "ä¸ªæ ‡æ³¨çš„é¢œè‰²å·²æ”¹ä¸ºéšå›¾å—\n"
+                "¸ö±ê×¢µÄÑÕÉ«ÒÑ¸ÄÎªËæÍ¼¿é\n"
         )
       )
     )

@@ -1,25 +1,25 @@
-(defun c:whatIsInside (/ sset eName vlaObj eType) 
+(defun c:whatIsInside (/ ss ent vlaObj eType) 
   (vl-load-com)
   (princ "\n")
-  (defun *error* (msg) 
+  (defun *error* (msg)
     (if (not (member msg '("Function cancelled" "quit / exit abort" "函数已取消"))) 
       (princ (strcat "Error: " msg "\n"))
+      (princ)
     )
-    (princ)
   )
 
-  (if (setq sset (ssget "_I")) 
-    (setq eName (ssname sset 0))
-    (setq eName (car (entsel "\n选择图元：")))
+  (if (setq ss (ssget "_:S+.")) 
+    (setq ent (ssname ss 0))
+    (setq ent (car (entsel)))
   )
-  (if eName 
+  (if ent 
     (progn 
-      (setq eType (cdr (assoc 0 (entget eName))))
+      (setq eType (cdr (assoc 0 (entget ent))))
       (if 
         (not 
           (vl-catch-all-error-p 
             (setq vlaObj (vl-catch-all-apply 'vlax-ename->vla-object 
-                                            (list eName)
+                                            (list ent)
                         )
             )
           )

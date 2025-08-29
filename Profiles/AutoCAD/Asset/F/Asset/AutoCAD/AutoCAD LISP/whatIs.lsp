@@ -1,19 +1,22 @@
-(defun c:whatIs (/ activeDoc sset ent obj entType objType savedEntLast 
+(defun c:whatIs (/ savedCmdecho activeDoc ss ent obj entType objType savedEntLast 
                  inspectatioinText
                 ) 
   (vl-load-com)
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
   )
-
+  (setq savedCmdecho (getvar "cmdecho"))
+  (setvar "cmdecho" 0)
+  
   (setq activeDoc (vla-get-ActiveDocument (vlax-get-acad-object)))
-  (if (setq sset (ssget "_I")) 
-    (setq ent (ssname sset 0))
-    (setq ent (car (entsel "\né€‰æ‹©å›¾å…ƒï¼š")))
+  (if (setq ss (ssget "_:S+.")) 
+    (setq ent (ssname ss 0))
+    (setq ent (car (entsel)))
   )
+  
   (if ent 
     (progn 
       (if 
@@ -28,7 +31,7 @@
       (princ (strcat entType "\n"))
       (princ (strcat objType "\n"))
       (setq savedEntLast (entlast))
-      (setq inspectatioinText (getpoint "\næ’å…¥æ–‡å­—: "))
+      (setq inspectatioinText (getpoint "\n²åÈëÎÄ×Ö: "))
       (command "_text" 
                "j"
                "mc"
@@ -47,5 +50,6 @@
     )
   )
 
+  (setvar "cmdecho" savedCmdecho)
   (princ)
 )

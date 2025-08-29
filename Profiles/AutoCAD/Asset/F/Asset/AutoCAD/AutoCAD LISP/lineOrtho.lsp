@@ -4,7 +4,7 @@
                     debugMode promptSelectAllLines
                    ) 
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
@@ -188,20 +188,20 @@
         (setq ans "h")
       )
       (initget "h v")
-      (if (setq tmp (getkword (strcat "é€‰æ‹©ç±»å‹[æ°´å¹³çº¿(h)/å‚ç›´çº¿(v)] <" ans ">: \n"))) 
+      (if (setq tmp (getkword (strcat "Ñ¡ÔñÀàĞÍ[Ë®Æ½Ïß(h)/´¹Ö±Ïß(v)] <" ans ">: \n"))) 
         (setq ans tmp)
       )
       (cond 
         ((= ans "v")
          (if ssetVLines 
            (sssetfirst nil ssetVLines)
-           (prompt "æç¤ºï¼šæ²¡æœ‰å‚ç›´çº¿\n")
+           (prompt "ÌáÊ¾£ºÃ»ÓĞ´¹Ö±Ïß\n")
          )
         )
         ((= ans "h")
          (if ssetHLines 
            (sssetfirst nil ssetHLines)
-           (prompt "æç¤ºï¼šæ²¡æœ‰æ°´å¹³çº¿\n")
+           (prompt "ÌáÊ¾£ºÃ»ÓĞË®Æ½Ïß\n")
          )
         )
       )

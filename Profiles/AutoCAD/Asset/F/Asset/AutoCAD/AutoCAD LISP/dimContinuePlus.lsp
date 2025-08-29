@@ -3,16 +3,16 @@
 (defun c:dimContinuePlus (/		  ENTX_DIM_1   ENTX_DIM_NEW P_1
 	     SSX_1	  SS_1	       ENTSEL_1	    STR_OBJECTNAME
 	    )
-  ;;é€‰æ‹©å¯¹é½/æ—‹è½¬æ ‡æ³¨
+  ;;Ñ¡Ôñ¶ÔÆë/Ğı×ª±ê×¢
   ; https://www.cadtutor.net/forum/topic/72449-use-currently-selected-command-into-lisp-routine/
   (if (setq sset (ssget "_I"))
     (setq entsel_1 (ssname sset 0))
-    (setq entsel_1 (car (entsel "é€‰æ‹©ä¸€ä¸ªæ ‡æ³¨ï¼Œè‹¥æ— åˆ™åˆ‡æ¢è‡³å¤šé€‰")))
+    (setq entsel_1 (car (entsel "Ñ¡ÔñÒ»¸ö±ê×¢£¬ÈôÎŞÔòÇĞ»»ÖÁ¶àÑ¡")))
   )
   (if (= entsel_1 nil)
-    ;;é€‰æ‹©å¯¹è±¡ä¸ºç©ºï¼Œåˆ™æ¡†é€‰
+    ;;Ñ¡Ôñ¶ÔÏóÎª¿Õ£¬Ôò¿òÑ¡
     (progn
-      (princ "\næœªæ‰¾åˆ°æ ‡æ³¨ï¼Œåˆ‡æ¢è‡³å¤šé€‰æ¨¡å¼")
+      (princ "\nÎ´ÕÒµ½±ê×¢£¬ÇĞ»»ÖÁ¶àÑ¡Ä£Ê½")
       (setq ss_1 (ssget	'((-4 . "<OR")
 
 			  (-4 . "<AND")
@@ -30,9 +30,9 @@
 		 )
       )
     )
-    ;;é€‰æ‹©å¯¹è±¡ä¸ä¸ºç©ºï¼Œåˆ™æ„é€ é€‰æ‹©é›†
+    ;;Ñ¡Ôñ¶ÔÏó²»Îª¿Õ£¬Ôò¹¹ÔìÑ¡Ôñ¼¯
     (progn
-      ;;æ£€æµ‹æ˜¯å¦ä¸ºæ ‡æ³¨
+      ;;¼ì²âÊÇ·ñÎª±ê×¢
       (setq str_objectname
 	     (vla-get-objectname
 	       (vlax-ename->vla-object entsel_1)
@@ -47,7 +47,7 @@
 	  )
 	(princ)
 	(progn
-	  (princ "\nè¿™ä¸æ˜¯æ ‡æ³¨!")
+	  (princ "\nÕâ²»ÊÇ±ê×¢!")
 	  (quit)
 	)
       )
@@ -56,18 +56,18 @@
     )
   )
 
-  ;;é€‰æ‹©é›†è½¬vla-objectè¡¨
+  ;;Ñ¡Ôñ¼¯×ªvla-object±í
   (setq ssx_1 (BR:SSGET_TO_VLIST ss_1))
 
-  (while (setq p_1 (getpoint "\næŒ‡å®šä¸€ä¸ªç‚¹"))
+  (while (setq p_1 (getpoint "\nÖ¸¶¨Ò»¸öµã"))
     (setq p_1 (trans p_1 1 0))
-    ;;åˆ¤æ–­ç‚¹åœ¨åˆ—è¡¨çš„å“ªä¸ªæ ‡æ³¨çš„èŒƒå›´å†…
+    ;;ÅĞ¶ÏµãÔÚÁĞ±íµÄÄÄ¸ö±ê×¢µÄ·¶Î§ÄÚ
     (setq entx_dim_1 (br:PointProjectNearest_Dimension ssx_1 p_1))
-    ;;æ ‡æ³¨æ–­å¼€,è¿”å›æ–°æ ‡æ³¨
+    ;;±ê×¢¶Ï¿ª,·µ»ØĞÂ±ê×¢
     (setq entx_dim_new
 	   (br:AlignedRotatedDimension_CopyBreak entx_dim_1 p_1)
     )
-    ;;æ„é€ æ–°è¡¨
+    ;;¹¹ÔìĞÂ±í
     (setq ssx_1 (cons entx_dim_new ssx_1))
     (command "dimtedit" "_L" "C")
   )
@@ -75,9 +75,9 @@
   (princ)
 )
 
-;;ssx_1 æä¾›å¯¹é½æ ‡æ³¨æˆ–æ—‹è½¬æ ‡æ³¨çš„vla-objectåˆ—è¡¨
-;;p_1 å‚è€ƒç‚¹
-;;è¿”å›å‚è€ƒç‚¹æŠ•å½±åå¯¹åº”çš„æ ‡æ³¨vla-object
+;;ssx_1 Ìá¹©¶ÔÆë±ê×¢»òĞı×ª±ê×¢µÄvla-objectÁĞ±í
+;;p_1 ²Î¿¼µã
+;;·µ»Ø²Î¿¼µãÍ¶Ó°ºó¶ÔÓ¦µÄ±ê×¢vla-object
 (defun br:PointProjectNearest_Dimension	(ssx_1	       p_1
 					 /	       D_DIFF
 					 D_DIST_13_14_PRO
@@ -93,50 +93,50 @@
   (foreach eachx_1 ssx_1
     (setq ent_1 (vlax-vla-object->ename eachx_1))
     (setq entget_1 (entget ent_1))
-    ;;æ ‡æ³¨ç‚¹1
+    ;;±ê×¢µã1
     (setq p_13 (cdr (assoc 13 entget_1)))
-    ;;æ ‡æ³¨ç‚¹2
+    ;;±ê×¢µã2
     (setq p_14 (cdr (assoc 14 entget_1)))
-    ;;å–å¾—å¯¹è±¡å
+    ;;È¡µÃ¶ÔÏóÃû
     (setq str_objectname (vla-get-objectname eachx_1))
-    ;;æ ‡æ³¨è§’åº¦
+    ;;±ê×¢½Ç¶È
     (if	(= (strcase str_objectname)
 	   (strcase "AcDbAlignedDimension")
 	)
       (setq d_rotation (angle p_13 p_14))
       (setq d_rotation (cdr (assoc 50 entget_1)))
     )
-    ;;æ ‡æ³¨æ—‹è½¬è§’åº¦çº¿
+    ;;±ê×¢Ğı×ª½Ç¶ÈÏß
     (setq p_rot (polar p_13 d_rotation 1000.0))
-    ;;æŠ•å½±ç‚¹
+    ;;Í¶Ó°µã
     (setq p_pro (lm:projectpointtoline p_1 p_13 p_rot))
     (setq p_14_pro (lm:projectpointtoline p_14 p_13 p_rot))
-    ;;æŠ•å½±ç‚¹è·ç¦»
+    ;;Í¶Ó°µã¾àÀë
     (setq d_dist_13_14_pro (distance p_13 p_14_pro))
     (setq d_dist_pro_13 (distance p_pro p_13))
     (setq d_dist_pro_14_pro (distance p_pro p_14_pro))
-    ;;å·®è·ï¼Œç”¨äºåˆ¤æ–­ç‚¹åœ¨å“ªä¸ªæ ‡æ³¨èŒƒå›´
-    ;;æ•°æ®èŒƒå›´é›¶åˆ°è´Ÿæ— ç©·
+    ;;²î¾à£¬ÓÃÓÚÅĞ¶ÏµãÔÚÄÄ¸ö±ê×¢·¶Î§
+    ;;Êı¾İ·¶Î§Áãµ½¸ºÎŞÇî
     (setq d_diff (- d_dist_13_14_pro d_dist_pro_13 d_dist_pro_14_pro))
-    ;;ç»„åˆvla-objectå’Œå·®è·è¡¨
+    ;;×éºÏvla-objectºÍ²î¾à±í
     (setq li_dim_1 (cons (list eachx_1 d_diff) li_dim_1))
   )
-  ;;è¡¨æ’åºï¼Œå·®è·ä»å°åˆ°å¤§
+  ;;±íÅÅĞò£¬²î¾à´ÓĞ¡µ½´ó
   (setq	li_dim_1
 	 (vl-sort li_dim_1
 		  (function (lambda (e1 e2) (> (cadr e1) (cadr e2))))
 	 )
   )
-  ;;è¾“å‡ºæ ‡æ³¨
+  ;;Êä³ö±ê×¢
   (car (car li_dim_1))
 )
 
 
-;;entx_1 - æ ‡æ³¨vla-object
-;;p_1 - æŒ‰æä¾›çš„ç‚¹åˆ†æˆä¸¤ä¸ªæ ‡æ³¨
-;;d_diff - æ­£å€¼å°æ•°(å¦‚0.0000001)ï¼Œæœ€å°ç‚¹è·ç¦»ï¼Œåˆ¤æ–­ç‚¹é‡åˆ
-;;é‡åˆè¿”å›nil
-;;ä¸é‡åˆè¿”å›æ–°å¤åˆ¶çš„æ ‡æ³¨
+;;entx_1 - ±ê×¢vla-object
+;;p_1 - °´Ìá¹©µÄµã·Ö³ÉÁ½¸ö±ê×¢
+;;d_diff - ÕıÖµĞ¡Êı(Èç0.0000001)£¬×îĞ¡µã¾àÀë£¬ÅĞ¶ÏµãÖØºÏ
+;;ÖØºÏ·µ»Ønil
+;;²»ÖØºÏ·µ»ØĞÂ¸´ÖÆµÄ±ê×¢
 (defun br:AlignedRotatedDimension_CopyBreak (entx_1	p_1
 					     /		D_ROTATION
 					     ENTGET_1	ENTGET_2
@@ -152,34 +152,34 @@
   (setq entx_2 (vla-copy entx_1))
   (setq ent_2 (vlax-vla-object->ename entx_2))
   (setq entget_2 (entget ent_2))
-  ;;æ ‡æ³¨ç‚¹1
+  ;;±ê×¢µã1
   (setq p_13 (cdr (assoc 13 entget_1)))
-  ;;æ ‡æ³¨ç‚¹2
+  ;;±ê×¢µã2
   (setq p_14 (cdr (assoc 14 entget_1)))
-  ;;å–å¾—å¯¹è±¡å
+  ;;È¡µÃ¶ÔÏóÃû
   (setq str_objectname (vla-get-objectname entx_1))
-  ;;æ ‡æ³¨è§’åº¦
+  ;;±ê×¢½Ç¶È
   (if (= (strcase str_objectname)
 	 (strcase "AcDbAlignedDimension")
       )
     (setq d_rotation (angle p_13 p_14))
     (setq d_rotation (cdr (assoc 50 entget_1)))
   )
-  ;;æ ‡æ³¨æ—‹è½¬è§’åº¦çº¿
+  ;;±ê×¢Ğı×ª½Ç¶ÈÏß
   (setq p_rot (polar p_13 d_rotation 1000.0))
-  ;;æŠ•å½±ç‚¹
+  ;;Í¶Ó°µã
   (setq p_pro (lm:projectpointtoline p_1 p_13 p_rot))
   (setq p_14_pro (lm:projectpointtoline p_14 p_13 p_rot))
-  ;;ç‚¹ä½è‹¥ç‚¹åœ¨æ ‡æ³¨å¤–è°ƒæ•´
+  ;;µãÎ»ÈôµãÔÚ±ê×¢Íâµ÷Õû
   (setq li_3points (list p_pro p_13 p_14_pro))
   (if (< (abs (sin d_rotation)) 0.707)
-    ;;æŒ‰Xè½´æ’åº
+    ;;°´XÖáÅÅĞò
     (setq li_3points
 	   (vl-sort li_3points
 		    (function (lambda (e1 e2) (> (car e1) (car e2))))
 	   )
     )
-    ;;æŒ‰Yè½´æ’åº
+    ;;°´YÖáÅÅĞò
     (setq li_3points
 	   (vl-sort li_3points
 		    (function (lambda (e1 e2) (> (cadr e1) (cadr e2))))
@@ -189,14 +189,14 @@
   (setq p_13 (car li_3points))
   (setq p_pro (cadr li_3points))
   (setq p_14 (caddr li_3points))
-  ;;æ ‡æ³¨æ›´æ–°
+  ;;±ê×¢¸üĞÂ
   (setq entget_1 (br:assoc_update entget_1 13 p_13))
   (setq entget_1 (br:assoc_update entget_1 14 p_pro))
   (setq entget_2 (br:assoc_update entget_2 13 p_pro))
   (setq entget_2 (br:assoc_update entget_2 14 p_14))
   (entmod entget_1)
   (entmod entget_2)
-  ;;ç¤ºæ„çº¿
+  ;;Ê¾ÒâÏß
   (grdraw (trans p_pro 0 1) (trans p_13 0 1) 1)
   (grdraw (trans p_pro 0 1) (trans p_14 0 1) 2)
 
@@ -204,9 +204,9 @@
 )
 
 
-;;####é€šç”¨å‡½æ•°####
+;;####Í¨ÓÃº¯Êı####
 
-;;å°†ssgetä¸­çš„å¯¹è±¡è½¬æˆvla-objectè¾“å‡ºlist
+;;½«ssgetÖĞµÄ¶ÔÏó×ª³Évla-objectÊä³ölist
 (defun br:ssget_to_vlist (t_ss_1 / t_1 t_list_1 t_en_1)
   (setq t_1 0)
   (setq t_list_1 (list))
@@ -228,7 +228,7 @@
   (trans (list (car p1) (cadr p1) (caddr pt)) nm 0)
 )
 
-;;æä¾›è¡¨å’Œassocå€¼ï¼Œæ›´æ–°è¡¨
+;;Ìá¹©±íºÍassocÖµ£¬¸üĞÂ±í
 (defun br:assoc_update
        (p_list_name p_before_dot p_new_data / NEW_LIST OLD_LIST)
   (setq old_list (assoc p_before_dot p_list_name))

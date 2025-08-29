@@ -10,4 +10,4 @@
 (defun c:bg () (command "._lj_jnbg") (princ))
 (defun c:jc () (command "._lj_jnjc") (princ))
 (defun c:gr () (command "._lj_grjs3") (princ))
-(princ "\niaso2h: æ–¯ç»´å°”èŠ‚èƒ½2018å‘½ä»¤ç¼©å†™åŠ è½½å®Œæ¯•")
+(princ "\niaso2h: Ë¹Î¬¶û½ÚÄÜ2018ÃüÁîËõĞ´¼ÓÔØÍê±Ï")

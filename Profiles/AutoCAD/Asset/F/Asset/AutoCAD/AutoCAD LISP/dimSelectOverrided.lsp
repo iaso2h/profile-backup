@@ -1,6 +1,6 @@
 (defun c:dimSelectOverrided (/ ss ssNew i ename vlaObj textOverrided textMeasurement) 
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
@@ -55,7 +55,7 @@
 
   (if ssNew 
     (sssetfirst nil ssNew)
-    (princ "æ²¡æœ‰è™šæ ‡æ•°å€¼çš„æ ‡æ³¨\n")
+    (princ "Ã»ÓĞĞé±êÊıÖµµÄ±ê×¢\n")
   )
 
   (princ)

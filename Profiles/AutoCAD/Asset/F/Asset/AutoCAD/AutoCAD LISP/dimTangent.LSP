@@ -1,6 +1,6 @@
 ;; http://bbs.mjtd.com/forum.php?mod=viewthread&tid=100786&fromuid=282351
-;; æ¨¡ä»¿å¤©æ­£é€ç‚¹æ ‡æ³¨  BY---WOWAN1314
-(PRINC "\né€ç‚¹æ ‡æ³¨ç¨‹åºBY--WOWAN1314; å¯åŠ¨å‘½ä»¤dc  ")
+;; Ä£·ÂÌìÕıÖğµã±ê×¢  BY---WOWAN1314
+(PRINC "\nÖğµã±ê×¢³ÌĞòBY--WOWAN1314; Æô¶¯ÃüÁîdc  ")
 (defun c:tangentDim ( / pt1 pt2 NAME P1 P2 PT3 PT3-1 ANGDU LOOP CODE PT10 NAME0 oldosmode PT_LST PT_LST1 NAME1 tx_start tx_END tx_error zctbz last_ent)
 
 (defun tx_start ( / )
@@ -14,11 +14,11 @@
   (princ)
 )
 (defun tx_error (s)
- (PRINC "\nç¨‹åºè¢«ç»ˆæ­¢")
+ (PRINC "\n³ÌĞò±»ÖÕÖ¹")
   (tx_end)
 )
 
-  (defun zctbz (name PTS / ds ent pt10 pt14 pts) ; æ›´æ–°æ ‡æ³¨
+  (defun zctbz (name PTS / ds ent pt10 pt14 pts) ; ¸üĞÂ±ê×¢
     (setq ent (entget name)
 	  pt10 (cdr (assoc 10 ent))
 	  pt14 (cdr (assoc 14 ent))
@@ -31,7 +31,7 @@
 	    )
     )
   )
-(defun last_ent (en / ss);ENåé€‰æ‹©é›†
+(defun last_ent (en / ss);ENºóÑ¡Ôñ¼¯
    (if en
      (progn
        (setq ss (ssadd))
@@ -50,14 +50,14 @@
    );if
 )
 (tx_start)
- (SETQ P1 (GETPOINT "\næŒ‡å®šæ ‡æ³¨ç¬¬ä¸€ç‚¹:") P2 (GETPOINT P1 "\næŒ‡å®šæ ‡æ³¨ç¬¬äºŒç‚¹:"))
+ (SETQ P1 (GETPOINT "\nÖ¸¶¨±ê×¢µÚÒ»µã:") P2 (GETPOINT P1 "\nÖ¸¶¨±ê×¢µÚ¶şµã:"))
 (SETQ NAME0 (ENTLAST))
   (entmake (list '(0 . "DIMENSION") '(100 . "AcDbEntity") '(100 . "AcDbDimension") (cons 10 p2) '(70 . 33) '(1 . "") '
 		   (100 . "AcDbAlignedDimension") (cons 13 (TRANS p1 1 0)) (cons 14 (TRANS p2 1 0))
 	     )
     )
 (SETQ NAME(ENTLAST) loop T)
-(PRINC "\nç‚¹å–æ ‡æ³¨çº¿ä½ç½®:")
+(PRINC "\nµãÈ¡±ê×¢ÏßÎ»ÖÃ:")
 (while loop
   (setq code (grread T 8))
   (cond
@@ -67,19 +67,19 @@
 )
  (SETQ ANGDU (+ (* 0.5 pi) (angle  p1 p2)))
  (SETQ PT_LST (LIST P1 P2) pt2 p2 PT10 (TRANS PT10 0 1))
-(PRINC "\næŒ‡å®šæ ‡æ³¨ä¸‹ä¸€ç‚¹:")
+(PRINC "\nÖ¸¶¨±ê×¢ÏÂÒ»µã:")
 (WHILE 
-     (SETQ PT3 (GETPOINT PT2) PT2 PT3) ;;PT2ä¿å­˜ä¸‹è¿™æ¬¡é€‰æ‹©ç‚¹
+     (SETQ PT3 (GETPOINT PT2) PT2 PT3) ;;PT2±£´æÏÂÕâ´ÎÑ¡Ôñµã
      (setq pt3-1 (polar pT3 ANGDU 2))
-     (setq pt3 (inters pT3 pt3-1 p1 p2 nil));;PT3ä¸ºè¦æ ‡çš„ç‚¹
-     (SETQ PT_LST (CONS PT3 PT_LST));;æ›´æ–°æ ‡æ³¨ç‚¹è¡¨
+     (setq pt3 (inters pT3 pt3-1 p1 p2 nil));;PT3ÎªÒª±êµÄµã
+     (SETQ PT_LST (CONS PT3 PT_LST));;¸üĞÂ±ê×¢µã±í
      (SETQ PT_LST (vl-sort PT_LST (function (lambda (e1 e2) (< (car e1) (car e2))))))
      (SETQ PT_LST (vl-sort PT_LST (function (lambda (e1 e2) (< (caDr e1) (caDr e2))))))
      (command "eRASE" (last_ent NAME0) "")
      (SETQ  PT_LST1  PT_LST)
      (setq oldosmode (getvar "osmode") NAME1(ENTLAST)) 
      (setvar "osmode" 1)
-     (repeat (1- (length pt_lst1));;é‡å¤ç‚¹æ•°-1æ­¤æ ‡æ³¨
+     (repeat (1- (length pt_lst1));;ÖØ¸´µãÊı-1´Ë±ê×¢
       (if (>= (distance (CAR pT_LST1) (CADR pT_LST1)) 0.01)
       (progn
       (COMMAND "_dimaligned" (CAR pT_LST1) (CADR pT_LST1) PT10)
@@ -98,7 +98,7 @@
 )
 
 
-;;å°ºå¯¸æ–‡å­—é¿è®©å‡½æ•°---------BY YAD
+;;³ß´çÎÄ×Ö±ÜÈÃº¯Êı---------BY YAD
 (defun yad_dimad1 (SS / yad-dxf yad-perpt yad-chgent ss n m ent en ang w h l_dat l_mov oldang mov s pt pt1 pt2 l_adj en l_en disang disw dish item item1)
   (defun yad-dxf(en n)
     (if (not (listp en)) (setq en (entget en)))
@@ -118,7 +118,7 @@
     )
     (entmod en)
   )
-  ;(prompt "\né€‰æ‹©éœ€è¦è‡ªåŠ¨è°ƒæ•´æ–‡å­—ä½ç½®çš„ä¸€ç»„æ ‡æ³¨å°ºå¯¸ï¼š")
+  ;(prompt "\nÑ¡ÔñĞèÒª×Ô¶¯µ÷ÕûÎÄ×ÖÎ»ÖÃµÄÒ»×é±ê×¢³ß´ç£º")
   (if SS
     (progn
      ; (vl-cmdf "_undo" "_be")
@@ -198,7 +198,7 @@
           )
         )
       )
-      ;(prompt "\nè‡ªåŠ¨è°ƒæ•´å®Œæ¯•ï¼")
+      ;(prompt "\n×Ô¶¯µ÷ÕûÍê±Ï£¡")
      ; (vl-cmdf "_undo" "_e")
     )
   )

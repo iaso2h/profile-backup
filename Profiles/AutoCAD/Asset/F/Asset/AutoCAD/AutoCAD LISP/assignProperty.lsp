@@ -1,6 +1,6 @@
 ; File: assignProperty.lsp
 ; Author: iaso2h
-; Description: å¢å¼ºç‰ˆå±æ€§åŒ¹é…
+; Description: ÔöÇ¿°æÊôĞÔÆ¥Åä
 ; Version: 0.0.1
 ; Last Modified: 2024-12-24
 
@@ -8,15 +8,15 @@
   (vl-load-com)
   (princ "\n")
   (defun *error* (msg) 
-    (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
       (princ (strcat "Error: " msg "\n"))
     )
     (princ)
   )
   (defun loopEntSel (/ entSrc) 
-    (setq entSrc (car (entsel "\né€‰æ‹©æºå›¾å…ƒï¼š")))
+    (setq entSrc (car (entsel "\nÑ¡ÔñÔ´Í¼Ôª£º")))
     (while (null entSrc) 
-      (setq entSrc (car (entsel "\né€‰æ‹©æºå›¾å…ƒï¼š")))
+      (setq entSrc (car (entsel "\nÑ¡ÔñÔ´Í¼Ôª£º")))
     )
 
     entSrc

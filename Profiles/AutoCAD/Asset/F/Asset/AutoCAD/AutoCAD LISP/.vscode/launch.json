@@ -5,17 +5,25 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to ZWCAD",
-      "type": "zwlisp",
+      "type": "attachlisp",
       "request": "attach",
-      "stopOnEntry": false
-    },
-    {
-      "name": "Launch ZWCAD",
-      "type": "zwlisp",
-      "request": "launch",
-      "program": "C:\\Program Files\\ZWSOFT\\ZWCAD 2024\\ZWCAD.exe",
-      // "stopOnEntry": false
+      "name": "AutoLISP Debug: Attach",
+      "attributes": {
+        "//": "This configuration has been deprecated. Instead use the Debug: Attach Process setting of the AutoCAD AutoLISP Extension."
+      }
     }
+    // {
+    //   "name": "Attach to ZWCAD",
+    //   "type": "zwlisp",
+    //   "request": "attach",
+    //   "stopOnEntry": false
+    // },
+    // {
+    //   "name": "Launch ZWCAD",
+    //   "type": "zwlisp",
+    //   "request": "launch",
+    //   "program": "C:\\Program Files\\ZWSOFT\\ZWCAD 2024\\ZWCAD.exe",
+    //   // "stopOnEntry": false
+    // }
   ]
 }

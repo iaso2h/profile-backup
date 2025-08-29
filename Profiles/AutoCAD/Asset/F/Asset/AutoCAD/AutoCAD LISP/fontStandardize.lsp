@@ -46,7 +46,7 @@
       (and 
         (member (vla-get-name x) textStyleNameInDimension)
         (not 
-          (vl-string-search "ä»¿å®‹_gb2312.ttf" (strcase (vla-get-fontfile x) T))
+          (vl-string-search "·ÂËÎ_gb2312.ttf" (strcase (vla-get-fontfile x) T))
         )
       )
       (progn 
@@ -58,8 +58,8 @@
       )
       (if 
         (or 
-          ; (vl-string-search "ä»¿å®‹.ttf" (strcase (vla-get-fontfile x) T))
-          (vl-string-search "ä»¿å®‹_gb2312.ttf" (strcase (vla-get-fontfile x) T))
+          ; (vl-string-search "·ÂËÎ.ttf" (strcase (vla-get-fontfile x) T))
+          (vl-string-search "·ÂËÎ_gb2312.ttf" (strcase (vla-get-fontfile x) T))
           ; (vl-string-search "simfang.ttf" (strcase (vla-get-fontfile x) T))
         )
         (progn 

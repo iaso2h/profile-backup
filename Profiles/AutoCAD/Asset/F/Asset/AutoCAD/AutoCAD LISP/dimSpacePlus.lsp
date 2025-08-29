@@ -1,13 +1,13 @@
 ;; credit: http://bbs.mjtd.com/forum.php?mod=viewthread&tid=181931&highlight=%BC%E4%BE%E0d
-;;; ã€€ã€€ã€€      ã€Šæ ‡æ³¨æ•´ç†ã€‹v4.1
+;;; ¡¡¡¡¡¡      ¡¶±ê×¢ÕûÀí¡·v4.1
 ;;; ===================================================
-;;; åŠŸèƒ½ï¼šæ°´å¹³æ ‡æ³¨å’Œå‚ç›´æ ‡æ³¨æ•´ç†æˆç­‰è·ç¦»æ ¼å¼
-;;; ä½¿ç”¨ï¼š1å•è§†å›¾æ•´ç†ï¼šå‘½ä»¤bzzlï¼ŒæŠŠä¸€ä¸ªè§†å›¾è¿åŒæ ‡æ³¨é€‰å…¨ï¼Œ
-;;;       2å•æ–¹å‘æ•´ç†ï¼šå‘½ä»¤zlï¼Œé€‰æ‹©åŒä¸€ä¸ªæ–¹å‘çš„æ ‡æ³¨æ•´ç†ï¼Œæ ¹æ®å­—ä½“é«˜åº¦çš„è‡ªåŠ¨è°ƒæ•´é—´è·
-;;; ä½œè€…ï¼šlangjs    qq:59509100     æ—¥æœŸ:2011å¹´11æœˆ30æ—¥
+;;; ¹¦ÄÜ£ºË®Æ½±ê×¢ºÍ´¹Ö±±ê×¢ÕûÀí³ÉµÈ¾àÀë¸ñÊ½
+;;; Ê¹ÓÃ£º1µ¥ÊÓÍ¼ÕûÀí£ºÃüÁîbzzl£¬°ÑÒ»¸öÊÓÍ¼Á¬Í¬±ê×¢Ñ¡È«£¬
+;;;       2µ¥·½ÏòÕûÀí£ºÃüÁîzl£¬Ñ¡ÔñÍ¬Ò»¸ö·½ÏòµÄ±ê×¢ÕûÀí£¬¸ù¾İ×ÖÌå¸ß¶ÈµÄ×Ô¶¯µ÷Õû¼ä¾à
+;;; ×÷Õß£ºlangjs    qq:59509100     ÈÕÆÚ:2011Äê11ÔÂ30ÈÕ
 ;;; ===================================================
 ;;;
-;;; å•æ–¹å‘æ ‡æ³¨æ•´ç†ä¸»ç¨‹åº
+;;; µ¥·½Ïò±ê×¢ÕûÀíÖ÷³ÌĞò
 (defun c:dimSpacePlus (/ bili ent hlst i lst name p0 p10 p10x p10y p13 p13x p13y p14 p14x p14y pan pany shezi ss uu vv zhigao)
   (setvar "CMDECHO" 0)
   (command ".UNDO" "BE")
@@ -20,17 +20,17 @@
   (setq shezi "R")
   (while (/= (type shezi) 'list)
     (initget "S ")
-    (princ (strcat "\næŒ‡å®šå°ºå¯¸åç§»èµ·ç‚¹ï¼Œæˆ–<ä¸æ”¹å˜>ï¼š[é»˜è®¤å°ºå¯¸é—´è·<" (rtos pany 2 1) ">é‡æ–°è®¾ç½®(S)]"))
+    (princ (strcat "\nÖ¸¶¨³ß´çÆ«ÒÆÆğµã£¬»ò<²»¸Ä±ä>£º[Ä¬ÈÏ³ß´ç¼ä¾à<" (rtos pany 2 1) ">ÖØĞÂÉèÖÃ(S)]"))
     (setq shezi (getpoint ""))
     (if (= shezi "S")
-      (setq pany (getreal (strcat "\nè®¾ç½®å°ºå¯¸é—´è·:<" (rtos pany 2 1) ">")))
+      (setq pany (getreal (strcat "\nÉèÖÃ³ß´ç¼ä¾à:<" (rtos pany 2 1) ">")))
       (setq p0 shezi)
     )
   )
   (if (/= p0 nil)
     (fenxiangxianbiaozhu ss p0 pany)
   )
-  (setq p00 (getpoint "\næŒ‡å®šå¼•å‡ºçº¿ä½ç½®ï¼Œæˆ–<ä¸æ”¹å˜>ï¼š"))
+  (setq p00 (getpoint "\nÖ¸¶¨Òı³öÏßÎ»ÖÃ£¬»ò<²»¸Ä±ä>£º"))
   (if p00
     (repeat (setq i (sslength ss))
       (setq ent (ssname ss (setq i (1- i))))
@@ -43,7 +43,7 @@
   (command ".UNDO" "E")
   (princ)
 )
-;;; å•è§†å›¾æ ‡æ³¨æ•´ç†ä¸»ç¨‹åº
+;;; µ¥ÊÓÍ¼±ê×¢ÕûÀíÖ÷³ÌĞò
 (defun c:c:dimSpacePlusView (/ bili end end_data ent i maxp maxx maxx0 maxy maxy0 minp minx minx0 miny miny0 name p10 p10x p10y p13 p13x p13y p14
                  p14x p14y pan pany pmax pmin ss ss00 ss01 ss02 ss03 ss04 zhigao
               )
@@ -53,7 +53,7 @@
   (setq bili (getvar "DIMSCALE"))
   (setq ss00 (ssget '((0 . "DIMENSION,LINE,LWPOLYLINE,INSERT"))))
   (setq zhigao (biaozzg ss00))
-  (setq pany (* zhigao bili 1.6))      ; æ­¤å¤„è®¾ç½®â€œé»˜è®¤å°ºå¯¸é—´è·â€ä¸ºå­—é«˜çš„1.6å€
+  (setq pany (* zhigao bili 1.6))      ; ´Ë´¦ÉèÖÃ¡°Ä¬ÈÏ³ß´ç¼ä¾à¡±Îª×Ö¸ßµÄ1.6±¶
   (setq ss (ssadd)
         ss01 (ssadd)
         ss02 (ssadd)
@@ -135,7 +135,7 @@
   (command ".UNDO" "E")
   (princ)
 )
-;;; åˆ†æ–¹å‘æ ‡æ³¨å­å‡½æ•°
+;;; ·Ö·½Ïò±ê×¢×Óº¯Êı
 (defun fenxiangxianbiaozhu (ss p0 pany / ent hlst i lst name p10 p10x p10y p13 p13x p13y p14 p14x p14y uu vv)
   (setq lst '()
         hlst '()
@@ -174,14 +174,14 @@
   (setq uu 0
         vv 1
   )
-  (biaozhu lst p0 uu vv pany)               ; å¤„ç†æ°´å¹³æ ‡æ³¨
+  (biaozhu lst p0 uu vv pany)               ; ´¦ÀíË®Æ½±ê×¢
   (setq uu 1
         vv 0
   )
-  (biaozhu hlst p0 uu vv pany)               ; å¤„ç†å‚ç›´æ ‡æ³¨
+  (biaozhu hlst p0 uu vv pany)               ; ´¦Àí´¹Ö±±ê×¢
   (princ)
 )
-;;; è®¡ç®—åæ ‡ç‚¹ï¼Œå°ºå¯¸æ›´æ–°åˆ°åˆé€‚ä½ç½®å­å‡½æ•°
+;;; ¼ÆËã×ø±êµã£¬³ß´ç¸üĞÂµ½ºÏÊÊÎ»ÖÃ×Óº¯Êı
 (defun biaozhu (lst p0 uu vv pany / bili chansu dim1 ent fuh fuh1 i lst_p1314x lst_p1314y lst02 lst04 n name p0x p0y p10 p10x p10y
                     p11 p11x p11y p13 p13x p13y p14 p14x p14y pl pmax pmin
                )
@@ -189,14 +189,14 @@
         pl (getvar "DIMEXE")
         n 1
   )
-  (while (> (length lst) 0)               ; å¦‚æœæ ‡æ³¨è¿˜æœ‰æ ‡æ³¨åˆ—è¡¨ç€å¾ªç¯
+  (while (> (length lst) 0)               ; Èç¹û±ê×¢»¹ÓĞ±ê×¢ÁĞ±í×ÅÑ­»·
     (setq p0x (car p0)
           p0y (cadr p0)
-          lst02 (lstbak lst)               ; å°†åˆ—è¡¨å¤‡ä»½ä¸€ä¸ª
+          lst02 (lstbak lst)               ; ½«ÁĞ±í±¸·İÒ»¸ö
           lst04 '()
           lst_p1314x '()
           lst_p1314y '()
-    )                                       ; å¯¹åˆ—è¡¨çš„æ ‡æ³¨å¾ªç¯
+    )                                       ; ¶ÔÁĞ±íµÄ±ê×¢Ñ­»·
     (repeat (setq i (length lst))
       (setq dim1 (nth (setq i (1- i))
                       lst
@@ -206,7 +206,7 @@
             pmin (cadr dim1)
             pmax (caddr dim1)
       )
-      (setq chansu (baohan dim1 lst))  ; åˆ¤æ–­è¿™ä¸ªå…ƒç´ æ˜¯å¦åŒ…å«å…¶å®ƒå°ºå¯¸å¦‚æ— åˆ™æ›´æ–°ã€‚
+      (setq chansu (baohan dim1 lst))  ; ÅĞ¶ÏÕâ¸öÔªËØÊÇ·ñ°üº¬ÆäËü³ß´çÈçÎŞÔò¸üĞÂ¡£
       (if (= chansu "F")
         (progn
           (setq ent (entget name))
@@ -255,7 +255,7 @@
   )
   (princ)
 )
-;;; åˆ¤æ–­æŸä¸ªå°ºå¯¸èŒƒå›´å†…æ˜¯å¦æœ‰å…¶å®ƒå°ºå¯¸å­å‡½æ•°
+;;; ÅĞ¶ÏÄ³¸ö³ß´ç·¶Î§ÄÚÊÇ·ñÓĞÆäËü³ß´ç×Óº¯Êı
 (defun baohan (dim1 lst / chansu dim2 e1 e2 i jili jili01 lst03 name name01 pmax pmax01 pmin pmin01)
   (setq name (car dim1)
         pmin (cadr dim1)
@@ -326,10 +326,10 @@
   (if (member (list name jili) lst04)
     (setq chansu "T")
   )
-  (princ "\nç¨‹åºæ­£åœ¨è®¡ç®—ï¼Œè¯·ç¨å......")
+  (princ "\n³ÌĞòÕıÔÚ¼ÆËã£¬ÇëÉÔºó......")
   chansu
 )
-;;; å°†è¯¯é€‰çš„æ¨ªçºµæ ‡æ³¨ï¼ˆå°‘æ•°é‡ï¼‰ä»é€‰æ‹©é›†ä¸­åˆ é™¤å­å‡½æ•°
+;;; ½«ÎóÑ¡µÄºá×İ±ê×¢£¨ÉÙÊıÁ¿£©´ÓÑ¡Ôñ¼¯ÖĞÉ¾³ı×Óº¯Êı
 (defun ssgengxin (ss / ent i name p10 p10x p10y p14 p14x p14y ss1 ss2)
   (setq ss1 (ssadd)
         ss2 (ssadd)
@@ -362,7 +362,7 @@
   )
   ss
 )
-;;; å››èˆäº”å…¥å‡½æ•°ï¼Œent:å®æ•°ï¼Œnï¼šå°æ•°ç‚¹ä¿ç•™ä½æ•°
+;;; ËÄÉáÎåÈëº¯Êı£¬ent:ÊµÊı£¬n£ºĞ¡Êıµã±£ÁôÎ»Êı
 (defun sswr (ent n / fh)
   (if (>= ent 0.0)
     (setq fh +)
@@ -371,7 +371,7 @@
   (setq ent (/ (atof (itoa (fix (fh (* ent (expt 10 n)) 0.5)))) (expt 10 n)))
   ent
 )
-;;; ç”Ÿæˆä¸€ä¸ªå¤‡ä»½çš„åˆ—è¡¨
+;;; Éú³ÉÒ»¸ö±¸·İµÄÁĞ±í
 (defun lstbak (lst / i lst02)
   (setq lst02 '())
   (repeat (setq i (length lst))
@@ -383,7 +383,7 @@
   )
   lst02
 )
-(defun lguolv (ss / ent ent1 i ssguol) ; ä¸‹é¢ç¨‹åºè®¾ç½®è¿‡æ»¤ä¸­å¿ƒçº¿è™šçº¿æ¡ä»¶
+(defun lguolv (ss / ent ent1 i ssguol) ; ÏÂÃæ³ÌĞòÉèÖÃ¹ıÂËÖĞĞÄÏßĞéÏßÌõ¼ş
   (setq ssguol '("ACAD_ISO03W100" "ACAD_ISO02W100"
          "DASHED" "DASHED2"
          "DASHEDX2" "HIDDEN"
@@ -393,7 +393,7 @@
          "CENTERX2" "DASHDOT"
          "DASHDOT2" "DASHDOTX2"
         )
-  )                                       ; ä¸‹é¢ç¨‹åºå°†è™šçº¿ä¸­å¿ƒçº¿å›¾å±‚åŠ å…¥è™šçº¿è¿‡æ»¤æ¡ä»¶
+  )                                       ; ÏÂÃæ³ÌĞò½«ĞéÏßÖĞĞÄÏßÍ¼²ã¼ÓÈëĞéÏß¹ıÂËÌõ¼ş
   (setq ssguol (append
                  ssguol
                  (guolv-01 "ACAD_ISO03W100")
@@ -413,7 +413,7 @@
                  (guolv-01 "DASHDOT2")
                  (guolv-01 "DASHDOTX2")
                )
-  )                                       ; ä¸‹é¢ç¨‹åºå°†é€‰æ‹©é›†ä¸­éšå±‚çš„è¿‡æ»¤æ‰
+  )                                       ; ÏÂÃæ³ÌĞò½«Ñ¡Ôñ¼¯ÖĞËæ²ãµÄ¹ıÂËµô
   (repeat (setq i (sslength ss))
     (setq ent (ssname ss (setq i (1- i))))
     (setq ent1 (entget ent))
@@ -424,7 +424,7 @@
         )
       (setq ss (ssdel ent ss))
     )
-  )                                       ; ä¸‹é¢ç¨‹åºå°†é€‰æ‹©é›†ä¸­å…¶ä»–å±‚çš„è¿‡æ»¤æ‰
+  )                                       ; ÏÂÃæ³ÌĞò½«Ñ¡Ôñ¼¯ÖĞÆäËû²ãµÄ¹ıÂËµô
   (repeat (setq i (sslength ss))
     (setq ent (ssname ss (setq i (1- i))))
     (setq ent1 (entget ent))
@@ -436,10 +436,10 @@
 )
 (defun guolv-01 (xianxing / layers)
   (setq layers '())
-  (setq layers (get_layer_linetype xianxing)) ; è·å–åŒ…å«æŒ‡å®šçº¿å‹çš„å›¾å±‚
+  (setq layers (get_layer_linetype xianxing)) ; »ñÈ¡°üº¬Ö¸¶¨ÏßĞÍµÄÍ¼²ã
   layers
 )
-(defun get_layer_linetype (linetype / ly_info ly_infos tmplist)        ; æå–åŒ…å«æŒ‡å®šçº¿å‹çš„å›¾å±‚
+(defun get_layer_linetype (linetype / ly_info ly_infos tmplist)        ; ÌáÈ¡°üº¬Ö¸¶¨ÏßĞÍµÄÍ¼²ã
   (setq ly_infos (get_layer))
   (foreach ly_info ly_infos
     (if (= linetype (substr (cdr (assoc 6 ly_info)) 1 (strlen linetype)))
@@ -452,7 +452,7 @@
   )
   tmplist
 )
-(defun get_layer (/ layer_info layers) ; è¿”å›å½“å‰å›¾çº¸ä¸­å›¾å±‚ä¿¡æ¯
+(defun get_layer (/ layer_info layers) ; ·µ»Øµ±Ç°Í¼Ö½ÖĞÍ¼²ãĞÅÏ¢
   (setq layer_info (tblnext "LAYER" t))
   (while (/= layer_info nil)
     (setq layers (append
@@ -464,11 +464,11 @@
   )
   layers
 )
-;;; è®¡ç®—åæ ‡ç‚¹å­ç¨‹åº
+;;; ¼ÆËã×ø±êµã×Ó³ÌĞò
 (defun jisuanshuju01 (ent p00 / p00x p00y p0x p0y p10 p10x p10y p11 p11x p11y p13 p13x p13y p14 p14x p14y)
   (setq p00x (car p00)
         p00y (cadr p00)
-  )                                       ; å–å¾—æ ‡æ³¨å„å…³é”®åæ ‡ç‚¹å€¼
+  )                                       ; È¡µÃ±ê×¢¸÷¹Ø¼ü×ø±êµãÖµ
   (setq p10 (cdr (assoc 10 ent))
         p14 (cdr (assoc 14 ent))
         p11 (cdr (assoc 11 ent))
@@ -481,7 +481,7 @@
         p11y (cadr p11)
         p13x (car p13)
         p13y (cadr p13)
-  )                                       ; åˆ¤æ–­æ¨ªã€çºµåæ ‡å¹¶è®¡ç®—å¯¹é½åçš„å…³é”®æ ‡æ³¨åæ ‡ç‚¹å€¼
+  )                                       ; ÅĞ¶Ïºá¡¢×İ×ø±ê²¢¼ÆËã¶ÔÆëºóµÄ¹Ø¼ü±ê×¢×ø±êµãÖµ
   (cond
     ((= (fix (+ 0.5 p10x)) (fix (+ 0.5 p14x)))
       (setq np13 (list p13x p00y 0.0)
@@ -499,7 +499,7 @@
   )
   (princ)
 )
-(defun gengxinchichunjiexian01 (ent np13 np14) ; å¯¹é½å¼•å‡ºçº¿å­ç¨‹åº
+(defun gengxinchichunjiexian01 (ent np13 np14) ; ¶ÔÆëÒı³öÏß×Ó³ÌĞò
   (setq ent (subst
               (cons 13 np13)
               (assoc 13 ent)
@@ -522,9 +522,9 @@
     (if (= (cdr (assoc 0 (entget name))) "DIMENSION")
       (progn
         (setq dim (vlax-ename->vla-object name))
-        (setq wzgd (vla-get-textheight dim)) ; å¾—åˆ°æ ‡æ³¨æ ·å¼çš„æ–‡å­—é«˜åº¦
-        (setq bl (vla-get-scalefactor dim)) ; å¾—åˆ°æ ‡æ³¨çš„è°ƒæ•´æ¯”ä¾‹
-        (setq wzh (* wzgd bl))               ; å¾—åˆ°çœŸæ­£çš„æ–‡å­—é«˜åº¦
+        (setq wzgd (vla-get-textheight dim)) ; µÃµ½±ê×¢ÑùÊ½µÄÎÄ×Ö¸ß¶È
+        (setq bl (vla-get-scalefactor dim)) ; µÃµ½±ê×¢µÄµ÷Õû±ÈÀı
+        (setq wzh (* wzgd bl))               ; µÃµ½ÕæÕıµÄÎÄ×Ö¸ß¶È
         (setq lst (cons wzh lst))
       )
     )

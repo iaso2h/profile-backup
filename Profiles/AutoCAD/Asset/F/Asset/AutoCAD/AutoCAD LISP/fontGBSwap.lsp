@@ -11,12 +11,12 @@
             (strcat 
               "\n"
               typeFace
-              " has replaced by ä»¿å®‹.ttf"
+              " has replaced by ·ÂËÎ.ttf"
             )
           )
         )
       )
-      (if (wcmatch (strcase typeFace) "*ä»¿å®‹_GB2312*") 
+      (if (wcmatch (strcase typeFace) "*·ÂËÎ_GB2312*") 
         (if (findfile simfangPath) 
           (progn 
             (vla-put-fontfile f simfangPath)
@@ -24,7 +24,7 @@
               (strcat 
                 "\n"
                 typeFace
-                " has replaced by ä»¿å®‹.ttf"
+                " has replaced by ·ÂËÎ.ttf"
               )
             )
           )
@@ -37,7 +37,7 @@
                 (strcat 
                   "\n"
                   typeFace
-                  " has replaced by æ¥·ä½“.ttf"
+                  " has replaced by ¿¬Ìå.ttf"
                 )
               )
             )

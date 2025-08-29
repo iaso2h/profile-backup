@@ -5,15 +5,15 @@
       (if (null *tchDimToggleChk*) 
         (progn 
           (setq *tchDimToggleChk* t)
-          (princ "宸插垏鎹负浣跨敤澶╂鏍囨敞\n")
+          (princ "已切换为使用天正标注\n")
         )
         (progn 
           (setq *tchDimToggleChk* nil)
-          (princ "宸插垏鎹负浣跨敤榛樿鏍囨敞\n")
+          (princ "已切换为使用默认标注\n")
         )
       )
     )
-    (princ "澶╂鎻掍欢娌℃湁鍔犺浇\n")
+    (princ "天正插件没有加载\n")
   )
 
   (princ)
