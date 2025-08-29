@@ -5,8 +5,6 @@
 ; utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 ; https://utf8.supfree.net
 (princ "\n")
-(setq cur_dir (getvar "dwgprefix"))
-(princ (strcat "CWD: " cur_dir "\n"))
 (setq *searchIncluded* T)
 
 (if (eq (substr (getvar "cprofile") 1 7) "TArch20") 
@@ -21,6 +19,13 @@
     (setq *tchLoaded* t)
   )
   (progn 
+
+    (setq *tchLoaded* nil)
+  )
+)
+; 
+(if (wcmatch (getvar "PRODUCT") "AutoCAD*") 
+  (progn 
     (if (eq (load "layerDirector.lsp" nil) nil) 
       (progn 
         (princ "iaso2h: 无法找到图层定向文件\n")
@@ -28,12 +33,9 @@
         (setq *searchIncluded* nil)
       )
     )
-    (setq *tchLoaded* nil)
+
+    (setq *autoCADLoaded* T)
   )
-)
-; 
-(if (wcmatch (getvar "PRODUCT") "AutoCAD*") 
-  (setq *autoCADLoaded* T)
   (progn 
     ; (setvar "FONTALT" "C:\\Program Files\\ZWSOFT\\ZWCAD 2024\\fonts\\HZTXT.SHX")
     (setq *autoCADLoaded* nil)
@@ -69,13 +71,17 @@
 (defun c:mc () (command "._polygon" "4" pause "c") (princ))
 (defun c:reg () (command "._regenall") (princ))
 (defun c:rg () (command "._regen") (princ))
-(defun c:tre () (command "._extrim") (princ))
+(if (not *autoCADLoaded*)
+  (defun c:tre () (command "._trim" "_o" "_ex" pause) (princ))
+)
 (defun c:w () (command "._move") (princ))
 (defun c:wt () (command "._syswindows" "V") (princ))
 (defun c:wtv () (command "._syswindows" "V") (princ))
 (defun c:wth () (command "._syswindows" "H") (princ))
 (defun c:f () (command "._fillet" "u") (princ))
 (defun c:ff () (command "._fillet" "R" "0") (command "._fillet" "u") (princ))
+
+(defun c:t () (command "._syswindows" "H") (princ))
 
 ; Viewport
 (if *autoCADLoaded* 

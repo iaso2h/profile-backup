@@ -1,4 +1,4 @@
-  ;; Otto
+;; Otto
 (autoload "otto" '("otto"))
 (autoload "ottoPlot" '("ottoPlotNameUpdate" "ottoPlotRatioUpdate"))
 
@@ -6,22 +6,22 @@
 (autoload "fileOpenContainingFolder" '("fileOpenContainingFolder"))
 (autoload "fileExportSelected" '("fileExportSelected"))
 
-  ;; Debug
+;; Debug
 (autoload "whatIs" '("whatIs"))
 (autoload "whatIsInside" '("whatIsInside"))
 
-  ;;Utilities
-(autoload "getLength" '("getLength" "gl"))
+;;Utilities
+(autoload "getLength" '("getLength" "getLengthAverage"))
 (autoload "optimize" '("optimize"))
 
-  ;; Select
+;; Select
 (if (not *tchLoaded*) 
   (autoload "selectSimilar" '("ss"))
 )
 (autoload "selectDim" '("selectDim" "sed"))
 (autoload "selectChain" '("selectChain" "sec"))
 
-  ;; Alignment & Space
+;; Alignment & Space
 (if (not *tchLoaded*) 
   (progn 
     (autoload "alignCoordinate" '("alignCoordinate"))
@@ -31,10 +31,10 @@
   )
 )
 
-  ;; AddSelected Plus
+;; AddSelected Plus
 (autoload "addSelectedPlus" '("addSelectedPlus"))
 
-  ;; Move & Copy
+;; Move & Copy
 (if (not *tchLoaded*) 
   (progn 
     (autoload "freeMove" '("freeMove"))
@@ -42,7 +42,7 @@
   )
 )
 
-  ;; Block
+;; Block
 (autoload "blockBreakLine" 
           '("blockBreakMove" "blockBreakInplace" "blockBreakInplaceSelection")
 )
@@ -58,12 +58,12 @@
 (autoload "blockColor" '("blockColor"))
 
 
-  ;; Xref
+;; Xref
 (autoload "xrefLayerMerge" '("xrefLayerMerge"))
 (autoload "xrefAddObj" '("xrefAddObj"))
 
 
-  ;; PolyLine
+;; PolyLine
 (if *autoCADLoaded* 
   (autoload "doubleOffset" '("doubleOffset"))
 )
@@ -74,8 +74,9 @@
 (autoload "plineSubtract" '("plineSubtract" "`s"))
 (autoload "plineUnion" '("plineUnion" "`a"))
 (autoload "plineHeal" '("plineHeal" "`h"))
+(autoload "plineWidthExpand" '("plineWidthExpand" "plineWidthExpandMultiple" "`ww" "`w"))
 
-  ;; Font & Text
+;; Font & Text
 (autoload "fontGBSwap" '("fontGBSwap"))
 (autoload "font2Standard" '("font2Standard" "font2StandardAll"))
 (autoload "fontStandardize" '("fontStandardize"))
@@ -86,7 +87,7 @@
 (autoload "textAlign" '("textAlign"))
 (autoload "attr2Text" '("attr2Text" "attr2TextAll"))
 
-  ;; Dimension
+;; Dimension
 (autoload "dimTangentAdapt" '("dimTangentToggle" "dimTangentAdapt"))
 (autoload "dimTangent" '("dimTangent"))
 (autoload "dimContinuePlus" '("dimContinuePlus"))
@@ -97,7 +98,10 @@
 (autoload "dimByBlock" '("dimByBlock"))
 (autoload "dimRemoveFontOverride" '("dimRemoveFontOverride"))
 
-  ;; Change Color
+;; Hatch
+(autoload "hatchMerge" '("hatchMerge" "hMerge"))
+
+;; Change Color
 (defun c:mapColor () (colorHotkeyBinding))
 (defun colorHotkeyBinding () 
   (defun okc (color / ss1) 
@@ -116,20 +120,20 @@
 )
 (colorHotkeyBinding)
 
-  ;; Load APLUS
+;; Load APLUS
 (defun c:APLUS () 
   (vl-load-all "aplus.vlx")
   (colorHotkeyBinding)
   (princ)
 )
 
-  ;; Load YSTool
+;; Load YSTool
 (defun c:YSTOOL () 
   (arxload "YSTools2021X.arx")
   (princ)
 )
 
-  ;; Batch Plot
+;; Batch Plot
 (defun c:BPLoad () 
   (vl-load-all "BatchPlot.vlx")
   (princ)

@@ -39,12 +39,13 @@
   (dimStyleMod 144 1.0) ; DIMLFAC. Scale factor
   (dimStyleMod 280 0) ; DIMJUST. Text horizontal position
   (dimStyleMod 77 1) ; DIMTAD. Text vertical position
+  (dimStyleMod 78 8) ; DIMZIN. Controls the suppression of zeros in the primary unit value.
   (dimStyleMod 74 1) ; ISO text alginment standard
   (dimStyleMod 44 2) ; extended line length
   (dimStyleMod 42 2) ; offset length
   (dimStyleMod 5 "") ; arrow style
   (dimStyleMod 172 1) ; draw line between dismension ends
-  (dimStyleMod 278 0) ; dimension decimal value separator
+  (dimStyleMod 278 46) ; dimension decimal value separator
 
   (setvar "CMDECHO" 1)
   (princ)

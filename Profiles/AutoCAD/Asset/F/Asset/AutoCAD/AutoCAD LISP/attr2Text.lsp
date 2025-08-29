@@ -8,7 +8,7 @@
       (vl-load-com)
       (princ "\n")
       (defun *error* (msg) 
-        (if (not (member msg '("Function cancelled" "quit / exit abort" "å‡½æ•°å·²å–æ¶ˆ"))) 
+        (if (not (member msg '("Function cancelled" "quit / exit abort" "º¯ÊıÒÑÈ¡Ïû"))) 
           (princ (strcat "Error: " msg "\n"))
         )
         (princ)
@@ -57,13 +57,12 @@
 
       (if (null silentChk) 
         (if (> ssl 1) 
-          (progn (princ (strcat (rtos ssl 2 0) "ä¸ªå±æ€§å®šä¹‰å·²è¢«è½¬æ¢\n")) 
+          (progn (princ (strcat (rtos ssl 2 0) "¸öÊôĞÔ¶¨ÒåÒÑ±»×ª»»\n")) 
                  (sssetfirst nil ssNew)
           )
-          (princ "æ— å±æ€§å®šä¹‰å¯ä»¥è½¬æ¢\n")
+          (princ "ÎŞÊôĞÔ¶¨Òå¿ÉÒÔ×ª»»\n")
         )
       )
-
     )
   )
 
