@@ -2,7 +2,7 @@
               wireSpace
              ) 
   ;; Prompt user to draw the rectangle outline
-  (prompt "\n画出外形轮廓: ")
+  (prompt "\n������������: ")
 
   ;; Use the internal rectangle command to draw the rectangle
   (command "._rectang" pause pause)
@@ -25,16 +25,16 @@
   (princ (rtos len1))
   (princ (rtos len2))
   (while t 
-    (prompt "\n输入最边上发热丝的边距: ")
+    (prompt "\n��������Ϸ���˿�ı߾�: ")
     (setq userVal (getreal))
 
     ;; Check if the user value is shorter than both sides
     (if (and (< userVal len1) (< userVal len2)) 
       (progn 
-        (prompt "\n值已接受.")
+        (prompt "\nֵ�ѽ���.")
         (exit)
       )
-      (prompt "\n该值应比外形轮廓短，请重试.")
+      (prompt "\n��ֵӦ�����������̣�������.")
     )
   )
 
@@ -49,7 +49,7 @@
   )
 
   ;; Prompt user to enter the number of segments for the long side
-  (prompt "\n输入长边的段数: ")
+  (prompt "\n���볤�ߵĶ���: ")
   (setq segVal (getint))
 
   ;; Calculate the space between wires along the long side
@@ -74,5 +74,5 @@
 (vl-load-com)
 
 ;; Load the function
-(princ "\n输入 cxt 绘制矩形并检查边长.")
+(princ "\n���� cxt ���ƾ��β����߳�.")
 (princ)

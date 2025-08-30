@@ -26,13 +26,13 @@
 ; 
 (if (wcmatch (getvar "PRODUCT") "AutoCAD*") 
   (progn 
-    (if (eq (load "layerDirector.lsp" nil) nil) 
-      (progn 
-        (princ "iaso2h: 无法找到图层定向文件\n")
-        (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n")
-        (setq *searchIncluded* nil)
-      )
-    )
+;;     (if (eq (load "layerDirector.lsp" nil) nil) 
+;;       (progn 
+;;         (princ "iaso2h: 无法找到图层定向文件\n")
+;;         (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n")
+;;         (setq *searchIncluded* nil)
+;;       )
+;;     )
 
     (setq *autoCADLoaded* T)
   )
@@ -232,7 +232,7 @@
     (autoload "dimSelectOverrided" '("dimSelectOverrided"))
     (autoload "dimSelectPrecision" '("dimSelectPrecision"))
     (autoload "dimByBlock" '("dimByBlock"))
-    (autoload "dimRemoveFontOverride" '("dimRemoveFontOverride"))
+    (autoload "dimStandardize" '("dimStandardize"))
 
     ;; Hatch
     (autoload "hatchMerge" '("hatchMerge" "hMerge"))

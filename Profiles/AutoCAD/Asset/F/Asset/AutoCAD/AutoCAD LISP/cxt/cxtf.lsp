@@ -62,18 +62,15 @@
       '(lambda () 
          ;; Step 3: Open the workbook
          (setq workbook (vlax-invoke-method excel-app 'Workbooks 'Open filename))
-         (princ "123\n")
 
          ;; Step 4: Get the first worksheet
          (setq worksheet (vlax-get-property workbook 'Sheets 1))
-         (princ "124\n")
 
          ;; Step 5: Read a cell (e.g., A1)
          (setq cell-value (vlax-variant-value 
                             (vlax-get-property worksheet 'Range "A1" 'Value)
                           )
          )
-         (princ "125\n")
 
          ;; Step 6: Print result
          (if (null cell-value) 
