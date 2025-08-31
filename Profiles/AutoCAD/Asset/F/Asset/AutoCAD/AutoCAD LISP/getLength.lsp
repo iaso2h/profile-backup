@@ -1,6 +1,6 @@
 (defun c:getLength (/ ss ent vlaObj vlaType textLocation textContent savedEntLast) 
 
-  (if (setq ss (ssget "_:S+L+P")) 
+  (if (setq ss (ssget "_:S+P")) 
     (setq ent (ssname ss 0))
     (setq ent (car (entsel)))
   )

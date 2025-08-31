@@ -13,6 +13,26 @@
   (princ)
 )
 
+(defun c:setupFont () 
+  (if (not (tblsearch "STYLE" "Ð±·ÂËÎ")) 
+    (entmake 
+      (list '(0 . "STYLE") 
+            '(100 . "AcDbSymbolTableRecord")
+            '(100 . "AcDbTextStyleTableRecord")
+            '(2 . "Ð±·ÂËÎ")
+            '(70 . 0)
+            '(40 . 0) ; Fixed text height; 0 if not fixed
+            '(41 . 0.8) ; Width factor
+            '(50 . 8) ; Optional
+            '(3 . "ttsdeng.shx") ; Primary font file name
+            '(4 . "ttsdchn.shx") ; Bigfont file name; blank if none
+      )
+    )
+  )
+  
+  (princ)
+)
+
 
 (defun c:setupLayer (/ layerInfo name lineweight printable color description) 
   (defun *error* (msg) 
@@ -53,7 +73,7 @@
     (if (tblsearch "LAYER" name) 
       (command ".-layer" "lw" lineweight name "p" printable name "c" color name "")
       (command ".-layer" "n" name "lw" lineweight name "p" printable name "c" color 
-               name "d" description name "" 
+               name "d" description name ""
       )
     )
   )

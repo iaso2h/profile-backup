@@ -8,7 +8,7 @@
     (princ)
   )
 
-  (if (setq ss (ssget "_:S+." )) 
+  (if (setq ss (ssget "_:S+P")) 
     (setq ent (ssname ss 0))
     (setq ent (car (entsel)))
   )

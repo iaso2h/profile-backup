@@ -10,13 +10,13 @@
   )
   (setq savedCmdecho (getvar "cmdecho"))
   (setvar "cmdecho" 0)
-  
+
   (setq activeDoc (vla-get-ActiveDocument (vlax-get-acad-object)))
-  (if (setq ss (ssget "_:S+.")) 
+  (if (setq ss (ssget "_:S+P")) 
     (setq ent (ssname ss 0))
     (setq ent (car (entsel)))
   )
-  
+
   (if ent 
     (progn 
       (if 

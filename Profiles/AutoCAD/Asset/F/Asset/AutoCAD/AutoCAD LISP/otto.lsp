@@ -6,7 +6,7 @@
     ((= ans "S")
      (progn 
        (c:xrefLayerMerge)
-       (c:dimSWFix)
+       (c:dimStandardize)
        (c:fontStandardize)
      )
     )

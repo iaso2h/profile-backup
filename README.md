@@ -2,11 +2,13 @@
 Back up profiles from all kind of profiles. The location of these profiles somewhat resemble dotfiles on Linux but they are tend to be scattered at different locations, hence I wrote this app to tackle the chaos. Right now it's built on Windows only and targetting softwares on Windows.
 # Roadmap
 * Recipe TODO :
-    * WPS
-    * Adobe series?
-    * CAXA
-    * OBS Studio
-    * AutoHotkey
+    * Allow for selecting files out of sync before deletion
+    * Recipes:
+        * WPS
+        * Adobe series?
+        * CAXA
+        * OBS Studio
+        * AutoHotkey
 
 * ~~Recursive copy~~
 * ~~Make it into an interactive CLI app~~

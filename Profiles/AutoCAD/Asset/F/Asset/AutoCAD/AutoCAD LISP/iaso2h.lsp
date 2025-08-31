@@ -26,18 +26,17 @@
 ; 
 (if (wcmatch (getvar "PRODUCT") "AutoCAD*") 
   (progn 
-;;     (if (eq (load "layerDirector.lsp" nil) nil) 
-;;       (progn 
-;;         (princ "iaso2h: 无法找到图层定向文件\n")
-;;         (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n")
-;;         (setq *searchIncluded* nil)
-;;       )
-;;     )
+    ;;     (if (eq (load "layerDirector.lsp" nil) nil)
+    ;;       (progn
+    ;;         (princ "iaso2h: 无法找到图层定向文件\n")
+    ;;         (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n")
+    ;;         (setq *searchIncluded* nil)
+    ;;       )
+    ;;     )
 
     (setq *autoCADLoaded* T)
   )
   (progn 
-    ; (setvar "FONTALT" "C:\\Program Files\\ZWSOFT\\ZWCAD 2024\\fonts\\HZTXT.SHX")
     (setq *autoCADLoaded* nil)
   )
 )
@@ -99,9 +98,6 @@
 
 (defun c:sv () (command "_-VPORTS" "SI") (princ))
 (defun c:xx () (vl-cmdf "._burst") (princ))
-(princ "iaso2h: 通用命令缩写加载完毕.\n")
-
-; ----------------------------------------------
 
 (if *searchIncluded* 
   (defun c:xl (/ savedEntLast) 
@@ -116,6 +112,80 @@
     (princ)
   )
 )
+;; Change Color
+(defun c:mapColor () (colorAliasSetup))
+(defun colorAliasSetup () 
+  (defun okc (color / ss1) 
+    (setq ss1 (ssget))
+    (command "._change" ss1 "" "p" "c" color "")
+    (princ)
+  )
+  (setq i 1)
+  (while (<= i 255) 
+    (eval 
+      (read 
+        (strcat "(defun c:" (itoa i) (chr 40) (chr 41) "(okc " (itoa i) "))")
+      )
+    )
+    (setq i (1+ i))
+  )
+  (princ)
+)
+(colorAliasSetup)
+    
+; Change dimsacle
+(defun dimscaleAliasSetup (/ i) 
+  (defun dimscleChangeHelper (factor / ss i obj) 
+    (princ "\n")
+    (if (setq ss (ssget "I" '((0 . "*DIMENSION")))) 
+      (progn 
+        (setq i 0)
+        (while (< i (sslength ss)) 
+          (setq obj (vlax-ename->vla-object (ssname ss i)))
+          (vlax-put-property obj 'ScaleFactor factor)
+          (setq i (1+ i))
+        )
+        (princ 
+          (strcat "Dimscale of " 
+                  (itoa (sslength ss))
+                  " dimensions have been changed to "
+                  (rtos factor)
+                  ".\n"
+          )
+        )
+      )
+      (progn 
+        (setvar "DIMSCALE" factor)
+        (princ (strcat "Current dimscale: " (rtos factor) ".\n"))
+      )
+    )
+
+    (princ)
+  )
+  (setq i 0.5)
+  (repeat 19 
+    (setq i (+ 0.5 i))
+    (eval 
+      (read 
+        (strcat "(defun c:g" 
+                (rtos i)
+                (chr 40)
+                (chr 41)
+                "(dimscleChangeHelper "
+                (rtos i)
+                "))"
+        )
+      )
+    )
+  )
+)
+(dimscaleAliasSetup)
+
+
+(princ "iaso2h: 通用命令缩写加载完毕.\n")
+
+; ----------------------------------------------
+
 
 (if *searchIncluded* 
   (progn 
@@ -128,10 +198,10 @@
     (defun c:qe () (c:layerCloseOthers))
     (defun c:fr () (c:layerFreezeSelected))
     (defun c:fe () (c:layerFreezeOthers))
-    
+
     ;; Setup
-    (autoload "setup" '("setupSysVar" "setupLayer"))
-    
+    (autoload "setup" '("setupSysVar" "setupLayer" "setupFont"))
+
     ;; Otto
     (autoload "otto" '("otto"))
     (autoload "ottoPlot" '("ottoPlotNameUpdate" "ottoPlotRatioUpdate"))
@@ -152,7 +222,7 @@
     (if (not *tchLoaded*) 
       (autoload "selectSimilar" '("ss"))
     )
-    (autoload "selectDim" '("selectDim" "sed"))
+    (autoload "selectDim" '("selectDim" "sed" "selectDimMore" "sedd"))
     (autoload "selectChain" '("selectChain" "sec"))
 
     ;; Alignment & Space
@@ -228,7 +298,6 @@
     (autoload "dimTangent" '("dimTangent"))
     (autoload "dimContinuePlus" '("dimContinuePlus"))
     (autoload "dimSpacePlus" '("dimSpacePlus" "dimSpacePlusView"))
-    (autoload "dimSWFix" '("dimSWFix"))
     (autoload "dimSelectOverrided" '("dimSelectOverrided"))
     (autoload "dimSelectPrecision" '("dimSelectPrecision"))
     (autoload "dimByBlock" '("dimByBlock"))
@@ -237,26 +306,8 @@
     ;; Hatch
     (autoload "hatchMerge" '("hatchMerge" "hMerge"))
 
-    ;; Change Color
-    (defun c:mapColor () (colorHotkeyBinding))
-    (defun colorHotkeyBinding () 
-      (defun okc (color / ss1) 
-        (setq ss1 (ssget))
-        (command "._change" ss1 "" "p" "c" color "")
-        (princ)
-      )
-      (setq i 1)
-      (while (<= i 255) 
-        (eval 
-          (read 
-            (strcat "(defun c:" (itoa i) (chr 40) (chr 41) "(okc " (itoa i) "))")
-          )
-        )
-        (setq i (1+ i))
-      )
-      (princ)
-    )
-    (colorHotkeyBinding)
+
+
 
     ;; Load APLUS
     (defun c:APLUS () 

@@ -8,7 +8,7 @@
 
     ;; Select first entity
     (prompt "\nSelect the first entity to connect: ")
-    (setq ent1 (ssname (ssget "_:S+L+P" '((0 . "line,LWPOLYLINE,Arc"))) 0))
+    (setq ent1 (ssname (ssget "_:S+P" '((0 . "line,LWPOLYLINE,Arc"))) 0))
     (if (null ent1) 
       (progn 
         (princ "\nNo entity selected. Exiting...")
