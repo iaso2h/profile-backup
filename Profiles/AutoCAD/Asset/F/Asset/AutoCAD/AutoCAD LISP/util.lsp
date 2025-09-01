@@ -6,7 +6,7 @@
     (if (= color "00") (setq color "BYBLOCK"))
 
     (if (setq ss (ssget "I")) 
-      (progn
+      (progn 
         (setq savedEcho (getvar "CMDECHO"))
         (setvar "CMDECHO" 0)
         (command "._change" "_P" "p" "c" color "")
@@ -52,8 +52,8 @@
   (command "undo" "be")
 
   (if (not (tblsearch "layer" "xline")) 
-    (command "-layer" "n" "xline" "p" "n" "xline" "d" "辅助线图层，不可打印！" "xline" "c" "41" 
-             "xline" ""
+    (command "-layer" "n" "xline" "p" "n" "xline" "d" "¸¨ÖúÏßÍ¼²ã£¬²»¿É´òÓ¡£¡" 
+             "xline" "c" "41" "xline" ""
     )
   )
   ;;   (if
@@ -153,3 +153,6 @@
   )
 )
 (vl-load-com)
+
+(setq *IsLoadedUtil* T)
+(princ)

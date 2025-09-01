@@ -89,3 +89,6 @@
   (vla-UpDate obj)
   (princ)
 )
+
+(setq *IsLoadedBlockColor* T)
+(princ)

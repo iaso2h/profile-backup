@@ -107,7 +107,9 @@
       (command pause)
     )
 
-    (load "util.lsp")
+    (if (not *IsLoadedUtil*) 
+      (load "util.lsp")
+    )
     (iaso2h:layerSetXline savedEntLast)
     (princ)
   )
@@ -121,7 +123,9 @@
 
 (if *SearchIncluded* 
   (progn 
-    (load "util.lsp")
+    (if (not *IsLoadedUtil*) 
+      (load "util.lsp")
+    )
     (load "layerCloseSelected.lsp")
     (load "layerCloseOthers.lsp")
     (load "layerFreezeSelected.lsp")

@@ -85,3 +85,6 @@
 
   (princ)
 )
+
+(setq *IsLoadedAttr2Text* T)
+(princ)

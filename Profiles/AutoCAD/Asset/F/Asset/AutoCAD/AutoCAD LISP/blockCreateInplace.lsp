@@ -3,7 +3,9 @@
 ;; Reference: http://forums.autodesk.com/t5/Visual-LISP-AutoLISP-and-General/Quick-block/td-p/3454228
 ;;
 (defun c:blockCreateInplace (/ ss i insertPoint savedEntLast ent) 
-  (load "attr2Text.lsp")
+  (if (not *IsLoadedAttr2Text*) 
+    (load "attr2Text.lsp")
+  )
   (setq cmd (getvar 'cmdecho))
   (setvar 'cmdecho 0)
   (princ "\n")
@@ -81,7 +83,9 @@
 
 (defun c:blockCreateInplaceByBlock (/ cmd ss blockColor blockEnt blockObj) 
   (vl-load-com)
+  (if (not *IsLoadedAttr2Text*) 
     (load "attr2Text.lsp")
+  )
   (princ "\n")
   (defun *error* (msg) 
     (if (not (member msg '("Function cancelled" "quit / exit abort" "函数已取消"))) 
@@ -104,7 +108,9 @@
 
   (setq ss (ssadd))
   (ssadd blockEnt ss)
-  (load "blockColor.lsp")
+  (if (not *IsLoadedBlockColor*) 
+    (load "blockColor.lsp")
+  )
   (blockColorSelectionSet ss 0 t)
   (command "undo" "e")
   (setvar 'cmdecho cmd)

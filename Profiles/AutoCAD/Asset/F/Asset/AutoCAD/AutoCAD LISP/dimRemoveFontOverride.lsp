@@ -7,10 +7,11 @@
     )
     (princ)
   )
-  (if *SearchIncluded* 
-    (progn 
-      (load "util.lsp")
+  (if 
+    (and *SearchIncluded* 
+         (not *IsLoadedUtil*)
     )
+    (load "util.lsp")
   )
 
   (if (setq ss (ssget "_X" '((0 . "*DIMENSION")))) 

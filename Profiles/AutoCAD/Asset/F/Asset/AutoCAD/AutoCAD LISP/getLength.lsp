@@ -25,7 +25,9 @@
       (command "_text" "j" "ml" textLocation 25 0 textContent)
       (if *SearchIncluded* 
         (progn 
-          (load "util.lsp")
+          (if (not *IsLoadedUtil*) 
+            (load "util.lsp")
+          )
           (iaso2h:layerSetXline savedEntLast)
         )
       )
@@ -50,7 +52,7 @@
         (setq ent (ssname ss i))
         (setq vlaObj (vlax-ename->vla-object ent))
         (setq vlaType (vla-get-ObjectName vlaObj))
-        
+
         ;; Get length using ActiveX method (works for all supported object types)
         (cond 
           ((= vlaType "AcDbLine")
@@ -67,7 +69,7 @@
           )
           (t nil)
         )
-        
+
         (setq count (1+ count))
         (setq i (1+ i))
       )
@@ -87,7 +89,9 @@
           )
           (if *SearchIncluded* 
             (progn 
-              (load "util.lsp")
+              (if (not *IsLoadedUtil*) 
+                (load "util.lsp")
+              )
               (iaso2h:layerSetXline savedEntLast)
             )
           )
