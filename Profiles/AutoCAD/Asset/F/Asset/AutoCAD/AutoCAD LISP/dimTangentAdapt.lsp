@@ -1,6 +1,6 @@
 (defun c:dimTangentToggle () 
   (princ "\n")
-  (if *tchLoaded* 
+  (if *TangentLoaded* 
     (progn 
       (if (null *tchDimToggleChk*) 
         (progn 
@@ -22,7 +22,7 @@
 (defun c:dimTangentAdapt (/ doc) 
   (vl-load-com)
   (if 
-    (and *tchLoaded* 
+    (and *TangentLoaded* 
          *tchDimToggleChk*
     )
     (command "_TDimMP")

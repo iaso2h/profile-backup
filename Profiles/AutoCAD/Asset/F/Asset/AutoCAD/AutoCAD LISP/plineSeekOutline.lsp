@@ -10,7 +10,7 @@
       (princ (strcat "\nError: " msg)))
     (princ))
 
-  (if (= *tchLoaded* 1)
+  (if (= *TangentLoaded* 1)
     (command "._TSeOutline")
     (if (setq sel (ssget))
       (progn (LM:startundo (LM:acdoc))

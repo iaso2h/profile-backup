@@ -8,7 +8,7 @@
     (princ)
   )
 
-  (if (setq ss (ssget "_:S+P")) 
+  (if (setq ss (ssget "_:S")) 
     (setq ent (ssname ss 0))
     (setq ent (car (entsel)))
   )
@@ -20,7 +20,7 @@
       (cond 
         ((and 
            (= eType "LINE")
-           (not *autoCADLoaded*)
+           (not *AutoCADLoaded*)
          )
          (progn 
            (command "._LINE")
@@ -37,7 +37,7 @@
         )
         ((and 
            (= eType "LWPOLYLINE")
-           (not *autoCADLoaded*)
+           (not *AutoCADLoaded*)
          )
          (progn 
            (command "._PLINE")
@@ -54,7 +54,7 @@
         )
         ((and 
            (= eType "CIRCLE")
-           (not *autoCADLoaded*)
+           (not *AutoCADLoaded*)
          )
          (progn 
            (command "._CIRCLE")
@@ -71,7 +71,7 @@
         )
         ((and 
            (= eType "ARC")
-           (not *autoCADLoaded*)
+           (not *AutoCADLoaded*)
          )
          (progn 
            (command "._ARC")

@@ -7,7 +7,7 @@
     )
     (princ)
   )
-  (if *searchIncluded* 
+  (if *SearchIncluded* 
     (progn 
       (load "util.lsp")
     )

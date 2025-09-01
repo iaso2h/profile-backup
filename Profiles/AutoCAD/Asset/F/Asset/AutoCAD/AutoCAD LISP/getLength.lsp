@@ -1,6 +1,6 @@
 (defun c:getLength (/ ss ent vlaObj vlaType textLocation textContent savedEntLast) 
 
-  (if (setq ss (ssget "_:S+P")) 
+  (if (setq ss (ssget "_:S")) 
     (setq ent (ssname ss 0))
     (setq ent (car (entsel)))
   )
@@ -23,7 +23,7 @@
       ; (vla-sendcommand activeDoc
       (setq savedEntLast (entlast))
       (command "_text" "j" "ml" textLocation 25 0 textContent)
-      (if *searchIncluded* 
+      (if *SearchIncluded* 
         (progn 
           (load "util.lsp")
           (iaso2h:layerSetXline savedEntLast)
@@ -85,7 +85,7 @@
                    0
                    (rtos (/ totalLength count) 2 12)
           )
-          (if *searchIncluded* 
+          (if *SearchIncluded* 
             (progn 
               (load "util.lsp")
               (iaso2h:layerSetXline savedEntLast)

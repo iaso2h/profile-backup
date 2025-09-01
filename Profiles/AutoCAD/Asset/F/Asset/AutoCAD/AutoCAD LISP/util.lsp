@@ -1,3 +1,50 @@
+;; Change Color
+(defun c:mapColor () (colorAliasSetup))
+(defun colorAliasSetup (/ i) 
+  (defun colorAliasHelper (color / ss savedEcho) 
+    (if (= color 0) (setq color "BYLAYER"))
+    (if (= color "00") (setq color "BYBLOCK"))
+
+    (if (setq ss (ssget "I")) 
+      (progn
+        (setq savedEcho (getvar "CMDECHO"))
+        (setvar "CMDECHO" 0)
+        (command "._change" "_P" "p" "c" color "")
+        (setvar "CMDECHO" savedEcho)
+      )
+      (progn 
+        (if (/= (type color) 'STR) 
+          (setq color (itoa color))
+        )
+
+        (setvar "CECOLOR" color)
+      )
+    )
+
+    (princ)
+  )
+  (setq i 0)
+  (while (<= i 255) 
+    (eval 
+      (read 
+        (strcat "(defun c:" 
+                (itoa i)
+                (chr 40)
+                (chr 41)
+                "(colorAliasHelper "
+                (itoa i)
+                "))"
+        )
+      )
+    )
+    (setq i (1+ i))
+  )
+  (princ)
+)
+(colorAliasSetup)
+(defun c:00 () (colorAliasHelper "00") (princ))
+
+
 (defun iaso2h:layerSetXline (savedEntLast / tmp vlaObj) 
   (vl-load-com)
   (setq cmd (getvar 'cmdecho))

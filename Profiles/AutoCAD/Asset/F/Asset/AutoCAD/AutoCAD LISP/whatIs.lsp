@@ -12,7 +12,7 @@
   (setvar "cmdecho" 0)
 
   (setq activeDoc (vla-get-ActiveDocument (vlax-get-acad-object)))
-  (if (setq ss (ssget "_:S+P")) 
+  (if (setq ss (ssget "_:S")) 
     (setq ent (ssname ss 0))
     (setq ent (car (entsel)))
   )
@@ -41,7 +41,7 @@
                (strcat entType "\n" objType)
       )
 
-      (if *searchIncluded* 
+      (if *SearchIncluded* 
         (progn 
           (load "util.lsp")
           (iaso2h:layerSetXline savedEntLast)

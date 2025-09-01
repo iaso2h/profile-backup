@@ -5,7 +5,7 @@
 ; utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 ; https://utf8.supfree.net
 (princ "\n")
-(setq *searchIncluded* T)
+(setq *SearchIncluded* T)
 
 (if (eq (substr (getvar "cprofile") 1 7) "TArch20") 
   (progn 
@@ -13,14 +13,14 @@
       (progn 
         (princ "iaso2h: 无法找到天正T20缩写命令文件\n")
         (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n")
-        (setq *searchIncluded* nil)
+        (setq *SearchIncluded* nil)
       )
     )
-    (setq *tchLoaded* t)
+    (setq *TangentLoaded* t)
   )
   (progn 
 
-    (setq *tchLoaded* nil)
+    (setq *TangentLoaded* nil)
   )
 )
 ; 
@@ -30,14 +30,14 @@
     ;;       (progn
     ;;         (princ "iaso2h: 无法找到图层定向文件\n")
     ;;         (princ "iaso2h: 自定义.lsp文件不在搜索路径上\n")
-    ;;         (setq *searchIncluded* nil)
+    ;;         (setq *SearchIncluded* nil)
     ;;       )
     ;;     )
 
-    (setq *autoCADLoaded* T)
+    (setq *AutoCADLoaded* T)
   )
   (progn 
-    (setq *autoCADLoaded* nil)
+    (setq *AutoCADLoaded* nil)
   )
 )
 
@@ -70,7 +70,7 @@
 (defun c:mc () (command "._polygon" "4" pause "c") (princ))
 (defun c:reg () (command "._regenall") (princ))
 (defun c:rg () (command "._regen") (princ))
-(if (not *autoCADLoaded*) 
+(if (not *AutoCADLoaded*) 
   (defun c:tre () (command "._trim" "_o" "_ex" pause) (princ))
 )
 (defun c:w () (command "._move") (princ))
@@ -83,7 +83,7 @@
 (defun c:t () (command "._syswindows" "H") (princ))
 
 ; Viewport
-(if *autoCADLoaded* 
+(if *AutoCADLoaded* 
   (progn 
     (defun c:wv () (ai_tiledvp 2 "_V") (princ))
     (defun c:wvv () (ai_tiledvp 2 "_V") (princ))
@@ -99,7 +99,7 @@
 (defun c:sv () (command "_-VPORTS" "SI") (princ))
 (defun c:xx () (vl-cmdf "._burst") (princ))
 
-(if *searchIncluded* 
+(if *SearchIncluded* 
   (defun c:xl (/ savedEntLast) 
     (setq savedEntLast (entlast))
     (command "._xline")
@@ -112,88 +112,21 @@
     (princ)
   )
 )
-;; Change Color
-(defun c:mapColor () (colorAliasSetup))
-(defun colorAliasSetup () 
-  (defun okc (color / ss1) 
-    (setq ss1 (ssget))
-    (command "._change" ss1 "" "p" "c" color "")
-    (princ)
-  )
-  (setq i 1)
-  (while (<= i 255) 
-    (eval 
-      (read 
-        (strcat "(defun c:" (itoa i) (chr 40) (chr 41) "(okc " (itoa i) "))")
-      )
-    )
-    (setq i (1+ i))
-  )
-  (princ)
-)
-(colorAliasSetup)
+
     
-; Change dimsacle
-(defun dimscaleAliasSetup (/ i) 
-  (defun dimscleChangeHelper (factor / ss i obj) 
-    (princ "\n")
-    (if (setq ss (ssget "I" '((0 . "*DIMENSION")))) 
-      (progn 
-        (setq i 0)
-        (while (< i (sslength ss)) 
-          (setq obj (vlax-ename->vla-object (ssname ss i)))
-          (vlax-put-property obj 'ScaleFactor factor)
-          (setq i (1+ i))
-        )
-        (princ 
-          (strcat "Dimscale of " 
-                  (itoa (sslength ss))
-                  " dimensions have been changed to "
-                  (rtos factor)
-                  ".\n"
-          )
-        )
-      )
-      (progn 
-        (setvar "DIMSCALE" factor)
-        (princ (strcat "Current dimscale: " (rtos factor) ".\n"))
-      )
-    )
-
-    (princ)
-  )
-  (setq i 0.5)
-  (repeat 19 
-    (setq i (+ 0.5 i))
-    (eval 
-      (read 
-        (strcat "(defun c:g" 
-                (rtos i)
-                (chr 40)
-                (chr 41)
-                "(dimscleChangeHelper "
-                (rtos i)
-                "))"
-        )
-      )
-    )
-  )
-)
-(dimscaleAliasSetup)
-
-
 (princ "iaso2h: 通用命令缩写加载完毕.\n")
 
 ; ----------------------------------------------
 
 
-(if *searchIncluded* 
+(if *SearchIncluded* 
   (progn 
     (load "util.lsp")
     (load "layerCloseSelected.lsp")
     (load "layerCloseOthers.lsp")
     (load "layerFreezeSelected.lsp")
     (load "layerFreezeOthers.lsp")
+    (load "dimScale.lsp")
     (defun c:q () (c:layerCloseSelected))
     (defun c:qe () (c:layerCloseOthers))
     (defun c:fr () (c:layerFreezeSelected))
@@ -219,14 +152,14 @@
     (autoload "optimize" '("optimize"))
 
     ;; Select
-    (if (not *tchLoaded*) 
+    (if (not *TangentLoaded*) 
       (autoload "selectSimilar" '("ss"))
     )
     (autoload "selectDim" '("selectDim" "sed" "selectDimMore" "sedd"))
     (autoload "selectChain" '("selectChain" "sec"))
 
     ;; Alignment & Space
-    (if (not *tchLoaded*) 
+    (if (not *TangentLoaded*) 
       (progn 
         (autoload "alignCoordinate" '("alignCoordinate"))
         (autoload "space" '("space"))
@@ -239,7 +172,7 @@
     (autoload "addSelectedPlus" '("addSelectedPlus"))
 
     ;; Move & Copy
-    (if (not *tchLoaded*) 
+    (if (not *TangentLoaded*) 
       (progn 
         (autoload "freeMove" '("freeMove"))
         (autoload "freePaste" '("freePaste"))
@@ -268,7 +201,7 @@
 
 
     ;; PolyLine
-    (if *autoCADLoaded* 
+    (if *AutoCADLoaded* 
       (autoload "doubleOffset" '("doubleOffset"))
     )
     (autoload "plineOffset" '("plineOffset"))

@@ -1,6 +1,4 @@
-(defun c:gh (/ foo bar)
-  (setq factor 1.0)
-  (repeat 18
-    (setq factor (+ 0.5 factor))
-  )
+(defun c:gh (/ foo bar) 
+  (eval (read "*load-pathname*"))
+  vl-filename-directory
 )

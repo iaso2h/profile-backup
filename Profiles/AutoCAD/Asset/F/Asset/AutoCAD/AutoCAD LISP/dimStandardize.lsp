@@ -1,4 +1,4 @@
-(defun c:gg (/ doc dimTextStyleEnt dimStyleTableEnt dimStyleEntData sizeFactor ss i 
+(defun c:dimStandardize (/ doc dimTextStyleEnt dimStyleTableEnt dimStyleEntData sizeFactor ss i 
              ent obj dimStyleModifiedCount
             ) 
   (vl-load-com)
@@ -368,7 +368,8 @@
 
   ; Text Dimension Direction
   (if 
-    (and 
+    (and
+      *AutoCADLoaded*
       (vlax-property-available-p obj 'DimTxtDirection)
       (vlax-get-property obj 'DimTxtDirection)
     )
