@@ -1,0 +1,30 @@
+{
+  // 使用 IntelliSense 以得知可用的屬性。
+  // 暫留以檢視現有屬性的描述。
+  // 如需詳細資訊，請瀏覽: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "attachlisp",
+      "request": "attach",
+      "name": "AutoLISP Debug: Attach",
+      "attributes": {
+        "//": "This configuration has been deprecated. Instead use the Debug: Attach Process setting of the AutoCAD AutoLISP Extension."
+      }
+    }
+    // {
+    //   "name": "Attach to ZWCAD",
+    //   "type": "zwlisp",
+    //   "request": "attach",
+    //   "program": "C:\\Program Files\\ZWSOFT\\ZWCAD 2024\\ZWCAD.exe",
+    //   "stopOnEntry": false
+    // },
+    // {
+    //   "name": "Launch ZWCAD",
+    //   "type": "zwlisp",
+    //   "request": "launch",
+    //   "program": "C:\\Program Files\\ZWSOFT\\ZWCAD 2024\\ZWCAD.exe",
+    //   // "stopOnEntry": false
+    // }
+  ]
+}

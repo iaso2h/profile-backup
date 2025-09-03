@@ -1,9 +1,9 @@
-(defun c:gh () 
+(defun setupPara (/ heatingParamObj) 
   (setq heatingParamObj (vlax-make-object "Scripting.Dictionary")) ; Using Scripting.Dictionary as an example of a generic object
 
   ;; Setting properties
-  (vlax-put-property heatingParamObj 'boundaryOffset 400)
-  (vlax-put-property heatingParamObj 'heatingGrossLegnth 150)
+  (vlax-put-property heatingParamObj 'boundaryOffset 5.5)
+  (vlax-put-property heatingParamObj 'heatingGrossLegnth 5.5)
   (vlax-put-property heatingParamObj 'heatingGrossWidth 5.5)
   (vlax-put-property heatingParamObj 'heatingNetLegnth 5.5)
   (vlax-put-property heatingParamObj 'heatingNetWidth 5.5)
@@ -35,7 +35,7 @@
   (princ "\nFile Offset: ")
   (princ (vlax-get-property heatingParamObj 'fileOffset))
 
-  (princ)
+  heatingParamObj
 )
 
 ;; To run the function, type CreateAndSetProperties in the command line and press Enter.

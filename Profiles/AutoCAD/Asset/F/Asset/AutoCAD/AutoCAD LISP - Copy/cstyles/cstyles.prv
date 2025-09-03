@@ -1,0 +1,12 @@
+;;; Visual LISP 生成文件 [V1.0] cstyles saved to:[D:/个人/lisp/changestyle] at:[4/15/08] 
+(PRV-DEF (:target . "cstyles.VLX")
+	 (:active-x . T)
+	 (:separate-namespace)
+	 (:protected . T)
+	 (:load-file-list (:lsp "cstyles.lsp") (:lsp "inputBox.lsp"))
+	 (:require-file-list (:DCL "cstyles.dcl"))
+	 (:ob-directory)
+	 (:tmp-directory)
+	 (:optimization . st)
+)
+;; EOF

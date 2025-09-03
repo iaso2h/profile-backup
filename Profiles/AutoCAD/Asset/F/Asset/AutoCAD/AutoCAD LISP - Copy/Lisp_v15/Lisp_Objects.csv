@@ -1,0 +1,11 @@
+名称,根对象,帮助文件完整路径,属性帮助前缀,属性帮助后缀,方法帮助前缀,方法帮助后缀
+AUTOCAD_cn,AutoCAD,D:\Lisp_开发研究\acadauto.chm,idh_,,idh_,
+MS,MicroStationDGN.Application,C:\Program Files\Bentley\Program\MicroStation\MicroStationVBA.chm,html/uspro,,html/usmth,
+FSO,Scripting.FileSystemObject,D:\0_DEVELOP\VBS\微软Vbscript手册vbs.chm,html/vspro,,html/vsmth,
+WshShell,WScript.Shell,D:\0_DEVELOP\VBS\Microsoft Windows脚本技术.CHM,html/wsPro,,html/wslrfExec,Method
+DBX16,ObjectDBX.AxDbDocument.16,D:\Lisp_开发研究\acadauto.chm,idh_,,idh_,
+AUTOCAD_en,AutoCAD,C:\Program Files\AutoCAD 2007\Help\acadauto.chm,idh_,,idh_,
+EXCEL_CN,Excel.Application,D:\0_DEVELOP\EXCEL_VBA\VBAXL10_cn.CHM,html/xlpro,,html/xlmth,
+FSO_DRIVE,"(vlax-invoke-method (vlax-get-or-create-object ""Scripting.FileSystemObject"" ) 'GetFolder ""D:\\"" )",D:\0_DEVELOP\VBS\微软Vbscript手册vbs.chm,html/vspro,,html/vsmth,
+FSO_FOLDER,"(vlax-invoke-method (vlax-get-or-create-object ""Scripting.FileSystemObject"" ) 'GetFolder ""C:\\windows\\"" )",D:\0_DEVELOP\VBS\微软Vbscript手册vbs.chm,html/vspro,,html/vsmth,
+DimStyles,(Vlax-Get (Vlax-Get (Vlax-Get-Acad-Object) 'ActiveDocument) 'DimStyles),D:\Lisp_开发研究\acadauto.chm,idh_,,idh_,

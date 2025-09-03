@@ -1,0 +1,158 @@
+;; Change Color
+(defun c:mapColor () (colorAliasSetup))
+(defun colorAliasSetup (/ i) 
+  (defun colorAliasHelper (color / ss savedEcho) 
+    (if (= color 0) (setq color "BYLAYER"))
+    (if (= color "00") (setq color "BYBLOCK"))
+
+    (if (setq ss (ssget "I")) 
+      (progn 
+        (setq savedEcho (getvar "CMDECHO"))
+        (setvar "CMDECHO" 0)
+        (command "._change" "_P" "p" "c" color "")
+        (setvar "CMDECHO" savedEcho)
+      )
+      (progn 
+        (if (/= (type color) 'STR) 
+          (setq color (itoa color))
+        )
+
+        (setvar "CECOLOR" color)
+      )
+    )
+
+    (princ)
+  )
+  (setq i 0)
+  (while (<= i 255) 
+    (eval 
+      (read 
+        (strcat "(defun c:" 
+                (itoa i)
+                (chr 40)
+                (chr 41)
+                "(colorAliasHelper "
+                (itoa i)
+                "))"
+        )
+      )
+    )
+    (setq i (1+ i))
+  )
+  (princ)
+)
+(colorAliasSetup)
+(defun c:00 () (colorAliasHelper "00") (princ))
+
+
+(defun iaso2h:layerSetXline (savedEntLast / tmp vlaObj) 
+  (vl-load-com)
+  (setq cmd (getvar 'cmdecho))
+  (setvar 'cmdecho 0)
+  (command "undo" "be")
+
+  (if (not (tblsearch "layer" "xline")) 
+    (command "-layer" "n" "xline" "p" "n" "xline" "d" "¸¨ÖúÏßÍ¼²ã£¬²»¿É´òÓ¡£¡" 
+             "xline" "c" "41" "xline" ""
+    )
+  )
+  ;;   (if
+  ;;     (and (null savedEntLast)
+  ;;          (setq savedEntLast (entlast))
+  ;;     )
+  ;;     (progn
+  ;;       (setq vlaObj (vlax-ename->vla-object savedEntLast))
+  ;;       (vla-put-color vlaObj 256)
+  ;;       (vlax-put-property vlaObj 'Layer "xline")
+  ;;     )
+  ;;   )
+  (if savedEntLast 
+    (progn 
+      (while (setq tmp (entnext savedEntLast)) 
+        (setq savedEntLast tmp)
+        (setq vlaObj (vlax-ename->vla-object savedEntLast))
+        (vla-put-color vlaObj 256)
+        (vlax-put-property vlaObj 'Layer "xline")
+      )
+    )
+  )
+
+  (command "undo" "be")
+  (setvar 'cmdecho cmd)
+
+  (princ)
+)
+(defun iaso2h:entlast (ent / ss) 
+  (if ent 
+    (progn 
+      (setq ss (ssadd))
+      (while (setq ent (entnext ent)) (ssadd ent ss))
+      (if (zerop (sslength ss)) (setq ss nil))
+      ss
+    )
+    (ssget "_x")
+  )
+)
+  ;;-------------------=={ UnFormat String }==------------------;;
+  ;;                                                            ;;
+  ;;  Returns a string with all MText formatting codes removed. ;;
+  ;;------------------------------------------------------------;;
+  ;;  Author: Lee Mac, Copyright ?0?8 2011 - www.lee-mac.com       ;;
+  ;;------------------------------------------------------------;;
+  ;;  Arguments:                                                ;;
+  ;;  str - String to Process                                   ;;
+  ;;  mtx - MText Flag (T if string is for use in MText)        ;;
+  ;;------------------------------------------------------------;;
+  ;;  Returns:  String with formatting codes removed            ;;
+  ;;------------------------------------------------------------;;
+(defun LM:UnFormat (str mtx / _replace rx) 
+
+  (defun _replace (new old str) 
+    (vlax-put-property rx 'pattern old)
+    (vlax-invoke rx 'replace str new)
+  )
+  (if (setq rx (vlax-get-or-create-object "VBScript.RegExp")) 
+    (progn 
+      (setq str (vl-catch-all-apply 
+                  (function 
+                    (lambda () 
+                      (vlax-put-property rx 'global actrue)
+                      (vlax-put-property rx 'multiline actrue)
+                      (vlax-put-property rx 'ignorecase acfalse)
+                      (foreach pair 
+                        '(("\032" . "\\\\\\\\")
+                          (" " . "\\\\P|\\n|\\t")
+                          ("$1" . "\\\\(\\\\[ACcFfHLlOopQTW])|\\\\[ACcFfHLlOopQTW][^\\\\;]*;|\\\\[ACcFfHLlOopQTW]")
+                          ("$1$2/$3" . "([^\\\\])\\\\S([^;]*)[/#\\^]([^;]*);")
+                          ("$1$2" . "\\\\(\\\\S)|[\\\\](})|}")
+                          ("$1" . "[\\\\]({)|{")
+                         )
+                        (setq str (_replace (car pair) (cdr pair) str))
+                      )
+                      (if mtx 
+                        (_replace 
+                          "\\\\"
+                          "\032"
+                          (_replace 
+                            "\\$1$2$3"
+                            "(\\\\[ACcFfHLlOoPpQSTW])|({)|(})"
+                            str
+                          )
+                        )
+                        (_replace "\\" "\032" str)
+                      )
+                    )
+                  )
+                )
+      )
+      (vlax-release-object rx)
+      (if (null (vl-catch-all-error-p str)) 
+        str
+      )
+    )
+  )
+)
+(vl-load-com)
+
+(setq *IsLoadedUtil* T)
+(princ)

@@ -46,6 +46,7 @@
 (defun c:a () (command "._matchprop") (princ))
 (defun c:aa () (command "._arc" "c") (princ))
 (defun c:a3 () (command "._arc" pause "e" pause "d") (princ))
+(defun c:br () (command "._breakatpoint") (princ))
 (defun c:c2 () (command "._circle" "2p") (princ))
 (defun c:c2t () (command "._circle" "2p" "tan" pause "tan") (princ))
 (defun c:c3 () (command "._circle" "3p") (princ))
@@ -267,6 +268,7 @@
 
     (princ "iaso2h: 插件命令加载完毕.\n")
   )
+  
   (princ "iaso2h: 搜索路径没有设置正确.\n")
 )
 

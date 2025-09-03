@@ -79,7 +79,7 @@
         (progn 
           (setq textLocation (getpoint "\n²åÈëÎÄ×Ö: "))
           (setq savedEntLast (entlast))
-          (command "_text" 
+          (command "_mtext" 
                    "j"
                    "ml"
                    textLocation

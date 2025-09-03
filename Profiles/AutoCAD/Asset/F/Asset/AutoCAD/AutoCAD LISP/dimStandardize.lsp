@@ -6,7 +6,7 @@
   (defun *error* (msg) 
     (if 
       (not 
-        (member msg '("Function cancelled" "quit / exit abort" "º¯ÊýÒÑÈ¡Ïû"))
+        (member msg '("Function cancelled" "quit / exit abort" "??????????"))
       )
       (princ (strcat "Error: " msg "\n"))
     )
@@ -20,7 +20,7 @@
     (if 
       (and 
         (null dimTextStyleEnt)
-        (= (vla-get-name obj) "Ð±·ÂËÎ")
+        (= (vla-get-name obj) "?¡À¡¤???")
       )
       (setq dimTextStyleEnt (vlax-vla-object->ename obj))
     )
@@ -338,9 +338,9 @@
   (if 
     (and 
       dimFontSetupChk
-      ((= vlax-get-property 'TextStyle) "Ð±·ÂËÎ")
+      ((= vlax-get-property 'TextStyle) "?¡À¡¤???")
     )
-    (vlax-put-property obj 'TextStyle "Ð±·ÂËÎ")
+    (vlax-put-property obj 'TextStyle "?¡À¡¤???")
   )
 
   ; Text Fill
