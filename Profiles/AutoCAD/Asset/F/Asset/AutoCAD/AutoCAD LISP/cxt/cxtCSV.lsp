@@ -154,3 +154,5 @@
     nil ; Row out of range
   )
 )
+
+(setq *IsLoadedCXTCSV* T)

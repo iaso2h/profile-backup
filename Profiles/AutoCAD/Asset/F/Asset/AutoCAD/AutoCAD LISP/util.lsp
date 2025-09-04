@@ -9,7 +9,10 @@
       (progn 
         (setq savedEcho (getvar "CMDECHO"))
         (setvar "CMDECHO" 0)
-        (command "._change" "_P" "p" "c" color "")
+        (if *AutoCADLoaded* 
+          (command "._change" "_P" "p" "c" color "")
+          (command "._change" ss "" "p" "c" color "")
+        )
         (setvar "CMDECHO" savedEcho)
       )
       (progn 
@@ -52,7 +55,8 @@
   (command "undo" "be")
 
   (if (not (tblsearch "layer" "xline")) 
-    (command "-layer" "n" "xline" "p" "n" "xline" "d" "¸¨ÖúÏßÍ¼²ã£¬²»¿É´òÓ¡£¡" 
+    (command "-layer" "n" "xline" "p" "n" "xline" "d" 
+             "𸀊¨𸀨ú𸀡𸀰𸀟𸀎𸀅𸀲𷿻𸀁𸀅𸀍𸀑𸀛𸀇ò𸀥𷿹𷿻𷿹" 
              "xline" "c" "41" "xline" ""
     )
   )
