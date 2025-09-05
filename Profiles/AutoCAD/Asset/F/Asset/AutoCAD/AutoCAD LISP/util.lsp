@@ -107,10 +107,9 @@
   ;;  str - String to Process                                   ;;
   ;;  mtx - MText Flag (T if string is for use in MText)        ;;
   ;;------------------------------------------------------------;;
-  ;;  Returns:  String with formatting codes removed            ;;
+  ;;  Returns:  String with formatting codes removed or nil     ;;
   ;;------------------------------------------------------------;;
-(defun LM:UnFormat (str mtx / _replace rx) 
-
+(defun LM:UnFormat (str mtx / strSaved _replace rx) 
   (defun _replace (new old str) 
     (vlax-put-property rx 'pattern old)
     (vlax-invoke rx 'replace str new)

@@ -24,8 +24,8 @@
             '(40 . 0) ; Fixed text height; 0 if not fixed
             '(41 . 0.8) ; Width factor
             '(50 . 8) ; Optional
-            '(3 . "ttsdeng.shx") ; Primary font file name
-            '(4 . "ttsdchn.shx") ; Bigfont file name; blank if none
+            '(3 . "tssdeng.shx") ; Primary font file name
+            '(4 . "tssdchn.shx") ; Bigfont file name; blank if none
       )
     )
   )

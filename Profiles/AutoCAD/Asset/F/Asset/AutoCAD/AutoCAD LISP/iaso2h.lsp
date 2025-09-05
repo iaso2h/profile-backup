@@ -55,9 +55,11 @@
 (defun c:qa () (command "._layon") (princ))
 (defun c:fr () (command "._layfrz" "c") (princ))
 (if (not *AutoCADLoaded*) 
-  (defun c:tre () (command "._trim" "_o" "_ex" pause) (princ))
-  (defun c:tr () (command "._trim" "_o" "_s" pause) (princ))
-  (defun c:ex () (command "._extend" "_o" "_s" pause) (princ))
+  (progn 
+    (defun c:tre () (command "._trim" "_o" "_ex" pause) (princ))
+    (defun c:tr () (command "._trim" "_o" "_s" pause) (princ))
+    (defun c:ex () (command "._extend" "_o" "_s" pause) (princ))
+  )
 )
 (defun c:ta () (command "._laythw" "c") (princ))
 (defun c:fx () (command "._laylck" "c") (princ))
@@ -134,6 +136,7 @@
     (load "layerFreezeSelected.lsp")
     (load "layerFreezeOthers.lsp")
     (load "dimScale.lsp")
+    (load "snippet.lsp")
     (defun c:q () (c:layerCloseSelected))
     (defun c:qe () (c:layerCloseOthers))
     (defun c:fr () (c:layerFreezeSelected))
@@ -270,7 +273,7 @@
 
     (princ "iaso2h: 插件命令加载完毕.\n")
   )
-  
+
   (princ "iaso2h: 搜索路径没有设置正确.\n")
 )
 

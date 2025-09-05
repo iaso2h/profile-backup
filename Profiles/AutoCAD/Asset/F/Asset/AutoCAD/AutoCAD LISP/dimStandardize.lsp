@@ -1,12 +1,12 @@
-(defun c:dimStandardize (/ doc dimTextStyleEnt dimStyleTableEnt dimStyleEntData sizeFactor ss i 
-             ent obj dimStyleModifiedCount
-            ) 
+(defun c:dimStandardize (/ doc dimTextStyleEnt dimStyleTableEnt dimStyleEntData 
+                         sizeFactor ss i ent obj dimStyleModifiedCount
+                        ) 
   (vl-load-com)
   (princ "\n")
   (defun *error* (msg) 
     (if 
       (not 
-        (member msg '("Function cancelled" "quit / exit abort" "??????????"))
+        (member msg '("Function cancelled" "quit / exit abort" "º¯ÊýÒÑÈ¡Ïû"))
       )
       (princ (strcat "Error: " msg "\n"))
     )
@@ -20,7 +20,7 @@
     (if 
       (and 
         (null dimTextStyleEnt)
-        (= (vla-get-name obj) "?¡À¡¤???")
+        (= (vla-get-name obj) "Ð±·ÂËÎ")
       )
       (setq dimTextStyleEnt (vlax-vla-object->ename obj))
     )
@@ -39,6 +39,7 @@
   ; )
 
   ; So here I resort to using the entmod command to modify the entity data of dimension styles, but it seems that you can never read the entity data from the "Standard" dimstyle, "Annotative" can be read though. See: https://forums.augi.com/showthread.php?173075-Getting-text-height-from-quot-standard-quot-text-style
+
   (while (setq dimStyleTableEnt (tblnext "dimstyle" (not dimStyleTableEnt))) 
     (setq dimStyleEntData (entget 
                             (tblobjname "dimstyle" 
@@ -206,7 +207,9 @@
   (princ)
 )
 
-(defun dimStyleMod (entData sizeFactor assocNum val sizeAdjustChk /) 
+(defun dimStyleMod (entData sizeFactor assocNum val sizeAdjustChk / 
+                    textOverrideUnformat
+                   ) 
   ; Credit: https://forums.autodesk.com/t5/visual-lisp-autolisp-and-general/lisp-code-to-change-the-overall-scale-for-all-dimension-objects/td-p/7968485
   (if sizeAdjustChk 
     (setq val (* val sizeFactor))
@@ -338,9 +341,10 @@
   (if 
     (and 
       dimFontSetupChk
-      ((= vlax-get-property 'TextStyle) "?¡À¡¤???")
+      ; (vlax-property-available-p obj 'TextStyle)
+      (/= (vlax-get-property obj 'TextStyle) "Ð±·ÂËÎ")
     )
-    (vlax-put-property obj 'TextStyle "?¡À¡¤???")
+    (vlax-put-property obj 'TextStyle "Ð±·ÂËÎ")
   )
 
   ; Text Fill
@@ -368,7 +372,7 @@
 
   ; Text Dimension Direction
   (if 
-    (and
+    (and 
       *AutoCADLoaded*
       (vlax-property-available-p obj 'DimTxtDirection)
       (vlax-get-property obj 'DimTxtDirection)
@@ -402,15 +406,22 @@
   )
 
   ; Remove fontype override in value
+  (princ (vl-princ-to-string (vla-get-handle obj)))
   (if 
     (and 
-      (vlax-property-available-p obj 'TextOverride)
-      (wcmatch (vlax-get-property obj 'TextOverride ) "*\*;*")
+      (setq textOverride (vlax-get-property obj 'TextOverride))
+      (wcmatch textOverride "*\*;*")
     )
-    (vlax-put-property 
-      obj
-      'TextOverride
-      (LM:UnFormat dimTextOverride :vlax-false)
+    (progn 
+      (if (setq textOverrideUnformat (LM:UnFormat textOverride :vlax-false)) 
+        (progn 
+          (vlax-put-property 
+            obj
+            'TextOverride
+            textOverrideUnformat
+          )
+        )
+      )
     )
   )
 
