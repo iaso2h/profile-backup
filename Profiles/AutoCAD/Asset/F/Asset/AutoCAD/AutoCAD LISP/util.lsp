@@ -51,12 +51,10 @@
 (defun iaso2h:layerSetXline (savedEntLast / tmp vlaObj) 
   (vl-load-com)
   (setq cmd (getvar 'cmdecho))
-  (setvar 'cmdecho 0)
-  (command "undo" "be")
 
   (if (not (tblsearch "layer" "xline")) 
     (command "-layer" "n" "xline" "p" "n" "xline" "d" 
-             "𸀊¨𸀨ú𸀡𸀰𸀟𸀎𸀅𸀲𷿻𸀁𸀅𸀍𸀑𸀛𸀇ò𸀥𷿹𷿻𷿹" 
+             "辅助图层，不可打印！" 
              "xline" "c" "41" "xline" ""
     )
   )
@@ -81,8 +79,6 @@
     )
   )
 
-  (command "undo" "be")
-  (setvar 'cmdecho cmd)
 
   (princ)
 )
@@ -155,7 +151,20 @@
     )
   )
 )
-(vl-load-com)
+
+;; Unique  -  Lee Mac
+;; Returns a list with duplicate elements removed.
+
+(defun LM:Unique (l / x r) 
+  (while l 
+    (setq x (car l)
+          l (vl-remove x (cdr l))
+          r (cons x r)
+    )
+  )
+  (reverse r)
+)
+
 
 (setq *IsLoadedUtil* T)
 (princ)

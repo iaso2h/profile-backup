@@ -9,7 +9,7 @@ def printAllEncoding():
             with open(str(f), mode="rb") as lspFile:
                 contentBinary = lspFile.read()
                 result = chardet.detect(contentBinary)
-                if result["encoding"] != "gb2312":
+                if result["encoding"].upper() != "GB2312" and result["encoding"].upper() != "UTF-8"and result["encoding"].upper() != "ASCII":
                     print(f'Path: {str(f)}, Encoding: {result["encoding"]}, Confidence: {result["confidence"]:.2f}')
                     # Try to decode with GB2312 (this will fail if the file isn't already in GB2312 or compatible)
                     # try:
@@ -24,13 +24,13 @@ def printAllEncoding():
                     #     # contentBinary = contentBinary.decode(result["encoding"])
 
     # Loop again to check the encoding
-    for f in Path(os.getcwd()).iterdir():
-        if f.suffix == ".lsp":
-            with open(str(f), mode="rb") as lspFile:
-                contentBinary = lspFile.read()
-                result = chardet.detect(contentBinary)
-                if result["encoding"] != "gb2312":
-                    print(f'Path: {str(f)}, Encoding: {result["encoding"]}, Confidence: {result["confidence"]:.2f}')
+    # for f in Path(os.getcwd()).iterdir():
+    #     if f.suffix == ".lsp":
+    #         with open(str(f), mode="rb") as lspFile:
+    #             contentBinary = lspFile.read()
+    #             result = chardet.detect(contentBinary)
+    #             if result["encoding"] != "gb2312":
+    #                 print(f'Path: {str(f)}, Encoding: {result["encoding"]}, Confidence: {result["confidence"]:.2f}')
 
 printAllEncoding()
 

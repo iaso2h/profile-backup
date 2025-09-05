@@ -1,4 +1,4 @@
-(defun c:getLength (/ ss ent vlaObj vlaType basepoint textContent savedEntLast) 
+(defun c:getLength (/ ss ent obj vlaType basepoint textContent savedEntLast) 
 
   (if (setq ss (ssget "_:S")) 
     (setq ent (ssname ss 0))
@@ -6,14 +6,14 @@
   )
 
   (vl-load-com)
-  (setq vlaObj (vlax-ename->vla-object ent))
-  (setq vlaType (vla-get-ObjectName vlaObj))
+  (setq obj (vlax-ename->vla-object ent))
+  (setq vlaType (vla-get-ObjectName obj))
 
   (cond 
-    ((= vlaType "AcDbLine") (setq textContent (vla-get-length vlaObj)))
-    ((= vlaType "AcDbPolyline") (setq textContent (vla-get-length vlaObj)))
-    ((= vlaType "AcDbArc") (setq textContent (vla-get-arclength vlaObj)))
-    ((= vlaType "AcDbCircle") (setq textContent (vla-get-circumference vlaObj)))
+    ((= vlaType "AcDbLine") (setq textContent (vla-get-length obj)))
+    ((= vlaType "AcDbPolyline") (setq textContent (vla-get-length obj)))
+    ((= vlaType "AcDbArc") (setq textContent (vla-get-arclength obj)))
+    ((= vlaType "AcDbCircle") (setq textContent (vla-get-circumference obj)))
     (t nil)
   )
 
@@ -31,112 +31,145 @@
                0
                textContent
       )
-      (if *SearchIncluded* 
-        (progn 
-          (if (not *IsLoadedUtil*) 
-            FFF
-            (load "util.lsp")
-          )
-          (iaso2h:layerSetXline savedEntLast)
-        )
-      )
+      (load "util.lsp")
+      (iaso2h:layerSetXline savedEntLast)
     )
   )
   (princ)
 )
 
 
-(defun c:getLengthAverage (/ ss colors legnth i ent vlaObj vlaType totalLength count 
-                           basepoint contentComposed savedEntLast
+(defun c:getLengthAverage (/ ss doc color colors multiColorChk lengthVal i ent obj 
+                           vlaType totalLength basepoint contentComposed 
+                           contentConcluded
                           ) 
   ;; Select entities with filter for lines, 2D polylines, arcs, and circles
   (prompt "\n选择要计算平均长度的实体: ")
   (setq ss (ssget "_:L" '((0 . "LINE,LWPOLYLINE,ARC,CIRCLE"))))
-  (if ss 
-    (progn 
-      (setq totalLength 0.0)
-      (setq count 0)
-      (setq i 0)
+  (if (not ss) (exit))
 
-      ;; Loop through all selected entities
-      (setq colors '())
-      (setq lengths '())
-      (repeat (sslength ss) 
-        (setq ent (ssname ss i))
-        (setq vlaObj (vlax-ename->vla-object ent))
-        (setq vlaType (vla-get-ObjectName vlaObj))
+  (if (not *IsLoadedUtil*) 
+    (load "util.lsp")
+  )
+  (setq totalLength 0.0)
+  (setq i 0)
+  (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
+  (setq colors '())
+  (setq multiColorChk nil)
+  (setq lengths '())
 
-        ;; Get length using ActiveX method (works for all supported object types)
-        (cond 
-          ((= vlaType "AcDbLine")
-           (setq totalLength (+ totalLength (vla-get-length vlaObj)))
-           (setq lengths (append lengths (list (vla-get-length vlaObj))))
-          )
-          ((= vlaType "AcDbPolyline")
-           (setq totalLength (+ totalLength (vla-get-length vlaObj)))
-           (setq lengths (append lengths (list (vla-get-length vlaObj))))
-          )
-          ((= vlaType "AcDbArc")
-           (setq totalLength (+ totalLength (vla-get-arclength vlaObj)))
-           (setq lengths (append lengths (list (vla-get-arclength vlaObj))))
-          )
-          ((= vlaType "AcDbCircle")
-           (setq totalLength (+ totalLength (vla-get-circumference vlaObj)))
-           (setq lengths (append lengths (list (vla-get-circumference vlaObj))))
-          )
-          (t nil)
-        )
+  ;; Loop through all selected entities
+  (repeat (sslength ss) 
+    (setq ent (ssname ss i))
+    (setq obj (vlax-ename->vla-object ent))
+    (setq vlaType (vla-get-ObjectName obj))
 
-        (setq count (1+ count))
-        (setq i (1+ i))
+    ;; Get length using ActiveX method (works for all supported object types)
+    (cond 
+      ((= vlaType "AcDbLine")
+       (setq lengthVal (vla-get-length obj))
       )
+      ((= vlaType "AcDbPolyline")
+       (setq lengthVal (vla-get-length obj))
+      )
+      ((= vlaType "AcDbArc")
+       (setq lengthVal (vla-get-arclength obj))
+      )
+      ((= vlaType "AcDbCircle")
+       (setq lengthVal (vla-get-circumference obj))
+      )
+      (t nil)
+    )
 
-      ;; Calculate and display average length
-      (if (> count 0) 
-        (progn 
-          (setq basepoint (getpoint "\n插入文字: "))
-          (setq oppositePoint (list 
-                                (+ (car basepoint) (* (getVar "viewSize") 1))
-                                (- (cadr basepoint) (* (getVar "viewSize") 1))
-                              )
-          )
-
-          (setq savedEntLast (entlast))
-
-          ; Compose text content
-          (if (> count 1) 
-            (setq contentComposed (strcat 
-                                    "平均长度: "
-                                    (rtos (/ totalLength count) 2 12)
-                                    "\\P"
-                                    "总长度: "
-                                    (rtos totalLength 2 12)
-                                  )
-            )
-            (setq contentComposed (rtos (/ totalLength count) 2 12))
-          )
-          (command "_mtext" 
-                   basepoint
-                   "h"
-                   (* (getVar "viewSize") 0.05)
-                   oppositePoint
-                   contentComposed
-                   ""
-          )
-          (if *SearchIncluded* 
-            (progn 
-              (if (not *IsLoadedUtil*) 
-                (load "util.lsp")
-              )
-              (iaso2h:layerSetXline savedEntLast)
-            )
-          )
-        )
-        (princ "\nNo valid entities found")
+    (setq totalLength (+ totalLength lengthVal))
+    (setq lengths (append (list lengthVal) lengths))
+    (setq color (vla-get-color obj))
+    (cond 
+      ((= color 0)
+       (setq color 7)
+      ) ; Use white for byBlock
+      ((= color 256)
+       (setq color (vla-get-color 
+                     (vla-item (vla-get-layers doc) (vla-get-layer obj))
+                   )
+       ) ; Use color of layer for byLayer
       )
     )
-    (princ "\nNo entities selected")
+    (setq colors (append (list color) colors))
+
+
+    (setq i (1+ i))
   )
+
+
+
+  ;; Calculate and display average length
+  (setq basepoint (getpoint "\n插入文字: "))
+  (setq oppositePoint (list 
+                        (+ (car basepoint) (* (getVar "viewSize") 1))
+                        (- (cadr basepoint) (* (getVar "viewSize") 1))
+                      )
+  )
+
+  ; Compose text content
+  (if (> i 1) 
+    (progn 
+      ; Check if colors other than white exists. Prerequisite to add prefix {} to Mtext
+      (if (vl-remove 7 (LM:Unique colors)) 
+        (setq multiColorChk T)
+      )
+      (if multiColorChk 
+        (setq contentComposed "{")
+        (setq contentComposed "")
+      )
+
+      (setq i 0) ; Reuse the i for new loop
+      (repeat (sslength ss) 
+        ; Add color override
+        (setq contentComposed (strcat contentComposed 
+                                      "\\C"
+                                      (itoa (nth i colors))
+                                      ";"
+                              )
+        )
+        ; Fill in length value
+        (setq contentComposed (strcat contentComposed (rtos (nth i lengths) 2 11)))
+
+        ; Before entering into the next loop
+        (setq i (1+ i))
+        (setq contentComposed (strcat contentComposed "\\P"))
+        (if 
+          (and multiColorChk 
+               (= i (sslength ss))
+          )
+          (setq contentComposed (strcat contentComposed "}"))
+        )
+      )
+
+      (setq contentConcluded (strcat contentComposed 
+                                     "平均长度: "
+                                     (rtos (/ totalLength i) 2 11)
+                                     "\\P"
+                                     "总长度: "
+                                     (rtos totalLength 2 11)
+                             )
+      )
+    ) ; end of progn
+
+    (setq contentConcluded (rtos (/ totalLength i) 2 11))
+  )
+  (command "_mtext" 
+           basepoint
+           "h"
+           (* (getVar "viewSize") 0.05)
+           oppositePoint
+           contentConcluded
+           ""
+  )
+
+  ; Set layer of last entity to Xline
+  (iaso2h:layerSetXline (entlast))
+  (command "_change" "l" "" "p" "la" "xline" "")
 
   (princ)
 )

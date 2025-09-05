@@ -12,7 +12,7 @@
 ;;  object already in the selection, forming a 'chain' of selected      ;;
 ;;  objects.                                                            ;;
 ;;----------------------------------------------------------------------;;
-;;  Author:  Lee Mac, Copyright © 2012  -  www.lee-mac.com              ;;
+;;  Author:  Lee Mac, Copyright ï¿½ 2012  -  www.lee-mac.com              ;;
 ;;----------------------------------------------------------------------;;
 ;;  Version 1.0    -    2012-11-07                                      ;;
 ;;                                                                      ;;
