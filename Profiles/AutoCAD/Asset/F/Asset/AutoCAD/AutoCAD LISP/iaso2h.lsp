@@ -68,12 +68,25 @@
 (defun c:ch () (command "._chamfer") (princ))
 (defun c:dwg () (command "._dwg-purge") (princ))
 (defun c:loo () (command "._layerp") (princ))
-(defun c:lm () (command "._laymch") (princ))
+; Pre-selection wrapper for layer match
+(defun c:lm (/) 
+  (if (setq ss (ssget "I")) 
+    (progn 
+      (if *AutoCADLoaded* 
+        (command "._-laymch" "_p" pause)
+        (command "._-laymch" ss pause)
+      )
+    )
+    (command "._laymch")
+  )
+  (princ)
+)
 (defun c:cc () (command "._laymcur") (princ))
 (defun c:ca () (command "._copym") (princ))
 (defun c:r () (command "._rotate") (princ))
 (defun c:re () (command "._rectang") (princ))
-(defun c:j () (command "._join") (princ))
+; TODO detech yanxiu mapping
+; (defun c:j (/ ss) (command "._join") (princ))
 (defun c:jl () (command "._joinl") (princ))
 (defun c:mc () (command "._polygon" "4" pause "c") (princ))
 (defun c:reg () (command "._regenall") (princ))
@@ -170,7 +183,7 @@
     (autoload "whatIsInside" '("whatIsInside"))
 
     ;;Utilities
-    (autoload "getLength" '("getLength" "getLengthAverage"))
+    (autoload "getLength" '("getLength"))
     (autoload "optimize" '("optimize"))
 
     ;; Select
@@ -228,8 +241,9 @@
     )
     (autoload "plineOffset" '("plineOffset"))
     (autoload "plineLengthen" '("plineLengthen"))
+    (autoload "plineOverkillJoin" '("plineOverkillJoin" "jj"))
     (autoload "plineConvert" '("plineConvert" "2`"))
-    (autoload "plineContinue" '("plineContinue" "`c"))
+    (autoload "plineContinue" '("plineContinue" "`c"
     (autoload "plineSubtract" '("plineSubtract" "`s"))
     (autoload "plineUnion" '("plineUnion" "`a"))
     (autoload "plineHeal" '("plineHeal" "`h"))

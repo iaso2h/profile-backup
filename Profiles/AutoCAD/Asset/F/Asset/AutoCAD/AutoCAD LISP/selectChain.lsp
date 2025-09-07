@@ -28,7 +28,7 @@
 
     (setq fz 1e-8) ;; Point comparison tolerance
     
-    (while (setq df (tblnext "layer" (not df)))
+    (while (setq df (tblnext "layer" (not df))) 
         (if
             (or
                 (minusp (cdr (assoc 62 df)))

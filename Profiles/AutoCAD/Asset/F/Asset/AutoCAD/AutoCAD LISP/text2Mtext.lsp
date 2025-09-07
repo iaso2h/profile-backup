@@ -20,7 +20,7 @@
 ;;                                                                               ;;
 ;;-------------------------------------------------------------------------------;;
 ;;                                                                               ;;
-;;  Author: Lee Mac, Copyright © September 2009 - www.lee-mac.com                ;;
+;;  Author: Lee Mac, Copyright ï¿½ September 2009 - www.lee-mac.com                ;;
 ;;                                                                               ;;
 ;;-------------------------------------------------------------------------------;;
 ;;                                                                               ;;
@@ -240,8 +240,8 @@
       (and (entdel ent)
            (setq eLst (cons ent eLst))))
 
-  (princ (eval (setq msg '(strcat "\n~¤~  Current Mode: " (nth *T2M_mode* mLst) " ~¤~   [Space to Change]"
-                                  "\n~¤~ Select Text to Convert [Shift-Click keep original] [Undo] <Place MText> ~¤~"))))
+  (princ (eval (setq msg '(strcat "\n~ï¿½~  Current Mode: " (nth *T2M_mode* mLst) " ~ï¿½~   [Space to Change]"
+                                  "\n~ï¿½~ Select Text to Convert [Shift-Click keep original] [Undo] <Place MText> ~ï¿½~"))))
 
   (while
     (progn
@@ -392,6 +392,6 @@
 )
 
 (vl-load-com)
-(princ "\n:: Text2MText.lsp | Version 2.0 | © Lee Mac 2009 www.lee-mac.com ::")
+(princ "\n:: Text2MText.lsp | Version 2.0 | ï¿½ Lee Mac 2009 www.lee-mac.com ::")
 (princ "\n:: Type \"T2M\" to Invoke ::")
 (princ)

@@ -33,7 +33,7 @@
             (setq spf (cond ((getdist "\nSpecify line spacing factor <use existing>: ")))
                   inc (sslength sel)
                   enx (entget (ssname sel (1- inc)))
-                  ang (cdr (assoc 50 enx))
+                  ang (cdr (assoc 50 enx)) 
                   ocs (trans '(0.0 0.0 1.0) 1 0 t)
                   vc1 (trans (list    (cos ang)  (sin ang)) ocs 0)
                   vc2 (trans (list (- (sin ang)) (cos ang)) ocs 0)

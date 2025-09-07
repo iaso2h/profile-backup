@@ -12,7 +12,7 @@
     (setq ObjSet (ssget 
                    '((-4 . "<OR")
                      (0 . "LWPOLYLINE")
-                     (0 . "ELLIPSE")
+                     (0 . "ELLIPSE") 
                      (0 . "CIRCLE")
                      (0 . "POLYLINE")
                      (0 . "LINE")

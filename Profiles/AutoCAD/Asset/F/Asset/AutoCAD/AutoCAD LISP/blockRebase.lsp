@@ -90,7 +90,7 @@
                     )
                 )
             )
-        )
+        ) 
     )
     (if (and (= 'ename (type ent)) (setq nbp (getpoint "\nSpecify New Base Point: ")))
         (progn

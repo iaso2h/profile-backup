@@ -1,48 +1,6 @@
-(defun c:getLength (/ ss ent obj vlaType basepoint textContent savedEntLast) 
-
-  (if (setq ss (ssget "_:S")) 
-    (setq ent (ssname ss 0))
-    (setq ent (car (entsel)))
-  )
-
-  (vl-load-com)
-  (setq obj (vlax-ename->vla-object ent))
-  (setq vlaType (vla-get-ObjectName obj))
-
-  (cond 
-    ((= vlaType "AcDbLine") (setq textContent (vla-get-length obj)))
-    ((= vlaType "AcDbPolyline") (setq textContent (vla-get-length obj)))
-    ((= vlaType "AcDbArc") (setq textContent (vla-get-arclength obj)))
-    ((= vlaType "AcDbCircle") (setq textContent (vla-get-circumference obj)))
-    (t nil)
-  )
-
-  (if (not (null textContent)) 
-    (progn 
-      (setq basepoint (getpoint "\n插入文字: "))
-
-      ; (vla-sendcommand activeDoc
-      (setq savedEntLast (entlast))
-      (command "_text" 
-               "j"
-               "ml"
-               basepoint
-               (* (getVar "viewSize") 0.05)
-               0
-               textContent
-      )
-      (load "util.lsp")
-      (iaso2h:layerSetXline savedEntLast)
-    )
-  )
-  (princ)
-)
-
-
-(defun c:getLengthAverage (/ ss doc color colors multiColorChk lengthVal i ent obj 
-                           vlaType totalLength basepoint contentComposed 
-                           contentConcluded
-                          ) 
+(defun c:getLength (/ ss doc color colors multiColorChk lengthVal i ent obj vlaType 
+                    totalLength basepoint contentComposed content
+                   ) 
   ;; Select entities with filter for lines, 2D polylines, arcs, and circles
   (prompt "\n选择要计算平均长度的实体: ")
   (setq ss (ssget "_:L" '((0 . "LINE,LWPOLYLINE,ARC,CIRCLE"))))
@@ -146,26 +104,40 @@
         )
       )
 
-      (setq contentConcluded (strcat contentComposed 
-                                     "平均长度: "
-                                     (rtos (/ totalLength i) 2 11)
-                                     "\\P"
-                                     "总长度: "
-                                     (rtos totalLength 2 11)
-                             )
+      ; Compose final  text content
+      (setq content (strcat contentComposed 
+                            "平均长度: "
+                            (rtos (/ totalLength i) 2 11)
+                            "\\P"
+                            "总长度: "
+                            (rtos totalLength 2 11)
+                    )
+      )
+
+      ; Insert with Mtext command
+      (command "_mtext" 
+               basepoint
+               "h"
+               (* (getVar "viewSize") 0.05)
+               oppositePoint
+               content
+               ""
       )
     ) ; end of progn
+    (progn 
+      (setq content (rtos (/ totalLength i) 2 11))
 
-    (setq contentConcluded (rtos (/ totalLength i) 2 11))
+      (command "_text" 
+               "j"
+               "ml"
+               basepoint
+               (* (getVar "viewSize") 0.05)
+               0
+               content
+      )
+    )
   )
-  (command "_mtext" 
-           basepoint
-           "h"
-           (* (getVar "viewSize") 0.05)
-           oppositePoint
-           contentConcluded
-           ""
-  )
+
 
   ; Set layer of last entity to Xline
   (iaso2h:layerSetXline (entlast))
