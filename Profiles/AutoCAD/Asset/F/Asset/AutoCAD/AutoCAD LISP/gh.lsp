@@ -1,6 +1,6 @@
 (defun c:gh (/) 
-  (initget "A S")
+  (initget "All Select")
   (princ "\n")
-  (setq mode (getkword "选择模式：[全部(A)/选择(S)]:"))
+  (setq mode (getkword "选择模式 [全部\(A\)/选择\(S\)]:<选择\(S\)>"))
   (princ (strcat "选择模式：" (vl-prin1-to-string mode) "\n"))
 )

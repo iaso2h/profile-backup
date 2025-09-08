@@ -1,5 +1,6 @@
-(defun c:dimStandardize (/ doc dimTextStyleEnt dimStyleTableEnt dimStyleEntData 
-                         textHeight sizeFactor ss i ent obj dimStyleModifiedCount
+(defun c:dimStandardize (/ doc ans ssFilter dimTextStyleEnt dimStyleTableEnt 
+                         dimStyleEntData textHeight sizeFactor ss i ent obj 
+                         dimStyleModifiedCount
                         ) 
   (vl-load-com)
 
@@ -13,6 +14,12 @@
     (princ)
   )
 
+  (initget "All Select")
+  (setq ans (getkword "选择模式 [全部\(A\)/选择\(S\)]:<选择\(S\)>"))
+  (if (= ans "All") 
+    (setq ssFilter "_X")
+    (setq ssFilter "_L")
+  )
   (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
   (setq dimTextStyleEnt nil)
   (setq dimStyleModifiedCount 0)
@@ -42,7 +49,10 @@
 
   ; So here I resort to using the entmod command to modify the entity data of dimension styles, but it seems that you can never read the entity data from the "Standard" dimstyle, "Annotative" can be read though. See: https://forums.augi.com/showthread.php?173075-Getting-text-height-from-quot-standard-quot-text-style
 
-  (while (setq dimStyleTableEnt (tblnext "dimstyle" (not dimStyleTableEnt))) 
+  (while 
+    (and (= ans "All") 
+         (setq dimStyleTableEnt (tblnext "dimstyle" (not dimStyleTableEnt)))
+    )
     (setq dimStyleEntData (entget 
                             (tblobjname "dimstyle" 
                                         (cdr (assoc 2 dimStyleTableEnt))
@@ -65,10 +75,10 @@
           )
         )
         ; As for dimension style exported from SolidWorks, text height from dot list 140 will somehow be evaluated to nil. In this case, set it to 2.5 by default.
-        (if (not (setq textHeight (cdr (assoc 140 dimStyleEntData))))
+        (if (not (setq textHeight (cdr (assoc 140 dimStyleEntData)))) 
           (setq textHeight 2.5)
         )
-        
+
         (setq sizeFactor (/ textHeight 2.5))
         (if sizeAdjustChk 
           (setq val (* val sizeFactor))
@@ -190,7 +200,7 @@
   ; Nither do I want to select dimension one by one as it's hefty work as well. What I implement here is adjust all the sizable element in dimentsion based on the text height of each dimension.
 
   (setq i 0)
-  (if (setq ss (ssget "_X" '((0 . "*DIMENSION")))) 
+  (if (setq ss (ssget ssFilter '((0 . "*DIMENSION")))) 
     (progn 
       (while (< i (sslength ss)) 
         (setq ent (ssname ss i))
@@ -211,6 +221,7 @@
   (princ (strcat "Modified " (itoa dimStyleModifiedCount) " dimension styles.\n"))
   (if (> i 0) 
     (princ (strcat "Modified " (itoa i) " dimension entities.\n"))
+    (princ "No dimension entities modified.\n")
   )
 
   (princ)
