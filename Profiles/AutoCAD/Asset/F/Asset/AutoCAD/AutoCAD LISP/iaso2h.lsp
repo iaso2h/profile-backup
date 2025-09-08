@@ -168,7 +168,7 @@
     (defun c:fe () (c:layerFreezeOthers))
 
     ;; Setup
-    (autoload "setup" '("setupSysVar" "setupLayer" "setupFont"))
+    (autoload "setup" '("setup" "setupSysVar" "setupLayer" "setupFont"))
 
     ;; Otto
     (autoload "otto" '("otto"))
@@ -243,7 +243,7 @@
     (autoload "plineLengthen" '("plineLengthen"))
     (autoload "plineOverkillJoin" '("plineOverkillJoin" "jj"))
     (autoload "plineConvert" '("plineConvert" "2`"))
-    (autoload "plineContinue" '("plineContinue" "`c"
+    (autoload "plineContinue" '("plineContinue" "`c"))
     (autoload "plineSubtract" '("plineSubtract" "`s"))
     (autoload "plineUnion" '("plineUnion" "`a"))
     (autoload "plineHeal" '("plineHeal" "`h"))

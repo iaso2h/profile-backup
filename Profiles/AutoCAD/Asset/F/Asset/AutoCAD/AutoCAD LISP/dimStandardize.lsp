@@ -1,8 +1,8 @@
 (defun c:dimStandardize (/ doc dimTextStyleEnt dimStyleTableEnt dimStyleEntData 
-                         sizeFactor ss i ent obj dimStyleModifiedCount
+                         textHeight sizeFactor ss i ent obj dimStyleModifiedCount
                         ) 
   (vl-load-com)
-  (princ "\n")
+
   (defun *error* (msg) 
     (if 
       (not 
@@ -22,7 +22,9 @@
         (null dimTextStyleEnt)
         (= (vla-get-name obj) "Ð±·ÂËÎ")
       )
-      (setq dimTextStyleEnt (vlax-vla-object->ename obj))
+      (progn 
+        (setq dimTextStyleEnt (vlax-vla-object->ename obj))
+      )
     )
   )
 
@@ -62,8 +64,12 @@
                                 )
           )
         )
-
-        (setq sizeFactor (/ (cdr (assoc 140 dimStyleEntData)) 2.5))
+        ; As for dimension style exported from SolidWorks, text height from dot list 140 will somehow be evaluated to nil. In this case, set it to 2.5 by default.
+        (if (not (setq textHeight (cdr (assoc 140 dimStyleEntData))))
+          (setq textHeight 2.5)
+        )
+        
+        (setq sizeFactor (/ textHeight 2.5))
         (if sizeAdjustChk 
           (setq val (* val sizeFactor))
         )
@@ -182,9 +188,10 @@
   ; Modify drawn dimensions
   ; I don't want to use the "._dimoverride" command to override all dimensions mentioned in this post: https://forums.autodesk.com/t5/visual-lisp-autolisp-and-general/how-to-change-textstyles-in-all-dimensions-and-leaders-in-an/m-p/7064499#M120471
   ; Nither do I want to select dimension one by one as it's hefty work as well. What I implement here is adjust all the sizable element in dimentsion based on the text height of each dimension.
+
+  (setq i 0)
   (if (setq ss (ssget "_X" '((0 . "*DIMENSION")))) 
     (progn 
-      (setq i 0)
       (while (< i (sslength ss)) 
         (setq ent (ssname ss i))
         (setq obj (vlax-ename->vla-object ent))
@@ -200,9 +207,11 @@
 
   (command "undo" "e")
   (setvar "CMDECHO" 1)
-
+  (terpri)
   (princ (strcat "Modified " (itoa dimStyleModifiedCount) " dimension styles.\n"))
-  (princ (strcat "Modified " (itoa i) " dimension entities.\n"))
+  (if (> i 0) 
+    (princ (strcat "Modified " (itoa i) " dimension entities.\n"))
+  )
 
   (princ)
 )
@@ -235,14 +244,14 @@
   (if 
     (and 
       (vlax-property-available-p obj 'DimLine1Suppress)
-      (vlax-get-property obj 'DimLine1Suppress)
+      (= (vlax-get-property obj 'DimLine1Suppress) :vlax-true)
     )
     (vlax-put-property obj 'DimLine1Suppress :vlax-false)
   )
   (if 
     (and 
       (vlax-property-available-p obj 'DimLine2Suppress)
-      (vlax-get-property obj 'DimLine2Suppress)
+      (= (vlax-get-property obj 'DimLine2Suppress) :vlax-true)
     )
     (vlax-put-property obj 'DimLine2Suppress :vlax-false)
   )
@@ -251,14 +260,14 @@
   (if 
     (and 
       (vlax-property-available-p obj 'ExtLine1Suppress)
-      (vlax-get-property obj 'ExtLine1Suppress)
+      (= (vlax-get-property obj 'ExtLine1Suppress) :vlax-true)
     )
     (vlax-put-property obj 'ExtLine1Suppress :vlax-false)
   )
   (if 
     (and 
       (vlax-property-available-p obj 'ExtLine2Suppress)
-      (vlax-get-property obj 'ExtLine2Suppress)
+      (= (vlax-get-property obj 'ExtLine2Suppress) :vlax-true)
     )
     (vlax-put-property obj 'ExtLine2Suppress :vlax-false)
   )
@@ -285,7 +294,7 @@
   (if 
     (and 
       (vlax-property-available-p obj 'ExtLineFixedLenSuppress)
-      (vlax-get-property obj 'ExtLineFixedLenSuppress)
+      (= (vlax-get-property obj 'ExtLineFixedLenSuppress) :vlax-true)
     )
     (vlax-put-property obj 'ExtLineFixedLenSuppress :vlax-false)
   )
@@ -375,7 +384,7 @@
     (and 
       *AutoCADLoaded*
       (vlax-property-available-p obj 'DimTxtDirection)
-      (vlax-get-property obj 'DimTxtDirection)
+      (= (vlax-get-property obj 'DimTxtDirection) :vlax-true)
     )
     (vlax-put-property obj 'DimTxtDirection :vlax-false)
   )
@@ -406,7 +415,6 @@
   )
 
   ; Remove fontype override in value
-  (princ (vl-princ-to-string (vla-get-handle obj)))
   (if 
     (and 
       (setq textOverride (vlax-get-property obj 'TextOverride))
@@ -448,7 +456,7 @@
   (if 
     (and 
       (vlax-property-available-p obj 'ForceLineInside)
-      (not (vlax-get-property obj 'ForceLineInside))
+      (= (vlax-get-property obj 'ForceLineInside) :vlax-false)
     )
     (vlax-put-property obj 'ForceLineInside T)
   )
@@ -479,18 +487,21 @@
   (if 
     (and 
       (vlax-property-available-p obj 'SuppressLeadingZeros)
-      (vlax-get-property obj 'SuppressLeadingZeros)
+      (= (vlax-get-property obj 'SuppressLeadingZeros) :vlax-true)
     )
-    (vlax-put-property obj 'SuppressLeadingZeros :vlax-false)
+    (vlax-put-property obj 'SuppressLeadingZeros 0)
   )
 
   ; Suppress Trailing Zeros
   (if 
     (and 
       (vlax-property-available-p obj 'SuppressTrailingZeros)
-      (not (vlax-get-property obj 'SuppressTrailingZeros))
+      (= (vlax-get-property obj 'SuppressTrailingZeros) :vlax-false)
     )
-    (vlax-put-property obj 'SuppressTrailingZeros T)
+    (progn 
+      (vlax-put-property obj 'SuppressTrailingZeros 1)
+      (princ "Suppress Trailing Zeros\n")
+    )
   )
 
   ; Angle Format

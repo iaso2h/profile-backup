@@ -1,9 +1,17 @@
+(defun c:setup () 
+  (c:setupSysVar)
+  (c:setupFont)
+  (c:setupLayer)
+
+  (princ)
+)
+
 (defun c:setupSysVar () 
   (setvar "CMDECHO" 1)
   (setvar "CMDDIA" 1)
   (setvar "FILEDIA" 1)
   (setvar "HIGHLIGHT" 1)
-  (setvar "MIRRTEXT" 0)
+  ; (setvar "MIRRTEXT" 0)
   (setvar "PICKADD" 2)
   (setvar "PICKAUTO" 7)
   (setvar "PICKFIRST" 1)
@@ -13,7 +21,9 @@
   (princ)
 )
 
-(defun c:setupFont () 
+(defun c:setupFont (/ doc textStyles standardStyle) 
+  (vl-load-com)
+
   (if (not (tblsearch "STYLE" "斜仿宋")) 
     (entmake 
       (list '(0 . "STYLE") 
@@ -23,13 +33,56 @@
             '(70 . 0)
             '(40 . 0) ; Fixed text height; 0 if not fixed
             '(41 . 0.8) ; Width factor
-            '(50 . 8) ; Optional
+            (cons 50 (* pi (/ 8.0 180))) ; Optional, Oblique angle in radians
             '(3 . "tssdeng.shx") ; Primary font file name
             '(4 . "tssdchn.shx") ; Bigfont file name; blank if none
       )
     )
   )
-  
+  (if (not (tblsearch "STYLE" "黑体")) 
+    (entmake 
+      (list '(0 . "STYLE") 
+            '(100 . "AcDbSymbolTableRecord")
+            '(100 . "AcDbTextStyleTableRecord")
+            '(2 . "黑体")
+            '(70 . 0)
+            '(40 . 0) ; Fixed text height; 0 if not fixed
+            '(3 . "simhei.ttf") ; Primary font file name
+      )
+    )
+  )
+
+
+  ;; Fix standard font oblique angle and set it to 0. Eventually, I implement it in the ActiveX way.
+
+  ; ERROR: Cannot retrie dot list for DXF group code 50
+  ; Reset standrad italic
+  ; (setq standardFontEntData (tblsearch "STYLE" "Standard"))
+  ; (if
+  ;   (and
+  ;     (cadr (assoc 50 standardFontEntData))
+  ;     (/= (cadr (assoc 50 standardFontEntData)) 0)
+  ;     (or (/= (strcase (cadr (assoc 3 standardFontEntData)) T) "tssdeng.shx")
+  ;         (/= (strcase (cadr (assoc 4 standardFontEntData)) T) "tssdchn.shx")
+  ;     )
+  ;   )
+  ;   (subst '(50 . 0) (assoc 50 standardFontEntData) standardFontEntData)
+  ;   (entmod standardFontEntData)
+  ; )
+
+  ; ActiveX way
+  (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
+  (setq textStyles (vla-get-textstyles doc))
+  (setq standardStyle (vl-catch-all-apply 'vla-item (list textStyles "Standard")))
+  (if 
+    (and 
+      (/= vla-get-obliqueangle 0)
+      (or (/= (strcase (vla-get-fontfile standardStyle) T) "tssdeng.shx") 
+          (/= (strcase (vla-get-bigfontfile standardStyle) T) "tssdchn.shx")
+      )
+    )
+    (vla-put-obliqueangle standardStyle 0)
+  )
   (princ)
 )
 
@@ -61,6 +114,8 @@
                     ("发热丝" "default" "p" "3" "")
                     ("参照" "0.09" "p" "6" "")
                     ("填充" "0.09" "p" "251" "")
+                    ("割孔" "default9" "p" "172" "")
+                    ("发热分区" "default9" "p" "20" "")
                    )
   )
   (foreach layerList layerInfo 

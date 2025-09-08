@@ -1,4 +1,4 @@
-(defun C:xrefLayerMerge (/ actDoc layerStrIdx layerDesc nameOld nameNew) 
+(defun C:xrefLayerMerge (/ doc layerStrIdx layerDesc nameOld nameNew) 
   (defun *error* (msg) 
     (if (not (member msg '("Function cancelled" "quit / exit abort" "函数己取消"))) 
       (princ (strcat "Error: " msg "\n"))
@@ -17,8 +17,8 @@
   (setvar "CLAYER" "0")
   (command "undo" "be")
 
-  (setq actDoc (vla-get-ActiveDocument (vlax-get-Acad-Object)))
-  (vlax-for l (vla-get-Layers actDoc) 
+  (setq doc (vla-get-ActiveDocument (vlax-get-Acad-Object)))
+  (vlax-for l (vla-get-Layers doc) 
     ;  (setq layers(cons(vla-get-Name l)layers))
     (setq nameOld (vla-get-Name l))
     ;  ); end vlax-for

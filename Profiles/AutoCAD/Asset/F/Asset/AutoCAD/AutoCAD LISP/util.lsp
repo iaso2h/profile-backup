@@ -1,4 +1,6 @@
 ;; Change Color
+(defun pp (obj) (princ (vl-prin1-to-string obj)) (terpri))
+
 (defun c:mapColor () (colorAliasSetup))
 (defun colorAliasSetup (/ i) 
   (defun colorAliasHelper (color / ss savedEcho) 
@@ -53,9 +55,8 @@
   (setq cmd (getvar 'cmdecho))
 
   (if (not (tblsearch "layer" "xline")) 
-    (command "-layer" "n" "xline" "p" "n" "xline" "d" 
-             "辅助图层，不可打印！" 
-             "xline" "c" "41" "xline" ""
+    (command "-layer" "n" "xline" "p" "n" "xline" "d" "辅助图层，不可打印！" "xline" "c" "41" 
+             "xline" ""
     )
   )
   ;;   (if

@@ -7,6 +7,6 @@
 
 (defun c:snpTblEnt (/) 
   (terpri)
-  (princ "(setq foo (entget (tblobjname "dimstyle" "ISO-25"))) ")
+  (princ "(setq foo (entget (tblobjname \"dimstyle\" \"ISO-25\")))")
   (princ)
 )
