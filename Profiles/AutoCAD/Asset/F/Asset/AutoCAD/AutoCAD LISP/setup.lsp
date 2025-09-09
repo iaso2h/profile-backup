@@ -114,8 +114,8 @@
                     ("发热丝" "default" "p" "3" "")
                     ("参照" "0.09" "p" "6" "")
                     ("填充" "0.09" "p" "251" "")
-                    ("割孔" "default9" "p" "172" "")
-                    ("发热分区" "default9" "p" "20" "")
+                    ("割孔" "default" "p" "172" "")
+                    ("发热分区" "default" "p" "20" "")
                    )
   )
   (foreach layerList layerInfo 

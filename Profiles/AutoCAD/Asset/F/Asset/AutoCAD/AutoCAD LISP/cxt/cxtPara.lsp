@@ -141,6 +141,7 @@
                                                             )
   ) ;沿短边布线发热丝设计线宽间距比值
   
+  (setq *CXTHeatingWireLoaded* T)
   (princ)
 )
 

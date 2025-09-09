@@ -185,6 +185,7 @@
     ;;Utilities
     (autoload "getLength" '("getLength"))
     (autoload "optimize" '("optimize"))
+    (autoload "toggleHidden" '("toggleHidden" "th"))
 
     ;; Select
     (if (not *TangentLoaded*) 
@@ -305,4 +306,4 @@
 
 (princ)
 
-  ;; vim:set fileenconding=utf-8
+  ;; vim:set fileenconding=gb2312

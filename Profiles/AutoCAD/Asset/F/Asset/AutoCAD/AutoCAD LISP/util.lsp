@@ -55,8 +55,8 @@
   (setq cmd (getvar 'cmdecho))
 
   (if (not (tblsearch "layer" "xline")) 
-    (command "-layer" "n" "xline" "p" "n" "xline" "d" "∏®÷˙Õº≤„£¨≤ªø…¥Ú”°£°" "xline" "c" "41" 
-             "xline" ""
+    (command "-layer" "n" "xline" "p" "n" "xline" "d" "∏®÷˙Õº≤„£¨≤ªø…¥Ú”°£°" "xline" 
+             "c" "41" "xline" ""
     )
   )
   ;;   (if
@@ -83,17 +83,32 @@
 
   (princ)
 )
-(defun iaso2h:entlast (ent / ss) 
-  (if ent 
-    (progn 
-      (setq ss (ssadd))
-      (while (setq ent (entnext ent)) (ssadd ent ss))
-      (if (zerop (sslength ss)) (setq ss nil))
-      ss
-    )
-    (ssget "_x")
+(defun iaso2h:entlastTillNow (ent / ss) 
+  ; Return all entities after ent
+  (if (not ent) 
+    (setq ent (entlast))
   )
+  (setq ss (ssadd))
+  (while (setq ent (entnext ent)) (ssadd ent ss))
+  (if (zerop (sslength ss)) (setq ss nil))
+
+  ss
 )
+
+(defun iaso2h:decimalTruncate (num decimalPlaces / multiplier) 
+  (setq multiplier (expt 10.0 decimalPlaces))
+  (/ (float (fix (* num multiplier))) multiplier)
+)
+
+(defun iaso2h:d2r (dregrees) 
+  (* degrees (/ pi 180.0))
+)
+
+(defun iaso2h:r2d (radians) 
+  (* radians (/ 180.0 pi))
+)
+
+
   ;;-------------------=={ UnFormat String }==------------------;;
   ;;                                                            ;;
   ;;  Returns a string with all MText formatting codes removed. ;;

@@ -15,7 +15,7 @@
   )
 
   (initget "All Select")
-  (setq ans (getkword "选择模式 [全部\(A\)/选择\(S\)]:<选择\(S\)>"))
+  (setq ans (getkword "选择模式[全部\(A\)/选择\(S\)]:<选择\(S\)>"))
   (if (= ans "All") 
     (setq ssFilter "_X")
     (setq ssFilter "_L")
@@ -218,10 +218,10 @@
   (command "undo" "e")
   (setvar "CMDECHO" 1)
   (terpri)
-  (princ (strcat "Modified " (itoa dimStyleModifiedCount) " dimension styles.\n"))
+  (princ (strcat "已修改 " (itoa dimStyleModifiedCount) " 个标注样式。\n"))
   (if (> i 0) 
-    (princ (strcat "Modified " (itoa i) " dimension entities.\n"))
-    (princ "No dimension entities modified.\n")
+    (princ (strcat "已修改 " (itoa i) " 个标注实体。\n"))
+    (princ "没有修改可以修改的标注实体。\n")
   )
 
   (princ)
@@ -511,7 +511,6 @@
     )
     (progn 
       (vlax-put-property obj 'SuppressTrailingZeros 1)
-      (princ "Suppress Trailing Zeros\n")
     )
   )
 
