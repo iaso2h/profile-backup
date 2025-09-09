@@ -385,7 +385,7 @@
   (if 
     (and 
       (vlax-property-available-p obj 'VerticalTextPosition)
-      (/= (vlax-get-property obj 'VerticalTextPosition) acVertCentered)
+      (/= (vlax-get-property obj 'VerticalTextPosition) acAbove)
     )
     (vlax-put-property obj 'VerticalTextPosition acAbove)
   )
@@ -486,13 +486,13 @@
   )
 
   ; Always Set Scale Factor to 1
-  (if 
-    (and 
-      (vlax-property-available-p obj 'ScaleFactor)
-      (/= (vlax-get-property obj 'ScaleFactor) 1)
-    )
-    (vlax-put-property obj 'ScaleFactor 1)
-  )
+  ; (if 
+  ;   (and 
+  ;     (vlax-property-available-p obj 'ScaleFactor)
+  ;     (/= (vlax-get-property obj 'ScaleFactor) 1)
+  ;   )
+  ;   (vlax-put-property obj 'ScaleFactor 1)
+  ; )
 
   ; Suppress Leading Zeros
   (if 
