@@ -1,4 +1,4 @@
-(defun c:frs () (c:cxtHeatingWireGenerate) (princ))
+(defun c:cxt_frs () (c:cxtHeatingWireGenerate) (princ))
 (defun c:cxtHeatingWireGenerate (/ *error* currentPoint grData grCode grVal loopChk 
                                  numLines rotationAngle rotationQuadrantOffset 
                                  lastRotationAngle p1 p2 p3 p4 p5 p6 endAxisLength i 

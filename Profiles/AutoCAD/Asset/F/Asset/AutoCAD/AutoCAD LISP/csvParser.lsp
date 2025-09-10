@@ -154,4 +154,4 @@
   )
 )
 
-(setq *IsLoadedCXTCSV* T)
+(setq *IsLoadedCsvParser* T)
