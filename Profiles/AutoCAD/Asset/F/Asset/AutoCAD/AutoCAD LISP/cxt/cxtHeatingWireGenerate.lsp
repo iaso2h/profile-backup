@@ -3,23 +3,23 @@
                                  loopChk numLines rotationAngle rotationQuadrantOffset 
                                  lastRotationAngle p2 p4 p3 i currentOffset lineP1 
                                  lineP2 oldCmdEcho rawAngle entlastSaved turnLineCount 
-                                 ssAxes
+                                 drawInwardChk drawShortLineChk drawFlipChk ssAxes
                                 ) 
-
-  (terpri)
   (vl-load-com)
+  (terpri)
   (if (not *CXTHeatingWireLoaded*) 
     (progn 
       (load "cxtPara")
       (CXTInitPara)
     )
     (progn 
-      (initget "Jimbo Reload")
+      (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile*))
       (terpri)
+      (initget "Jimbo File")
       (if 
         (= 
-          (getkword "已载有发热丝参数，请做选择: [继续生成\(J\)/重载新参数\(R\)]:<继续生成\(J\)>")
-          "Reload"
+          (getkword "已载有发热丝参数，请做选择: [继续生成\(J\)/选择新文件\(F\)]:<继续生成\(J\)>")
+          "File"
         )
         (CXTInitPara)
       )
@@ -81,57 +81,80 @@
     (princ)
   )
 
-  (defun drawLine (reverseChk longLineChk / directionDegree multipliedFactor gap) 
-    (if reverseChk 
-      (setq directionDegree 270)
-      (setq directionDegree 90)
-    )
-    (if longLineChk 
+  (defun drawLine (/ directionDegree multipliedFactor gap) 
+    (if loopChk 
       (progn 
-        (setq multipliedFactor 2)
-        (setq gap *CXTHeatingWireAlongAreaLengthAxisSpacing*)
-      )
-      (progn 
-        (setq multipliedFactor 1)
-        (setq gap 0)
-      )
-    )
-    (entmakex 
-      (list '(0 . "LINE") 
-            (cons 10 p5)
-            (cons 11 
-                  (setq p5 (polar p5 
-                                  (id2r directionDegree)
-                                  (+ 
-                                    (* multipliedFactor 
-                                       (/ 
-                                         (- *CXTHeatingAreaNetWidth* 
-                                            (* 2.0 
-                                               *CXTHeatingWireAlongAreaLengthAxisSpacing*
-                                            )
-                                         )
-                                         3.0
-                                       )
-                                    )
-                                    gap
-                                  )
-                           )
-                  )
+        (if (not drawFlipChk) 
+          (if drawInwardChk 
+            (setq directionDegree 90)
+            (setq directionDegree 270)
+          )
+          (if drawInwardChk 
+            (setq directionDegree 270)
+            (setq directionDegree 90)
+          )
+        )
+        ; Determine draw a short line or a long line.
+        (if 
+          (or 
+            (and (= turnLineCount 0) (not drawFlipChk) drawInwardChk) ; This make sure the very first line is always a short line.
+            drawShortLineChk
+          )
+          (progn 
+            ; Draw a short line in this function calling stack.
+            (setq multipliedFactor 1)
+            (setq gap 0)
+            ; Determine the direction of the next line to draw in next function calling stack.
+            (if drawInwardChk 
+              (setq drawShortLineChk T)
+              (setq drawShortLineChk nil)
             )
+          )
+          (progn 
+            ; Draw a long line in this function calling stack.
+            (setq multipliedFactor 2)
+            (setq gap *CXTHeatingWireAlongAreaLengthAxisSpacing*)
+
+            ; Determine the direction of the next line to draw in next function calling stack.
+            (if drawInwardChk 
+              (setq drawShortLineChk nil)
+              (setq drawShortLineChk T)
+            )
+          )
+        )
+
+        ; Always set the next line to draw in the inverse direction in next function calling stack.
+        (setq drawInwardChk (not drawInwardChk))
+
+        (entmakex 
+          (list '(0 . "LINE") 
+                (cons 10 p5)
+                (cons 11 
+                      (setq p5 (polar p5 
+                                      (id2r directionDegree)
+                                      (+ 
+                                        (* multipliedFactor 
+                                           (/ 
+                                             (- *CXTHeatingAreaNetWidth* 
+                                                (* 2.0 
+                                                   *CXTHeatingWireAlongAreaLengthAxisSpacing*
+                                                )
+                                             )
+                                             3.0
+                                           )
+                                        )
+                                        gap
+                                      )
+                               )
+                      )
+                )
+          )
+        )
       )
-    )
+    ) ; End of progn block
 
     (princ)
-  )
-  (defun drawShortLine (reverseChk) 
-    (if loopChk (drawLine reverseChk nil))
-    (princ)
-  )
-  (defun drawLongLine (reverseChk) 
-    (if loopChk (drawLine reverseChk T))
-    (princ)
-  )
-
+  ) ; End of drawLine function
 
   (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
 
@@ -144,8 +167,11 @@
   (setq oldCLayer (getvar "CLAYER"))
   (setvar "CLAYER" "0")
   ;; Parameter Initialization
-  (setq CXTHeatingAreaFilletRaidus 2)
-  (setq turnLineCount 0)
+  (setq CXTHeatingAreaFilletRaidus 2) ; Constant value
+  (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes meet the threshold, namingly `*CXTHeatingWireAlongAreaLengthAxisSpacing*` or `*CXTHeatingWireAlongAreaWidthAxisSpacing*`. Termination check is done within every function calling of `drawTurnLine()`
+  (setq drawInwardChk T) ; To track and determine the the next short line or long line is drawing inward or outward.
+  (setq drawShortLineChk T) ; To track and determine the the next line is a short line or a long line.
+  (setq drawFlipChk nil) ; To track and determine wether the following lines is drawn in the filp direction or not.
 
   ;; Define the geometry constants
   (setq numLines 10)
@@ -281,47 +307,31 @@
        (entmake (list '(0 . "LINE") (cons 10 p5) (cons 11 p6)))
        ; Draw forward
        (while loopChk 
-         (drawTurnLine nil)
-         (drawShortLine nil)
-         (drawTurnLine nil)
-         (drawShortLine T)
-         (drawTurnLine nil)
-         (drawLongLine nil)
-         (drawTurnLine nil)
-         (drawLongLine T)
+         (drawTurnLine drawFlipChk)
+         (drawLine)
+         (drawTurnLine drawFlipChk)
+         (drawLine)
+         (drawTurnLine drawFlipChk)
+         (drawLine)
+         (drawTurnLine drawFlipChk)
+         (drawLine)
        )
        ; Draw backward
        (setq p6 (polar p5 (id2r 90) *CXTHeatingAreaNetWidth*))
        (entmake (list '(0 . "LINE") (cons 10 p5) (cons 11 p6)))
        (setq p5 p6)
-       (setq loopChk T)
-       (if (= (rem turnLineCount 2) 0) 
-         (progn 
-           (setq turnLineCount 0)
-           (while loopChk 
-             (drawTurnLine T)
-             (drawShortLine T)
-             (drawTurnLine T)
-             (drawShortLine nil)
-             (drawTurnLine T)
-             (drawLongLine T)
-             (drawTurnLine T)
-             (drawLongLine nil)
-           )
-         )
-         (progn 
-           (setq turnLineCount 0)
-           (while loopChk 
-             (drawTurnLine T)
-             (drawLongLine T)
-             (drawTurnLine T)
-             (drawLongLine nil)
-             (drawTurnLine T)
-             (drawShortLine T)
-             (drawTurnLine T)
-             (drawShortLine nil)
-           )
-         )
+       (setq loopChk T) ; Reset the loop flag to continue the drawing in flip direction.
+       (setq drawFlipChk T) ; The following lines will be drawn in the flip direction.
+       (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes meet the threshold, namingly `*CXTHeatingWireAlongAreaLengthAxisSpacing*` or `*CXTHeatingWireAlongAreaWidthAxisSpacing*`. Termination check is done within every function calling of `drawTurnLine()`
+       (while loopChk 
+         (drawTurnLine drawFlipChk)
+         (drawLine)
+         (drawTurnLine drawFlipChk)
+         (drawLine)
+         (drawTurnLine drawFlipChk)
+         (drawLine)
+         (drawTurnLine drawFlipChk)
+         (drawLine)
        )
 
        ; Join Heating Wires
@@ -350,13 +360,13 @@
 
        (setq loopChk nil)
        (redraw)
-      )
+      ) ; End of left mouse click case
 
       ;; grCode 2 or 11: Keyboard Input (Cancel)
       ((or (= grCode 2) (= grCode 11))
        (princ "\n*Cancel*")
        (setq loopChk nil) ; Exit the loop on key press (e.g., Escape).
-      )
+      ) ; End of Cancle input case
     ) ; End cond
   ) ; End while
 
@@ -367,5 +377,7 @@
   (princ) ; Suppress the echo of the last evaluation in the command line.
 )
 
+(princ (rtos (getvar "CDATE") 2 6))
+(princ "\n")
 ;;; --- Load Message ---
 (princ)

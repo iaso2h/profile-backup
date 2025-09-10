@@ -8,25 +8,25 @@
                )
   ) ;_ 下一级子菜单列表
   (setq items (list '("初始化CASS环境" "\003\003cs:InitCASS " "创建图层、加载字体、线型...") 
-                    '("--" nil nil) ;_ "--" 表示插入分隔符
-                    '("展野外测点" "\003\003cs:zdh " " 文件格式:点名,编码,Y（东）,X（北）,高程")
-                    '("展高程点" "\003\003CS:ZGCD " " 文件格式:点名,编码,Y（东）,X（北）,高程")
-                    '("小数点替代高程点" "\003\003CS:Gcd2Dot " " 小数点替代高程点")
-                    '("稀释CASS填充符号" "\003\003cs:fhxs " " 稀释CASS填充符号")
-                    '("--" nil nil) ;_ "--" 表示插入分隔符
-                    (list "宗地<a href=" http://bbs.mjtd.com/forum-6-1.html " target=" 
-                          _blank " class=" relatedlink ">工具</a>" nil nil items1
-                    ) ;_ 含下一级子菜单，命令若为nil，表示还有下级子菜单
-                    '("--" nil nil) ;_ "--" 表示插入分隔符
-                    '("定位并绘制拆迁成果" "\003\003dwcqsj " " 定位并绘制拆迁成果")
-                    '("绘制拆迁成果" "\003\003hzcqsj " " 绘制拆迁成果")
-                    '("--" nil nil) ;_ "--" 表示插入分隔符
-                    '("激活第一个配置" "\003\003ACTP0 " "激活第一个配置文件")
-                    '("屏幕菜单开关" "\003\003Screenmmenu " "屏幕菜单开关")
-                    ; '("访问Gu_xl网盘" "\003\003_Browser <a href=" http://guxl.ys168.com/ 
-                    ;   " target=" _blank ">http://guxl.ys168.com/</a> " 
-                    ;   "http://guxl.ys168.com/"
-                    ;  )
+                    ; '("--" nil nil) ;_ "--" 表示插入分隔符
+                    ; '("展野外测点" "\003\003cs:zdh " " 文件格式:点名,编码,Y（东）,X（北）,高程")
+                    ; '("展高程点" "\003\003CS:ZGCD " " 文件格式:点名,编码,Y（东）,X（北）,高程")
+                    ; '("小数点替代高程点" "\003\003CS:Gcd2Dot " " 小数点替代高程点")
+                    ; '("稀释CASS填充符号" "\003\003cs:fhxs " " 稀释CASS填充符号")
+                    ; '("--" nil nil) ;_ "--" 表示插入分隔符
+                    ; (list "宗地<a href=" http://bbs.mjtd.com/forum-6-1.html " target=" 
+                    ;       _blank " class=" relatedlink ">工具</a>" nil nil items1
+                    ; ) ;_ 含下一级子菜单，命令若为nil，表示还有下级子菜单
+                    ; '("--" nil nil) ;_ "--" 表示插入分隔符
+                    ; '("定位并绘制拆迁成果" "\003\003dwcqsj " " 定位并绘制拆迁成果")
+                    ; '("绘制拆迁成果" "\003\003hzcqsj " " 绘制拆迁成果")
+                    ; '("--" nil nil) ;_ "--" 表示插入分隔符
+                    ; '("激活第一个配置" "\003\003ACTP0 " "激活第一个配置文件")
+                    ; '("屏幕菜单开关" "\003\003Screenmmenu " "屏幕菜单开关")
+                    ; ; '("访问Gu_xl网盘" "\003\003_Browser <a href=" http://guxl.ys168.com/ 
+                    ; ;   " target=" _blank ">http://guxl.ys168.com/</a> " 
+                    ; ;   "http://guxl.ys168.com/"
+                    ; ;  )
               )
   )
   (Gxl-AddCassMenu "ACAD" ;_ 已有菜单组名称

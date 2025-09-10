@@ -55,7 +55,7 @@
   (setq cmd (getvar 'cmdecho))
 
   (if (not (tblsearch "layer" "xline")) 
-    (command "-layer" "n" "xline" "p" "n" "xline" "d" "辅助图层，不可打印！" "xline" 
+    (command "-layer" "n" "xline" "p" "n" "xline" "d" "辅助图层，不可打印!" "xline" 
              "c" "41" "xline" ""
     )
   )

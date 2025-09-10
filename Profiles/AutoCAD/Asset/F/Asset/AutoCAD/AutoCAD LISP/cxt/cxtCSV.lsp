@@ -1,7 +1,8 @@
-(defun readCSVFile (/ filename fileHandle lineData dataList processedData row col value) 
+(defun readCSVFile (/ filename fileHandle lineData dataList processedData row col 
+                    value
+                   ) 
   (princ "\n")
-  (setq filename (getfiled "选择CSV文件" "" "csv" 2))
-
+  (setq filename (getfiled "选择CSV文件" (getvar "DWGPREFIX") "csv" 2))
 
 
   (if (not filename) (exit))
@@ -17,9 +18,8 @@
 
   (princ "正从: \"")
   (princ filename)
+  (setq *CXTHeatingWireCSVFile* filename)
   (princ "\"中读取数据\n")
-
-  ;; Initialize data storage
 
   ;; Read all lines from file
   (setq lineCount 0)
