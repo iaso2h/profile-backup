@@ -154,6 +154,7 @@
 
 (if *SearchIncluded* 
   (progn 
+    (princ "1")
     (if (not *IsLoadedUtil*) 
       (load "util.lsp")
     )

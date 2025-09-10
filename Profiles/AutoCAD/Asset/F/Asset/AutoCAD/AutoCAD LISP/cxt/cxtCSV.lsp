@@ -1,7 +1,6 @@
 (defun readCSVFile (/ filename fileHandle lineData dataList processedData row col value) 
   (princ "\n")
-  ; (setq filename (getfiled "é€‰æ‹©CSVæ–‡ä»¶" "" "csv" 2))
-  (setq filename "C:\\Users\\Hashub\\Desktop\\å•ç»„\\å¼‚å‹çº¿è·¯è®¾è®¡20231206 å‰¯æœ¬.csv")
+  (setq filename (getfiled "Ñ¡ÔñCSVÎÄ¼ş" "" "csv" 2))
 
 
 
@@ -11,14 +10,14 @@
   (setq fileHandle (open filename "r"))
   (if (not fileHandle) 
     (progn 
-      (princ "\nError: æ— æ³•æ‰“å¼€æ–‡ä»¶CSVæ–‡ä»¶ã€‚")
+      (princ "\nError: ÎŞ·¨´ò¿ªÎÄ¼şCSVÎÄ¼ş¡£")
       (exit)
     )
   )
 
-  (princ "æ­£ä»: \"")
+  (princ "Õı´Ó: \"")
   (princ filename)
-  (princ "\"ä¸­è¯»å–æ•°æ®\n")
+  (princ "\"ÖĞ¶ÁÈ¡Êı¾İ\n")
 
   ;; Initialize data storage
 

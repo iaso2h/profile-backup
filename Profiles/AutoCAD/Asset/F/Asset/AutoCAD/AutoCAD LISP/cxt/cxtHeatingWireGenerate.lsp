@@ -1,10 +1,11 @@
-(defun c:frs (c:cxtHeatingWireGenerate) (princ))
+(defun c:frs () (c:cxtHeatingWireGenerate) (princ))
 (defun c:cxtHeatingWireGenerate (/ *error* p1 currentPoint grData grCode grVal 
                                  loopChk numLines rotationAngle rotationQuadrantOffset 
                                  lastRotationAngle p2 p4 p3 i currentOffset lineP1 
                                  lineP2 oldCmdEcho rawAngle entlastSaved turnLineCount 
                                  ssAxes
                                 ) 
+
   (terpri)
   (vl-load-com)
   (if (not *CXTHeatingWireLoaded*) 
@@ -62,6 +63,19 @@
         )
 
         (setq turnLineCount (1+ turnLineCount))
+
+        ; Check terminating loop
+
+        (if 
+          (and 
+            (>= turnLineCount (- *CXTHeatingWireAlongAreaLengthCount* 1))
+            (= (rem turnLineCount 2) 1)
+          )
+          (progn 
+            (terpri)
+            (setq loopChk nil)
+          )
+        )
       )
     )
     (princ)
@@ -268,16 +282,10 @@
        ; Draw forward
        (while loopChk 
          (drawTurnLine nil)
-         (if (>= turnLineCount (- *CXTHeatingWireAlongAreaLengthCount* 1)) 
-           (setq loopChk nil)
-         )
          (drawShortLine nil)
          (drawTurnLine nil)
          (drawShortLine T)
          (drawTurnLine nil)
-         (if (>= turnLineCount (- *CXTHeatingWireAlongAreaLengthCount* 1)) 
-           (setq loopChk nil)
-         )
          (drawLongLine nil)
          (drawTurnLine nil)
          (drawLongLine T)
@@ -287,23 +295,35 @@
        (entmake (list '(0 . "LINE") (cons 10 p5) (cons 11 p6)))
        (setq p5 p6)
        (setq loopChk T)
-       (setq turnLineCount 0)
-       (while loopChk 
-         (drawTurnLine T)
-         (if (>= turnLineCount (- *CXTHeatingWireAlongAreaLengthCount* 1)) 
-           (setq loopChk nil)
+       (if (= (rem turnLineCount 2) 0) 
+         (progn 
+           (setq turnLineCount 0)
+           (while loopChk 
+             (drawTurnLine T)
+             (drawShortLine T)
+             (drawTurnLine T)
+             (drawShortLine nil)
+             (drawTurnLine T)
+             (drawLongLine T)
+             (drawTurnLine T)
+             (drawLongLine nil)
+           )
          )
-         (drawShortLine T)
-         (drawTurnLine T)
-         (drawShortLine nil)
-         (drawTurnLine T)
-         (if (>= turnLineCount (- *CXTHeatingWireAlongAreaLengthCount* 1)) 
-           (setq loopChk nil)
+         (progn 
+           (setq turnLineCount 0)
+           (while loopChk 
+             (drawTurnLine T)
+             (drawLongLine T)
+             (drawTurnLine T)
+             (drawLongLine nil)
+             (drawTurnLine T)
+             (drawShortLine T)
+             (drawTurnLine T)
+             (drawShortLine nil)
+           )
          )
-         (drawLongLine T)
-         (drawTurnLine T)
-         (drawLongLine nil)
        )
+
        ; Join Heating Wires
        (setq ssAxes (iaso2h:entlastTillNow entlastSaved))
        (setq entlastSaved (entlast))
@@ -348,5 +368,4 @@
 )
 
 ;;; --- Load Message ---
-(princ "\nType 'gg' to run the custom rectangle command.")
 (princ)

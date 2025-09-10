@@ -9,22 +9,22 @@
   (setq csvData (readCSVFile))
 
   ;; Setting properties
-  (setq *CXTHeatingBoundaryOffset* (atof (getCellValue csvData "H2"))) ;å‘çƒ­åŒºè¾¹æ¡†åç§»è·ç¦»
-  (setq *CXTHeatingAreaGrossLegnth* (atof (getCellValue csvData "I2"))) ;å‘çƒ­åŒºé•¿åº¦
-  (setq *CXTHeatingAreaGrossWidth* (atof (getCellValue csvData "I3"))) ;å‘çƒ­åŒºå®½åº¦
+  (setq *CXTHeatingBoundaryOffset* (atof (getCellValue csvData "H2"))) ;·¢ÈÈÇø±ß¿òÆ«ÒÆ¾àÀë
+  (setq *CXTHeatingAreaGrossLegnth* (atof (getCellValue csvData "I2"))) ;·¢ÈÈÇø³¤¶È
+  (setq *CXTHeatingAreaGrossWidth* (atof (getCellValue csvData "I3"))) ;·¢ÈÈÇø¿í¶È
   (setq *CXTHeatingAreaNetLength* (- *CXTHeatingAreaGrossLegnth* 
                                      (* 2 *CXTHeatingBoundaryOffset*)
                                   )
-  ) ;å‘çƒ­åŒºå‡€é•¿åº¦
+  ) ;·¢ÈÈÇø¾»³¤¶È
   (setq *CXTHeatingAreaNetWidth* (- *CXTHeatingAreaGrossWidth* 
                                     (* 2 *CXTHeatingBoundaryOffset*)
                                  )
-  ) ;å‘çƒ­åŒºå‡€å®½åº¦
+  ) ;·¢ÈÈÇø¾»¿í¶È
   (setq *CXTHeatingAreaGrossArea* (* *CXTHeatingAreaGrossLegnth* 
                                      *CXTHeatingAreaGrossWidth*
                                   )
-  ) ;å‘çƒ­åŒºé¢ç§¯
-  (setq *CXTHeatingAreaNetArea* *CXTHeatingAreaGrossArea*) ;å‘çƒ­åŒºå‡€é¢ç§¯
+  ) ;·¢ÈÈÇøÃæ»ı
+  (setq *CXTHeatingAreaNetArea* *CXTHeatingAreaGrossArea*) ;·¢ÈÈÇø¾»Ãæ»ı
   (setq *CXTHeatingWireLossBasic* (atof (getCellValue csvData "F17")))
   (setq *CXTHeatingWireLossTotal* (+ 
                                     (- 1 
@@ -35,18 +35,18 @@
                                     )
                                     *CXTHeatingWireLossBasic*
                                   )
-  ) ;å‘çƒ­ä¸æŸè€—
+  ) ;·¢ÈÈË¿ËğºÄ
 
-  (setq *CXTHeatingWireInitialWidth* (atof (getCellValue csvData "F5"))) ;å‘çƒ­ä¸åˆè®¾çº¿å®½
+  (setq *CXTHeatingWireInitialWidth* (atof (getCellValue csvData "F5"))) ;·¢ÈÈË¿³õÉèÏß¿í
   (setq *CXTHeatingWireDesignWidth* (* (- 1 *CXTHeatingWireLossTotal*) 
                                        *CXTHeatingWireInitialWidth*
                                     )
-  ) ;å‘çƒ­ä¸è®¾è®¡çº¿å®½
-  (setq *CXTHeatingWireRealWidth* nil) ;å‘çƒ­ä¸çœŸå®çº¿å®½
-  (setq *CXTHeatingWireSet* (atoi (getCellValue csvData "F4"))) ;å‘çƒ­ä¸ç»„æ•°
-  (setq *CXTHeatingWireResistance* (atof (getCellValue csvData "C2"))) ;ç”µé˜»
-  (setq *CXTHeatingWireResistivity* (atof (getCellValue csvData "C3"))) ;ç”µé˜»ç‡
-  (setq *CXTHeatingWireThickness* (atof (getCellValue csvData "C4"))) ;å‘çƒ­ä¸åšåº¦
+  ) ;·¢ÈÈË¿Éè¼ÆÏß¿í
+  (setq *CXTHeatingWireRealWidth* nil) ;·¢ÈÈË¿ÕæÊµÏß¿í
+  (setq *CXTHeatingWireSet* (atoi (getCellValue csvData "F4"))) ;·¢ÈÈË¿×éÊı
+  (setq *CXTHeatingWireResistance* (atof (getCellValue csvData "C2"))) ;µç×è
+  (setq *CXTHeatingWireResistivity* (atof (getCellValue csvData "C3"))) ;µç×èÂÊ
+  (setq *CXTHeatingWireThickness* (atof (getCellValue csvData "C4"))) ;·¢ÈÈË¿ºñ¶È
   (setq *CXTHeatingWireThinFilmResistivityMeasurement* (* 1000 
                                                           (/ 
                                                             (* 
@@ -56,14 +56,14 @@
                                                             *CXTHeatingWireResistivity*
                                                           )
                                                        )
-  ) ;æ¯”å€¼
+  ) ;±ÈÖµ
   (setq *CXTHeatingWireLength* (* 
                                  (* (* *CXTHeatingWireSet* *CXTHeatingWireSet*) 
                                     *CXTHeatingWireInitialWidth*
                                  )
                                  *CXTHeatingWireThinFilmResistivityMeasurement*
                                )
-  ) ;çº¿é•¿
+  ) ;Ïß³¤
   (if useEvenNumber 
     (setq *CXTHeatingWireAlongAreaLengthCount* (biggerEven 
                                                  (/ 
@@ -71,14 +71,14 @@
                                                    *CXTHeatingAreaNetWidth*
                                                  )
                                                )
-    ) ;æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸æ•°(å¶æ•°)
+    ) ;ÑØ³¤±ß²¼Ïß·¢ÈÈË¿Êı(Å¼Êı)
     (setq *CXTHeatingWireAlongAreaLengthCount* (biggerOdd 
                                                  (/ 
                                                    *CXTHeatingWireLength*
                                                    *CXTHeatingAreaNetWidth*
                                                  )
                                                )
-    ) ;æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸æ•°(å¥‡æ•°)
+    ) ;ÑØ³¤±ß²¼Ïß·¢ÈÈË¿Êı(ÆæÊı)
   )
   (setq *CXTHeatingWireAlongAreaLengthAxisSpacing* (/ 
                                                      *CXTHeatingAreaNetLength*
@@ -86,22 +86,22 @@
                                                         1
                                                      )
                                                    )
-  ) ;æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸ä¸­å¿ƒçº¿è·ç¦»
+  ) ;ÑØ³¤±ß²¼Ïß·¢ÈÈË¿ÖĞĞÄÏß¾àÀë
 
   (setq *CXTHeatingWireAlongAreaLengthOutlineGrossSpacing* (- *CXTHeatingWireAlongAreaLengthAxisSpacing* 
                                                               *CXTHeatingWireInitialWidth*
                                                            )
-  ) ;æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è·ç¦»
+  ) ;ÑØ³¤±ß²¼Ïß·¢ÈÈË¿±ßÔµ¾àÀë
   (setq *CXTHeatingWireAlongAreaLengthOutlineDesignSpacing* (- *CXTHeatingWireAlongAreaLengthAxisSpacing* 
                                                                *CXTHeatingWireDesignWidth*
                                                             )
-  ) ;æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è®¾è®¡è·ç¦»
+  ) ;ÑØ³¤±ß²¼Ïß·¢ÈÈË¿±ßÔµÉè¼Æ¾àÀë
   (setq *CXTHeatingWireAlongAreaLengthWireWidthSpacingRatio* (/ 
                                                                *CXTHeatingWireDesignWidth*
 
                                                                *CXTHeatingWireAlongAreaLengthOutlineDesignSpacing*
                                                              )
-  ) ;æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸è®¾è®¡çº¿å®½é—´è·æ¯”å€¼
+  ) ;ÑØ³¤±ß²¼Ïß·¢ÈÈË¿Éè¼ÆÏß¿í¼ä¾à±ÈÖµ
 
   (if useEvenNumber 
     (setq *CXTHeatingWireAlongAreaWidthCount* (biggerEven 
@@ -110,14 +110,14 @@
                                                   *CXTHeatingAreaNetLength*
                                                 )
                                               )
-    ) ;æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸æ•°(å¶æ•°)
+    ) ;ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿Êı(Å¼Êı)
     (setq *CXTHeatingWireAlongAreaWidthCount* (biggerOdd 
                                                 (/ 
                                                   *CXTHeatingWireLength*
                                                   *CXTHeatingAreaNetLength*
                                                 )
                                               )
-    ) ;æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸æ•°(å¥‡æ•°)
+    ) ;ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿Êı(ÆæÊı)
   )
   (setq *CXTHeatingWireAlongAreaWidthAxisSpacing* (/ 
                                                     *CXTHeatingAreaNetWidth*
@@ -125,21 +125,21 @@
                                                        1
                                                     )
                                                   )
-  ) ;æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸ä¸­å¿ƒçº¿è·ç¦»
+  ) ;ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿ÖĞĞÄÏß¾àÀë
   (setq *CXTHeatingWireAlongAreaWidthOutlineGrossSpacing* (- *CXTHeatingWireAlongAreaWidthAxisSpacing* 
                                                              *CXTHeatingWireInitialWidth*
                                                           )
-  ) ;æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è·ç¦»
+  ) ;ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿±ßÔµ¾àÀë
   (setq *CXTHeatingWireAlongAreaWidthOutlineDesignSpacing* (- *CXTHeatingWireAlongAreaWidthAxisSpacing* 
                                                               *CXTHeatingWireDesignWidth*
                                                            )
-  ) ;æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è®¾è®¡è·ç¦»
+  ) ;ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿±ßÔµÉè¼Æ¾àÀë
   (setq *CXTHeatingWireAlongAreaWidthWireWidthSpacingRatio* (/ 
                                                               *CXTHeatingWireDesignWidth*
 
                                                               *CXTHeatingWireAlongAreaWidthOutlineDesignSpacing*
                                                             )
-  ) ;æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸è®¾è®¡çº¿å®½é—´è·æ¯”å€¼
+  ) ;ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿Éè¼ÆÏß¿í¼ä¾à±ÈÖµ
   
   (setq *CXTHeatingWireLoaded* T)
   (princ)
@@ -147,32 +147,32 @@
 
 (defun CXTTestPara (/) 
   (initPara)
-  (princ "å‘çƒ­åŒºè¾¹æ¡†åç§»è·ç¦»: ") (princ *CXTHeatingBoundaryOffset*) (princ "\n")
-  (princ "å‘çƒ­åŒºé•¿åº¦: ") (princ *CXTHeatingAreaGrossLegnth*) (princ "\n")
-  (princ "å‘çƒ­åŒºå®½åº¦: ") (princ *CXTHeatingAreaGrossWidth*) (princ "\n")
-  (princ "å‘çƒ­åŒºå‡€é•¿åº¦: ") (princ *CXTHeatingAreaNetLength*) (princ "\n")
-  (princ "å‘çƒ­åŒºå‡€å®½åº¦: ") (princ *CXTHeatingAreaNetWidth*) (princ "\n")
-  (princ "å‘çƒ­åŒºé¢ç§¯: ") (princ *CXTHeatingAreaGrossArea*) (princ "\n")
-  (princ "å‘çƒ­åŒºå‡€é¢ç§¯: ") (princ *CXTHeatingAreaNetArea*) (princ "\n")
-  (princ "å‘çƒ­ä¸åŸºæœ¬æŸè€—: ") (princ *CXTHeatingWireLossBasic*) (princ "\n")
-  (princ "å‘çƒ­ä¸æ€»æŸè€—: ") (princ *CXTHeatingWireLossTotal*) (princ "\n")
-  (princ "å‘çƒ­ä¸åˆè®¾çº¿å®½: ") (princ *CXTHeatingWireInitialWidth*) (princ "\n")
-  (princ "å‘çƒ­ä¸è®¾è®¡çº¿å®½: ") (princ *CXTHeatingWireDesignWidth*) (princ "\n")
-  (princ "å‘çƒ­ä¸çœŸå®çº¿å®½: ") (princ *CXTHeatingWireRealWidth*) (princ "\n")
-  (princ "å‘çƒ­ä¸ç»„æ•°: ") (princ *CXTHeatingWireSet*) (princ "\n")
-  (princ "ç”µé˜»: ") (princ *CXTHeatingWireResistance*) (princ "\n")
-  (princ "ç”µé˜»ç‡: ") (princ *CXTHeatingWireResistivity*) (princ "\n")
-  (princ "å‘çƒ­ä¸åšåº¦: ") (princ *CXTHeatingWireThickness*) (princ "\n")
-  (princ "æ¯”å€¼: ") (princ *CXTHeatingWireThinFilmResistivityMeasurement*) (princ "\n")
-  (princ "çº¿é•¿: ") (princ *CXTHeatingWireLength*) (princ "\n")
-  (princ "æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸æ•°: ") (princ *CXTHeatingWireAlongAreaLengthCount*) (princ "\n")
-  (princ "æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸ä¸­å¿ƒè·ç¦»: ") (princ *CXTHeatingWireAlongAreaLengthAxisSpacing*) (princ "\n")
-  (princ "æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è·ç¦»: ") (princ *CXTHeatingWireAlongAreaLengthOutlineGrossSpacing*) (princ "\n")
-  (princ "æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è®¾è®¡è·ç¦»: ") (princ *CXTHeatingWireAlongAreaLengthOutlineDesignSpacing*) (princ "\n")
-  (princ "æ²¿é•¿è¾¹å¸ƒçº¿å‘çƒ­ä¸è®¾è®¡çº¿å®½é—´è·æ¯”å€¼: ") (princ *CXTHeatingWireAlongAreaLengthWireWidthSpacingRatio*) (princ "\n")
-  (princ "æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸æ•°: ") (princ *CXTHeatingWireAlongAreaWidthCount*) (princ "\n")
-  (princ "æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸ä¸­å¿ƒè·ç¦»: ") (princ *CXTHeatingWireAlongAreaWidthAxisSpacing*) (princ "\n")
-  (princ "æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è·ç¦»: ") (princ *CXTHeatingWireAlongAreaWidthOutlineGrossSpacing*) (princ "\n")
-  (princ "æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸è¾¹ç¼˜è®¾è®¡è·ç¦»: ") (princ *CXTHeatingWireAlongAreaWidthOutlineDesignSpacing*) (princ "\n")
-  (princ "æ²¿çŸ­è¾¹å¸ƒçº¿å‘çƒ­ä¸è®¾è®¡çº¿å®½é—´è·æ¯”å€¼: ") (princ *CXTHeatingWireAlongAreaWidthWireWidthSpacingRatio*) (princ "\n")
+  (princ "·¢ÈÈÇø±ß¿òÆ«ÒÆ¾àÀë: ") (princ *CXTHeatingBoundaryOffset*) (princ "\n")
+  (princ "·¢ÈÈÇø³¤¶È: ") (princ *CXTHeatingAreaGrossLegnth*) (princ "\n")
+  (princ "·¢ÈÈÇø¿í¶È: ") (princ *CXTHeatingAreaGrossWidth*) (princ "\n")
+  (princ "·¢ÈÈÇø¾»³¤¶È: ") (princ *CXTHeatingAreaNetLength*) (princ "\n")
+  (princ "·¢ÈÈÇø¾»¿í¶È: ") (princ *CXTHeatingAreaNetWidth*) (princ "\n")
+  (princ "·¢ÈÈÇøÃæ»ı: ") (princ *CXTHeatingAreaGrossArea*) (princ "\n")
+  (princ "·¢ÈÈÇø¾»Ãæ»ı: ") (princ *CXTHeatingAreaNetArea*) (princ "\n")
+  (princ "·¢ÈÈË¿»ù±¾ËğºÄ: ") (princ *CXTHeatingWireLossBasic*) (princ "\n")
+  (princ "·¢ÈÈË¿×ÜËğºÄ: ") (princ *CXTHeatingWireLossTotal*) (princ "\n")
+  (princ "·¢ÈÈË¿³õÉèÏß¿í: ") (princ *CXTHeatingWireInitialWidth*) (princ "\n")
+  (princ "·¢ÈÈË¿Éè¼ÆÏß¿í: ") (princ *CXTHeatingWireDesignWidth*) (princ "\n")
+  (princ "·¢ÈÈË¿ÕæÊµÏß¿í: ") (princ *CXTHeatingWireRealWidth*) (princ "\n")
+  (princ "·¢ÈÈË¿×éÊı: ") (princ *CXTHeatingWireSet*) (princ "\n")
+  (princ "µç×è: ") (princ *CXTHeatingWireResistance*) (princ "\n")
+  (princ "µç×èÂÊ: ") (princ *CXTHeatingWireResistivity*) (princ "\n")
+  (princ "·¢ÈÈË¿ºñ¶È: ") (princ *CXTHeatingWireThickness*) (princ "\n")
+  (princ "±ÈÖµ: ") (princ *CXTHeatingWireThinFilmResistivityMeasurement*) (princ "\n")
+  (princ "Ïß³¤: ") (princ *CXTHeatingWireLength*) (princ "\n")
+  (princ "ÑØ³¤±ß²¼Ïß·¢ÈÈË¿Êı: ") (princ *CXTHeatingWireAlongAreaLengthCount*) (princ "\n")
+  (princ "ÑØ³¤±ß²¼Ïß·¢ÈÈË¿ÖĞĞÄ¾àÀë: ") (princ *CXTHeatingWireAlongAreaLengthAxisSpacing*) (princ "\n")
+  (princ "ÑØ³¤±ß²¼Ïß·¢ÈÈË¿±ßÔµ¾àÀë: ") (princ *CXTHeatingWireAlongAreaLengthOutlineGrossSpacing*) (princ "\n")
+  (princ "ÑØ³¤±ß²¼Ïß·¢ÈÈË¿±ßÔµÉè¼Æ¾àÀë: ") (princ *CXTHeatingWireAlongAreaLengthOutlineDesignSpacing*) (princ "\n")
+  (princ "ÑØ³¤±ß²¼Ïß·¢ÈÈË¿Éè¼ÆÏß¿í¼ä¾à±ÈÖµ: ") (princ *CXTHeatingWireAlongAreaLengthWireWidthSpacingRatio*) (princ "\n")
+  (princ "ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿Êı: ") (princ *CXTHeatingWireAlongAreaWidthCount*) (princ "\n")
+  (princ "ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿ÖĞĞÄ¾àÀë: ") (princ *CXTHeatingWireAlongAreaWidthAxisSpacing*) (princ "\n")
+  (princ "ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿±ßÔµ¾àÀë: ") (princ *CXTHeatingWireAlongAreaWidthOutlineGrossSpacing*) (princ "\n")
+  (princ "ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿±ßÔµÉè¼Æ¾àÀë: ") (princ *CXTHeatingWireAlongAreaWidthOutlineDesignSpacing*) (princ "\n")
+  (princ "ÑØ¶Ì±ß²¼Ïß·¢ÈÈË¿Éè¼ÆÏß¿í¼ä¾à±ÈÖµ: ") (princ *CXTHeatingWireAlongAreaWidthWireWidthSpacingRatio*) (princ "\n")
 )
