@@ -1,6 +1,7 @@
 (defun readCSVFile (/ filename fileHandle lineData dataList processedData row col value) 
   (princ "\n")
-  (setq filename (getfiled "选择CSV文件" "" "csv" 2))
+  ; (setq filename (getfiled "选择CSV文件" "" "csv" 2))
+  (setq filename "C:\\Users\\Hashub\\Desktop\\单组\\异型线路设计20231206 副本.csv")
 
 
 

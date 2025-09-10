@@ -1,4 +1,4 @@
-(defun initPara (/) 
+(defun CXTInitPara (/) 
   (if (not *IsLoadedCXTCSV*) 
     (load "cxtCSV.lsp")
   )
@@ -145,7 +145,7 @@
   (princ)
 )
 
-(defun testPara (/) 
+(defun CXTTestPara (/) 
   (initPara)
   (princ "发热区边框偏移距离: ") (princ *CXTHeatingBoundaryOffset*) (princ "\n")
   (princ "发热区长度: ") (princ *CXTHeatingAreaGrossLegnth*) (princ "\n")
