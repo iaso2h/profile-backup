@@ -1,31 +1,38 @@
-(defun c:cxt_frs () (c:cxtHeatingWireGenerate) (princ))
-(defun c:cxtHeatingWireGenerate (/ *error* currentPoint grData grCode grVal loopChk 
-                                 numLines rotationAngle rotationQuadrantOffset 
-                                 lastRotationAngle p1 p2 p3 p4 p5 p6 endAxisLength i 
-                                 currentOffset lineP1 lineP2 oldCmdEcho rawAngle 
-                                 entlastSaved turnLineCount drawInwardChk 
-                                 drawShortLineChk drawFlipChk ssAxes idxSet
-                                ) 
+(defun c:cxt_frs () (cxtHeatingWireInit) (princ))
+(defun cxtHeatingWireInit (/ ans paraInitChk) 
   (vl-load-com)
   (terpri)
   (if (not *CXTHeatingWireLoaded*) 
     (progn 
       (load "cxtPara")
-      (CXTInitPara)
-    )
-    (progn 
-      (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile*))
-      (terpri)
-      (initget "Jimbo File")
-      (if 
-        (= 
-          (getkword "已载有发热丝参数，请做选择: [继续生成\(J\)/选择新文件\(F\)]:<继续生成\(J\)>")
-          "File"
-        )
-        (CXTInitPara)
-      )
+      (setq paraInitChk (CXTInitPara))
     )
   )
+  (if (not paraInitChk) (exit))
+
+  (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
+  (initget "Generate File")
+  (setq ans (getkword 
+              "请做选择: [开始生成\(G\)/选择新文件\(F\)]:<开始生成\(G\)>"
+            )
+  )
+  (cond 
+    ((= ans "File")
+     (setq paraInitChk (CXTInitPara))
+     (cxtHeatingWireInit)
+    )
+    ((= ans "Generate") (cxtHeatingWireGenerate))
+  )
+)
+(defun cxtHeatingWireGenerate (/ *error* currentPoint grData grCode grVal loopChk 
+                               numLines rotationAngle rotationQuadrantOffset 
+                               lastRotationAngle p1 p2 p3 p4 p5 p6 endAxisLength i 
+                               currentOffset lineP1 lineP2 oldCmdEcho rawAngle 
+                               entlastSaved turnLineCount drawInwardChk 
+                               drawShortLineChk drawFlipChk ssAxes idxSet
+                              ) 
+  (terpri)
+
   (if (not *IsLoadedSetup*) (load "setup"))
 
   ;; --- Error Handling Function ---
@@ -416,11 +423,11 @@
          ; Join Heating Wires
          (setq ssAxes (iaso2h:entlastTillNow entlastSaved))
          (setq entlastSaved (entlast))
-         (if (wcmatch (getvar "PRODUCT") "AutoCAD*") 
-           ; As for AutoCAD, check if "LWPolyline" entities exist in new selection set to determine whether there is an extra step when executing the `pedit` command
-           (command "._pedit" "m" ssAxes "" "Y" "J" "") ; There's an extra for AutoCAD to prompt user whether to convert entities to polylines.
-           (command "._pedit" "m" ssAxes "" "J" "") ; For ZWCAD
-         )
+         ;  (if (wcmatch (getvar "PRODUCT") "AutoCAD*")
+         ; As for AutoCAD, check if "LWPolyline" entities exist in new selection set to determine whether there is an extra step when executing the `pedit` command
+         (command "._pedit" "m" ssAxes "" "Y" "J" "") ; There's an extra for AutoCAD to prompt user whether to convert entities to polylines.
+         ;  (command "._pedit" "m" ssAxes "" "J" "") ; For ZWCAD
+         ;  )
          (command)
          (command "._fillet" 
                   "R"
@@ -460,4 +467,7 @@
 )
 
 ;;; --- Load Message ---
+(terpri)
+(princ "诚兴泰工具箱 V0.0.2已加载，更新时间: 2025-09-11 123444\n")
+(load "util")
 (princ)
