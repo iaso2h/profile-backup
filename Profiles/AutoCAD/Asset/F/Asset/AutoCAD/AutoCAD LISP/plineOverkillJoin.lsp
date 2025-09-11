@@ -1,6 +1,6 @@
 (defun c:jj () (c:plineOverkillJoin) (princ))
 (defun c:plineOverkillJoin (/ i ss ent countOptimized countJoined ssToJoin 
-                            ssToJoinTypes savedEntLast savedEntLastValid
+                            savedEntLast savedEntLastValid
                            ) 
 
   (defun *error* (msg) 
@@ -21,7 +21,6 @@
       )
 
       (setq countOptimized 0)
-      (setq ssToJoinTypes '())
       (setq ssToJoin (ssadd))
       (setq i 0)
       ; Add existing entities to new selection set
@@ -30,10 +29,6 @@
         (if (entget ent) 
           (progn 
             (ssadd ent ssToJoin)
-            (setq ssToJoinTypes (append ssToJoinTypes 
-                                        (list (cdr (assoc 0 (entget ent))))
-                                )
-            )
           )
           (setq countOptimized (1+ countOptimized))
         )
@@ -44,23 +39,14 @@
       ; Add new entities to new selection set
       (while (setq savedEntLast (entnext savedEntLast)) 
         (ssadd savedEntLast ssToJoin)
-        (setq ssToJoinTypes (append ssToJoinTypes 
-                                    list
-                                    ((assoc 0 (entget savedEntLast)))
-                            )
-        )
         (setq savedEntLastValid savedEntLast)
       )
 
-      (if *AutoCADLoaded* 
-        ; As for AutoCAD, check if "LWPolyline" entities exist in new selection set to determine whether there is an extra step when executing the `pedit` command
-        (if (vl-remove "LWPOLYLINE" (LM:Unique ssToJoinTypes)) 
-          (command "._pedit" "m" ssToJoin "" "Y" "J" "") ; There're other entities other than LWPOLYLINE
-          (command "._pedit" "m" ssToJoin "" "J" "") ; Only contains LWPOLYLINE entities
-        )
-        (command "._pedit" "m" ssToJoin "" "J" "") ; For ZWCAD
+      (if (= (getvar "PEDITACCEPT") 0) 
+        (command "._pedit" "m" ssToJoin "" "Y" "J" "")
+        (command "._pedit" "m" ssToJoin "" "J" "")
       )
-      (command)
+      (command) ; Emulate the escape key
 
 
       (setq countJoined 0)
