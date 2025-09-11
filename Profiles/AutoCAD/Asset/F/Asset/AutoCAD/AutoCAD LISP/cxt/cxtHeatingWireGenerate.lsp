@@ -20,7 +20,7 @@
   ; Initialize defualt settings
   (if (not *IsLoadedCXTHeatingWire*) 
     (progn 
-      (setq *CXTHeatingAreaFilletRaidus* 2)
+      (setq *CXTHeatingAreaFilletRaidus* -1)
       (setq *CXTHeatingWireAxisSpacing* *CXTHeatingWireAlongAreaLengthAxisSpacing*)
       (setq *CXTHeatingWireCount* *CXTHeatingWireAlongAreaLengthCount*)
       (setq *CXTHeatingWireFullSegmentLength* *CXTHeatingAreaNetWidth*)
@@ -64,6 +64,13 @@
        )
       ) ; End of filLet case
       ((= ans "Paibu")
+       (if (null alertSwapDirection) 
+         (progn 
+           (alert "功能不稳定，请谨慎使用。")
+           (setq alertSwapDirection T)
+         )
+       )
+
        (initget "Long Short")
        (setq ans (getkword 
                    "设置发热丝排布方向: [沿长边排布\(L\)/沿短边排布\(S\)]:<沿长边排布\(L\)>\n"
@@ -597,6 +604,6 @@
 
   ;;; --- Load Message ---
 (terpri)
-(princ "诚兴泰工具箱 V0.0.2已加载，更新时间: 2025-09-11 123444\n")
+(princ "诚兴泰工具箱 V0.0.2已加载，更新时间: 2025-09-12\n")
 (load "util")
 (princ)
