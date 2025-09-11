@@ -18,7 +18,7 @@
   (setq ans (getkword "选择模式[全部\(A\)/选择\(S\)]:<选择\(S\)>"))
   (if (= ans "All") 
     (setq ssFilter "_X")
-    (setq ssFilter "_L")
+    (setq ssFilter "_:L")
   )
   (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
   (setq dimTextStyleEnt nil)
@@ -430,7 +430,10 @@
     (and 
       (setq textOverride (vlax-get-property obj 'TextOverride))
       (wcmatch textOverride "*\*;*")
+      (not (wcmatch textOverride "*GDT*"))
+      (not (wcmatch textOverride "*gdt*"))
     )
+    ; #Check diameter symbol appearence count and skip it
     (progn 
       (if (setq textOverrideUnformat (LM:UnFormat textOverride :vlax-false)) 
         (progn 

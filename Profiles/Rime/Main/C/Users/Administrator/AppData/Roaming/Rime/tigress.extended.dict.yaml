@@ -1,0 +1,562 @@
+# Rime dictionary: tiger.extended
+# encoding: utf-8
+
+---
+name: tigress.extended
+version: "2.0"
+sort: by_weight
+import_tables:
+  - tigress
+  - tigress_ci
+  - tigress_simp_ci  # 在-前面加上#号，即可关闭简词
+
+columns:
+  - text
+  - code
+  - weight
+  - stem
+encoder:
+  rules:
+    - length_equal: 2
+      formula: "AaAbBaBb"
+    - length_equal: 3
+      formula: "AaBaCaCb"
+    - length_in_range: [4, 99]
+      formula: "AaBaCaZa"
+...
+
+#----------符号区----------#
+#用分号引导，可一键上屏的标点，可自己改
+#格式是：标点+tab+分号字母
+
+#----------标点符号 快符----------#
+# 第一排
+# ：“	;q
+# ？	;w
+# （	;e
+# ）	;r
+# →	;t
+# ·	;y
+# ~	;u
+# ——	;i
+# 〖	;o
+# 〗	;p
+
+# 第二排
+# ！	;a
+# ……	;s
+# 、	;d
+# “	;f
+# ”	;g
+# 『	;h
+# 』	;j
+# ￥	;k
+# %	;l
+# ：	;
+# ；	;
+
+# 第三排
+# |	;z
+# 【	;x
+# 】	;c
+# 《	;v
+# 》	;b
+# 「	;n
+# 」	;m
+
+#----------其他符号----------#
+
+
+
+#----------单字降重区----------#
+#通过加 回头码、容错码、自定码，来降低重码
+#具体说明可看下面的网址
+# https://publish.obsidian.md/csj-obsidian/1+-+Archives/Input+Method/%E8%99%8E%E7%A0%81/%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF%E5%BB%BA%E8%AE%AE
+
+#----------回头码----------#
+#回取首根小码来降重
+
+#沓	kors	1000
+#麂	xojl	1000
+
+
+#----------容错码----------#
+#顺取前四根，不跳码
+
+#蠃	fdvc	100
+#榖	gwfe	100
+
+#----------容错码----------#
+#用户自定，示例为 补音
+#汩kor+g (gǔ)，汨kor+m (mì)
+
+#汩	korg	100
+#汨	korm	100
+
+
+#----------修改字频、简码----------#
+#格式：字+tab+编码+tab+字频
+#例如：将“阳”作为2简，代替原来的“费”，“阳”的字频必须比“费”高
+#阳的全码重码——“衵”，也可提至首选，降重
+
+
+#阳	to	100000000
+#衵	tor	100000000
+
+#字频可被重置，写在这里的优先级高于主码表
+#字频若想置顶，可直接加超大的权重值100000000000……
+#字频若想置后，常用字集的最小字频是255，改成这个就会在常用字集的最后
+#若需精准调控，可在“tiger.dict.yaml”文件中搜索，找到具体数值
+#例如 想把 “凫” 改到 “麂” 前面，但不能在 “秃” 前面
+#“秃”的字频 查得为5592，“麂”的字频，查得为519
+
+#凫	xoj	500
+#麂	xoj	100
+#叆	bywr	10000000000
+
+
+#可以加些自定的多重简码，下面已分好区域
+
+#----------增加单字----------#
+#虎码是全字集，收字量近10W，一般无需加单字
+#不过虎码以下几个汉字分区没有收，可自行添加
+#汉字的Unicode分区说明可看下面的网址
+# https://unicode-table.com/cn/blocks/
+
+#----------部首补充----------#
+
+#----------康熙部首----------#
+
+#----------兼容字----------#
+
+#----------兼补字----------#
+
+#----------注音----------#
+
+#----------其他分区----------#
+
+#----------一简多重----------#
+嘅	d	200
+#----------二简多重----------#
+甲	sj	10000
+谂	sj	20000
+遮	xl	5000
+啦	du	5000
+
+#--------粤语---------
+係	jt	50
+冇	nm	200
+㗎	sd	50
+
+#----------三简多重----------#
+不说话	css	1000
+来不来	aca	500
+看不看	ucu	500
+知道了	ohr	10000
+
+攞	uyi
+嚿	dlu	400
+嚟	dxp	5
+有冇有	nnn
+係冇係	jnj
+係唔係	jdj	400
+使唔使	jdj	399
+得唔得	wdw	400
+
+
+#----------无码加词_全码词----------#
+#支持无码加词，但只能用标准打词法，即：四码全码打出来
+
+#彳亍	p	100
+#虎码输入法
+
+#秃码输入法
+
+
+#----------有码加词_简词----------#
+#若想加些简词，二码，三码即可出字，需加上编码
+#若想调整词序，再后面加个tab，再加词频即可
+
+
+
+睡大街	qmpg
+拔网线	umif
+长相思	peqh
+口决	dkwn	50
+一路顺风	fpoo	1310
+机加工	esug
+好果子	bqhi	400
+厚礼蟹	xfxt	50
+出图	smrh	500
+瞳孔地震	qhgt	500
+引体	bgje	500
+离店	zbxy	500
+搞快点	uhyd	400
+开开	ff	400
+续住	inji	40
+握持	ucug	350
+近距离	tpzb	500
+热身运动	uzbb	500
+群星荟萃	boll
+朋友圈	vnqh	500
+快题	hnow
+多机位	leji
+钓鱼佬	zwjq
+扩展格式	ucep
+没绷住	kiji
+我没绷住	tkij
+懒狗	hxmg
+乘于	xafn
+除于	tjfn	150
+喊口号	dddf	500
+遭老罪	fqyr
+饿死鬼	qgag	500
+时日不多	oocl
+双力臂	rscd
+街健	pgjb
+改键	vhzb	5
+盲道	fqho	5
+连吃带拿	ydlj
+停球	jgnf	500
+幅画	rffq	500
+等宽	rgwl
+农忙假	whjc
+扒走	uhpz	50
+套走	mppz	5
+药死	ligv	5
+戴冠	npwm	5
+修改器	jvdd	50
+推版	uuax
+击腹	umve	5
+真男人	nqjr	50
+笑嘻了	rdrl	500
+下横线	feip
+修饰键	jqzb
+回南天	rnfm	5
+迪卡侬	dyjw
+短边	ozsu
+推图	uurh
+单组	hqif	5
+运镜	buzx
+拉取	uiqr	150
+仙品	jvdd	350
+#---------电子---------
+电阻率	otzi
+发热丝	suii
+#---------机械---------
+钣金	zxzj	400
+折弯补偿	uztj
+折弯扣除	uzut
+达索	munw
+释放槽	tlef	500
+倒圆	jyrd	50
+焊件	cojq
+样条曲线	ehyi
+形位公差	fjhg
+形状公差	fmhg
+位置公差	jyhg
+公差与配合	hgfj
+标准图集	ewru	500
+参数化	kpvb
+方通	lfkt	500
+套料	mppj
+光洁度	mkxl
+粗糙度	ppxl	5
+开料	flpj
+算料	rqpj
+导丝	vkii	500
+丝杆	iiee	5
+包材	nven
+夹具	hhqh	5
+拆图	utrh
+检具	ejqh	50
+治具	kkqh	500
+选型	qpfl	500
+基准面	zwbm
+成图	arrh	500
+图元	rhmp	5
+工程图	uxrh	5
+撞机	uieo	500
+操机	udeo	500
+拔模	unel
+中望	dgfv
+多段线	luif
+线长	ifpc	5
+客供	wshl
+料号	pjdf
+外发	lysr	500
+槽位	efji	5
+割孔	waha	500
+沉头	kwwm	5
+#Reference: https://zhuanlan.zhihu.com/p/455301324
+预加工	isug
+模膛	elvs	50
+型腔	flve	5
+型槽	flef	5
+有限元	ntmp	50
+啮合	dljd	5
+预加工	isug
+延展性	tcls	500
+可锻性	zzhl
+塑模	hsel
+铸模	zael
+表面光洁度	abmx
+热疲劳	ualw	5
+化铁炉	jzcm	500
+锻坯	zugc
+机械制造	eeqq
+塑性加工	hhsu
+拉拔	uiun	5
+深冲	kwwd	5
+深压	kwxg	5
+锤砧	zlmy
+砧座	myxj
+拔长	unpc
+顶锻	awzu
+镦粗	zgpf
+落锻	lkzu
+锤模锻	zezu
+终锻	hwzu
+高温计	gksn	5
+压力机	xseo
+液压机	kxeo
+汽机	vqeo
+压力焊	xsco
+熔焊	cwco	50
+助溶剂	fkwp	5
+铜焊	zmco
+低碳钢	jmzm
+高碳	ggmv
+高碳钢	gmzm
+均热	gnuk	5
+骤冷	nqwj	5
+轴销	ydzy	5
+环链	nczy
+拓扑学	uukw	5
+导向杆	vtee	500
+齿间距	lapn
+齿根	lcei
+齿隙	lcty
+预荷载	ilnp
+刻度盘	kxia
+蜗轮	cdjj
+楔入	eaju
+#---------地方名称---------
+南庄	nmxg	400
+西樵	vxeu
+北海	avke	1000
+#---------粤语---------
+蚊鸡	cvrx
+发瘟	srao	100
+发瘟閪	saav
+发癫	sran	50
+係咪	jtdp	1000
+人哋	hdge
+呢度	dcxl
+嗰度	djxl
+噉样	daeg	100
+乜嘢	aadd
+乜说话	assa	50
+契弟	apht
+伯爷	juhb
+伯娘	jubi
+舅爷	pqab
+舅娘	pqbi
+叔娘	yfbi
+姨爷	bmhb	400
+外奶	lybv
+外爹	lyhb
+阿婆	ztkr
+阿公	zthk
+家姐	wjbf
+老嘢	qldd
+细蚊仔	icjh
+啱啱	dvdv	400
+啱先	dvqp
+鬼咁	agdz
+冇係	lejt
+冇有	nmnv	1000
+冇使	nmjf
+差唔多	gdll
+唔係	dwjt
+唔使	dwjf
+唔通	dwkt
+唔单止	dhsi
+唔喐	dwdn
+咪喐	dpdn
+咪走	dppz
+论尽	sjci
+千祈	lqft
+一係	fiht
+同埋	mfgd
+特登	qghz
+专登	mahz
+鸡毛扫	rvub
+即管	izrw
+为咗	isdn
+揾食	uoqs
+捱夜	uxzj
+揸车	ueyc
+做嘢	jcdd
+浪口	kidk
+滚水	kaks	100
+花樽	ljeh
+香梘	xoee
+番梘	tpee	100
+匙羹	otgc
+大褛	mdtp
+底衫	xbte	100
+领呔	jkdm
+狗乸	mgek
+鸡乸	rxek
+了哥	rlzz	100
+矮瓜	oxyg
+乌蝇	xucd
+生果	lsqe
+寻日	bkor
+寻晚	bkow
+今物	jaqn	400
+打冷震	uwtf
+打噎	uadg	100
+联针	qhzn
+肚屙	vgct
+焗亲	ccie
+焗热	ccuk	100
+唞气	duvq
+喐手	dnus
+笠帽	riro
+弗手	tfus	100
+掹开	uhfl	100
+质入去	xjgk
+打掂	uaux
+折堕	uttn	100
+发姣	srba
+发嬲	srqs
+心喐喐	hddn
+乌卒卒	xzzj
+黑麻麻	pzzm
+夜麻麻	zzzm
+乌灯黑火	xcpc	100
+肥腾腾	vvvh
+瘦蜢蜢	acch	100
+阔落	aklk
+静鸡鸡	arrx
+火水	chks	100
+地拖	geue
+银包	zinv
+嚟啦	dxdu
+过嚟	kudx
+我哋	tudg
+你哋	jxdg
+佢哋	jndg
+吖嘛	dhdz
+傻閪	jtav	400
+臭閪	omav
+笨柒	rekr
+是但	otjo
+黐线	xjif
+黐嘿线	xdif
+好未	bhaw
+好冇	bhnm	300
+冇嘢	ledd
+冇乜嘢	ladd	400
+做咩	jcdg
+做咩啊	jddt	400
+做咩嗜	jddq
+食饭	qx	100
+食晏	qsow
+吃朝	deno
+吃晏	deow
+吃夜	dezj
+煮朝	qono
+煮晏	qoow
+煮夜	qozj
+梗喺啦	eddi
+藞苴	lmlf
+蚀底	qcxb
+银纸	ziib
+落堂	lksg
+攞苦嚟辛	uldn
+仲係	jddj
+唔係	dwjt
+冇係	nmjt
+车大奅	ymmb
+癫婆	ankr
+癫佬	anjq
+巴闭	mban
+老懵董	qhll
+唔好意思	dbxq
+倾偈	jvjo
+做紧乜嘢	jpad
+间尺	aoci
+间条	aohe
+仲未	jdaw
+未好	awbh
+仲係	jdjt
+仲有	jdnv	100
+都係	qojt
+等阵	rgty
+扮懵	uhhl	100
+担戴	uonp
+似样	jveg	400
+慌失失	htth	400
+睩大眼	qmqi
+吊砂煲	dmjd	100
+无嗱嗱	dddj	150
+实食冇黐牙	wqnl
+抛浪头	ukwm	100
+世侄	lajy
+极之	ecri
+猛咁	mhdz
+往阵时	wtok	50
+旧阵时	gtok
+周身蚁	mzci
+冚家	wvwj	50
+得食	woqs
+猪仔得食墟墟冚	qjww
+懒到出汁	hysk
+埋站	gdiy
+人一世物一世	jfll	400
+悭皮	hprp
+悭钱	hpzf	100
+一辘	fiyz	100
+有排	nvur
+大件事	mjfd	100
+鬼揞眼	auqi
+睬佢都傻	qjqj
+睇小	qhyx
+扮嘢	uhdd
+冻过水	wkks	100
+攞景	uyog
+冷衫	wjte	400
+条气唔顺	hvdo
+得啖笑	wdrt
+食啖饭	qdqx
+成世	nala	50
+未够格	ages	100
+拈刺咁拈	uedy
+可恼也	zhey
+乌哩单刀	xdhp	100
+颈渴	rwko
+肚饿	vgqt
+肚饥	vgqo	400
+囉㖞	dydd	400
+贪得意	jwxh	400
+搏彩	unye
+又平又靓	rera	400
+稳阵	xxty
+嘥钱	dwzf
+嘥力	dwsl
+嘥时嘥力	dods
+屎忽	cpne
+衰仔	tdjh
+係冇係	jnjt
+人哋	jrdg	400
+有冇有	nnnv	400
+返到	xryp
+吔粉	deph	50
+吔屎	decp	50
+餸饭	qhqx
+湿滞	kokl	50
+唔係啩	djdg
+嚟唔切	ddrp	15

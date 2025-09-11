@@ -316,8 +316,6 @@
            (mapcar '(lambda (pt) (cons 10 pt)) (list p1 p2 p3 p4))
          )
        )
-       (command "_.fillet" "_r" CXTHeatingAreaFilletRaidus "")
-       (command "_.fillet" "_p" "_l")
 
        ;; Draw the 10 permanent internal lines using the LINE command.
        ;  (setq i 1)
@@ -416,11 +414,8 @@
          ; Join Heating Wires
          (setq ssAxes (iaso2h:entlastTillNow entlastSaved))
          (setq entlastSaved (entlast))
-         (if (wcmatch (getvar "PRODUCT") "AutoCAD*") 
            ; As for AutoCAD, check if "LWPolyline" entities exist in new selection set to determine whether there is an extra step when executing the `pedit` command
            (command "._pedit" "m" ssAxes "" "Y" "J" "") ; There's an extra for AutoCAD to prompt user whether to convert entities to polylines.
-           (command "._pedit" "m" ssAxes "" "J" "") ; For ZWCAD
-         )
          (command)
          (command "._fillet" 
                   "R"
