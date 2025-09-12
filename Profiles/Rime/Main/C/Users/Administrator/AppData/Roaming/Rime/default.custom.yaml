@@ -1,0 +1,28 @@
+customization:
+  distribution_code_name: Weasel
+  distribution_version: 0.17.4
+  generator: "Rime::SwitcherSettings"
+  modified_time: "Mon Jul 21 19:51:13 2025"
+  rime_version: 1.13.1
+key_binder:
+  bindings:
+    - {accept: space, send: Escape, when: composing}
+    - {accept: space, send: space, when: has_menu}
+    - {accept: minus, send: Page_Up, when: has_menu}
+    - {accept: equal, send: Page_Down, when: has_menu}
+    - {accept: Right, send: Down, when: has_menu}
+    - {accept: Left, send: Up, when: has_menu}
+patch:
+  "ascii_composer/good_old_caps_lock": true
+  "ascii_composer/switch_key":
+    Caps_Lock: clear
+    Control_L: noop
+    Control_R: noop
+    Eisu_toggle: clear
+    Shift_L: commit_code
+    Shift_R: commit_code
+  schema_list:
+    - {schema: tigress}
+  "switcher/hotkeys":
+    - "Control+grave"
+    - "Control+F8"
