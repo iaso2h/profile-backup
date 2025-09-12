@@ -154,7 +154,6 @@
 
 (if *SearchIncluded* 
   (progn 
-    (princ "1")
     (if (not *IsLoadedUtil*) 
       (load "util.lsp")
     )
@@ -173,7 +172,7 @@
     (autoload "setup" '("setup" "setupSysVar" "setupLayer" "setupFont"))
 
     ;; CXT
-    (autoload "cxtHeatingWireGenerate" '("cxtHeatingWireGenerate" "frs"))
+    (autoload "cxtHeatingWireGenerate" '("cxt_frs"))
 
     ;; Otto
     (autoload "otto" '("otto"))
