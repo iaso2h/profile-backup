@@ -1,6 +1,6 @@
-(defun c:dimStandardize (/ doc ans ssFilter dimTextStyleEnt dimStyleTableEnt 
-                         dimStyleEntData textHeight sizeFactor ss i ent obj 
-                         dimStyleModifiedCount
+(defun c:dimStandardize (/ doc ans ssFilter dimFangsongItalicTextStyleEnt 
+                         dimStyleTableEnt dimStyleEntData textHeight sizeFactor ss i 
+                         ent obj dimStyleModifiedCount allStyleToFangSongChk
                         ) 
   (vl-load-com)
 
@@ -18,19 +18,19 @@
   (setq ans (getkword "选择模式[全部\(A\)/选择\(S\)]:<选择\(S\)>"))
   (if (= ans "All") 
     (setq ssFilter "_X")
-    (setq ssFilter "_L")
+    (setq ssFilter "_:L")
   )
   (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
-  (setq dimTextStyleEnt nil)
+  (setq dimFangsongItalicTextStyleEnt nil)
   (setq dimStyleModifiedCount 0)
   (vlax-for obj (vla-get-textstyles doc) 
     (if 
       (and 
-        (null dimTextStyleEnt)
+        (null dimFangsongItalicTextStyleEnt)
         (= (vla-get-name obj) "斜仿宋")
       )
       (progn 
-        (setq dimTextStyleEnt (vlax-vla-object->ename obj))
+        (setq dimFangsongItalicTextStyleEnt (vlax-vla-object->ename obj))
       )
     )
   )
@@ -66,14 +66,9 @@
         )
       )
       (progn 
-        ; Always set Fangsong Italic as the text style for all dimension styles
-        (if dimTextStyleEnt 
-          (setq dimStyleEntData (subst (cons 340 dimTextStyleEnt) 
-                                       (assoc 340 dimStyleEntData)
-                                       dimStyleEntData
-                                )
-          )
-        )
+        ; DXF Code: https://help.autodesk.com/view/OARX/2024/ENU/?guid=GUID-F2FAD36F-0CE3-4943-9DAD-A9BCD2AE81DA
+
+
         ; As for dimension style exported from SolidWorks, text height from dot list 140 will somehow be evaluated to nil. In this case, set it to 2.5 by default.
         (if (not (setq textHeight (cdr (assoc 140 dimStyleEntData)))) 
           (setq textHeight 2.5)
@@ -83,7 +78,6 @@
         (if sizeAdjustChk 
           (setq val (* val sizeFactor))
         )
-        ; DXF Code: https://help.autodesk.com/view/OARX/2024/ENU/?guid=GUID-F2FAD36F-0CE3-4943-9DAD-A9BCD2AE81DA
         ;; Table "Lines"
         ; `DIMDLI`. Baseline Spacing
         (setq dimStyleEntData (dimStyleMod dimStyleEntData sizeFactor 43 3.75 T))
@@ -128,7 +122,17 @@
         ; No Jog Height Facotor Related DXF Code
 
         ;; Tab "Text"
-        ; No Text Style Related DXF Code
+        ; Always set Fangsong Italic as the text style for all dimension styles
+        (if (/= ssFilter "_:L") 
+          (if dimFangsongItalicTextStyleEnt 
+            (setq dimStyleEntData (subst 
+                                    (cons 340 dimFangsongItalicTextStyleEnt)
+                                    (assoc 340 dimStyleEntData)
+                                    dimStyleEntData
+                                  )
+            )
+          )
+        )
 
         ; No `DIMTFILL` Text Fill Related DXF Code
         ; No Draw Frame around Dimension Text
@@ -207,7 +211,7 @@
         (setq obj (vlax-ename->vla-object ent))
 
 
-        (dimObjModify obj dimTextStyleEnt)
+        (dimObjModify obj dimFangsongItalicTextStyleEnt)
 
         (setq i (1+ i))
         (vla-update obj)
@@ -430,7 +434,10 @@
     (and 
       (setq textOverride (vlax-get-property obj 'TextOverride))
       (wcmatch textOverride "*\*;*")
+      (not (wcmatch textOverride "*GDT*"))
+      (not (wcmatch textOverride "*gdt*"))
     )
+    ; #Check diameter symbol appearence count and skip it
     (progn 
       (if (setq textOverrideUnformat (LM:UnFormat textOverride :vlax-false)) 
         (progn 
@@ -486,8 +493,8 @@
   )
 
   ; Always Set Scale Factor to 1
-  ; (if 
-  ;   (and 
+  ; (if
+  ;   (and
   ;     (vlax-property-available-p obj 'ScaleFactor)
   ;     (/= (vlax-get-property obj 'ScaleFactor) 1)
   ;   )

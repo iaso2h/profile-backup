@@ -77,7 +77,6 @@
   )
   (command "_.-block" blockName insertPoint ss "")
   (command "_.-insert" blockName insertPoint "" "" "")
-
   (princ)
 )
 

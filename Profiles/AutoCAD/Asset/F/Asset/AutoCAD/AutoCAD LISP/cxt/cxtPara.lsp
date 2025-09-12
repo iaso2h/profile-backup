@@ -23,13 +23,13 @@
                                          *CXTHeatingAreaGrossWidth*
                                       )
       ) ;发热区面积
-      (setq *CXTHeatingAreaNetArea* *CXTHeatingAreaGrossArea*) ;发热区净面积
+      (setq *CXTHeatingAreaRealArea* (atof (getCellValue csvData "E15"))) ;发热区实际面积
       (setq *CXTHeatingWireLossBasic* (atof (getCellValue csvData "F17")))
       (setq *CXTHeatingWireLossTotal* (+ 
                                         (- 1 
                                            (/ 
                                              *CXTHeatingAreaGrossArea*
-                                             *CXTHeatingAreaNetArea*
+                                             *CXTHeatingAreaRealArea*
                                            )
                                         )
                                         *CXTHeatingWireLossBasic*
@@ -139,15 +139,65 @@
                                                                   *CXTHeatingWireAlongAreaWidthOutlineDesignSpacing*
                                                                 )
       ) ;沿短边布线发热丝设计线宽间距比值
-
+      (CXTPrintPrimaryPara)
       T ; Return T if successfully initialized.
     )
     nil
   )
+  
+  
+)
+
+(defun CXTPrintPrimaryPara (/) 
+  ; Print primary parameters.
+  (terpri)
+  (princ "发热区长x宽: ")
+  (princ *CXTHeatingAreaGrossLegnth*)
+  (princ "x ")
+  (princ *CXTHeatingAreaGrossWidth*)
+  (princ "mm, 实际面积: ")
+  (princ *CXTHeatingAreaRealArea*)
+  (princ "mm?\n")
+
+  (princ "\n")
+  (princ "电阻: ")
+  (princ *CXTHeatingWireResistance*)
+  (princ ", ")
+  (princ "电阻率: ")
+  (princ *CXTHeatingWireResistivity*)
+  (princ ", ")
+  (princ "发热丝厚度: ")
+  (princ *CXTHeatingWireThickness*)
+  (princ "\n")
+
+  (princ "发热区边框偏移距离: ")
+  (princ *CXTHeatingBoundaryOffset*)
+  (princ "\n")
+  (princ "发热丝组数: ")
+  (princ *CXTHeatingWireSet*)
+  (princ "\n")
+  (princ "发热丝假设线宽: ")
+  (princ *CXTHeatingWireInitialWidth*)
+  (princ "\n")
+  (princ "发热丝设变线宽: ")
+  (princ *CXTHeatingWireDesignWidth*)
+  (princ "\n")
+  (princ "发热丝设变间距(偶数、沿长边): ")
+  (princ *CXTHeatingWireAlongAreaLengthWireWidthSpacingRatio*)
+  (princ ", 发热丝设变间距(偶数、沿短边): ")
+  (princ *CXTHeatingWireAlongAreaWidthWireWidthSpacingRatio*)
+  (princ "\n")
+  (princ "发热丝设变线宽/间距比值(偶数、沿长边): ")
+  (princ *CXTHeatingWireAlongAreaLengthWireWidthSpacingRatio*)
+  (princ ", 发热丝设变线宽/间距比值(偶数、沿短边): ")
+  (princ *CXTHeatingWireAlongAreaWidthWireWidthSpacingRatio*)
+  (princ "\n")
+  
+  
+  (princ)
 )
 
 (defun CXTTestPara (/) 
-  (initPara)
   (princ "发热区边框偏移距离: ")
   (princ *CXTHeatingBoundaryOffset*)
   (princ "\n")
@@ -167,7 +217,7 @@
   (princ *CXTHeatingAreaGrossArea*)
   (princ "\n")
   (princ "发热区净面积: ")
-  (princ *CXTHeatingAreaNetArea*)
+  (princ *CXTHeatingAreaRealArea*)
   (princ "\n")
   (princ "发热丝基本损耗: ")
   (princ *CXTHeatingWireLossBasic*)
