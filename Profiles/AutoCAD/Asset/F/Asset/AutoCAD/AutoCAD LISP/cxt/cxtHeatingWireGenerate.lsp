@@ -1,7 +1,5 @@
 (defun c:cxt_frs () (cxtHeatingWireInit) (princ))
-(defun cxtHeatingWireInit (/ ans paraInitChk oldDynamicInput loopChk startTime 
-                           endTime generationResult
-                          ) 
+(defun cxtHeatingWireInit (/ ans paraInitChk oldDynamicInput loopChk generationResult) 
   (defun *error* (msg) 
     (if (not (member msg '("Function cancelled" "quit / exit abort" "函数已取消"))) 
       (princ (strcat "Error: " msg "\n"))
@@ -51,9 +49,14 @@
   (setvar "DYNMODE" 1)
   (while loopChk 
     (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
-    (initget "eXit Reset Generate File filLet Paibu jiOu")
+    ; (initget "eXit Reset Generate File filLet Paibu jiOu")
+    ; (setq ans (getkword 
+    ;             "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换发热丝奇偶数\(O\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
+    ;           )
+    ; )
+    (initget "eXit Reset Generate File filLet Paibu")
     (setq ans (getkword 
-                "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换发热丝奇偶数\(O\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
+                "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
               )
     )
     (cond 
@@ -75,20 +78,7 @@
       ) ; End of heating wire parameter initialization case
       ((or (null ans) (= ans "Generate"))
        (setq loopChk nil)
-       (setq startTime (getvar "DATE"))
-       (if (cxtHeatingWireGenerate) 
-         (progn 
-           (setq endTime (getvar "DATE"))
-           (terpri)
-           (princ 
-             (strcat 
-               "发热丝生成成功，用时"
-               (rtos (* 86400 (- endTime startTime)) 2 4)
-               "秒。\n"
-             )
-           )
-         )
-       )
+       (cxtHeatingWireGenerate)
       ) ; End of Generate case(Default)
       ((= ans "filLet")
        (initget "Yes No")
@@ -133,39 +123,55 @@
            (= *CXTHeatingWireAxisSpacing* 
               *CXTHeatingWireAlongAreaLengthAxisSpacing*
            )
-           (setq *CXTHeatingWireAlongAreaLengthCount* (iaso2h:biggerOdd 
-                                                        (/ 
-                                                          *CXTHeatingWireLength*
-                                                          *CXTHeatingAreaNetWidth*
+           (progn 
+             (setq *CXTHeatingWireAlongAreaLengthCount* (iaso2h:biggerOdd 
+                                                          (/ 
+                                                            *CXTHeatingWireLength*
+                                                            *CXTHeatingAreaNetWidth*
+                                                          )
                                                         )
-                                                      )
-           ) ;沿长边布线发热丝数(奇数)
-           (setq *CXTHeatingWireAlongAreaWidthCount* (iaso2h:biggerOdd 
-                                                       (/ 
-                                                         *CXTHeatingWireLength*
-                                                         *CXTHeatingAreaNetLength*
+             ) ;沿长边布线发热丝数(奇数)
+             (princ "当前发热丝数量为(沿长边): ")
+             (pp *CXTHeatingWireAlongAreaLengthCount*)
+           )
+           (progn 
+             (setq *CXTHeatingWireAlongAreaWidthCount* (iaso2h:biggerOdd 
+                                                         (/ 
+                                                           *CXTHeatingWireLength*
+                                                           *CXTHeatingAreaNetLength*
+                                                         )
                                                        )
-                                                     )
-           ) ;沿短边布线发热丝数(奇数)
+             ) ;沿短边布线发热丝数(奇数)
+             (princ "当前发热丝数量为(沿短边): ")
+             (pp *CXTHeatingWireAlongAreaWidthCount*)
+           )
          )
          (if 
            (= *CXTHeatingWireAxisSpacing* 
               *CXTHeatingWireAlongAreaLengthAxisSpacing*
            )
-           (setq *CXTHeatingWireAlongAreaLengthCount* (iaso2h:biggerEven 
-                                                        (/ 
-                                                          *CXTHeatingWireLength*
-                                                          *CXTHeatingAreaNetWidth*
+           (progn 
+             (setq *CXTHeatingWireAlongAreaLengthCount* (iaso2h:biggerEven 
+                                                          (/ 
+                                                            *CXTHeatingWireLength*
+                                                            *CXTHeatingAreaNetWidth*
+                                                          )
                                                         )
-                                                      )
-           ) ;沿长边布线发热丝数(偶数)
-           (setq *CXTHeatingWireAlongAreaWidthCount* (iaso2h:biggerEven 
-                                                       (/ 
-                                                         *CXTHeatingWireLength*
-                                                         *CXTHeatingAreaNetLength*
+             ) ;沿长边布线发热丝数(偶数)
+             (princ "当前发热丝数量为(沿长边): ")
+             (pp *CXTHeatingWireAlongAreaLengthCount*)
+           )
+           (progn 
+             (setq *CXTHeatingWireAlongAreaWidthCount* (iaso2h:biggerEven 
+                                                         (/ 
+                                                           *CXTHeatingWireLength*
+                                                           *CXTHeatingAreaNetLength*
+                                                         )
                                                        )
-                                                     )
-           ) ;沿短边布线发热丝数(偶数)
+             ) ;沿短边布线发热丝数(偶数)
+             (princ "当前发热丝数量为(沿短边): ")
+             (pp *CXTHeatingWireAlongAreaWidthCount*)
+           )
          )
        )
       ) ; End of jiOu case
@@ -181,7 +187,8 @@
                                lastRotationAngle p1 p2 p3 p4 p5 p6 fullSegmentLength i 
                                currentOffset lineP1 lineP2 oldCmdEcho rawAngle 
                                entlastSaved turnLineCount drawInwardChk 
-                               drawShortLineChk drawFlipChk ssAxes idxSet
+                               drawShortLineChk drawFlipChk ssAxes idxSet startTime 
+                               endTime
                               ) 
   (terpri)
   (if (not *IsLoadedSetup*) (load "setup"))
@@ -470,6 +477,7 @@
       ((= grCode 3)
        ;; The user has clicked to confirm the placement.
        ;; We use the last calculated rotationAngle from the preview.
+       (setq startTime (getvar "DATE"))
 
        ;; Draw the heating wire area
        (setvar "CLAYER" "0")
@@ -622,11 +630,24 @@
          ; Join Heating Wires
          (setq ssAxes (iaso2h:entlastTillNow entlastSaved))
          (setq entlastSaved (entlast))
+         ; BUG
          (terpri)
+
          (if (= (getvar "PEDITACCEPT") 0) 
-           (command "._pedit" "m" ssAxes "" "Y" "J" "")
-           (command "._pedit" "m" ssAxes "" "J" "")
+           (progn 
+             (command "._pedit" "_M" ssAxes "" "_Y" "_J" "_J" "_E")
+             (command "")
+           )
+           (progn 
+             (command "._pedit" "_M" ssAxes "" "_J" "_J" "_E")
+             (command "")
+           )
          )
+         ; Alternative Join Method
+         ;  (command "._join" ssAxes "")
+
+         ; Since ZWCAD(AutoCAD?) will always set cmdecho to 1 after invoking the `pedit` command, we need to set it back to 0 again.
+         (setvar "CMDECHO" 0)
 
          (command) ; Emulate the escape key
 
@@ -643,7 +664,7 @@
          (setq idxSet (1+ idxSet))
        )
 
-
+       ; End of drawing heating wire axes.
        (setq loopChk nil)
        (redraw)
       ) ; End of left mouse click case
@@ -659,12 +680,23 @@
   ;; --- Cleanup ---
   (setvar "FILLETRAD" oldFilletRad)
   (setvar "CLAYER" oldCLayer)
+  (setvar "CMDECHO" oldCmdEcho)
+  (setq endTime (getvar "DATE"))
+  (terpri)
+  (princ 
+    (strcat 
+      "发热丝生成成功，用时"
+      (rtos (* 86400 (- endTime startTime)) 2 4)
+      "秒。\n"
+    )
+  )
 
   T ; Suppress the echo of the last evaluation in the command line.
 )
 
   ;;; --- Load Message ---
 (terpri)
-(princ "诚兴泰工具箱 V0.0.2已加载，更新时间: 2025-09-12\n")
+(princ "诚兴泰工具箱 V0.0.4已加载，更新时间: 2025-09-12\n")
 (load "util")
+(load "doubleOffset")
 (princ)

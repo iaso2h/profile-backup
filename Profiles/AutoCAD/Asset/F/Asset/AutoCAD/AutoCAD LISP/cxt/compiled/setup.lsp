@@ -51,6 +51,18 @@
       )
     )
   )
+  (if (not (tblsearch "STYLE" "ËÎÌו")) 
+    (entmake 
+      (list '(0 . "STYLE") 
+            '(100 . "AcDbSymbolTableRecord")
+            '(100 . "AcDbTextStyleTableRecord")
+            '(2 . "ËÎÌו")
+            '(70 . 0)
+            '(40 . 0) ; Fixed text height; 0 if not fixed
+            '(3 . "simsun.ttf") ; Primary font file name
+      )
+    )
+  )
 
 
   ;; Fix standard font oblique angle and set it to 0. Eventually, I implement it in the ActiveX way.

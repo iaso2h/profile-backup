@@ -123,7 +123,13 @@
 
         ;; Tab "Text"
         ; Always set Fangsong Italic as the text style for all dimension styles
-        (if (/= ssFilter "_:L") 
+        (if 
+          (or 
+            (/= ssFilter "_:L")
+            (= (cdr (assoc 2 dimStyleEntData)) 
+               "YanXiu"
+            )
+          )
           (if dimFangsongItalicTextStyleEnt 
             (setq dimStyleEntData (subst 
                                     (cons 340 dimFangsongItalicTextStyleEnt)
