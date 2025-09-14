@@ -9,7 +9,7 @@
 ;;  Version: 1-1 20100912                                     ;;
 ;;------------------------------------------------------------;;
  
-; (defun c:DOff nil (DoubleOffsetInternal))
+(defun c:DOff nil (DoubleOffsetInternal))
  
 (defun DoubleOffsetInternal (/ *error* _StartUndo _EndUndo DoubleOffset doc exitflag 
                              layer mpoint obj object of point sel symbol value
@@ -248,7 +248,7 @@
 (princ)
 ; (princ "\n:: DoubleOffset.lsp | Version 1.1 | © Lee Mac 2011 www.lee-mac.com ::")
 ; (princ "\n:: Type \"DoubleOffset\" or \"DOff\" to invoke ::")
-(vlax-add-cmd "Doff" 'DoubleOffsetInternal)
+; (vlax-add-cmd "Doff" 'DoubleOffsetInternal)
 
 (princ)
  

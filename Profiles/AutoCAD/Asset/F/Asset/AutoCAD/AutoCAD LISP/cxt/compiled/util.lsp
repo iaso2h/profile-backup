@@ -100,7 +100,7 @@
   (/ (float (fix (* num multiplier))) multiplier)
 )
 
-(defun iaso2h:d2r (degrees) 
+(defun iaso2h:d2r (dregrees) 
   (* degrees (/ pi 180.0))
 )
 

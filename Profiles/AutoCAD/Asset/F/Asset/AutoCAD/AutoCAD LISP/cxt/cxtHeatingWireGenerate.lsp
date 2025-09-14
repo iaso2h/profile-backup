@@ -17,6 +17,7 @@
     (setq *CXTHeatingWireCount* *CXTHeatingWireAlongAreaLengthCount*)
     (setq *CXTHeatingWireFullSegmentLength* *CXTHeatingAreaNetWidth*)
     (setq *CXTHeatingWireAlongAreaDirectionFix* 0)
+    (setq *CXTHeatingWireWitdhGenerateChk* T)
 
     (setq *IsLoadedCXTHeatingWire* T)
   )
@@ -50,13 +51,13 @@
   (while loopChk 
     (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
     ; (initget "eXit Reset Generate File filLet Paibu jiOu")
-    ; (setq ans (getkword 
+    ; (setq ans (getkword
     ;             "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换发热丝奇偶数\(O\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
     ;           )
     ; )
-    (initget "eXit Reset Generate File filLet Paibu")
+    (initget "eXit Reset Generate File filLet Paibu wireWidth")
     (setq ans (getkword 
-                "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
+                "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换线宽生成\(W\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
               )
     )
     (cond 
@@ -175,6 +176,17 @@
          )
        )
       ) ; End of jiOu case
+      ((= ans "wireWidth")
+       (initget "Yes No")
+       (setq ans (getkword 
+                   "设置是否生成发热丝线宽: [生成\(Y\)/不生成\(N\)]:<生成\(Y\)>\n"
+                 )
+       )
+       (if (= ans "No") 
+         (setq *CXTHeatingWireWitdhGenerateChk* nil)
+         (setq *CXTHeatingWireWitdhGenerateChk* T)
+       )
+      )
     )
   ) ; End of while loop
 
@@ -199,7 +211,7 @@
     (if oldCmdEcho (setvar "CMDECHO" oldCmdEcho))
     (if oldFilletRad (setvar "FILLETRAD" oldFilletRad))
     (if oldCLayer (setvar "CLAYER" oldCLayer))
-    (if (and msg (not (wcmatch (strcase msg) "*CANCEL*,*BREAK*,*EXIT*"))) 
+    (if (and msg (not (wcmatch (strcase msg) "*CANCEL*,*BREAK*,*EXIT*","*函数已取消*"))) 
       (princ (strcat "\nError: " msg))
     )
     (princ) ; Suppress error message on quiet exit
@@ -476,8 +488,10 @@
       ;; grCode 3: Left Mouse Click (Finalize and Draw)
       ((= grCode 3)
        ;; The user has clicked to confirm the placement.
-       ;; We use the last calculated rotationAngle from the preview.
+
+       (command "undo" "be")
        (setq startTime (getvar "DATE"))
+
 
        ;; Draw the heating wire area
        (setvar "CLAYER" "0")
@@ -500,6 +514,8 @@
          )
        )
 
+       ;; We use the last calculated rotationAngle from the preview.
+
        ;; Draw the 10 permanent internal lines using the LINE command.
        ;  (setq i 1)
        ;  (while (<= i numLines)
@@ -519,10 +535,10 @@
        ;  )
 
        ; Draw the heating wire axes
-       (setvar "CLAYER" "参照")
        (setq idxSet 0)
        (while (< idxSet *CXTHeatingWireSet*) 
          ;; Parameter Initialization
+         (setvar "CLAYER" "参照")
          (setq loopChk T)
          (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes arrive at the boundary of the heating area, namingly. Termination check is done within every function calling of `drawTurnLine()`
          (setq drawInwardChk T) ; To track and determine the the next short line or long line is drawing inward or outward.
@@ -660,6 +676,13 @@
 
          (command "_.fillet" "_p" "_l")
 
+         (if *CXTHeatingWireWitdhGenerateChk* 
+           (progn 
+             (setvar "CLAYER" "发热丝")
+             (cxtDoubleOffset (entlast))
+           )
+         )
+         ; Parameter Initialization for next loop
          ; Before entering into next loop
          (setq idxSet (1+ idxSet))
        )
@@ -678,6 +701,7 @@
   ) ; End while
 
   ;; --- Cleanup ---
+  (command "undo" "e")
   (setvar "FILLETRAD" oldFilletRad)
   (setvar "CLAYER" oldCLayer)
   (setvar "CMDECHO" oldCmdEcho)
@@ -698,5 +722,7 @@
 (terpri)
 (princ "诚兴泰工具箱 V0.0.4已加载，更新时间: 2025-09-12\n")
 (load "util")
-(load "doubleOffset")
+(load "cxtDoubleOffset")
+
+(load "cxToggleHidden")
 (princ)
