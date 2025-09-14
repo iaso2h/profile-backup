@@ -1,38 +1,208 @@
 (defun c:cxt_frs () (cxtHeatingWireInit) (princ))
-(defun cxtHeatingWireInit (/ ans paraInitChk) 
+(defun cxtHeatingWireInit (/ ans paraInitChk oldDynamicInput loopChk generationResult) 
+  (defun *error* (msg) 
+    (if (not (member msg '("Function cancelled" "quit / exit abort" "函数已取消"))) 
+      (princ (strcat "Error: " msg "\n"))
+      (princ)
+    )
+    (if oldDynamicInput 
+      (setvar "DYNMODE" oldDynamicInput)
+    )
+
+    (princ)
+  )
+  (defun initDefualtSettings () 
+    (setq *CXTHeatingAreaFilletRaidus* -1)
+    (setq *CXTHeatingWireAxisSpacing* *CXTHeatingWireAlongAreaLengthAxisSpacing*)
+    (setq *CXTHeatingWireCount* *CXTHeatingWireAlongAreaLengthCount*)
+    (setq *CXTHeatingWireFullSegmentLength* *CXTHeatingAreaNetWidth*)
+    (setq *CXTHeatingWireAlongAreaDirectionFix* 0)
+    (setq *CXTHeatingWireWitdhGenerateChk* T)
+
+    (setq *IsLoadedCXTHeatingWire* T)
+  )
+
+
   (vl-load-com)
   (terpri)
-  (if (not *CXTHeatingWireLoaded*) 
+  (if (not *IsLoadedCXTHeatingWire*) 
     (progn 
       (load "cxtPara")
       (setq paraInitChk (CXTInitPara))
     )
   )
-  (if (not paraInitChk) (exit))
-
-  (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
-  (initget "Generate File")
-  (setq ans (getkword 
-              "请做选择: [开始生成\(G\)/选择新文件\(F\)]:<开始生成\(G\)>"
-            )
-  )
-  (cond 
-    ((= ans "File")
-     (setq paraInitChk (CXTInitPara))
-     (cxtHeatingWireInit)
+  ; Only proceed when parameter is read successfully.
+  (if 
+    (and 
+      (not paraInitChk)
+      (not *IsLoadedCXTHeatingWire*)
     )
-    ((= ans "Generate") (cxtHeatingWireGenerate))
+    (exit)
   )
+
+
+  ; Initialize defualt settings
+  (if (not *IsLoadedCXTHeatingWire*) 
+    (initDefualtSettings)
+  )
+  (setq loopChk T)
+  (setq oldDynamicInput (getvar "DYNMODE"))
+  (setvar "DYNMODE" 1)
+  (while loopChk 
+    (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
+    ; (initget "eXit Reset Generate File filLet Paibu jiOu")
+    ; (setq ans (getkword
+    ;             "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换发热丝奇偶数\(O\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
+    ;           )
+    ; )
+    (initget "eXit Reset Generate File filLet Paibu wireWidth")
+    (setq ans (getkword 
+                "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换线宽生成\(W\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
+              )
+    )
+    (cond 
+      ((= ans "eXit")
+       (exit)
+      )
+      ((= ans "Reset")
+       (initDefualtSettings)
+      )
+      ((= ans "File")
+       (setq paraInitChk (CXTInitPara))
+       (if (not paraInitChk) 
+         (princ "CSV参数文件加载失败或被取消。\n")
+         (progn 
+           (princ (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
+           (initDefualtSettings)
+         )
+       )
+      ) ; End of heating wire parameter initialization case
+      ((or (null ans) (= ans "Generate"))
+       (setq loopChk nil)
+       (cxtHeatingWireGenerate)
+      ) ; End of Generate case(Default)
+      ((= ans "filLet")
+       (initget "Yes No")
+       (setq ans (getkword 
+                   "设置外形框是否倒圆: [倒圆\(Y\)/不倒圆\(N\)]:<不倒圆\(N\)>\n"
+                 )
+       )
+       (if (= ans "Yes") 
+         (setq *CXTHeatingAreaFilletRaidus* 2)
+         (setq *CXTHeatingAreaFilletRaidus* -1)
+       )
+      ) ; End of filLet case
+      ((= ans "Paibu")
+       (initget "Long Short")
+       (setq ans (getkword 
+                   "设置发热丝排布方向: [沿长边排布\(L\)/沿短边排布\(S\)]:<沿长边排布\(L\)>\n"
+                 )
+       )
+       (if (= ans "Short") 
+         (progn 
+           (setq *CXTHeatingWireAxisSpacing* *CXTHeatingWireAlongAreaWidthAxisSpacing*)
+           (setq *CXTHeatingWireCount* *CXTHeatingWireAlongAreaWidthCount*)
+           (setq *CXTHeatingWireFullSegmentLength* *CXTHeatingAreaNetLength*)
+           (setq *CXTHeatingWireAlongAreaDirectionFix* 90)
+         )
+         (progn 
+           (setq *CXTHeatingWireAxisSpacing* *CXTHeatingWireAlongAreaLengthAxisSpacing*)
+           (setq *CXTHeatingWireCount* *CXTHeatingWireAlongAreaLengthCount*)
+           (setq *CXTHeatingWireFullSegmentLength* *CXTHeatingAreaNetWidth*)
+           (setq *CXTHeatingWireAlongAreaDirectionFix* 0)
+         )
+       )
+      ) ; End of Paibu case
+      ((= ans "jiOu")
+       (initget "Ji Ou")
+       (setq ans (getkword 
+                   "设置外形数量奇偶性: [奇数\(J\)/偶数\(O\)]:<偶数\(O\)>\n"
+                 )
+       )
+       (if (= ans "Ji") 
+         (if 
+           (= *CXTHeatingWireAxisSpacing* 
+              *CXTHeatingWireAlongAreaLengthAxisSpacing*
+           )
+           (progn 
+             (setq *CXTHeatingWireAlongAreaLengthCount* (iaso2h:biggerOdd 
+                                                          (/ 
+                                                            *CXTHeatingWireLength*
+                                                            *CXTHeatingAreaNetWidth*
+                                                          )
+                                                        )
+             ) ;沿长边布线发热丝数(奇数)
+             (princ "当前发热丝数量为(沿长边): ")
+             (pp *CXTHeatingWireAlongAreaLengthCount*)
+           )
+           (progn 
+             (setq *CXTHeatingWireAlongAreaWidthCount* (iaso2h:biggerOdd 
+                                                         (/ 
+                                                           *CXTHeatingWireLength*
+                                                           *CXTHeatingAreaNetLength*
+                                                         )
+                                                       )
+             ) ;沿短边布线发热丝数(奇数)
+             (princ "当前发热丝数量为(沿短边): ")
+             (pp *CXTHeatingWireAlongAreaWidthCount*)
+           )
+         )
+         (if 
+           (= *CXTHeatingWireAxisSpacing* 
+              *CXTHeatingWireAlongAreaLengthAxisSpacing*
+           )
+           (progn 
+             (setq *CXTHeatingWireAlongAreaLengthCount* (iaso2h:biggerEven 
+                                                          (/ 
+                                                            *CXTHeatingWireLength*
+                                                            *CXTHeatingAreaNetWidth*
+                                                          )
+                                                        )
+             ) ;沿长边布线发热丝数(偶数)
+             (princ "当前发热丝数量为(沿长边): ")
+             (pp *CXTHeatingWireAlongAreaLengthCount*)
+           )
+           (progn 
+             (setq *CXTHeatingWireAlongAreaWidthCount* (iaso2h:biggerEven 
+                                                         (/ 
+                                                           *CXTHeatingWireLength*
+                                                           *CXTHeatingAreaNetLength*
+                                                         )
+                                                       )
+             ) ;沿短边布线发热丝数(偶数)
+             (princ "当前发热丝数量为(沿短边): ")
+             (pp *CXTHeatingWireAlongAreaWidthCount*)
+           )
+         )
+       )
+      ) ; End of jiOu case
+      ((= ans "wireWidth")
+       (initget "Yes No")
+       (setq ans (getkword 
+                   "设置是否生成发热丝线宽: [生成\(Y\)/不生成\(N\)]:<生成\(Y\)>\n"
+                 )
+       )
+       (if (= ans "No") 
+         (setq *CXTHeatingWireWitdhGenerateChk* nil)
+         (setq *CXTHeatingWireWitdhGenerateChk* T)
+       )
+      )
+    )
+  ) ; End of while loop
+
+
+  (setvar "DYNMODE" oldDynamicInput)
+  (princ)
 )
 (defun cxtHeatingWireGenerate (/ *error* currentPoint grData grCode grVal loopChk 
                                numLines rotationAngle rotationQuadrantOffset 
-                               lastRotationAngle p1 p2 p3 p4 p5 p6 endAxisLength i 
+                               lastRotationAngle p1 p2 p3 p4 p5 p6 fullSegmentLength i 
                                currentOffset lineP1 lineP2 oldCmdEcho rawAngle 
                                entlastSaved turnLineCount drawInwardChk 
-                               drawShortLineChk drawFlipChk ssAxes idxSet
+                               drawShortLineChk drawFlipChk ssAxes idxSet startTime 
+                               endTime
                               ) 
   (terpri)
-
   (if (not *IsLoadedSetup*) (load "setup"))
 
   ;; --- Error Handling Function ---
@@ -41,7 +211,7 @@
     (if oldCmdEcho (setvar "CMDECHO" oldCmdEcho))
     (if oldFilletRad (setvar "FILLETRAD" oldFilletRad))
     (if oldCLayer (setvar "CLAYER" oldCLayer))
-    (if (and msg (not (wcmatch (strcase msg) "*CANCEL*,*BREAK*,*EXIT*"))) 
+    (if (and msg (not (wcmatch (strcase msg) "*CANCEL*,*BREAK*,*EXIT*","*函数已取消*"))) 
       (princ (strcat "\nError: " msg))
     )
     (princ) ; Suppress error message on quiet exit
@@ -70,7 +240,7 @@
                                )
                                1
                              )
-                             *CXTHeatingWireAlongAreaLengthAxisSpacing*
+                             *CXTHeatingWireAxisSpacing*
                            )
           )
           (setq lineLength (* 
@@ -80,7 +250,7 @@
                                )
                                1
                              )
-                             *CXTHeatingWireAlongAreaLengthAxisSpacing*
+                             *CXTHeatingWireAxisSpacing*
                            )
           )
         )
@@ -90,7 +260,13 @@
                 (cons 10 p5)
                 (cons 11 
                       (setq p5 (polar p5 
-                                      (id2r directionDegree)
+
+                                      ; *CXTHeatingWireAlongAreaDirectionFix* is either 0 or 90 to control the direction of the along-area direction.
+                                      (id2r 
+                                        (- directionDegree 
+                                           *CXTHeatingWireAlongAreaDirectionFix*
+                                        )
+                                      )
                                       lineLength
                                )
                       )
@@ -106,7 +282,7 @@
             (>= turnLineCount 
                 (- 
                   (/ 
-                    *CXTHeatingWireAlongAreaLengthCount*
+                    *CXTHeatingWireCount*
                     *CXTHeatingWireSet*
                   )
                   1
@@ -156,7 +332,7 @@
           (progn 
             ; Draw a long line in this function calling stack.
             (setq multipliedFactor 2)
-            (setq additionalGap *CXTHeatingWireAlongAreaLengthAxisSpacing*)
+            (setq additionalGap *CXTHeatingWireAxisSpacing*)
 
             ; Determine the direction of the next line to draw in next function calling stack.
             (if drawInwardChk 
@@ -173,9 +349,9 @@
         (setq lineLength (+ 
                            (* multipliedFactor 
                               (/ 
-                                (- *CXTHeatingAreaNetWidth* 
+                                (- *CXTHeatingWireFullSegmentLength* 
                                    (* 2.0 
-                                      *CXTHeatingWireAlongAreaLengthAxisSpacing*
+                                      *CXTHeatingWireAxisSpacing*
                                    )
                                 )
                                 3.0
@@ -188,7 +364,7 @@
         ; Minus addtional gap in multiple heating wire sets mode.
         (setq lineLength (- lineLength 
                             (* (- *CXTHeatingWireSet* 1) 
-                               *CXTHeatingWireAlongAreaLengthAxisSpacing*
+                               *CXTHeatingWireAxisSpacing*
                             )
                          )
         )
@@ -199,7 +375,12 @@
                 (cons 10 p5)
                 (cons 11 
                       (setq p5 (polar p5 
-                                      (id2r directionDegree)
+                                      ; *CXTHeatingWireAlongAreaDirectionFix* is either 0 or 90 to control the direction of the along-area direction.
+                                      (id2r 
+                                        (- directionDegree 
+                                           *CXTHeatingWireAlongAreaDirectionFix*
+                                        )
+                                      )
                                       lineLength
                                )
                       )
@@ -213,7 +394,6 @@
   ) ; End of drawLine function
 
   (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
-  (setq releaseVersion T)
   ;; --- Setup and Initial Variables ---
   (setq oldCmdEcho (getvar "CMDECHO"))
   (setq oldFilletRad (getvar "FILLETRAD"))
@@ -221,11 +401,10 @@
   ;; Non-graphcial element setup
   (c:setupLayer)
   (setq oldCLayer (getvar "CLAYER"))
-  (setvar "CLAYER" "0")
 
 
   ;; Define the geometry constants
-  (setq numLines 10)
+  ; (setq numLines 10)
 
   ;; Prompt the user for the first corner point of the rectangle.
   (setq p1 (getpoint "\n指定发热区的定位点: "))
@@ -309,9 +488,13 @@
       ;; grCode 3: Left Mouse Click (Finalize and Draw)
       ((= grCode 3)
        ;; The user has clicked to confirm the placement.
-       ;; We use the last calculated rotationAngle from the preview.
+
+       (command "undo" "be")
+       (setq startTime (getvar "DATE"))
+
 
        ;; Draw the heating wire area
+       (setvar "CLAYER" "0")
        (entmakex 
          (append 
            (list '(0 . "LWPOLYLINE") 
@@ -323,8 +506,15 @@
            (mapcar '(lambda (pt) (cons 10 pt)) (list p1 p2 p3 p4))
          )
        )
-       (command "_.fillet" "_r" CXTHeatingAreaFilletRaidus "")
-       (command "_.fillet" "_p" "_l")
+       ; Whether to fillet the heating wire area or not.
+       (if (> *CXTHeatingAreaFilletRaidus* 0) 
+         (progn 
+           (command "_.fillet" "_r" *CXTHeatingAreaFilletRaidus* "")
+           (command "_.fillet" "_p" "_l")
+         )
+       )
+
+       ;; We use the last calculated rotationAngle from the preview.
 
        ;; Draw the 10 permanent internal lines using the LINE command.
        ;  (setq i 1)
@@ -343,53 +533,82 @@
        ;    (command "_.line" lineP1 lineP2 "")
        ;    (setq i (1+ i))
        ;  )
+
+       ; Draw the heating wire axes
        (setq idxSet 0)
        (while (< idxSet *CXTHeatingWireSet*) 
          ;; Parameter Initialization
+         (setvar "CLAYER" "参照")
          (setq loopChk T)
-         (setq CXTHeatingAreaFilletRaidus 2) ; Constant value
-         (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes meet the threshold, namingly `*CXTHeatingWireAlongAreaLengthAxisSpacing*` or `*CXTHeatingWireAlongAreaWidthAxisSpacing*`. Termination check is done within every function calling of `drawTurnLine()`
+         (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes arrive at the boundary of the heating area, namingly. Termination check is done within every function calling of `drawTurnLine()`
          (setq drawInwardChk T) ; To track and determine the the next short line or long line is drawing inward or outward.
          (setq drawShortLineChk T) ; To track and determine the the next line is a short line or a long line.
          (setq drawFlipChk nil) ; To track and determine wether the following lines is drawn in the filp direction or not.
          (setq entlastSaved (entlast))
+         (setq fullSegmentLength (- *CXTHeatingWireFullSegmentLength* 
+                                    (* 
+                                      (* idxSet 2)
+                                      *CXTHeatingWireAxisSpacing*
+                                    )
+                                 )
+         )
 
+         (if 
+           (/= *CXTHeatingWireAxisSpacing* 
+               *CXTHeatingWireAlongAreaLengthAxisSpacing*
+           )
 
-         (setq p5 (polar 
-                    (polar p1 
-                           (id2r 0)
-                           (+ 
-                             *CXTHeatingBoundaryOffset*
-                             (* 
-                               idxSet
-                               *CXTHeatingWireAlongAreaLengthAxisSpacing*
+           (setq p5 (polar 
+                      (polar p4 
+                             (id2r 0)
+                             (+ 
+                               *CXTHeatingBoundaryOffset*
+                               (* 
+                                 idxSet
+                                 *CXTHeatingWireAxisSpacing*
+                               )
                              )
-                           )
-                    )
-                    (id2r 90)
-                    (+ 
-                      *CXTHeatingBoundaryOffset*
-                      (* 
-                        idxSet
-                        *CXTHeatingWireAlongAreaLengthAxisSpacing*
+                      )
+                      (id2r 270)
+                      (+ 
+                        *CXTHeatingBoundaryOffset*
+                        (* 
+                          idxSet
+                          *CXTHeatingWireAxisSpacing*
+                        )
                       )
                     )
-                  )
-         )
-         (setq endAxisLength (- *CXTHeatingAreaNetWidth* 
-                                (* 
-                                  (* idxSet 2)
-                                  *CXTHeatingWireAlongAreaLengthAxisSpacing*
-                                )
+           )
+           (setq p5 (polar 
+                      (polar p1 
+                             (id2r 0)
+                             (+ 
+                               *CXTHeatingBoundaryOffset*
+                               (* 
+                                 idxSet
+                                 *CXTHeatingWireAxisSpacing*
+                               )
                              )
+                      )
+                      (id2r 90)
+                      (+ 
+                        *CXTHeatingBoundaryOffset*
+                        (* 
+                          idxSet
+                          *CXTHeatingWireAxisSpacing*
+                        )
+                      )
+                    )
+           )
          )
+
          (setq p6 (polar 
                     p5
-                    (id2r 90)
-                    endAxisLength
+                    (id2r (- 90 *CXTHeatingWireAlongAreaDirectionFix*))
+                    fullSegmentLength
                   )
          )
-         (setvar "CLAYER" "参照")
+         ; Draw the first heating wire axis without break roundabout route in the middle.
          (entmake (list '(0 . "LINE") (cons 10 p5) (cons 11 p6)))
          ; Draw forward
          (while loopChk 
@@ -403,12 +622,16 @@
            (drawLine)
          )
          ; Draw backward
-         (setq p6 (polar p5 (id2r 90) endAxisLength))
+         (setq p6 (polar p5 
+                         (id2r (- 90 *CXTHeatingWireAlongAreaDirectionFix*))
+                         fullSegmentLength
+                  )
+         )
          (entmake (list '(0 . "LINE") (cons 10 p5) (cons 11 p6)))
-         (setq p5 (list (car p6) (cadr p6)))
+         (setq p5 p6)
          (setq loopChk T) ; Reset the loop flag to continue the drawing in flip direction.
          (setq drawFlipChk T) ; The following lines will be drawn in the flip direction.
-         (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes meet the threshold, namingly `*CXTHeatingWireAlongAreaLengthAxisSpacing*` or `*CXTHeatingWireAlongAreaWidthAxisSpacing*`. Termination check is done within every function calling of `drawTurnLine()`
+         (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes arrive at the boundary of the heating area, namingly. Termination check is done within every function calling of `drawTurnLine()`
          (while loopChk 
            (drawTurnLine drawFlipChk)
            (drawLine)
@@ -423,30 +646,48 @@
          ; Join Heating Wires
          (setq ssAxes (iaso2h:entlastTillNow entlastSaved))
          (setq entlastSaved (entlast))
-         ;  (if (wcmatch (getvar "PRODUCT") "AutoCAD*")
-         ; As for AutoCAD, check if "LWPolyline" entities exist in new selection set to determine whether there is an extra step when executing the `pedit` command
-         (command "._pedit" "m" ssAxes "" "Y" "J" "") ; There's an extra for AutoCAD to prompt user whether to convert entities to polylines.
-         ;  (command "._pedit" "m" ssAxes "" "J" "") ; For ZWCAD
-         ;  )
-         (command)
+         ; BUG
+         (terpri)
+
+         (if (= (getvar "PEDITACCEPT") 0) 
+           (progn 
+             (command "._pedit" "_M" ssAxes "" "_Y" "_J" "_J" "_E")
+             (command "")
+           )
+           (progn 
+             (command "._pedit" "_M" ssAxes "" "_J" "_J" "_E")
+             (command "")
+           )
+         )
+         ; Alternative Join Method
+         ;  (command "._join" ssAxes "")
+
+         ; Since ZWCAD(AutoCAD?) will always set cmdecho to 1 after invoking the `pedit` command, we need to set it back to 0 again.
+         (setvar "CMDECHO" 0)
+
+         (command) ; Emulate the escape key
+
          (command "._fillet" 
                   "R"
-                  (- 
-                    (iaso2h:decimalTruncate 
-                      (/ *CXTHeatingWireAlongAreaLengthAxisSpacing* 2.0)
-                      1
-                    )
-                    0.1
+                  (- (iaso2h:decimalTruncate (/ *CXTHeatingWireAxisSpacing* 2.0) 1) 
+                     0.1
                   )
-                  ""
          )
+
          (command "_.fillet" "_p" "_l")
 
+         (if *CXTHeatingWireWitdhGenerateChk* 
+           (progn 
+             (setvar "CLAYER" "发热丝")
+             (cxtDoubleOffset (entlast))
+           )
+         )
+         ; Parameter Initialization for next loop
          ; Before entering into next loop
          (setq idxSet (1+ idxSet))
        )
 
-
+       ; End of drawing heating wire axes.
        (setq loopChk nil)
        (redraw)
       ) ; End of left mouse click case
@@ -460,14 +701,29 @@
   ) ; End while
 
   ;; --- Cleanup ---
-  (setvar "CMDECHO" oldCmdEcho) ; Restore original command echo setting.
+  (command "undo" "e")
   (setvar "FILLETRAD" oldFilletRad)
   (setvar "CLAYER" oldCLayer)
-  (princ) ; Suppress the echo of the last evaluation in the command line.
+  (setvar "CMDECHO" oldCmdEcho)
+  (setq endTime (getvar "DATE"))
+  (terpri)
+  (princ 
+    (strcat 
+      "发热丝生成成功，用时"
+      (rtos (* 86400 (- endTime startTime)) 2 4)
+      "秒。\n"
+    )
+  )
+
+  T ; Suppress the echo of the last evaluation in the command line.
 )
 
-;;; --- Load Message ---
+  ;;; --- Load Message ---
 (terpri)
-(princ "诚兴泰工具箱 V0.0.2已加载，更新时间: 2025-09-11 123444\n")
+(princ "诚兴泰工具箱 V0.0.5已加载，更新时间: 2025-09-14\n")
 (load "util")
+(load "cxtDoubleOffset")
+
+(load "cxtToggleHidden")
+(load "cxtHeatingBoardSection")
 (princ)

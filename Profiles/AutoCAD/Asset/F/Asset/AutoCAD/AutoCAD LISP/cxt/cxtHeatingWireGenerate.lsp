@@ -720,9 +720,10 @@
 
   ;;; --- Load Message ---
 (terpri)
-(princ "诚兴泰工具箱 V0.0.4已加载，更新时间: 2025-09-12\n")
+(princ "诚兴泰工具箱 V0.0.5已加载，更新时间: 2025-09-14\n")
 (load "util")
 (load "cxtDoubleOffset")
 
-(load "cxToggleHidden")
+(load "cxtToggleHidden")
+(load "cxtHeatingBoardSection")
 (princ)
