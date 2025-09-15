@@ -51,9 +51,9 @@
   (setvar "DYNMODE" 1)
   (while loopChk 
     (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
-    (initget "eXit Reset Generate File filLet Paibu wireWidth")
+    (initget "eXit Reset Generate File filLet Paibu wireWidth roundAbout")
     (setq ans (getkword 
-                "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换线宽生成\(W\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
+                "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换线宽生成\(W\)/设置回路分段数\(A\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
               )
     )
     (cond 
@@ -183,6 +183,14 @@
          (setq *CXTHeatingWireWitdhGenerateChk* nil)
          (setq *CXTHeatingWireWitdhGenerateChk* T)
        )
+      ) ; End of wrie width case
+      ((= ans "roundAbout")
+       (initget 6)
+       (setq ans (getint "请输入回路分段数: "))
+       (if (<= ans 1) 
+         (alert "回路分段数必须大于等于2。")
+         (setq *CXTHeatingRoundAboutSegment* ans)
+       )
       )
     )
   ) ; End of while loop
@@ -195,8 +203,8 @@
                                lastRotationAngle p1 p2 p3 p4 p5 p6 fullSegmentLength i 
                                currentOffset lineP1 lineP2 oldCmdEcho oldCEColor 
                                rawAngle entlastSaved turnLineCount drawInwardChk 
-                               drawShortLineChk drawFlipChk ssAxes idxSet startTime 
-                               endTime axisObjs
+                               drawFlipChk ssAxes idxSet startTime endTime axisObjs 
+                               multipliedFactor lineSetLast
                               ) 
   (terpri)
 
@@ -211,6 +219,7 @@
       (and msg (not (wcmatch (strcase msg) "*CANCEL*,*BREAK*,*EXIT*" , "*函数已取消*")))
       (princ (strcat "\nError: " msg))
     )
+    (redraw)
     (princ) ; Suppress error message on quiet exit
   )
   (defun id2r (degrees) 
@@ -297,7 +306,7 @@
     (princ)
   )
 
-  (defun drawLine (/ directionDegree multipliedFactor additionalGap lineLength) 
+  (defun drawLine (/ directionDegree lineSetOffset roundAboutContainCount lineLength) 
     (if loopChk 
       (progn 
         (if (not drawFlipChk) 
@@ -310,32 +319,54 @@
             (setq directionDegree 90)
           )
         )
-        ; Determine draw a short line or a long line.
-        (if 
-          (or 
-            (and (= turnLineCount 0) (not drawFlipChk) drawInwardChk) ; This make sure the very first line is always a short line.
-            drawShortLineChk
+        (if (/= (rem turnLineCount 2) 0) 
+          (setq lineSetOffset (+ (/ (+ turnLineCount 1) 2) 
+                                 lineSetLast
+                              )
           )
-          (progn 
-            ; Draw a short line in this function calling stack.
-            (setq multipliedFactor 1)
-            (setq additionalGap 0)
-            ; Determine the direction of the next line to draw in next function calling stack.
-            (if drawInwardChk 
-              (setq drawShortLineChk T)
-              (setq drawShortLineChk nil)
-            )
+          (setq lineSetOffset (+ (/ turnLineCount 2) 
+                                 lineSetLast
+                              )
           )
-          (progn 
-            ; Draw a long line in this function calling stack.
-            (setq multipliedFactor 2)
-            (setq additionalGap *CXTHeatingWireAxisSpacing*)
+        )
 
-            ; Determine the direction of the next line to draw in next function calling stack.
-            (if drawInwardChk 
-              (setq drawShortLineChk nil)
-              (setq drawShortLineChk T)
-            )
+        (setq multipliedFactor (rem lineSetOffset 
+                                    (- *CXTHeatingRoundAboutSegment* 1)
+                               )
+        )
+        (if (= multipliedFactor 0) 
+          (setq multipliedFactor (- *CXTHeatingRoundAboutSegment* 1))
+        )
+
+        (cond 
+          ((= 
+             (rem 
+               lineSetOffset
+               (- *CXTHeatingRoundAboutSegment* 1)
+             )
+             1
+           )
+           (setq roundAboutContainCount 0)
+          )
+          ((= 
+             (rem 
+               lineSetOffset
+               (- *CXTHeatingRoundAboutSegment* 1)
+             )
+             0
+           )
+           (setq roundAboutContainCount (- *CXTHeatingRoundAboutSegment* 2))
+          )
+          (T
+           (setq roundAboutContainCount (- 
+                                          (rem lineSetOffset 
+                                               (- *CXTHeatingRoundAboutSegment* 
+                                                  1
+                                               )
+                                          )
+                                          1
+                                        )
+           )
           )
         )
 
@@ -347,14 +378,14 @@
                            (* multipliedFactor 
                               (/ 
                                 (- *CXTHeatingWireFullSegmentLength* 
-                                   (* 2.0 
+                                   (* (- *CXTHeatingRoundAboutSegment* 1) 
                                       *CXTHeatingWireAxisSpacing*
                                    )
                                 )
-                                3.0
+                                (float *CXTHeatingRoundAboutSegment*)
                               )
                            )
-                           additionalGap
+                           (* roundAboutContainCount *CXTHeatingWireAxisSpacing*)
                          )
         )
 
@@ -365,8 +396,6 @@
                             )
                          )
         )
-
-
         (entmakex 
           (list '(0 . "LINE") 
                 (cons 10 p5)
@@ -384,12 +413,9 @@
                 )
           )
         )
-      )
-    ) ; End of progn block
-
-    (princ)
+      ) ; End of progn block
+    )
   ) ; End of drawLine function
-
   (setq doc (vla-get-ActiveDocument (vlax-get-acad-object)))
   ;; --- Setup and Initial Variables ---
   (setq oldCmdEcho (getvar "CMDECHO"))
@@ -406,13 +432,10 @@
   ; (setq numLines 10)
   ;; Prompt the user for the first corner point of the rectangle.
   (setq p1 (getpoint "\n指定发热区的定位点: "))
-
   (if (not p1) (exit))
-
   (setq loopChk           T
         lastRotationAngle nil
   )
-
   (princ "\n移动鼠标按左键确认放置定位点，按Esc键取消。\n")
   (while loopChk 
     ;; grread arguments:
@@ -540,8 +563,8 @@
          (setvar "CLAYER" "参照")
          (setq loopChk T)
          (setq turnLineCount 0) ; Reset the turn line count. Used to to track wether the heating wire axes arrive at the boundary of the heating area, namingly. Termination check is done within every function calling of `drawTurnLine()`
+         (setq lineSetLast 0)
          (setq drawInwardChk T) ; To track and determine the the next short line or long line is drawing inward or outward.
-         (setq drawShortLineChk T) ; To track and determine the the next line is a short line or a long line.
          (setq drawFlipChk nil) ; To track and determine wether the following lines is drawn in the filp direction or not.
          (setq entlastSaved (entlast))
          (setq fullSegmentLength (- *CXTHeatingWireFullSegmentLength* 
@@ -620,13 +643,20 @@
            (drawTurnLine drawFlipChk)
            (drawLine)
          )
-         ; Draw backward
+
+
+         ; Drawing backward
          (setq p6 (polar p5 
                          (id2r (- 90 *CXTHeatingWireAlongAreaDirectionFix*))
                          fullSegmentLength
                   )
          )
          (entmake (list '(0 . "LINE") (cons 10 p5) (cons 11 p6)))
+         (setq lineSetLast (- 
+                             (- *CXTHeatingRoundAboutSegment* multipliedFactor)
+                             1
+                           )
+         )
          (setq p5 p6)
          (setq loopChk T) ; Reset the loop flag to continue the drawing in flip direction.
          (setq drawFlipChk T) ; The following lines will be drawn in the flip direction.
@@ -670,8 +700,12 @@
 
          (command "._fillet" 
                   "R"
-                  (- (iaso2h:decimalTruncate (/ *CXTHeatingWireAxisSpacing* 2.0) 1) 
-                     0.1
+                  (- 
+                    (iaso2h:decimalTruncate 
+                      (/ *CXTHeatingWireAxisSpacing* 2.0)
+                      1
+                    )
+                    0.1
                   )
          )
          (command "_.fillet" "_p" "_l")
@@ -731,7 +765,10 @@
                       "R"
                       (- 
                         (iaso2h:decimalTruncate 
-                          (/ *CXTHeatingWireAlongAreaWidthOutlineRealSpacing* 2.0)
+                          (/ 
+                            *CXTHeatingWireAlongAreaWidthOutlineRealSpacing*
+                            2.0
+                          )
                           1
                         )
                         0.1
@@ -747,7 +784,10 @@
                       "R"
                       (- 
                         (iaso2h:decimalTruncate 
-                          (/ *CXTHeatingWireAlongAreaLengthOutlineRealSpacing* 2.0)
+                          (/ 
+                            *CXTHeatingWireAlongAreaLengthOutlineRealSpacing*
+                            2.0
+                          )
                           1
                         )
                         0.1
@@ -796,7 +836,6 @@
 (load "util")
 (load "setup")
 (load "cxtDoubleOffset")
-
 (load "cxtToggleHidden")
 (load "cxtHeatingBoardSection")
 (princ)
