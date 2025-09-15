@@ -95,6 +95,7 @@
                                                                    *CXTHeatingWireDesignWidth*
                                                                 )
       ) ;沿长边布线发热丝边缘设计距离
+      (setq *CXTHeatingWireAlongAreaLengthOutlineRealSpacing* *CXTHeatingWireAlongAreaLengthOutlineDesignSpacing*) ;沿长边布线发热丝边缘真实距离
       (setq *CXTHeatingWireAlongAreaLengthWireWidthSpacingRatio* (/ 
                                                                    *CXTHeatingWireDesignWidth*
 
@@ -133,6 +134,7 @@
                                                                   *CXTHeatingWireDesignWidth*
                                                                )
       ) ;沿短边布线发热丝边缘设计距离
+      (setq *CXTHeatingWireAlongAreaWidthOutlineRealSpacing* *CXTHeatingWireAlongAreaWidthOutlineDesignSpacing*) ;沿短边布线发热丝边缘真实距离
       (setq *CXTHeatingWireAlongAreaWidthWireWidthSpacingRatio* (/ 
                                                                   *CXTHeatingWireDesignWidth*
 
@@ -144,8 +146,6 @@
     )
     nil
   )
-  
-  
 )
 
 (defun CXTPrintPrimaryPara (/) 
@@ -192,8 +192,8 @@
   (princ ", 发热丝设变线宽/间距比值(偶数、沿短边): ")
   (princ (rtos *CXTHeatingWireAlongAreaWidthWireWidthSpacingRatio* 2 12))
   (princ "\n")
-  
-  
+
+
   (princ)
 )
 

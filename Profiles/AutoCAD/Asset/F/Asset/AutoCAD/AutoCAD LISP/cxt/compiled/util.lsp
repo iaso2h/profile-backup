@@ -83,16 +83,26 @@
 
   (princ)
 )
-(defun iaso2h:entlastTillNow (ent / ss) 
+(defun iaso2h:entlastTillNow (ent returnSelectionChk / ss entList) 
   ; Return all entities after ent
   (if (not ent) 
     (setq ent (entlast))
   )
-  (setq ss (ssadd))
-  (while (setq ent (entnext ent)) (ssadd ent ss))
-  (if (zerop (sslength ss)) (setq ss nil))
+  (if returnSelectionChk 
+    (progn 
+      (setq ss (ssadd))
+      (while (setq ent (entnext ent)) (ssadd ent ss))
+      (if (zerop (sslength ss)) (setq ss nil))
 
-  ss
+      ss
+    )
+    (progn 
+      (setq entList '())
+      (while (setq ent (entnext ent)) (setq entList (cons ent entList)))
+      
+      entList
+    )
+  ) ; End of return value
 )
 
 (defun iaso2h:decimalTruncate (num decimalPlaces / multiplier) 
@@ -100,7 +110,7 @@
   (/ (float (fix (* num multiplier))) multiplier)
 )
 
-(defun iaso2h:d2r (degrees) 
+(defun iaso2h:d2r (dregrees) 
   (* degrees (/ pi 180.0))
 )
 

@@ -1,54 +1,31 @@
-(defun c:cxt_fq (/ ss ent entdata enttype pt1 pt2 pt3 pt4 pts width length temp areaA 
-                 areaB areaC x y exprB exprC ptBL ptTR ptBL_B ptTR_B ptBL_C ptTR_C
+(defun c:cxt_fq (/ ss oldCLayer oldCEColor ent entData entType pt1 pt2 pt3 pt4 pts w1 
+                 l1 temp areaA areaB areaC x y exprB exprC ptBL ptTR ptBL_B ptTR_B 
+                 ptBL_C ptTR_C
                 ) 
 
-  ;; Function to check if selected object is a rectangle
-  (defun isRectangle (entdata / objtype vertices) 
-    (setq objtype (cdr (assoc 0 entdata)))
-    (if (= objtype "LWPOLYLINE") 
-      (progn 
-        (setq vertices (cdr (assoc 90 entdata))) ; vertex count
-        (= vertices 4)
-      )
-      nil
-    )
-  )
 
   ;; Get user selection
-  (princ "\选择矩形(4个顶点): ")
-  (setq ss (ssget '((0 . "LWPOLYLINE"))))
-
-  (if (not ss) 
-    (progn 
-      (princ "\n没有选择对象。")
-      (exit)
-    )
-    (if (> (sslength ss) 1) 
-      (progn 
-        (princ "\n请选择一个矩形。")
-        (exit)
-      )
-    )
+  (terpri)
+  (princ "\选择发热区外形轮廓(4个顶点的多段线矩形): ")
+  (if (setq ss (ssget "_:S" '((0 . "LWPOLYLINE") (90 . 4)))) 
+    (setq ent (ssname ss 0))
+    (setq ent (car (entsel)))
   )
 
-  ;; Get entity data
-  (setq ent (ssname ss 0))
-  (setq entdata (entget ent))
-
-  ;; Check if it's a valid rectangle
-  (if (not (isRectangle entdata)) 
-    (progn 
-      (princ "\nSelected object is not a valid rectangle (LWPOLYLINE with 4 vertices).")
-      (exit)
-    )
-  )
+  (if (not ent) (exit))
+  (c:setupLayer)
+  (setq oldCEColor (getvar "CECOLOR"))
+  (setq oldCLayer (getvar "CLAYER"))
+  (setvar "CECOLOR" "BYLAYER")
+  (setvar "CLAYER" "发热分区")
+  (setq entData (entget ent))
 
   ;; Get rectangle vertices
-  (setq pts (getVertices entdata))
+  (setq pts (getVertices entData))
   ;; Check if we have exactly 4 points
-  (if (/= (vl-list-length pts) 4) 
+  (if (/= (length pts) 4) 
     (progn 
-      (princ "\nSelected object does not have 4 vertices.")
+      (princ "导出顶点数不是4\n")
       (exit)
     )
   )
@@ -70,30 +47,30 @@
   )
 
   ;; Calculate dimensions
-  (setq length (abs (- (car ptTR) (car ptBL))))
-  (setq width (abs (- (cadr ptTR) (cadr ptBL))))
+  (setq l1 (abs (- (car ptTR) (car ptBL))))
+  (setq w1 (abs (- (cadr ptTR) (cadr ptBL))))
 
   ;; Verify it's a rectangle (90-degree angles)
-  ; (if (not (isOrthogonalRectangle pts)) 
-  ;   (progn 
+  ; (if (not (isOrthogonalRectangle pts))
+  ;   (progn
   ;     (princ "\nSelected object is not an orthogonal rectangle.")
   ;     (exit)
   ;   )
   ; )
 
   ;; Calculate areas
-  (setq areaA (* length width))
+  (setq areaA (* l1 w1))
   (setq areaB (/ areaA 3.0))
   (setq areaC (* areaA 2.0 (/ 3.0)))
 
   ;; Calculate margins using the derived formulas
   ;; For rectangle B (1/3 area)
-  (setq exprB (- (* 9.0 (+ (* length length) (* width width))) 
-                 (* 6.0 length width)
+  (setq exprB (- (* 9.0 (+ (* l1 l1) (* w1 w1))) 
+                 (* 6.0 l1 w1)
               )
   )
   (if (>= exprB 0) 
-    (setq x (/ (- (* 3.0 (+ length width)) (sqrt exprB)) 12.0))
+    (setq x (/ (- (* 3.0 (+ l1 w1)) (sqrt exprB)) 12.0))
     (progn 
       (princ "\n无法计算矩形B面积。")
       (exit)
@@ -101,12 +78,12 @@
   )
 
   ;; For rectangle C (2/3 area)
-  (setq exprC (- (* 36.0 (+ (* length length) (* width width))) 
-                 (* -24.0 length width)
+  (setq exprC (- (* 36.0 (+ (* l1 l1) (* w1 w1))) 
+                 (* -24.0 l1 w1)
               )
   )
   (if (>= exprC 0) 
-    (setq y (/ (- (* 6.0 (+ length width)) (sqrt exprC)) 24.0))
+    (setq y (/ (- (* 6.0 (+ l1 w1)) (sqrt exprC)) 24.0))
     (progn 
       (princ "\n无法计算矩形C面积。")
       (exit)
@@ -126,6 +103,11 @@
   (drawRectangle ptBL_C ptTR_C)
 
   (princ "\n发热丝分区成功。")
+
+  (setvar "CECOLOR" oldCEColor)
+  (setvar "CLAYER" oldCLayer)
+
+
   (princ)
 )
 
@@ -179,7 +161,7 @@
 )
 
 ;; Function to draw rectangle from bottom-left and top-right points
-(defun drawRectangle (ptBL ptTR  / pt1 pt2 pt3 pt4) 
+(defun drawRectangle (ptBL ptTR / pt1 pt2 pt3 pt4) 
   (setq pt1 ptBL)
   (setq pt2 (list (car ptTR) (cadr ptBL)))
   (setq pt3 ptTR)

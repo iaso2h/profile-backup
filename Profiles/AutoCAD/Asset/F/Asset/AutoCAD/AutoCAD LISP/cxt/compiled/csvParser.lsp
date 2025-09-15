@@ -1,88 +1,84 @@
 (defun readCSVFile (/ filename fileHandle lineData dataList processedData row col 
                     value
                    ) 
-  ; Read a CSV file and return a list of data rows or nil
   (princ "\n")
   (setq filename (getfiled "选择CSV文件" (getvar "DWGPREFIX") "csv" 2))
 
 
-  (if filename 
+  (if (not filename) (exit))
+
+  ;; Open file for reading
+  (setq fileHandle (open filename "r"))
+  (if (not fileHandle) 
     (progn 
-      ;; Open file for reading
-      (setq fileHandle (open filename "r"))
-      (if (not fileHandle) 
-        (progn 
-          (princ "\nError: 无法打开文件CSV文件。")
-          (exit)
-        )
-      )
+      (princ "\nError: 无法打开文件CSV文件。")
+      (exit)
+    )
+  )
 
-      (princ "正从: \"")
-      (princ filename)
-      (setq *CXTHeatingWireCSVFile* filename)
-      (princ "\"中读取数据\n")
+  (princ "正从: \"")
+  (princ filename)
+  (setq *CXTHeatingWireCSVFile* filename)
+  (princ "\"中读取数据\n")
 
-      ;; Read all lines from file
-      (setq lineCount 0)
-      (setq cvsLineReadChk nil)
-      (setq dataList '())
-      (setq parsedLastLine '())
-      (setq isInQuotes nil)
-      (while 
-        (or 
-          (not cvsLineReadChk)
-          (not (null (setq lineData (read-line fileHandle))))
+  ;; Read all lines from file
+  (setq lineCount 0)
+  (setq cvsLineReadChk nil)
+  (setq dataList '())
+  (setq parsedLastLine '())
+  (setq isInQuotes nil)
+  (while 
+    (or 
+      (not cvsLineReadChk)
+      (not (null (setq lineData (read-line fileHandle))))
+    )
+    (if (and (/= lineData "") (not (null lineData))) 
+      (progn 
+        ;; Parse CSV line
+        (setq parsedResult (ParseCSVLine lineData isInQuotes)
+              isInQuotes   (cadr parsedResult)
         )
-        (if (and (/= lineData "") (not (null lineData))) 
+
+        (setq parsedLine (car parsedResult))
+
+        ; Append current line to previous line if it's still being parsed by checking if the last line is not an empty list
+        (if (/= (length parsedLastLine) 0) 
           (progn 
-            ;; Parse CSV line
-            (setq parsedResult (ParseCSVLine lineData isInQuotes)
-                  isInQuotes   (cadr parsedResult)
+            ; Conconate last field with current field with a "\n" character in between
+            (setq parsedLastLine (reverse parsedLastLine))
+            (setq lastField (car parsedLastLine))
+            (setq parsedLastLine (reverse (cdr parsedLastLine)))
+            (setq lastField (strcat 
+                              lastField
+                              "\n"
+                              (car parsedLine)
+                            )
             )
+            (setq parsedLastLine (append parsedLastLine (list lastField)))
 
-            (setq parsedLine (car parsedResult))
+            (setq parsedLine (append parsedLastLine (cdr parsedLine)))
 
-            ; Append current line to previous line if it's still being parsed by checking if the last line is not an empty list
-            (if (/= (length parsedLastLine) 0) 
-              (progn 
-                ; Conconate last field with current field with a "\n" character in between
-                (setq parsedLastLine (reverse parsedLastLine))
-                (setq lastField (car parsedLastLine))
-                (setq parsedLastLine (reverse (cdr parsedLastLine)))
-                (setq lastField (strcat 
-                                  lastField
-                                  "\n"
-                                  (car parsedLine)
-                                )
-                )
-                (setq parsedLastLine (append parsedLastLine (list lastField)))
-
-                (setq parsedLine (append parsedLastLine (cdr parsedLine)))
-
-                ; Reset last line to empty list
-                (setq parsedLastLine '())
-              )
-            )
-
-            (if (null isInQuotes) 
-              (setq dataList (append dataList (list parsedLine)))
-              (setq parsedLastLine (append parsedLastLine parsedLine)) ; The quoted field continues on the next line, we'll deal with it in the next loop
-            )
+            ; Reset last line to empty list
+            (setq parsedLastLine '())
           )
         )
 
-        (if (null cvsLineReadChk) (setq cvsLineReadChk T))
-        (setq lineCount (1+ lineCount))
+        (if (null isInQuotes) 
+          (setq dataList (append dataList (list parsedLine)))
+          (setq parsedLastLine (append parsedLastLine parsedLine)) ; The quoted field continues on the next line, we'll deal with it in the next loop
+        )
       )
-
-      ;; Close file
-      (close fileHandle)
-
-      ;; Process and display the data
-      dataList
     )
-    nil ; User cancelled file selection, return nil
+
+    (if (null cvsLineReadChk) (setq cvsLineReadChk T))
+    (setq lineCount (1+ lineCount))
   )
+
+  ;; Close file
+  (close fileHandle)
+
+  ;; Process and display the data
+  dataList
 )
 
   ;; Function to parse CSV line

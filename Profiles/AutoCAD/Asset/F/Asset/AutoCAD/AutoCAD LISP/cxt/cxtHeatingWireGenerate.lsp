@@ -18,6 +18,7 @@
     (setq *CXTHeatingWireFullSegmentLength* *CXTHeatingAreaNetWidth*)
     (setq *CXTHeatingWireAlongAreaDirectionFix* 0)
     (setq *CXTHeatingWireWitdhGenerateChk* T)
+    (setq *CXTHeatingRoundAboutSegment* 3)
 
     (setq *IsLoadedCXTHeatingWire* T)
   )
@@ -50,11 +51,6 @@
   (setvar "DYNMODE" 1)
   (while loopChk 
     (prompt (strcat "已加载CSV参数文件: " *CXTHeatingWireCSVFile* "\n"))
-    ; (initget "eXit Reset Generate File filLet Paibu jiOu")
-    ; (setq ans (getkword
-    ;             "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换发热丝奇偶数\(O\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
-    ;           )
-    ; )
     (initget "eXit Reset Generate File filLet Paibu wireWidth")
     (setq ans (getkword 
                 "诚兴泰发热丝生成: [开始生成\(G\)/读取CSV参数文件\(F\)/切换外形框倒圆\(L\)/切换排布方向\(P\)/切换线宽生成\(W\)/恢复默认布线偏好设置\(R\)/退出\(X\)]:<开始生成\(G\)>\n"
@@ -79,6 +75,7 @@
       ) ; End of heating wire parameter initialization case
       ((or (null ans) (= ans "Generate"))
        (setq loopChk nil)
+       (setvar "DYNMODE" oldDynamicInput)
        (cxtHeatingWireGenerate)
       ) ; End of Generate case(Default)
       ((= ans "filLet")
@@ -191,19 +188,17 @@
   ) ; End of while loop
 
 
-  (setvar "DYNMODE" oldDynamicInput)
   (princ)
 )
 (defun cxtHeatingWireGenerate (/ *error* currentPoint grData grCode grVal loopChk 
                                numLines rotationAngle rotationQuadrantOffset 
                                lastRotationAngle p1 p2 p3 p4 p5 p6 fullSegmentLength i 
-                               currentOffset lineP1 lineP2 oldCmdEcho rawAngle 
-                               entlastSaved turnLineCount drawInwardChk 
+                               currentOffset lineP1 lineP2 oldCmdEcho oldCEColor 
+                               rawAngle entlastSaved turnLineCount drawInwardChk 
                                drawShortLineChk drawFlipChk ssAxes idxSet startTime 
-                               endTime
+                               endTime axisObjs
                               ) 
   (terpri)
-  (if (not *IsLoadedSetup*) (load "setup"))
 
   ;; --- Error Handling Function ---
   ;; This function ensures that system variables are restored if the user cancels.
@@ -211,7 +206,9 @@
     (if oldCmdEcho (setvar "CMDECHO" oldCmdEcho))
     (if oldFilletRad (setvar "FILLETRAD" oldFilletRad))
     (if oldCLayer (setvar "CLAYER" oldCLayer))
-    (if (and msg (not (wcmatch (strcase msg) "*CANCEL*,*BREAK*,*EXIT*","*函数已取消*"))) 
+    (if oldCEColor (setvar "CECOLOR" oldCEColor))
+    (if 
+      (and msg (not (wcmatch (strcase msg) "*CANCEL*,*BREAK*,*EXIT*" , "*函数已取消*")))
       (princ (strcat "\nError: " msg))
     )
     (princ) ; Suppress error message on quiet exit
@@ -397,15 +394,16 @@
   ;; --- Setup and Initial Variables ---
   (setq oldCmdEcho (getvar "CMDECHO"))
   (setq oldFilletRad (getvar "FILLETRAD"))
+  (setq oldCEColor (getvar "CECOLOR"))
+  (setq oldCLayer (getvar "CLAYER"))
   (setvar "CMDECHO" 0)
+  (setvar "CECOLOR" "BYLAYER")
   ;; Non-graphcial element setup
   (c:setupLayer)
-  (setq oldCLayer (getvar "CLAYER"))
 
 
   ;; Define the geometry constants
   ; (setq numLines 10)
-
   ;; Prompt the user for the first corner point of the rectangle.
   (setq p1 (getpoint "\n指定发热区的定位点: "))
 
@@ -536,6 +534,7 @@
 
        ; Draw the heating wire axes
        (setq idxSet 0)
+       (setq axisObjs '())
        (while (< idxSet *CXTHeatingWireSet*) 
          ;; Parameter Initialization
          (setvar "CLAYER" "参照")
@@ -644,10 +643,7 @@
          )
 
          ; Join Heating Wires
-         (setq ssAxes (iaso2h:entlastTillNow entlastSaved))
-         (setq entlastSaved (entlast))
-         ; BUG
-         (terpri)
+         (setq ssAxes (iaso2h:entlastTillNow entlastSaved T))
 
          (if (= (getvar "PEDITACCEPT") 0) 
            (progn 
@@ -658,6 +654,11 @@
              (command "._pedit" "_M" ssAxes "" "_J" "_J" "_E")
              (command "")
            )
+         )
+         (setq axisObjs (cons 
+                          (vlax-ename->vla-object (entlast))
+                          axisObjs
+                        )
          )
          ; Alternative Join Method
          ;  (command "._join" ssAxes "")
@@ -673,21 +674,91 @@
                      0.1
                   )
          )
-
          (command "_.fillet" "_p" "_l")
 
-         (if *CXTHeatingWireWitdhGenerateChk* 
-           (progn 
-             (setvar "CLAYER" "发热丝")
-             (cxtDoubleOffset (entlast))
-           )
-         )
-         ; Parameter Initialization for next loop
+
          ; Before entering into next loop
          (setq idxSet (1+ idxSet))
+       ) ; End of drawing heating multiple wire axes.
+
+       ; Draw the outline of heating wires
+       (if *CXTHeatingWireWitdhGenerateChk* 
+         (progn 
+           (setq *CXTHeatingWireRealWidth* (/ 
+                                             (/ 
+                                               (/ 
+                                                 (* 
+                                                   (/ 
+                                                     (/ 
+                                                       (apply '+ 
+                                                              (mapcar 'vla-get-length 
+                                                                      axisObjs
+                                                              )
+                                                       )
+                                                       (float *CXTHeatingWireSet*)
+                                                     )
+                                                     1000.0
+                                                   )
+                                                   *CXTHeatingWireResistivity*
+                                                 )
+                                                 *CXTHeatingWireResistance*
+                                               )
+                                               *CXTHeatingWireThickness*
+                                             )
+                                             *CXTHeatingWireSet*
+                                           )
+           )
+           (setvar "CLAYER" "发热丝")
+
+           (foreach obj axisObjs 
+             (cxtDoubleOffset obj *CXTHeatingWireRealWidth*)
+           )
+         )
+         (setq entlastSaved (entlast))
+       ) ; End of heating wire width generation
+       (foreach ent (setq ssAxes (iaso2h:entlastTillNow entlastSaved nil)) 
+         (if 
+           (/= *CXTHeatingWireAxisSpacing* 
+               *CXTHeatingWireAlongAreaLengthAxisSpacing*
+           )
+           (progn 
+
+             (setq *CXTHeatingWireAlongAreaWidthOutlineRealSpacing* (- *CXTHeatingWireAxisSpacing* 
+                                                                       *CXTHeatingWireRealWidth*
+                                                                    )
+             )
+             (command "._fillet" 
+                      "R"
+                      (- 
+                        (iaso2h:decimalTruncate 
+                          (/ *CXTHeatingWireAlongAreaWidthOutlineRealSpacing* 2.0)
+                          1
+                        )
+                        0.1
+                      )
+             )
+           )
+           (progn 
+             (setq *CXTHeatingWireAlongAreaLengthOutlineRealSpacing* (- *CXTHeatingWireAxisSpacing* 
+                                                                        *CXTHeatingWireRealWidth*
+                                                                     )
+             )
+             (command "._fillet" 
+                      "R"
+                      (- 
+                        (iaso2h:decimalTruncate 
+                          (/ *CXTHeatingWireAlongAreaLengthOutlineRealSpacing* 2.0)
+                          1
+                        )
+                        0.1
+                      )
+             )
+           )
+         )
+
+         (command "_.fillet" "_p" ent)
        )
 
-       ; End of drawing heating wire axes.
        (setq loopChk nil)
        (redraw)
       ) ; End of left mouse click case
@@ -703,6 +774,7 @@
   ;; --- Cleanup ---
   (command "undo" "e")
   (setvar "FILLETRAD" oldFilletRad)
+  (setvar "CECOLOR" oldCEColor)
   (setvar "CLAYER" oldCLayer)
   (setvar "CMDECHO" oldCmdEcho)
   (setq endTime (getvar "DATE"))
@@ -720,8 +792,9 @@
 
   ;;; --- Load Message ---
 (terpri)
-(princ "诚兴泰工具箱 V0.0.5已加载，更新时间: 2025-09-14\n")
+(princ "诚兴泰工具箱 V0.0.6已加载，更新时间: 2025-09-15\n")
 (load "util")
+(load "setup")
 (load "cxtDoubleOffset")
 
 (load "cxtToggleHidden")

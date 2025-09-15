@@ -1,6 +1,6 @@
-(defun cxtDoubleOffset (ent / *error* _StartUndo _EndUndo DoubleOffset doc 
-                                exitflag layer mpoint obj object of point symbol value
-                               ) 
+(defun cxtDoubleOffset (obj offset / *error* _StartUndo _EndUndo DoubleOffset doc 
+                        exitflag layer mpoint obj object of point symbol value
+                       ) 
   (vl-load-com)
   (defun _StartUndo (doc) (vla-StartUndoMark doc))
 
@@ -46,8 +46,8 @@
   (_StartUndo doc)
 
   (DoubleOffset 
-    (vlax-ename->vla-object ent)
-    (/ *CXTHeatingWireDesignWidth* 2.0)
+    obj
+    (/ offset 2.0)
     T
   )
   (_EndUndo doc)

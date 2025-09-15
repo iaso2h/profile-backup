@@ -3,8 +3,6 @@
   (c:setupFont)
   (c:setupLayer)
 
-  (terpri)
-  (princ (strcat (rtos (getvar "CDATE") 2 6) ": Done."))
   (princ)
 )
 
@@ -50,18 +48,6 @@
             '(70 . 0)
             '(40 . 0) ; Fixed text height; 0 if not fixed
             '(3 . "simhei.ttf") ; Primary font file name
-      )
-    )
-  )
-  (if (not (tblsearch "STYLE" "ËÎÌו")) 
-    (entmake 
-      (list '(0 . "STYLE") 
-            '(100 . "AcDbSymbolTableRecord")
-            '(100 . "AcDbTextStyleTableRecord")
-            '(2 . "ËÎÌו")
-            '(70 . 0)
-            '(40 . 0) ; Fixed text height; 0 if not fixed
-            '(3 . "simsun.ttf") ; Primary font file name
       )
     )
   )
