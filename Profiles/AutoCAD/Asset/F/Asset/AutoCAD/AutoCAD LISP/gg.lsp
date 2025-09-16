@@ -1,6 +1,0 @@
-(defun c:gg ()
-  (terpri)
-  (princ "hello\n")
-  (princ "wolrd\n")
-  (princ)
-)

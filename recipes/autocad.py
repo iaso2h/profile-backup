@@ -325,8 +325,10 @@ Profile(
             "recursiveCopy": True,
             "silentReport": False,
             "parentSrcPaths": "F:/Asset/AutoCAD",
-            "filterType": "include",
-            "filterPattern": lambda _: True,
+            "filterType": "exclude",
+            "filterPattern": [
+                "AutoLISP Vault"
+            ]
         },
         {
             "type": "registry",
