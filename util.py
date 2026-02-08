@@ -195,7 +195,7 @@ def getGlobPattern(
 
             if (
                 componentIdx not in keyComponentRegexIndex
-                and component == subkeyName
+                and component.upper() == subkeyName.upper()
             ) or (
                 componentIdx in keyComponentRegexIndex
                 and componentPat.search(subkeyName) # pyright: ignore [reportPossiblyUnboundVariable]
