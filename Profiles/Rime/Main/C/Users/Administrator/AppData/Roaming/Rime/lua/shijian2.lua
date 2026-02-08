@@ -1835,9 +1835,9 @@ local function translator(input, seg)
     yield(Candidate("now", seg.start, seg._end, os.date("%Y-%m-%d %H%M%S"), ""))
     yield(Candidate("now", seg.start, seg._end, os.date("%Y年%m月%d日 %H点%M分%S秒"), ""))
   elseif (input == "/cxtw") then
-    yield(Candidate("cxtw", seg.start, seg._end, [[[<客户名称> <打样/生产>：
+    yield(Candidate("cxtw", seg.start, seg._end, [[<客户名称> <打样/生产>：
 1、CXT-3225<菲林编号>  菲林尺寸：575*230mm/1出7<多出最大菲林外框尺寸/1出多少> 	成品尺寸：549*214mm<多出最大成品切割尺寸，包括伸出的出线耳>	SUS304 0.05T+pi膜<发热丝材质与厚度、膜类型>	 数量：1张<数量*单张多出数量在大于客户需求数量的基础上+2>
-    @诚兴泰采购何小姐  @喜洋洋]]], ""))
+    @诚兴泰采购何小姐  @喜洋洋]], ""))
   elseif (input == "/cxtd") then
     yield(Candidate("cxtd", seg.start, seg._end, "\\\\Desktop-olipp\\e", ""))
   elseif (input == "/date") then

@@ -327,7 +327,7 @@ Profile(
             "parentSrcPaths": "F:/Asset/AutoCAD",
             "filterType": "exclude",
             "filterPattern": [
-                "AutoLISP Vault"
+                "AutoLISP Vault/*"
             ]
         },
         {

@@ -1,0 +1,33 @@
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+TEXT_THICKNESS                      0.000000
+TEXT_WIDTH_FACTOR                   0.7
+
+!字体
+DEFAULT_FONT                        ChangFangSong.ttf
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE

@@ -152,6 +152,8 @@ encoder:
 不说话	css	1000
 来不来	aca	500
 看不看	ucu	500
+环氧板	nve	500
+铁铬铝	zzz	5
 知道了	ohr	10000
 
 攞	uyi
@@ -162,7 +164,7 @@ encoder:
 係唔係	jdj	400
 使唔使	jdj	399
 得唔得	wdw	400
-
+做不了	jcr
 
 #----------无码加词_全码词----------#
 #支持无码加词，但只能用标准打词法，即：四码全码打出来
@@ -240,10 +242,52 @@ encoder:
 运镜	buzx
 拉取	uiqr	150
 仙品	jvdd	350
+未命名	ajld	500
+好活	bhka	500
+制表符	qarj
+客供	wsjl
+对图	rkrh
+退单	iuhq
+提桶跑路	uepp	5
+线下	iffy
+严选	fcqp	5
+内围	mjrg
+内区	mjnb
+不限于	ctfi	500
+几何体	ojje
+做货	jcjv	500
+胶壳	vagw
+截胡	npcv
+再探再报	fufu	45
+搜到	upyp	50
 #---------电子---------
 电阻率	otzi
 发热丝	suii
+绿膜	ibvl	500
+微蚀刻	wqkp
+胶壳	abgw
+压包	xgnv	500
+尾剥	cvbk	500
+尾半剥	chbp
+背胶	avva	500
+加热膜	suvl	500
+加热片	suap
+加热体	suje
+公壳	hkgw
+母壳	kmgw
+并联	hlqh	500
+环氧树脂加热板	nvee	500
+中心线	dhif	500
+地线	geif	500
+横跳	enpp
+#---------CXT---------
+澋淇	kokz	50
+的美	ungm
+中蚀	dgqc	5
+汇翊	kniz
+
 #---------机械---------
+图块	rhgn
 钣金	zxzj	400
 折弯补偿	uztj
 折弯扣除	uzut
@@ -288,6 +332,19 @@ encoder:
 槽位	efji	5
 割孔	waha	500
 沉头	kwwm	5
+允载	kpnp
+抄数	uypb
+带孔	lwha	500
+铁氟龙	zvtl
+滑牙	kfly
+圆孔	rdha	480
+锁附	zytj
+圆槽	rdef	5
+避空	cdeu
+版序	axxi	500
+平垫	ehuk	500
+弹垫	bhuk	5
+平圆头	erwm	500
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
@@ -341,6 +398,8 @@ encoder:
 刻度盘	kxia
 蜗轮	cdjj
 楔入	eaju
+相贯	eqko	5
+到边	ypsu
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu
@@ -551,6 +610,7 @@ encoder:
 屎忽	cpne
 衰仔	tdjh
 係冇係	jnjt
+使冇使	jnjd	5
 人哋	jrdg	400
 有冇有	nnnv	400
 返到	xryp
@@ -560,3 +620,5 @@ encoder:
 湿滞	kokl	50
 唔係啩	djdg
 嚟唔切	ddrp	15
+入屋	jucy
+隔篱	tnrz

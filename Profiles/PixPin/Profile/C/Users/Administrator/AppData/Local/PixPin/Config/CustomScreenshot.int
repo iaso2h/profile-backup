@@ -1,0 +1,11 @@
+[General]
+PresetArea="--size 500,500\n--name 480p --size 640,480\n--name 720p --size 1280,720\n--name 1080p --size 1920,1080\n"
+cboxPos=true
+cboxSize=true
+cboxFixedRatio=false
+cboxDelay=false
+sboxPosX=33
+sboxPoxY=188
+sboxSizeW=873
+sboxSizeH=713
+sboxDelay=2
