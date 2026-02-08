@@ -1031,7 +1031,7 @@ class RegCategory(FileCategory): # {{{
             raise type(e)(f"errors occured when parsing recipe for category {self.categoryName} under profile {self.profileName}.")
 
         if not self.keyRelPaths:
-            self._enable = False
+            self._enabled = False
             print(f"[gray]Skipped unfound registry parent path for {val} for category {self.categoryName} under profile {self.profileName}.[/gray]", skipChk=False)
             return
 
