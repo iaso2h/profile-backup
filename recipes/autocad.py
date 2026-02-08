@@ -235,7 +235,8 @@ def internalLanuageCodeToName(localeId) -> str:  # {{{
 
 appDataPath = Path(os.getenv("APPDATA")).parent  # type: ignore
 installPathStr, enabledChk = util.regQueryData(
-    r"HKEY_LOCAL_MACHINE/SOFTWARE/Autodesk/AutoCAD/R[0-9.]+/ACAD-[0-9]+:[0-9]+", "AcadLocation"
+    r"HKEY_LOCAL_MACHINE/SOFTWARE/Autodesk/AutoCAD/R[0-9.]+/ACAD-[0-9]+:[0-9]+",
+    "AcadLocation",
 )
 
 
@@ -327,8 +328,8 @@ Profile(
             "parentSrcPaths": "F:/Asset/AutoCAD",
             "filterType": "exclude",
             "filterPattern": [
-                "AutoLISP Vault/*"
-            ]
+                "AutoLispVault" 
+            ],
         },
         {
             "type": "registry",

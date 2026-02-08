@@ -16,9 +16,9 @@ Profile(
             "parentSrcPaths": Path(appDataPath, "Roaming/Everything"),
             "filterType": "exclude",
             "filterPattern": [
+                "Logs", 
                 "Search History.csv",
                 "Run History.csv"
-                "Logs/*"
             ]
         },
     ]

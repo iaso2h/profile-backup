@@ -4,7 +4,7 @@ from pathlib import Path
 appDataPath = Path(os.getenv('APPDATA')).parent
 
 Profile(
-    profileName="byondCompare",
+    profileName="obsidian",
     enabled=True,
     categories=[
         {
