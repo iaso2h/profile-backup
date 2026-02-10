@@ -28,21 +28,25 @@ def parse_args() -> argparse.Namespace:
         - Version display (-v/--version)
         - Interactive mode as default behavior
     """
-    """Parse and return command line arguments."""
     parser = argparse.ArgumentParser(
         description="Backup software profiles on Windows",
         epilog="Run without arguments to start in interactive mode.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        add_help=True
     )
+    
     parser.add_argument(
         "-d", "--debug",
         action="store_true",
-        help="Run tests in debug mode"
+        help="Run tests in debug mode and enable verbose logging"
     )
+    
     parser.add_argument(
         "-v", "--version",
         action="version",
-        version=f"{__version__}"
+        version=f"%(prog)s {__version__}"
     )
+    
     return parser.parse_args()
 
 
