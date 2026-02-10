@@ -91,6 +91,7 @@ def print(*args, skipChk: bool = True, **kwargs) -> None:
         convertedArgs = []
         for arg in args:
             if isinstance(arg, str):
+                re.sub(richTextPat, "", arg , re.IGNORECASE)
                 convertedArgs.append(richTextPat.sub("", arg))
             else:
                 convertedArgs.append(str(arg))
