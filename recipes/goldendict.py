@@ -4,7 +4,7 @@ from pathlib import Path
 appDataPath = Path(os.getenv('APPDATA')).parent
 
 Profile(
-    profileName="Photoshop",
+    profileName="GoldenDict",
     enabled=True,
     categories=[
         {
@@ -13,15 +13,11 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": appDataPath.glob(
-                "Roaming/Adobe/Adobe Photoshop */Adobe Photoshop * Settings"
-                ),
+            "parentSrcPaths": Path(appDataPath, "Roaming/GoldenDict"),
             "filterType": "include",
             "filterPattern": [
-                "WorkSpaces*/*",
-                "Menu Customization.psp",
-                "Keyboard Shortcuts.psp",
-                ],
+                "config"
+            ],
         },
     ]
 )

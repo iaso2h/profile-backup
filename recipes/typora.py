@@ -4,7 +4,7 @@ from pathlib import Path
 appDataPath = Path(os.getenv('APPDATA')).parent
 
 Profile(
-    profileName="Photoshop",
+    profileName="Typora",
     enabled=True,
     categories=[
         {
@@ -13,15 +13,14 @@ Profile(
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
-            "parentSrcPaths": appDataPath.glob(
-                "Roaming/Adobe/Adobe Photoshop */Adobe Photoshop * Settings"
-                ),
-            "filterType": "include",
+            "parentSrcPaths": Path(appDataPath, "Roaming/typora"),
+            "filterType": "including",
             "filterPattern": [
-                "WorkSpaces*/*",
-                "Menu Customization.psp",
-                "Keyboard Shortcuts.psp",
-                ],
+                "Preferences",
+                "conf\conf.user.json",
+                "themes/onedark",
+                "themes/onedark.css",
+            ]
         },
     ]
 )

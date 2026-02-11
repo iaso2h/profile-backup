@@ -9,14 +9,14 @@ Profile(
     categories=[
         {
             "type": "file",
-            "categoryName": "Main",
+            "categoryName": "Profile",
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
             "parentSrcPaths": Path(appDataPath, "Roaming/Everything"),
             "filterType": "exclude",
             "filterPattern": [
-                "Logs", 
+                "Logs",
                 "Search History.csv",
                 "Run History.csv"
             ]
