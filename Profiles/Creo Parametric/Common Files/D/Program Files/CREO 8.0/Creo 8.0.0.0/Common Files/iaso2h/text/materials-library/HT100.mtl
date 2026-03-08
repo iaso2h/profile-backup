@@ -1,0 +1,68 @@
+﻿ND_RelParSet_K01 = {
+
+Name = HT100
+
+PARAMETERS =
+{
+  Name = PTC_MATERIAL_DESCRIPTION
+  Type = String
+  Default = '灰口铸铁,具有良好铸造性能、切削加工性好，减磨性，耐磨性好、
+成本低，广泛用于制造结构复杂铸件和耐磨件'
+  Access = Full
+},
+{
+  Name = TEMPERATURE
+  Type = Real
+  Default = 0.000000e+00 F
+  Access = Full
+},
+{
+  Name = PTC_INITIAL_BEND_Y_FACTOR
+  Type = Real
+  Default = 5.000000e-01
+  Access = Full
+},
+{
+  Name = PTC_BEND_TABLE
+  Type = Real
+  Default = 0.000000e+00
+  Access = Full
+},
+{
+  Name = PTC_MATERIAL_TYPE
+  Type = Integer
+  Default = 9
+  Access = Locked
+},
+{
+  Name = PTC_FAILURE_CRITERION_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_FATIGUE_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_MATERIAL_SUB_TYPE
+  Type = String
+  Default = 'LINEAR'
+  Access = Locked
+},
+{
+  Name = PTC_MASS_DENSITY
+  Type = Real
+  Default = 7.000000e+00 g/cm^3
+  Access = Full
+},
+{
+  Name = PTC_XHATCH_FILE
+  Type = String
+  Default = 'CU'
+  Access = Full
+}
+
+}

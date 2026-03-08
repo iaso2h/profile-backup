@@ -1,0 +1,369 @@
+﻿text_height calculated
+text_thickness 0.000000
+text_width_factor 0.8
+show_clipped_annotations NO
+ang_unit_trail_zeros YES
+default_chamf_dim_configuration LEADER
+default_chamf_text_orientation PARALLEL_TO_AND_ABOVE_LEADER
+default_diam_dim_arrow_state INSIDE
+default_chamfer_text CD
+default_angdim_text_orientation HORIZONTAL
+default_cldim_text_orientation PARALLEL_TO_AND_ABOVE_LEADER
+default_diadim_text_orientation ABOVE_EXTENDED_ELBOW
+default_dim_elbows YES
+default_dual_dim_position BELOW
+default_lindim_text_orientation PARALLEL_TO_AND_ABOVE_LEADER
+default_orddim_text_orientation PARALLEL_TO_AND_ABOVE_LEADER
+default_raddim_text_orientation PARALLEL_TO_AND_ABOVE_LEADER
+default_thickness_dim_prefix T
+default_thickness_dim_suffix none
+default_tolerance_display_style STD_ASME
+default_tolerance_mode NOMINAL
+dim_text_gap 0.500000
+dim_trail_zero_max_places same_as_dim
+dual_digits_diff -1
+dual_dimension_brackets YES
+dual_dimensioning NO
+dual_metric_dim_show_fractions NO
+dual_secondary_units MM
+iso_ordinate_delta YES
+lead_trail_zeros STD_METRIC
+lead_trail_zeros_scope DIMS
+modify_driving_dim_by_precision YES
+exclude_affixes_from_basic_box NO
+ord_dim_origin_style FILLED
+ord_dim_standard STD_ISO
+default_ansi_ord_dim_aligned YES
+use_major_units NO
+minimum_angle_dimension 1.000000
+ang_unit_lead_zeros YES
+default_annotation_font msyh.ttf
+symbol_font LEGACY
+arrow_length_ratio 0.600000
+arrow_width_ratio 0.200000
+arrow_style FILLED
+attach_sym_height_ratio 0.600000
+attach_sym_width_ratio 0.200000
+default_leader_arrow_style AUTOMATIC
+default_note_leader_type STD_ASME
+dim_dot_box_style DEFAULT
+dim_leader_length_ratio 1.500000
+dot_diameter_ratio 0.200000
+leader_elbow_length_ratio 1.500000
+set_datum_leader_length_ratio 2.070000
+witness_line_delta_ratio 0.600000
+witness_line_offset_ratio 0.300000
+datum_target_area_multiply_sign capital_X
+gtol_dim_placement ON_BOTTOM
+gtol_lead_trail_zeros SAME_AS_LEAD_TRAIL_ZEROS
+set_datum_triangle_display FILLED
+gtol_indicator_attached NO
+gtol_secondary_value_precision ROUND
+default_table_column_width 10
+default_table_columns 4
+default_table_rows 2
+show_hidden_quilt_sket_pnt_axes NO
+dim_tol_lead_trail_zeros SAME_AS_LEAD_TRAIL_ZEROS
+dim_tol_trail_zero_max_places same_as_dim_tol
+display_tol_by_1000 NO
+symmetric_tol_display_standard STD_ASME
+tol_text_height_factor 0.700000
+tol_text_width_factor 0.700000
+excl_annotations_of_deleted NO
+excl_annotations_of_excluded NO
+excl_annotations_of_section NO
+excl_annotations_of_suppressed NO
+decimal_marker COMMA_FOR_METRIC_DUAL
+datum_target_outside_text NEAR_ELBOW
+hole_note_param_translation YES
+default_sketcher_hatch_spacing relative
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+default_font msyh.ttf
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+
+associative_dimensioning YES
+dim_fraction_format DEFAULT
+dim_leader_length 5.000000
+draft_scale 1.000000
+shrinkage_value_display PERCENT_SHRINK
+witness_line_delta 1.500000
+witness_line_offset 0.000000
+draw_arrow_length 3.500000
+draw_arrow_width 1.000000
+draw_attach_sym_height DEFAULT
+draw_attach_sym_width DEFAULT
+draw_dot_diameter DEFAULT
+leader_elbow_length 3.000000
+circle_axis_offset 4.000000
+default_bom_balloon_type SIMPLE_CIRCLE
+default_table_row_height 1
+sort_method_in_region DELIMITED
+drawing_units MM
+harn_tang_line_display NO
+line_style_standard STD_ISO
+node_radius DEFAULT
+sym_flip_rotated_text YES
+yes_no_parameter_display TRUE_FALSE
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+!文本样式
+DRAWING_TEXT_HEIGHT                 3.500000
+
+!字体
+AUX_FONT                            1 FILLED
+AUX_FONT                            2 LEROY
+AUX_FONT                            3 CAL_ALF
+AUX_FONT                            4 CAL_GREK
+AUX_FONT                            5 FONT3D
+AUX_FONT                            6 CHFNTK
+AUX_FONT                            7 CHFNTH
+AUX_FONT                            8 FONT
+
+!箭头
+DRAW_ARROW_LENGTH                   3.500000
+DRAW_ARROW_STYLE                    FILLED
+DRAW_ARROW_WIDTH                    1.000000
+DRAW_ATTACH_SYM_HEIGHT              DEFAULT
+DRAW_ATTACH_SYM_WIDTH               DEFAULT
+DRAW_DOT_DIAMETER                   DEFAULT
+LEADER_ELBOW_LENGTH                 3.000000
+
+!杂项
+DRAFT_SCALE                         1.000000
+DRAWING_UNITS                       MM
+LINE_STYLE_STANDARD                 STD_ISO
+NODE_RADIUS                         DEFAULT
+SYM_FLIP_ROTATED_TEXT               YES
+SYM_ROTATE_NOTE_CENTER              YES
+YES_NO_PARAMETER_DISPLAY            TRUE_FALSE
+associative_dimensioning YES
+dim_fraction_format DEFAULT
+dim_leader_length 5.000000
+draft_scale 1.000000
+shrinkage_value_display PERCENT_SHRINK
+witness_line_delta 1.500000
+witness_line_offset 0.000000
+draw_arrow_length 3.500000
+draw_arrow_width 1.000000
+draw_attach_sym_height DEFAULT
+draw_attach_sym_width DEFAULT
+draw_dot_diameter DEFAULT
+leader_elbow_length 3.000000
+circle_axis_offset 4.000000
+default_bom_balloon_type SIMPLE_CIRCLE
+default_table_row_height 1
+sort_method_in_region DELIMITED
+drawing_units MM
+harn_tang_line_display NO
+line_style_standard STD_ISO
+node_radius DEFAULT
+sym_flip_rotated_text YES
+yes_no_parameter_display TRUE_FALSE
+

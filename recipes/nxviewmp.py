@@ -9,7 +9,7 @@ Profile(
     categories=[
         {
             "type": "file",
-            "categoryName": "Main",
+            "categoryName": "Profile",
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,

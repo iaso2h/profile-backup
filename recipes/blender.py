@@ -1,7 +1,7 @@
 import os
 from profileBackup.backup import Profile
 from pathlib import Path
-appDataPath = Path(os.getenv('APPDATA')).parent
+appDataPath = Path(os.getenv("APPDATA")).parent
 
 Profile(
     profileName="Blender",
@@ -9,15 +9,17 @@ Profile(
     categories=[
         {
             "type": "file",
-            "categoryName": "Main",
+            "categoryName": "Profile",
             "enabled": True,
             "recursiveCopy": True,
             "silentReport": False,
             "parentSrcPaths": appDataPath.glob(
                 "Roaming/Blender Foundation/Blender/*/scripts/presets/keyconfig"
-                ),
+            ),
             "filterType": "include",
-            "filterPattern": [ "*.py", ],
+            "filterPattern": [
+                "*.py",
+            ],
         },
-    ]
+    ],
 )

@@ -1,0 +1,92 @@
+﻿ND_RelParSet_K01 = {
+
+Name = AL6063
+
+PARAMETERS =
+{
+  Name = PTC_MATERIAL_DESCRIPTION
+  Type = String
+  Default = '铝镁合金，Al-Mg-Si系合金，耐蚀性好，焊接性优良，冷加工性较好，
+并具有中等强度，使用范围广泛,主要用于建筑、装饰、电子家电等。'
+  Access = Full
+},
+{
+  Name = TEMPERATURE
+  Type = Real
+  Default = 0.000000e+00 C
+  Access = Full
+},
+{
+  Name = PTC_INITIAL_BEND_Y_FACTOR
+  Type = Real
+  Default = 5.000000e-01
+  Access = Full
+},
+{
+  Name = PTC_BEND_TABLE
+  Type = String
+  Default = ''
+  Access = Full
+},
+{
+  Name = PTC_MATERIAL_TYPE
+  Type = Integer
+  Default = 9
+  Access = Locked
+},
+{
+  Name = PTC_FAILURE_CRITERION_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_FATIGUE_TYPE
+  Type = String
+  Default = 'NONE'
+  Access = Locked
+},
+{
+  Name = PTC_MATERIAL_SUB_TYPE
+  Type = String
+  Default = 'LINEAR'
+  Access = Locked
+},
+{
+  Name = PTC_MASS_DENSITY
+  Type = Real
+  Default = 2.730000e+00 g/cm^3
+  Access = Full
+},
+{
+  Name = PTC_YOUNG_MODULUS
+  Type = Real
+  Default = 6.900000e+01 Pa
+  Access = Full
+},
+{
+  Name = PTC_THERMAL_EXPANSION_COEF
+  Type = Real
+  Default = 2.340000e-05 /C
+  Access = Full
+},
+{
+  Name = PTC_POISSON_RATIO
+  Type = Real
+  Default = 3.000000e-01
+  Access = Full
+},
+{
+  Name = PTC_SPECIFIC_HEAT
+  Type = Real
+  Default = 9.637530e+08 mm^2/(sec^2 C)
+  Access = Full
+},
+{
+  Name = PTC_THERMAL_CONDUCTIVITY
+  Type = Real
+  Default = 1.800730e+02 N /(sec C)
+  Access = Full
+}
+
+}
