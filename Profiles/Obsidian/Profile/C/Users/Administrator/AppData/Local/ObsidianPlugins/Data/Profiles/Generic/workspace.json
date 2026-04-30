@@ -8,35 +8,20 @@
         "type": "tabs",
         "children": [
           {
-            "id": "84324d4d396e008d",
+            "id": "1c814bbc310a94bc",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "每日工作/2025-09-08.md",
+                "file": "AutoCAD/CXT/更新日志.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2025-09-08"
-            }
-          },
-          {
-            "id": "cd7192b31a396be7",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "常用模版.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "常用模版"
+              "title": "更新日志"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -59,7 +44,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "文件列表"
             }
           },
           {
@@ -109,8 +94,8 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "常用模版.md",
-                "collapseAll": false,
+                "file": "AutoCAD/CXT/更新日志.md",
+                "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
                 "showSearch": false,
@@ -119,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for 常用模版"
+              "title": "Backlinks for 更新日志"
             }
           },
           {
@@ -157,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "常用模版.md",
+                "file": "AutoCAD/CXT/更新日志.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 常用模版"
+              "title": "更新日志 的大纲"
             }
           },
           {
@@ -172,33 +157,61 @@
             "state": {
               "type": "calendar",
               "state": {},
-              "icon": "calendar-with-checkmark",
-              "title": "Calendar"
+              "icon": "lucide-ghost",
+              "title": "calendar"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false,
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
+      "webpage-html-export:导出为HTML": false,
       "table-editor-obsidian:Advanced Tables Toolbar": false,
       "obsidian-trash-explorer:Open trash explorer": false,
       "copilot:Open Copilot Chat": false
     }
   },
-  "active": "cd7192b31a396be7",
+  "active": "1c814bbc310a94bc",
   "lastOpenFiles": [
+    "AutoCAD/Functions/entmake.md",
+    "AutoCAD/CXT/更新日志.md",
+    "AutoCAD/AutoCAD Platform Customization AutoLISP.md",
+    "src/PixPin_2026-01-02_13-35-56.gif",
+    "src/PixPin_2026-01-02_11-57-03.gif",
+    "SolidWorks/Sheet Metal/展开.md",
+    "SolidWorks/Sheet Metal/圆角方通展开.md",
+    "SolidWorks/Sheet Metal/圆管上的通长刀路无法被识别.md",
+    "src/PixPin_2025-12-29_09-00-49.gif",
+    "AutoCAD/Functions/function.md",
+    "src/Pasted image 20251206195916.png",
+    "SolidWorks/Files.md",
+    "SolidWorks/File Based Visual Configurations.md",
+    "SolidWorks/Application.md",
+    "SolidWorks/局域网路径.md",
+    "src/PixPin_2025-11-24_11-24-09.gif",
+    "src/PixPin_2025-12-01_20-25-48.gif",
+    "src/PixPin_2025-12-01_20-20-21.gif",
+    "Nesting/List.md",
+    "AutoCAD/Functions/ssget.md",
+    "AutoCAD/Command.md",
+    "SolidWorks/AutoCAD Plot.md",
+    "SolidWorks/Configurations.md",
+    "SolidWorks/Selection.md",
+    "src/Pasted image 20251103165633.png",
+    "src/Pasted image 20251103164639.png",
+    "AutoCAD/Dimstyle.md",
     "公式.md",
     "数据检测.md",
     "每日工作/2025-09-10.md",

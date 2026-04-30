@@ -260,6 +260,21 @@ encoder:
 截胡	npcv
 再探再报	fufu	45
 搜到	upyp	50
+速通	xukt
+粉粉	phph	50
+虫群	ccbt
+巢虫	oqcc	5
+狼穴	miex	5
+舍馆	jaqw
+内缩	mjiw
+舶来词	iasa	5
+舶来语	iasw
+吊杠	dreu
+考编	qfim	5
+考公考编	qhqi	5
+此面	svbm
+送样	hmeg
+滚压	ktxg	5
 #---------电子---------
 电阻率	otzi
 发热丝	suii
@@ -280,12 +295,25 @@ encoder:
 中心线	dhif	500
 地线	geif	500
 横跳	enpp
+闪络	ajis
+上锡	yfzo
 #---------CXT---------
+诚兴泰	skai	5
 澋淇	kokz	50
 的美	ungm
 中蚀	dgqc	5
 汇翊	kniz
-
+盖皮	garp
+底皮	xbrp	5
+离型纸	zfib
+离型	zbfl	5
+硅胶布	mvnr
+硅胶皮	mvrp	500
+两面生	mbl	500
+半生半熟	hlhg
+精雕	pamg	5
+压合	xgjd	500
+垫压	ukxg	5
 #---------机械---------
 图块	rhgn
 钣金	zxzj	400
@@ -331,6 +359,8 @@ encoder:
 外发	lysr	500
 槽位	efji	5
 割孔	waha	500
+割孔图	whrh
+成品图	ndrh	5
 沉头	kwwm	5
 允载	kpnp
 抄数	uypb
@@ -345,6 +375,11 @@ encoder:
 平垫	ehuk	500
 弹垫	bhuk	5
 平圆头	erwm	500
+定位孔	wjha
+阳极氧化	tevj
+厚板	xoex	5
+打标	uaef
+卷料	hhpj	500
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50

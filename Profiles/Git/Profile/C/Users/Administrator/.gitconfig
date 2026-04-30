@@ -48,3 +48,5 @@ keepBackup=false
 trustExitCode=false
 prompt=false
 cmd="\"D:\\Program Files\\UltraCompare\\uc.exe\" -gitdt "$LOCAL" "$REMOTE" "$BASE" "$MERGED" -title1 "LOCAL" -title2 "REMOTE""
+[safe]
+	directory = *

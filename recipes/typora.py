@@ -14,7 +14,7 @@ Profile(
             "recursiveCopy": True,
             "silentReport": False,
             "parentSrcPaths": Path(appDataPath, "Roaming/typora"),
-            "filterType": "including",
+            "filterType": "include",
             "filterPattern": [
                 "Preferences",
                 "conf\conf.user.json",

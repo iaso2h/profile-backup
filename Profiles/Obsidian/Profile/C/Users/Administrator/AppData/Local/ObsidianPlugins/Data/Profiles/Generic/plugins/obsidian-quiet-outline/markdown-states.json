@@ -1,0 +1,142 @@
+{
+  "AutoCAD/CXT/更新日志.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 6,
+        "ch": 7
+      },
+      "to": {
+        "line": 6,
+        "ch": 7
+      }
+    },
+    "expandedKeys": []
+  },
+  "AutoCAD/Dimstyle.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 0,
+        "ch": 0
+      },
+      "to": {
+        "line": 0,
+        "ch": 0
+      }
+    },
+    "expandedKeys": []
+  },
+  "AutoCAD/Command.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 0,
+        "ch": 0
+      },
+      "to": {
+        "line": 0,
+        "ch": 0
+      }
+    },
+    "expandedKeys": []
+  },
+  "AutoCAD/AutoCAD Platform Customization AutoLISP.md": {
+    "scroll": 35.115968992248064,
+    "cursor": {
+      "from": {
+        "line": 36,
+        "ch": 7
+      },
+      "to": {
+        "line": 36,
+        "ch": 7
+      }
+    },
+    "expandedKeys": []
+  },
+  "AutoCAD/Truthy and Falsy.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 0,
+        "ch": 0
+      },
+      "to": {
+        "line": 0,
+        "ch": 0
+      }
+    },
+    "expandedKeys": []
+  },
+  "AutoCAD/TODO.md": {
+    "scroll": 0.7658,
+    "cursor": {
+      "from": {
+        "line": 14,
+        "ch": 0
+      },
+      "to": {
+        "line": 14,
+        "ch": 0
+      }
+    },
+    "expandedKeys": []
+  },
+  "AutoCAD/System Variable.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 0,
+        "ch": 0
+      },
+      "to": {
+        "line": 0,
+        "ch": 0
+      }
+    },
+    "expandedKeys": []
+  },
+  "AutoCAD/Ractors Events.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 0,
+        "ch": 0
+      },
+      "to": {
+        "line": 0,
+        "ch": 0
+      }
+    },
+    "expandedKeys": []
+  },
+  "Untitled.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 0,
+        "ch": 0
+      },
+      "to": {
+        "line": 0,
+        "ch": 0
+      }
+    },
+    "expandedKeys": []
+  },
+  "Instruction on the usage of acad.lsp.md": {
+    "scroll": 0,
+    "cursor": {
+      "from": {
+        "line": 6,
+        "ch": 196
+      },
+      "to": {
+        "line": 6,
+        "ch": 196
+      }
+    },
+    "expandedKeys": []
+  }
+}
