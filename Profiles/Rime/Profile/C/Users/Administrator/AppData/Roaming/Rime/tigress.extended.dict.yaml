@@ -275,7 +275,11 @@ encoder:
 此面	svbm
 送样	hmeg
 滚压	ktxg	5
-#---------电子---------
+坐电梯	joeh	5
+弹力绳	bsid	500
+低扫	jbub
+体感	jenf	5
+#---------CXT---------
 电阻率	otzi
 发热丝	suii
 绿膜	ibvl	500
@@ -285,7 +289,9 @@ encoder:
 尾剥	cvbk	500
 尾半剥	chbp
 背胶	avva	500
-加热膜	suvl	500
+发热板	suex
+发热膜	suvl	500
+加热膜	suvl	499
 加热片	suap
 加热体	suje
 公壳	hkgw
@@ -293,11 +299,10 @@ encoder:
 并联	hlqh	500
 环氧树脂加热板	nvee	500
 中心线	dhif	500
-地线	geif	500
+地线	geif	1000
 横跳	enpp
 闪络	ajis
 上锡	yfzo
-#---------CXT---------
 诚兴泰	skai	5
 澋淇	kokz	50
 的美	ungm
@@ -314,6 +319,15 @@ encoder:
 精雕	pamg	5
 压合	xgjd	500
 垫压	ukxg	5
+定位针	wjzn	500
+尖头定位针	ywwz
+硅胶发热膜	mvsv	500
+硅胶加热膜	mvsv	499
+接线高度≤mm	uigx
+压包尺寸	xnck
+靶孔	tmha	500
+热缩套管	uimr	5
+玻纤套管	nimr
 #---------机械---------
 图块	rhgn
 钣金	zxzj	400
@@ -380,6 +394,7 @@ encoder:
 厚板	xoex	5
 打标	uaef
 卷料	hhpj	500
+凸台	vfkd
 #Reference: https://zhuanlan.zhihu.com/p/455301324
 预加工	isug
 模膛	elvs	50
@@ -435,6 +450,11 @@ encoder:
 楔入	eaju
 相贯	eqko	5
 到边	ypsu
+焊线	coif
+游标卡尺	keyc	5
+打螺丝	ucii	10
+拧螺丝	ucii	5
+调机	smeo	5
 #---------地方名称---------
 南庄	nmxg	400
 西樵	vxeu

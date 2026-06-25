@@ -1841,12 +1841,17 @@ local function translator(input, seg)
   elseif (input == "/cxtd") then
     yield(Candidate("cxtd", seg.start, seg._end, "\\\\Desktop-olipp\\e", ""))
   elseif (input == "/date") then
-    date = os.date("%Y.%m.%d")
     num_year = os.date("%j/") .. IsLeap(os.date("%Y"))
+    
+    date = os.date("%Y-%m-%d")
     candidate = Candidate("date", seg.start, seg._end, date, num_year)
     yield(candidate)
     
-    date = os.date("%Y-%m-%d")
+    date = os.date("%Y%m%d")
+    candidate = Candidate("date", seg.start, seg._end, date, num_year)
+    yield(candidate)
+    
+    date = os.date("%Y.%m.%d")
     candidate = Candidate("date", seg.start, seg._end, date, num_year)
     yield(candidate)
 
@@ -1864,10 +1869,6 @@ local function translator(input, seg)
     yield(candidate)
 
     date = CnDate_translator(os.date("%Y%m%d"))
-    candidate = Candidate("date", seg.start, seg._end, date, num_year)
-    yield(candidate)
-
-    date = os.date("%Y%m%d")
     candidate = Candidate("date", seg.start, seg._end, date, num_year)
     yield(candidate)
 
