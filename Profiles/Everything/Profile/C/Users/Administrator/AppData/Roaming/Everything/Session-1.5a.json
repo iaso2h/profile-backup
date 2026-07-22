@@ -1,13 +1,12 @@
 [
 	{
-		"is_closed":0,
-		"window_x":447,
-		"window_y":283,
+		"is_closed":1,
+		"window_x":569,
+		"window_y":286,
 		"window_wide":1250,
 		"window_high":728,
 		"maximized":0,
 		"ontop":0,
-		"order":0,
 		"filters_visible":0,
 		"filters_wide":128,
 		"filters_right_align":1,
@@ -43,7 +42,7 @@
 		[
 			{
 				"is_closed":0,
-				"search":"cxt-3879",
+				"search":"WJ-000300053",
 				"match_case":0,
 				"match_path":1,
 				"match_whole_word":0,
@@ -70,8 +69,8 @@
 				"is_secondary_sort_folders_first":0,
 				"omit_results":0,
 				"temp_omit_results":0,
-				"listview_item_focus":"\\\\User-20230521vs\\G\\阳帅工作文档\\CAD\\东莞市爱飞电子科技有限公司\\CXT-3879 割孔图.dxf",
-				"listview_selection":["\\\\User-20230521vs\\G\\阳帅工作文档\\CAD\\东莞市爱飞电子科技有限公司\\CXT-3879 割孔图.dxf"],
+				"listview_item_focus":"\\\\Desktop-osh296i\\e\\（王建忠）9月份copy\\螺丝库\\WJ-000300053 CM十字扁平头机螺钉M2×牙长2.0mm 螺距0.4mm 模型.pdf",
+				"listview_selection":[],
 				"folders_sidebar_expanded":[],
 				"folders_sidebar_item_focus":"",
 				"folders_sidebar_selection":[],

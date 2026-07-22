@@ -91,7 +91,7 @@ cmd_newFolder F7
 cmd_open 
 cmd_openAll 
 cmd_openContainer 
-cmd_openExplorer 
+cmd_openExplorer Ctrl+Alt+Shift+E
 cmd_openFile Ctrl+O
 cmd_openFilelist 
 cmd_openStreet 
@@ -133,7 +133,7 @@ cmd_selectAllImages
 cmd_selectNone 
 cmd_selectTagged 
 cmd_setComment Ctrl+D
-cmd_showAlpha M
+cmd_showAlpha 
 cmd_showBlue 
 cmd_showGreen 
 cmd_showHeader 
@@ -191,7 +191,7 @@ cmd_autoContrast Ctrl+Alt+O
 cmd_autoCrop 
 cmd_autoDeskew 
 cmd_autoLevels Ctrl+Alt+L
-cmd_browse 
+cmd_browse Shift+B
 cmd_canvasResize Shift+C
 cmd_capture 
 cmd_changeDepth 
@@ -288,7 +288,7 @@ cmd_offset
 cmd_oldCamera 
 cmd_opBackColor 
 cmd_open Ctrl+O
-cmd_openExplorer 
+cmd_openExplorer Ctrl+Alt+Shift+E
 cmd_openStreet 
 cmd_pageFirst Shift+Home
 cmd_pageLast Shift+End
