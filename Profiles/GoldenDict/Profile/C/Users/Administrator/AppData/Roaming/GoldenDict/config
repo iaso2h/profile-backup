@@ -1,7 +1,28 @@
 <config>
- <paths/>
+ <paths>
+  <path recursive="1">D:/Program Files/GoldenDict-ng/content</path>
+ </paths>
  <sounddirs/>
  <dictionaryOrder id="0" name="">
+  <dictionary name="English Wikipedia">ae6f89aac7151829681b85f035d54e48</dictionary>
+  <dictionary name="English Wiktionary">affcf9678e7bfe701c9b071f97eccba3</dictionary>
+  <dictionary name="Latin and Greek Root Dict">7ede91e1e579c4f08dddd66cbd7d84bc</dictionary>
+  <dictionary name="X-Affix 15in1">e4aaa638ed140aceb2200e07cce8ab3c</dictionary>
+  <dictionary name="Abbreviation Finder">f3f62e7e1656790720513775c389a41e</dictionary>
+  <dictionary name="音标">1349d24d02cac224fc1d58642cd7cf30</dictionary>
+  <dictionary name="世界各国地图高彩中英文对照版">9f708ce0b207dcc9d1d775bcf070ff13</dictionary>
+  <dictionary name="dict.org">6eb6f7a1df225e1cfdcd4cf8e9e4771b</dictionary>
+  <dictionary name="Visual Dict">1e10ee004f59b8435e89c97be9f7361d</dictionary>
+  <dictionary name="Babylon Picture Dictionary 2012">018645386b0485ec0c36bc68427bb6af</dictionary>
+  <dictionary name="Oxford Dictionary of English">4675ea1bcca3a006a9c67ee409cec0e0</dictionary>
+  <dictionary name="Longman Dictionary of Contemporary English 6th edition">16f64ec5d69ae15780b69e6f09e8f4ef</dictionary>
+  <dictionary name="Vocabulary.com">770d166a12f1e85adc0baff3ebe9f323</dictionary>
+  <dictionary name="Merrian Webster Advanced Learners (2013)">42ffaafbf5a572f85912c350b571cf9b</dictionary>
+  <dictionary name="VOA Idiom Dictionary">8bf736a530a1ca9045f69a17850b14f2</dictionary>
+  <dictionary name="Dictionary of Idioms, Phrasal Verbs and Slang">12514fbaebe85af49698f55d89d832da</dictionary>
+  <dictionary name="Reader's Digest Use the Right Word">ecdd0e179501527eeb2dd5dcf9c0eb4f</dictionary>
+  <dictionary name="Thesaurus 6 in 1">6f46ddf2aeb34a02d6c73452f5c15fb0</dictionary>
+  <dictionary name="cedict_ts (2017-10)">0de300f337cf350f20483f253258cf57</dictionary>
   <mutedDictionaries/>
  </dictionaryOrder>
  <inactiveDictionaries id="0" name="">
@@ -74,10 +95,10 @@
  <dictionariesToReindex/>
  <preferences>
   <interfaceLanguage></interfaceLanguage>
-  <interfaceFont></interfaceFont>
+  <interfaceFont>Microsoft YaHei UI</interfaceFont>
   <interfaceFontSize_0>12</interfaceFontSize_0>
   <enableInterfaceFont>0</enableInterfaceFont>
-  <customFonts monospace="" sans-serif="" serif="" standard=""/>
+  <customFonts monospace="Courier New" sans-serif="Arial" serif="Times New Roman" standard="Times New Roman"/>
   <useFallbackFonts>1</useFallbackFonts>
   <displayStyle></displayStyle>
   <interfaceStyle>Default</interfaceStyle>
@@ -99,9 +120,9 @@
   <darkReaderMode>0</darkReaderMode>
   <zoomFactor>1</zoomFactor>
   <helpZoomFactor>1</helpZoomFactor>
-  <enableMainWindowHotkey>1</enableMainWindowHotkey>
+  <enableMainWindowHotkey>0</enableMainWindowHotkey>
   <mainWindowHotkey>Ctrl+F11, Ctrl+F11</mainWindowHotkey>
-  <enableClipboardHotkey>1</enableClipboardHotkey>
+  <enableClipboardHotkey>0</enableClipboardHotkey>
   <clipboardHotkey>Ctrl+C, Ctrl+C</clipboardHotkey>
   <startWithScanPopupOn>0</startWithScanPopupOn>
   <enableScanPopupModifiers>0</enableScanPopupModifiers>
@@ -114,7 +135,7 @@
   <pronounceOnLoadMain>0</pronounceOnLoadMain>
   <pronounceOnLoadPopup>0</pronounceOnLoadPopup>
   <useInternalPlayer>1</useInternalPlayer>
-  <internalPlayerBackend></internalPlayerBackend>
+  <internalPlayerBackend>Qt Multimedia</internalPlayerBackend>
   <audioPlaybackProgram></audioPlaybackProgram>
   <alwaysOnTop>0</alwaysOnTop>
   <searchInDock>0</searchInDock>
@@ -146,7 +167,7 @@
   <maxStringsInHistory>500</maxStringsInHistory>
   <storeHistory>1</storeHistory>
   <alwaysExpandOptionalParts>1</alwaysExpandOptionalParts>
-  <addonStyle></addonStyle>
+  <addonStyle>None</addonStyle>
   <collapseBigArticles>0</collapseBigArticles>
   <articleSizeLimit>2000</articleSizeLimit>
   <limitInputPhraseLength>0</limitInputPhraseLength>
@@ -166,16 +187,16 @@
  </preferences>
  <lastMainGroupId>0</lastMainGroupId>
  <lastPopupGroupId>0</lastPopupGroupId>
- <popupWindowState2></popupWindowState2>
- <popupWindowGeometry2></popupWindowGeometry2>
+ <popupWindowState2>AAAA/wAAAAD9AAAAAAAAAW4AAAFKAAAABAAAAAQAAAAIAAAACPwAAAADAAAAAQAAAAEAAAAkAHAAbwBwAHUAcABOAGEAdgBpAGcAYQB0AGkAbwBuAEIAYQByAwAAAAD/////AAAAAAAAAAAAAAACAAAAAgAAABwAcABvAHAAdQBwAFMAZQBhAHIAYwBoAEIAYQByAQAAAAD/////AAAAAAAAAAAAAAAYAHAAbwBwAHUAcABUAG8AbwBsAEIAYQByAQAAAGr/////AAAAAAAAAAAAAAACAAAAAQAAABoAZABpAGMAdABpAG8AbgBhAHIAeQBCAGEAcgEAAAAA/////wAAAAAAAAAA</popupWindowState2>
+ <popupWindowGeometry2>AdnQywADAAAAAALtAAACMQAABGYAAAPAAAAC7QAAAjEAAARmAAADwAAAAAAAAAAAB4AAAALtAAACMQAABGYAAAPA</popupWindowGeometry2>
  <pinPopupWindow>0</pinPopupWindow>
  <popupWindowAlwaysOnTop>0</popupWindowAlwaysOnTop>
- <mainWindowState></mainWindowState>
- <mainWindowGeometry></mainWindowGeometry>
- <dictInfoGeometry></dictInfoGeometry>
+ <mainWindowState>AAAA/wAAAAD9AAAAAgAAAAAAAABNAAAB1/wCAAAAAfsAAAAUAHMAZQBhAHIAYwBoAFAAYQBuAGUAAAAAQwAAAdcAAACFAP///wAAAAEAAADMAAACkPwCAAAAA/sAAAASAGQAaQBjAHQAcwBQAGEAbgBlAQAAAFkAAADYAAAAZAD////7AAAAGgBmAGEAdgBvAHIAaQB0AGUAcwBQAGEAbgBlAQAAATUAAADYAAAAYgD////7AAAAFgBoAGkAcwB0AG8AcgB5AFAAYQBuAGUBAAACEQAAANgAAABkAP///wAAA0EAAAKQAAAABAAAAAQAAAAIAAAACPwAAAACAAAAAgAAAAEAAAAUAG4AYQB2AFQAbwBvAGwAYgBhAHIBAAAAAP////8AAAAAAAAAAAAAAAIAAAABAAAAGgBkAGkAYwB0AGkAbwBuAGEAcgB5AEIAYQByAQAAAAD/////AAAAAAAAAAA=</mainWindowState>
+ <mainWindowGeometry>AdnQywADAAAAAAG3AAAAggAABccAAAOJAAABtwAAAKEAAAXHAAADiQAAAAAAAAAAB4AAAAG3AAAAoQAABccAAAOJ</mainWindowGeometry>
+ <dictInfoGeometry>AdnQywADAAAAAAKKAAABIwAABOEAAALRAAACigAAAUIAAAThAAAC0QAAAAAAAAAAB4AAAAKKAAABQgAABOEAAALR</dictInfoGeometry>
  <inspectorGeometry></inspectorGeometry>
- <dictionariesDialogGeometry></dictionariesDialogGeometry>
- <timeForNewReleaseCheck>2026-07-22T16:11:28</timeForNewReleaseCheck>
+ <dictionariesDialogGeometry>AdnQywADAAAAAAISAAAA7wAABVgAAAMhAAACEgAAAQ4AAAVYAAADIQAAAAAAAAAAB4AAAAISAAABDgAABVgAAAMh</dictionariesDialogGeometry>
+ <timeForNewReleaseCheck>2026-08-15T17:21:28</timeForNewReleaseCheck>
  <skippedRelease></skippedRelease>
  <showingDictBarNames>0</showingDictBarNames>
  <usingToolbarsIconSize>1</usingToolbarsIconSize>
@@ -186,6 +207,6 @@
   <matchCase>0</matchCase>
   <autoApply>0</autoApply>
   <headwordsExportPath></headwordsExportPath>
-  <headwordsDialogGeometry></headwordsDialogGeometry>
+  <headwordsDialogGeometry>AdnQywADAAAAAALRAAAA2AAABJoAAAMcAAAC0QAAAPcAAASaAAADHAAAAAAAAAAAB4AAAALRAAAA9wAABJoAAAMc</headwordsDialogGeometry>
  </headwordsDialog>
 </config>

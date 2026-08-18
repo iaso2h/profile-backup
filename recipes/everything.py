@@ -18,7 +18,8 @@ Profile(
             "filterPattern": [
                 "Logs",
                 "Search History.csv",
-                "Run History.csv"
+                "Run History.csv",
+                "*.backup.*"
             ]
         },
     ]

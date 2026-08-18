@@ -1,4 +1,10 @@
-﻿pro_unit_length UNIT_MM
+﻿!English version
+dialog_translation no
+help_translation no
+msg_translation no
+menu_translation no
+
+pro_unit_length UNIT_MM
 pro_unit_mass UNIT_KILOGRAM
 
 !Fonts
