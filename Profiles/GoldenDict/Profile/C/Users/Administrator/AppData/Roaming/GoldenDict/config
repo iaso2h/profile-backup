@@ -88,8 +88,8 @@
  <programs/>
  <mutedDictionaries>
   <mutedDictionary>6eb6f7a1df225e1cfdcd4cf8e9e4771b</mutedDictionary>
-  <mutedDictionary>affcf9678e7bfe701c9b071f97eccba3</mutedDictionary>
   <mutedDictionary>ae6f89aac7151829681b85f035d54e48</mutedDictionary>
+  <mutedDictionary>affcf9678e7bfe701c9b071f97eccba3</mutedDictionary>
  </mutedDictionaries>
  <popupMutedDictionaries/>
  <dictionariesToReindex/>
@@ -192,11 +192,11 @@
  <pinPopupWindow>0</pinPopupWindow>
  <popupWindowAlwaysOnTop>0</popupWindowAlwaysOnTop>
  <mainWindowState>AAAA/wAAAAD9AAAAAgAAAAAAAABNAAAB1/wCAAAAAfsAAAAUAHMAZQBhAHIAYwBoAFAAYQBuAGUAAAAAQwAAAdcAAACFAP///wAAAAEAAADMAAACkPwCAAAAA/sAAAASAGQAaQBjAHQAcwBQAGEAbgBlAQAAAFkAAADYAAAAZAD////7AAAAGgBmAGEAdgBvAHIAaQB0AGUAcwBQAGEAbgBlAQAAATUAAADYAAAAYgD////7AAAAFgBoAGkAcwB0AG8AcgB5AFAAYQBuAGUBAAACEQAAANgAAABkAP///wAAA0EAAAKQAAAABAAAAAQAAAAIAAAACPwAAAACAAAAAgAAAAEAAAAUAG4AYQB2AFQAbwBvAGwAYgBhAHIBAAAAAP////8AAAAAAAAAAAAAAAIAAAABAAAAGgBkAGkAYwB0AGkAbwBuAGEAcgB5AEIAYQByAQAAAAD/////AAAAAAAAAAA=</mainWindowState>
- <mainWindowGeometry>AdnQywADAAAAAAG3AAAAggAABccAAAOJAAABtwAAAKEAAAXHAAADiQAAAAAAAAAAB4AAAAG3AAAAoQAABccAAAOJ</mainWindowGeometry>
+ <mainWindowGeometry>AdnQywADAAAAAAKmAAAAtgAABrYAAAO9AAACpgAAANUAAAa2AAADvQAAAAAAAAAAB4AAAAKmAAAA1QAABrYAAAO9</mainWindowGeometry>
  <dictInfoGeometry>AdnQywADAAAAAAKKAAABIwAABOEAAALRAAACigAAAUIAAAThAAAC0QAAAAAAAAAAB4AAAAKKAAABQgAABOEAAALR</dictInfoGeometry>
  <inspectorGeometry></inspectorGeometry>
  <dictionariesDialogGeometry>AdnQywADAAAAAAISAAAA7wAABVgAAAMhAAACEgAAAQ4AAAVYAAADIQAAAAAAAAAAB4AAAAISAAABDgAABVgAAAMh</dictionariesDialogGeometry>
- <timeForNewReleaseCheck>2026-08-15T17:21:28</timeForNewReleaseCheck>
+ <timeForNewReleaseCheck>2026-08-27T09:04:13</timeForNewReleaseCheck>
  <skippedRelease></skippedRelease>
  <showingDictBarNames>0</showingDictBarNames>
  <usingToolbarsIconSize>1</usingToolbarsIconSize>
