@@ -87,8 +87,8 @@
  </dictservers>
  <programs/>
  <mutedDictionaries>
-  <mutedDictionary>6eb6f7a1df225e1cfdcd4cf8e9e4771b</mutedDictionary>
   <mutedDictionary>ae6f89aac7151829681b85f035d54e48</mutedDictionary>
+  <mutedDictionary>6eb6f7a1df225e1cfdcd4cf8e9e4771b</mutedDictionary>
   <mutedDictionary>affcf9678e7bfe701c9b071f97eccba3</mutedDictionary>
  </mutedDictionaries>
  <popupMutedDictionaries/>
@@ -196,7 +196,7 @@
  <dictInfoGeometry>AdnQywADAAAAAAKKAAABIwAABOEAAALRAAACigAAAUIAAAThAAAC0QAAAAAAAAAAB4AAAAKKAAABQgAABOEAAALR</dictInfoGeometry>
  <inspectorGeometry></inspectorGeometry>
  <dictionariesDialogGeometry>AdnQywADAAAAAAISAAAA7wAABVgAAAMhAAACEgAAAQ4AAAVYAAADIQAAAAAAAAAAB4AAAAISAAABDgAABVgAAAMh</dictionariesDialogGeometry>
- <timeForNewReleaseCheck>2026-08-27T09:04:13</timeForNewReleaseCheck>
+ <timeForNewReleaseCheck>2026-09-01T08:37:43</timeForNewReleaseCheck>
  <skippedRelease></skippedRelease>
  <showingDictBarNames>0</showingDictBarNames>
  <usingToolbarsIconSize>1</usingToolbarsIconSize>

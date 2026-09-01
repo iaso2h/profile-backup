@@ -98,7 +98,7 @@ show_sketch_dims_in_feature YES
 sketcher_undo_reorient_view YES
 spin_with_silhouettes YES
 use_inverted_mousewheel_zoom yes
-spin_center_display yes
+spin_center_display no
 display_axes yes
 display_axis_tags no
 display_coord_sys no
