@@ -19,6 +19,7 @@ Profile(
                 "Logs",
                 "Search History.csv",
                 "Run History.csv",
+                "Session.json",
                 "*.backup.*"
             ]
         },

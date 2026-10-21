@@ -18,6 +18,7 @@ Profile(
             "filterPattern": [
                 "**/*log*",
                 "Updates",
+                "settings-template.json"
             ]
         },
     ]

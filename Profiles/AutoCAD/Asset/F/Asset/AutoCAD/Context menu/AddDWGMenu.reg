@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.dwg\shell\ConvertToDXF]
+@="Convert to dxf"
+"Icon"="imageres.dll,-5302"
+[HKEY_CLASSES_ROOT\SystemFileAssociations\.dwg\shell\ConvertToDXF\command]
+@="wscript.exe \"F:\\Asset\\AutoCAD\\Context menu\\DWGConvertMsg.vbs\" \"%1\""
